@@ -29,6 +29,18 @@ The founder reviews in this exact order:
 
 BB6 remains locked until BB1–BB5 are individually approved and the transition to Thompson's notation is agreed.
 
+## Source anchors
+
+- Arithmetic prerequisites: De Morgan's *Elements of Arithmetic*.
+- Introductory algebra: Wentworth's *The First Steps in Algebra*.
+- Geometry and proof: Casey's edition of Euclid's *Elements*.
+- First approach to change and differentiation: Thompson's *Calculus Made Easy*.
+- A second conceptual account of calculus: De Morgan's *Elementary Illustrations*.
+- Rigorous analysis after the intuitive path: Hardy's *A Course of Pure Mathematics*.
+- Optional investigations and puzzles: Rouse Ball's *Mathematical Recreations and Essays*.
+
+The detailed edition register is in [`03-FOUNDATIONAL-BOOKS.md`](./03-FOUNDATIONAL-BOOKS.md).
+
 ## Required record for every future BB
 
 - BB identifier and title

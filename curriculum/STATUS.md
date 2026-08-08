@@ -7,6 +7,8 @@ Last updated: 2026-08-08
 | Curriculum declaration | Awaiting review | Founder |
 | Prerequisite map | Draft | Founder |
 | Main curriculum map | Draft | Founder |
+| Foundational mathematics shelf | Draft | Founder |
+| Extended classical candidate library | Draft | Founder |
 | Change Laboratory BB1 | AI_DRAFT | Founder reading |
 | Change Laboratory BB2 | AI_DRAFT | Locked until BB1 decision |
 | Change Laboratory BB3 | AI_DRAFT | Locked until BB2 decision |

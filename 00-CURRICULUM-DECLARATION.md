@@ -53,7 +53,19 @@ Every BB must have exactly one status:
 
 Every BB must identify its source edition, publication year, author, source URL or scan, and the reason its legal status is safe for the intended territory. “More than 70 years old” is a useful search heuristic, not automatic proof of public-domain status.
 
-The initial source candidate is Silvanus P. Thompson's *Calculus Made Easy*. Its exact edition and public-domain evidence must be recorded before derived wording is released.
+The mathematics curriculum will use a declared shelf rather than an unnamed collection of old books. The initial shelf is recorded in [`curriculum/03-FOUNDATIONAL-BOOKS.md`](./curriculum/03-FOUNDATIONAL-BOOKS.md).
+
+Its principal works are:
+
+- Augustus De Morgan, *Elements of Arithmetic*;
+- G. A. Wentworth, *The First Steps in Algebra*;
+- Euclid and John Casey, *The First Six Books of the Elements of Euclid*;
+- Silvanus P. Thompson, *Calculus Made Easy*;
+- Augustus De Morgan, *Elementary Illustrations of the Differential and Integral Calculus*;
+- G. H. Hardy, *A Course of Pure Mathematics*;
+- W. W. Rouse Ball, *Mathematical Recreations and Essays*, as an optional problem source.
+
+These books provide source structure, definitions, examples and intellectual lineage. They do not override the prerequisite map, the snail-speed rule or modern mathematical accuracy. Their wording will not be copied blindly.
 
 ## Present pilot
 

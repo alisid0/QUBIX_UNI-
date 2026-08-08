@@ -4,13 +4,21 @@ Qubix University is being rebuilt slowly from first principles. Its current prod
 
 ## Read first
 
-1. [Curriculum Declaration](./00-CURRICULUM-DECLARATION.md)
-2. [Prerequisite Map](./curriculum/01-PREREQUISITE-MAP.md)
-3. [Main Curriculum Map](./curriculum/02-MAIN-CURRICULUM-MAP.md)
-4. [Current Status](./curriculum/STATUS.md)
-5. [Founder Review Protocol](./docs/REVIEW-PROTOCOL.md)
+1. [Agent Instructions](./AGENTS.md)
+2. [Agent Onboarding](./docs/AGENT-ONBOARDING.md)
+3. [Curriculum Declaration](./00-CURRICULUM-DECLARATION.md)
+4. [Prerequisite Map](./curriculum/01-PREREQUISITE-MAP.md)
+5. [Main Curriculum Map](./curriculum/02-MAIN-CURRICULUM-MAP.md)
+6. [Foundational Mathematics Books](./curriculum/03-FOUNDATIONAL-BOOKS.md)
+7. [Extended Classical Mathematics Library](./curriculum/04-EXTENDED-CLASSICAL-LIBRARY.md)
+8. [Current Status](./curriculum/STATUS.md)
+9. [Founder Review Protocol](./docs/REVIEW-PROTOCOL.md)
 
 No additional curriculum should be generated until these gates are reviewed.
+
+## Production staging mode
+
+The production root is a curriculum-review questionnaire, not a released course. It stores draft answers only in the reviewer's browser and does not update Supabase or curriculum status. The learner-facing Change Laboratory remains available through `?prototype=change-lab`. During local development, use `?mode=review` to open the staging workspace.
 
 ## Local development
 

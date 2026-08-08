@@ -1,0 +1,14 @@
+---
+description: Qubix University repository-wide curriculum and engineering rules
+alwaysApply: true
+---
+
+Read `AGENTS.md` and `docs/AGENT-ONBOARDING.md` before editing.
+
+- Only the founder may mark curriculum `APPROVED` or `RELEASED`.
+- Work on one small, explicitly requested BB or engineering task at a time.
+- Keep production in staging/dummy mode unless the founder explicitly changes the release gate.
+- Do not bulk-generate curriculum from the classical library.
+- Audit the exact edition and territory status of source material before adaptation.
+- Do not connect inherited Strata Vercel or Supabase resources without explicit approval.
+- Build and test at desktop and mobile widths before handoff.
