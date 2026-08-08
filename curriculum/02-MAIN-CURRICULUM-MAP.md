@@ -8,11 +8,11 @@ This is a dependency skeleton, not permission to generate all listed content.
 
 | Order | Unit | Intended understanding | Depends on | State |
 |---:|---|---|---|---|
-| 1 | Changing values | A variable may take different values | P-01, P-04 | Pilot BB1 — `AI_DRAFT` |
-| 2 | Naming change | `Δx = new − old`, including direction | P-02, P-03, Unit 1 | Pilot BB2 — `AI_DRAFT` |
-| 3 | Dependent change | An output changes because its input changes | P-05, P-06, Unit 2 | Pilot BB3 — `AI_DRAFT` |
-| 4 | Average rate | Compare output change with input change | P-07, Unit 3 | Pilot BB4 — `AI_DRAFT` |
-| 5 | Moving closer | Rates can settle as an interval shrinks | Unit 4 | Pilot BB5 — `AI_DRAFT` |
+| 1 | Variables and Changing Values | A variable may take different values | P-01, P-04 | Pilot BB1 — `AI_DRAFT` |
+| 2 | Change in a Variable | `Δx = new − old`, including direction | P-02, P-03, Unit 1 | Pilot BB2 — `AI_DRAFT` |
+| 3 | Dependent Variables | An output changes because its input changes | P-05, P-06, Unit 2 | Pilot BB3 — `AI_DRAFT` |
+| 4 | Average Rate of Change | Compare output change with input change | P-07, Unit 3 | Pilot BB4 — `AI_DRAFT` |
+| 5 | Instantaneous Rate of Change | Rates can settle as an interval shrinks | Unit 4 | Pilot BB5 — `AI_DRAFT` |
 | 6 | Derivative language | Connect the observed local rate to `dy/dx` | Unit 5 | `LOCKED` |
 | 7 | Derivative rules | Build rules from repeated examples | Unit 6 | `LOCKED` |
 | 8 | Applications | Use derivatives to describe motion and shape | Unit 7 | `LOCKED` |

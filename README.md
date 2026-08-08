@@ -1,6 +1,6 @@
 # Qubix University
 
-Qubix University is being rebuilt slowly from first principles. Its current product is the five-board Change Laboratory, and its curriculum remains under founder review.
+Qubix University is being rebuilt slowly from first principles. Its current product is the five-part *Variables and Rates of Change* lesson, and its curriculum remains under founder review.
 
 ## Read first
 
@@ -14,11 +14,13 @@ Qubix University is being rebuilt slowly from first principles. Its current prod
 8. [Current Status](./curriculum/STATUS.md)
 9. [Founder Review Protocol](./docs/REVIEW-PROTOCOL.md)
 
+The active curriculum item is [BB1: Variables and Changing Values](./curriculum/bb/BB1-VARIABLES-AND-CHANGING-VALUES.md). BB2–BB5 remain locked.
+
 No additional curriculum should be generated until these gates are reviewed.
 
 ## Production staging mode
 
-The production root is a curriculum-review questionnaire, not a released course. It stores draft answers only in the reviewer's browser and does not update Supabase or curriculum status. The learner-facing Change Laboratory remains available through `?prototype=change-lab`. During local development, use `?mode=review` to open the staging workspace.
+The production root is a curriculum-review questionnaire, not a released course. It stores draft answers only in the reviewer's browser and does not update Supabase or curriculum status. The learner-facing *Variables and Rates of Change* lesson is available through `?prototype=variables-and-rates`. The former `?prototype=change-lab` address remains as a compatibility alias. During local development, use `?mode=review` to open the staging workspace.
 
 ## Local development
 

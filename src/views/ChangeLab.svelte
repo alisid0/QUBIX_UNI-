@@ -5,17 +5,17 @@
   const boards = [
     {
       id: 'CME-CHANGE-001',
-      title: 'Let x move',
-      marker: 'A changing value',
+      title: 'Variables and Changing Values',
+      marker: 'Variables',
       floors: [
-        'Write x = 2. Now replace the 2 with a 3. The letter stayed put; the value assigned to it changed.',
-        'A letter used this way is a variable. It can hold one value now and another value later.',
-        'Here x is the side length of a square. Move x and the square follows.'
+        'x = 2 means that the variable x currently represents the number 2. If its value becomes 3, the symbol is still x.',
+        'A variable is a symbol that represents a number. In this lesson, x can take different values.',
+        'Here x represents the side length of a square. Change x with the slider; the displayed length and the square change together.'
       ]
     },
     {
       id: 'CME-CHANGE-002',
-      title: 'Name the change',
+      title: 'Change in a Variable',
       marker: 'Δx = new − old',
       floors: [
         'The side moves from 2 cm to 2.5 cm. The move itself has a size: 0.5 cm.',
@@ -26,8 +26,8 @@
     },
     {
       id: 'CME-CHANGE-003',
-      title: 'When x moves, y answers',
-      marker: 'Dependent change',
+      title: 'Dependent Variables',
+      marker: 'Functions',
       floors: [
         'Let x be the side of a square and y be its area. They are tied together by y = x².',
         'At x = 2, y = 4. Change x to 2.5 and the area becomes 6.25.',
@@ -37,8 +37,8 @@
     },
     {
       id: 'CME-CHANGE-004',
-      title: 'Compare the two changes',
-      marker: 'Average rate',
+      title: 'Average Rate of Change',
+      marker: 'Rate of change',
       floors: [
         'The side grows by 0.5 cm while the area grows by 2.25 cm². Compare the two changes.',
         'Δy/Δx = 2.25/0.5 = 4.5. That is the average area growth for each centimetre added.',
@@ -47,8 +47,8 @@
     },
     {
       id: 'CME-CHANGE-005',
-      title: 'Move closer',
-      marker: 'A local rate appears',
+      title: 'Instantaneous Rate of Change',
+      marker: 'A shrinking interval',
       floors: [
         'Keep the starting value at x = 2. Move the other value closer.',
         'The average rates are 5, then 4.5, 4.1, 4.01, and 4.001.',
@@ -94,7 +94,7 @@
 
   onMount(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('qubix-university-change-lab-v1') || 'null');
+      const saved = JSON.parse(localStorage.getItem('qubix-university-variables-rates-v2') || 'null');
       if (saved && Number.isInteger(saved.boardIndex) && saved.boardIndex >= 0 && saved.boardIndex < boards.length) {
         boardIndex = saved.boardIndex;
         floorIndex = Math.min(saved.floorIndex || 0, boards[boardIndex].floors.length - 1);
@@ -106,7 +106,7 @@
 
   $: if (hydrated) {
     try {
-      localStorage.setItem('qubix-university-change-lab-v1', JSON.stringify({ boardIndex, floorIndex, checkDone }));
+      localStorage.setItem('qubix-university-variables-rates-v2', JSON.stringify({ boardIndex, floorIndex, checkDone }));
     } catch (_) {}
   }
 
@@ -115,7 +115,7 @@
       floorIndex += 1;
       return;
     }
-    if (boardIndex === 2 && !checkDone) {
+    if (boardIndex === 0 && !checkDone) {
       showCheck = true;
       return;
     }
@@ -144,20 +144,20 @@
 
   function chooseCheck(value) {
     checkAttempts += 1;
-    if (value === 7) {
+    if (value === 'The value of x') {
       checkDone = true;
-      checkMessage = 'Yes. The area moves from 9 to 16, so Δy = 16 − 9 = 7.';
+      checkMessage = 'Correct. x remains the variable; the value assigned to x changes from 2 to 3.';
     } else if (checkAttempts === 1) {
-      checkMessage = 'Try once more. Δy is the new area minus the old area.';
+      checkMessage = 'Try once more. Identify the symbol and the number represented by that symbol.';
     } else {
       checkDone = true;
-      checkMessage = 'The area moves from 3² = 9 to 4² = 16. So Δy = 16 − 9 = 7.';
+      checkMessage = 'x is the variable in both statements. Its assigned value changes from 2 to 3.';
     }
   }
 
   function leaveCheck() {
     showCheck = false;
-    boardIndex = 3;
+    boardIndex = 1;
     floorIndex = 0;
   }
 
@@ -191,7 +191,7 @@
     <div class="course-mark" aria-label="Course one">01</div>
     <div class="brand-lockup">
       <span class="brand">QUBIX UNIVERSITY</span>
-      <span class="lab-name">Change laboratory</span>
+      <span class="lab-name">Variables and rates of change</span>
     </div>
     <button class="icon-btn" aria-label="Toggle colour theme" on:click={() => theme.toggle()}>
       {#if $theme === 'dark'}
@@ -205,8 +205,8 @@
   {#if finished}
     <main class="complete-screen">
       <div class="complete-mark" aria-hidden="true">✓</div>
-      <span class="micro-label">FIRST FIVE COMPLETE</span>
-      <h1>You found a rate<br/>by moving closer.</h1>
+      <span class="micro-label">INTRODUCTION COMPLETE</span>
+      <h1>You calculated an<br/>instantaneous rate of change.</h1>
       <p>Five small moves. Variable, change, dependence, average rate, local rate.</p>
       <div class="summary-chain" aria-label="Concept sequence">
         <span>x</span><i>→</i><span>Δx</span><i>→</i><span>Δy</span><i>→</i><span>Δy/Δx</span><i>→</i><span>4</span>
@@ -214,9 +214,9 @@
       <button class="primary wide" on:click={restart}>Begin again</button>
     </main>
   {:else}
-    <section class="progress-wrap" aria-label={`Board ${boardIndex + 1} of ${boards.length}`}>
+    <section class="progress-wrap" aria-label={`Section ${boardIndex + 1} of ${boards.length}`}>
       <div class="progress-copy">
-        <span>Board {boardIndex + 1} of {boards.length}</span>
+        <span>Section {boardIndex + 1} of {boards.length}</span>
         <span>{Math.round(((boardIndex + floorIndex / board.floors.length) / boards.length) * 100)}%</span>
       </div>
       <div class="segments">
@@ -231,14 +231,14 @@
         <div class="check-panel">
           <div class="check-topline"><span>QUICK CHECK</span><span>1 question</span></div>
           <div class="check-visual" aria-hidden="true">
-            <div class="mini-square old">3²<span>9</span></div>
+            <div class="mini-square old">variable<span>x = 2</span></div>
             <svg viewBox="0 0 54 24"><path d="M2 12h46M42 6l6 6-6 6"/></svg>
-            <div class="mini-square fresh">4²<span>16</span></div>
+            <div class="mini-square fresh">variable<span>x = 3</span></div>
           </div>
-          <h1>x changes from 3 to 4.<br/>What is Δy?</h1>
+          <h1>x has value 2, then value 3.<br/>What changed?</h1>
           <div class="check-options">
-            {#each [1, 7, 16] as option}
-              <button disabled={checkDone} class:correct={checkDone && option === 7} on:click={() => chooseCheck(option)}>{option}</button>
+            {#each ['The value of x', 'The symbol x', 'The number 2'] as option}
+              <button disabled={checkDone} class:correct={checkDone && option === 'The value of x'} on:click={() => chooseCheck(option)}>{option}</button>
             {/each}
           </div>
           {#if checkMessage}
@@ -353,7 +353,7 @@
             <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <button class="primary" on:click={advance}>
-            {floorIndex < board.floors.length - 1 ? 'Go deeper' : boardIndex === boards.length - 1 ? 'Finish' : 'Next board'}
+            {floorIndex < board.floors.length - 1 ? 'Continue' : boardIndex === boards.length - 1 ? 'Finish' : 'Next section'}
             <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
@@ -462,7 +462,7 @@
   .mini-square.old { width: 78px; height: 78px; border: 2px solid var(--qx-text-faint); }
   .mini-square.fresh { width: 100px; height: 100px; border: 3px solid var(--qx-green); background: var(--qx-green-soft); }
   .check-panel h1 { font-size: 25px; }
-  .check-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .check-options { display: grid; grid-template-columns: 1fr; gap: 9px; }
   .check-options button { min-height: 52px; border-radius: 13px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 18px; font-weight: 900; cursor: pointer; }
   .check-options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .feedback { padding: 12px 13px; border-radius: 12px; background: var(--qx-danger-soft); color: var(--qx-danger-text); font-size: 13px; line-height: 1.45; font-weight: 750; }

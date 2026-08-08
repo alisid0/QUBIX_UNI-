@@ -22,6 +22,7 @@ For source work, also read `curriculum/03-FOUNDATIONAL-BOOKS.md` and `curriculum
 - Do not generate future BBs merely because their source material is available.
 - Production opens in curriculum staging/dummy mode. Do not make an AI draft look like a released course.
 - Dummy-mode answers record review intent only. They do not update curriculum status.
+- Use standard mathematical or textbook terminology for course, unit and BB names; avoid branded metaphors and vague motivational titles.
 - Record the exact edition and passage provenance before adapting historical material.
 - “Old” does not automatically mean public domain. Audit text, translation, annotations, diagrams and launch territories separately.
 - Never apply inherited Supabase schema or connect the old Strata Vercel project without explicit founder approval.

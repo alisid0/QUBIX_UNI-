@@ -2,7 +2,7 @@
 
 Status: **Awaiting founder review**  
 Authority: the founder's reviewed curriculum, not generated volume  
-Current instructional scope: **Change Laboratory, pilot boards 1–5 only**
+Current instructional scope: **Variables and Rates of Change, pilot BB1–BB5 only**
 
 ## Purpose
 
@@ -69,7 +69,11 @@ These books provide source structure, definitions, examples and intellectual lin
 
 ## Present pilot
 
-The current five-board Change Laboratory is a design and pacing prototype. All five boards remain `AI_DRAFT` until individually reviewed by the founder.
+The current five-part *Variables and Rates of Change* lesson is a design and pacing prototype. All five BBs remain `AI_DRAFT` until individually reviewed by the founder.
+
+## Nomenclature rule
+
+Course, unit and BB titles must use standard mathematical or textbook terminology and identify the concept being taught. Do not replace technical names with branded metaphors, invented “laboratories,” quests or vague motivational phrases. The interaction may be imaginative, but the nomenclature must remain clear, grounded and academically recognisable.
 
 ## Change control
 

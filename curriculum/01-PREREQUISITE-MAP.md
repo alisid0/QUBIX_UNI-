@@ -2,7 +2,7 @@
 
 Status: **Draft for founder review**
 
-This map defines what a learner should know before entering each part of the Change Laboratory. A prerequisite is included only when the lesson genuinely depends on it.
+This map defines what a learner should know before entering each part of *Variables and Rates of Change*. A prerequisite is included only when the lesson genuinely depends on it.
 
 ## Dependency map
 
@@ -19,12 +19,12 @@ flowchart TD
   N3 --> R0[Ratios and division]
   G0 --> F0[Input and dependent output]
   A2 --> F0
-  C0 --> B2[BB2: Name the change]
-  F0 --> B3[BB3: When x moves, y answers]
-  R0 --> B4[BB4: Compare the changes]
+  C0 --> B2[BB2: Change in a Variable]
+  F0 --> B3[BB3: Dependent Variables]
+  R0 --> B4[BB4: Average Rate of Change]
   B2 --> B3
   B3 --> B4
-  B4 --> B5[BB5: Move closer]
+  B4 --> B5[BB5: Instantaneous Rate of Change]
 ```
 
 ## Entry nodes
@@ -41,7 +41,7 @@ flowchart TD
 
 ## Diagnostic policy
 
-The learner should receive a tiny diagnostic before the laboratory. A missed prerequisite should open a short repair BB, not block the learner with a long preliminary course.
+The learner should receive a short diagnostic before the lesson. A missed prerequisite should open a short repair BB, not block the learner with a long preliminary course.
 
 No repair BB will be written until this map is approved.
 

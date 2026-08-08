@@ -5,41 +5,41 @@
   const reviewStages = [
     {
       id: 'promise',
-      eyebrow: '01 · Learning promise',
-      title: 'Is the destination clear?',
-      prompt: 'After these five boards, can the learner say what changed, compare two changes and recognise a local rate?',
+      eyebrow: '01 · Learning objective',
+      title: 'Is the learning objective clear?',
+      prompt: 'After BB1, can the learner explain that x is a variable and that the value assigned to x may change?',
       options: ['Clear', 'Partly clear', 'Not yet'],
       placeholder: 'What should the learner be able to say or do instead?'
     },
     {
       id: 'prerequisites',
       eyebrow: '02 · Prerequisites',
-      title: 'What are we assuming?',
-      prompt: 'Would a learner who knows squares, substitution, subtraction and simple fractions be ready to begin?',
+      title: 'Are the prerequisites sufficient?',
+      prompt: 'Is understanding that a letter may represent a number sufficient preparation for BB1?',
       options: ['Ready', 'Needs a bridge', 'Prerequisites unclear'],
       placeholder: 'Record the missing idea or prerequisite BB.'
     },
     {
       id: 'pacing',
       eyebrow: '03 · Attention and pacing',
-      title: 'Are the steps small enough?',
-      prompt: 'Does each screen ask for one manageable mental move before introducing the next?',
+      title: 'Is the pacing manageable?',
+      prompt: 'Do the three explanation steps introduce symbol, variable and changing value at a manageable pace?',
       options: ['Comfortable', 'One step is rushed', 'Too much at once'],
       placeholder: 'Name the board or sentence where the pace accelerates.'
     },
     {
       id: 'interaction',
       eyebrow: '04 · Interaction',
-      title: 'Does touching teach?',
-      prompt: 'Do the sliders and diagrams reveal a mathematical relationship, rather than merely decorate the explanation?',
+      title: 'Does the interaction explain the mathematics?',
+      prompt: 'Does the slider make it clear that x remains the same variable while its numerical value changes?',
       options: ['It teaches', 'Needs refinement', 'Interaction is ornamental'],
       placeholder: 'What should change visibly when the learner acts?'
     },
     {
       id: 'voice',
-      eyebrow: '05 · Teaching voice',
-      title: 'Classical thought, modern language?',
-      prompt: 'Is the explanation faithful to the source idea while remaining direct, humane and readable today?',
+      eyebrow: '05 · Explanation',
+      title: 'Is the explanation clear and accurate?',
+      prompt: 'Is the explanation mathematically accurate, consistent with Wentworth’s source statement and clear to a present-day learner?',
       options: ['Balanced', 'Too compressed', 'Too historical'],
       placeholder: 'Paste or describe wording that needs another pass.'
     }
@@ -95,7 +95,7 @@
 
   function buildReviewNote() {
     const lines = [
-      '# Qubix curriculum review — Change Laboratory BB1–BB5',
+      '# Qubix curriculum review — BB1: Variables and Changing Values',
       '',
       `Decision: ${decision || 'Not decided'}`,
       ''
@@ -135,11 +135,11 @@
     <section class="intro">
       <div>
         <span class="kicker">FOUNDER REVIEW · NOT A RELEASED COURSE</span>
-        <h1>Test the learning<br/><em>before it becomes curriculum.</em></h1>
+        <h1>Review the curriculum<br/><em>before release.</em></h1>
         <p>This production workspace is for reading, touching and questioning one small learning sequence at a time.</p>
       </div>
-      <a class="preview-link" href="?prototype=change-lab">
-        <span><small>LEARNER PREVIEW</small><b>Open Change Laboratory</b></span>
+      <a class="preview-link" href="?prototype=variables-and-rates">
+        <span><small>LEARNER PREVIEW</small><b>Open Variables and Rates of Change</b></span>
         <span aria-hidden="true">↗</span>
       </a>
     </section>
@@ -171,7 +171,7 @@
         <p class="prompt">{activeStage.prompt}</p>
 
         <fieldset>
-          <legend>Your reading</legend>
+          <legend>Review response</legend>
           <div class="options">
             {#each activeStage.options as option}
               <label class:selected={response.answer === option}>
@@ -199,21 +199,21 @@
 
       <aside class="sequence-card">
         <div class="sequence-top"><span>SEQUENCE UNDER REVIEW</span><b>AI_DRAFT</b></div>
-        <h3>Change Laboratory</h3>
-        <p>Five boards · one conceptual journey</p>
+        <h3>BB1: Variables and Changing Values</h3>
+        <p>One objective · three steps · one interaction</p>
         <ol>
-          <li><span>01</span><div><b>Let x move</b><small>A changing value</small></div></li>
-          <li><span>02</span><div><b>Name the change</b><small>Δx = new − old</small></div></li>
-          <li><span>03</span><div><b>When x moves, y answers</b><small>Dependent change</small></div></li>
-          <li><span>04</span><div><b>Compare the two changes</b><small>Average rate</small></div></li>
-          <li><span>05</span><div><b>Move closer</b><small>A local rate appears</small></div></li>
+          <li><span>01</span><div><b>Variables and Changing Values</b><small>AI_DRAFT · under review</small></div></li>
+          <li><span>02</span><div><b>Change in a Variable</b><small>LOCKED</small></div></li>
+          <li><span>03</span><div><b>Dependent Variables</b><small>LOCKED</small></div></li>
+          <li><span>04</span><div><b>Average Rate of Change</b><small>LOCKED</small></div></li>
+          <li><span>05</span><div><b>Instantaneous Rate of Change</b><small>LOCKED</small></div></li>
         </ol>
-        <div class="source-note"><span>CLASSICAL ANCHOR</span><b>Silvanus P. Thompson</b><small>Calculus Made Easy · passage review still required</small></div>
+        <div class="source-note"><span>PRIMARY SOURCE</span><b>G. A. Wentworth</b><small>The First Steps in Algebra · Chapter I, §6, printed page 2</small></div>
       </aside>
     </section>
 
     <section class="decision-panel" id="decision">
-      <div class="decision-copy"><span class="kicker">CURRICULUM GATE</span><h2>What happens next?</h2><p>A dummy-mode choice records intent only. It never changes an AI draft to approved.</p></div>
+      <div class="decision-copy"><span class="kicker">CURRICULUM GATE</span><h2>Record the review decision</h2><p>A dummy-mode choice records intent only. It never changes an AI draft to approved.</p></div>
       <div class="decision-work">
         <div class="decision-options">
           {#each [['APPROVE_CANDIDATE', 'Ready for formal approval'], ['AMENDMENTS_REQUIRED', 'Return for narrow amendments'], ['HOLD', 'Pause and investigate']] as item}

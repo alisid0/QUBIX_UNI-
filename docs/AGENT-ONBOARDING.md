@@ -44,21 +44,24 @@ If documents conflict, stop and flag the conflict. Never infer approval from an 
 
 ## 4. Current product state
 
-The current learner experience is the five-board **Change Laboratory** in `src/views/ChangeLab.svelte`. All five boards are `AI_DRAFT`.
+The current learner experience is the five-part **Variables and Rates of Change** lesson in `src/views/ChangeLab.svelte`. All five BBs are `AI_DRAFT`. The component filename is retained temporarily as an internal compatibility detail and is not the curriculum title.
 
 `src/views/ReviewMode.svelte` is the founder-facing production staging workspace. It tests:
 
-- the learning promise;
+- the learning objective;
 - prerequisite assumptions;
 - attention and pacing;
 - whether the interaction teaches;
-- the balance between classical thought and modern language;
+- the accuracy and clarity of the explanation;
 - the proposed curriculum decision.
+
+The staging workspace must review only the active BB. At present that is BB1; BB2–BB5 must remain visibly locked until the founder approves the preceding work.
 
 Production routing is intentional:
 
 - `/` — curriculum staging/dummy mode;
-- `/?prototype=change-lab` — learner preview;
+- `/?prototype=variables-and-rates` — learner preview;
+- `/?prototype=change-lab` — legacy compatibility alias;
 - `/?mode=review` — force review mode during local development.
 
 Questionnaire responses currently live in browser storage only. They do not write to Supabase, change repository files or grant curriculum approval.
@@ -108,6 +111,8 @@ Check translations, editorial notes, illustrations and typographical editions in
 ## 8. Design principles
 
 Optimise for very short attention units without making the mathematics shallow.
+
+Use clear textbook-style nomenclature. Course, unit and BB titles should identify the mathematical concept directly. Do not invent branded metaphors, quests or “laboratory” names for ordinary technical topics. Visual presentation and interaction may be distinctive, but naming must remain grounded and academically recognisable.
 
 One learner screen should normally contain:
 

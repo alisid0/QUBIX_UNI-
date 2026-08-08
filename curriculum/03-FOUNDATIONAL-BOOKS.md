@@ -8,9 +8,9 @@ Rule: a listed book is a source anchor, not automatic permission to generate con
 | Book | Author and edition anchor | Curriculum role | Initial use |
 |---|---|---|---|
 | *Elements of Arithmetic* | Augustus De Morgan, 1858 edition | Number, operations, fractions, proportion and reasoned arithmetic | Prerequisite repair BBs |
-| *The First Steps in Algebra* | G. A. Wentworth, historical public-domain edition | Variables, signs, expressions and elementary equations | Algebra prerequisites for Change Laboratory |
+| *The First Steps in Algebra* | G. A. Wentworth, historical public-domain edition | Variables, signs, expressions and elementary equations | Algebra prerequisites for *Variables and Rates of Change* |
 | *The First Six Books of the Elements of Euclid* | Euclid, John Casey edition | Geometry, construction and proof | Length, area, ratio and proof pathway |
-| *Calculus Made Easy* | Silvanus P. Thompson, original 1910-era text | Primary narrative spine from change to differentiation and integration | Change Laboratory and first calculus pathway |
+| *Calculus Made Easy* | Silvanus P. Thompson, original 1910-era text | Primary narrative spine from change to differentiation and integration | *Variables and Rates of Change* and the first calculus pathway |
 | *Elementary Illustrations of the Differential and Integral Calculus* | Augustus De Morgan, historical edition | Conceptual cross-check for limits, differentials and geometric meaning | Used only after Thompson-derived BBs are understood |
 | *A Course of Pure Mathematics* | G. H. Hardy, third edition | Rigorous real-variable analysis and a bridge beyond intuitive calculus | Later rigour pathway; not beginner-facing at first |
 

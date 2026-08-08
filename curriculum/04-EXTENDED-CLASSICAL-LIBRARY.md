@@ -90,5 +90,5 @@ A candidate moves into active BB research only when all answers are recorded:
 
 - [ ] Keep all candidates available for passage-level comparison.
 - [ ] Promote selected candidates to the anchor shelf.
-- [ ] Remove candidates that do not fit Qubix's teaching voice.
+- [ ] Remove candidates that do not fit Qubix's instructional approach.
 - [ ] Approve legal review of the first candidate needed for BB1 only.
