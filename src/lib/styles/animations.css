@@ -1,0 +1,187 @@
+/* ============================================================
+   Strata — Animation micro-interactions
+   Shared smooth transitions, hover effects, and keyframe
+   animations for the Qubix menu shell.
+   ============================================================ */
+
+/* ── Card / surface hover ── */
+.qx-shell button:not(.tab):not(.pill):not(.vt-btn):not(.action-btn):not([class*="back-chev"]) {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease,
+              border-color 0.2s ease;
+}
+.qx-shell button:not(.tab):not(.pill):not(.vt-btn):not(.action-btn):not([class*="back-chev"]):active {
+  transform: scale(0.97);
+}
+
+/* ── Topic / explore row hover lift ── */
+.list-row,
+.explore-row,
+.board-row,
+.rank-row {
+  transition: background 0.15s ease, transform 0.15s ease !important;
+}
+.list-row:active,
+.explore-row:active,
+.board-row:active,
+.rank-row:active {
+  transform: scale(0.985) !important;
+}
+
+/* ── Card press (grid cards) ── */
+.topic-card,
+.stat-card,
+.tc-card,
+.metric,
+.tile {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease,
+              border-color 0.2s ease !important;
+}
+.topic-card:active,
+.stat-card:active,
+.tc-card:active,
+.metric:active,
+.tile:active {
+  transform: scale(0.96) !important;
+}
+.topic-card:hover,
+.stat-card:hover,
+.tc-card:hover,
+.metric:hover,
+.tile:hover {
+  box-shadow: var(--qx-shadow-card);
+}
+
+/* ── Progress bars ── */
+.meter-fill {
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* ── Button transitions ── */
+.cta-primary,
+.cta-secondary,
+.start-cta,
+.leaderboard-link {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease !important;
+}
+.cta-primary:active,
+.cta-secondary:active,
+.start-cta:active,
+.leaderboard-link:active {
+  transform: scale(0.97) !important;
+}
+
+/* ── Podium entrance (used on mount) ── */
+@keyframes podium-rise {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.podium-spot {
+  animation: podium-rise 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.podium-spot:nth-child(2) { animation-delay: 0.08s; }
+.podium-spot:nth-child(3) { animation-delay: 0.16s; }
+
+/* ── Rank row entrance ── */
+@keyframes rank-enter {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.rank-row {
+  animation: rank-enter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.rank-row:nth-child(1) { animation-delay: 0.26s; }
+.rank-row:nth-child(2) { animation-delay: 0.32s; }
+.rank-row:nth-child(3) { animation-delay: 0.38s; }
+.rank-row:nth-child(4) { animation-delay: 0.44s; }
+
+/* ── Stat card entrance ── */
+@keyframes stat-pop {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.top-cards .tc-card {
+  animation: stat-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.top-cards .tc-card:nth-child(2) { animation-delay: 0.08s; }
+
+/* ── Consistency bar fill ── */
+.bar-fill {
+  transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  animation: bar-grow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes bar-grow {
+  from { height: 0; }
+}
+
+/* ── Medal entrance ── */
+.medal-chip {
+  animation: stat-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.medal-chip:nth-child(1) { animation-delay: 0.05s; }
+.medal-chip:nth-child(2) { animation-delay: 0.1s; }
+.medal-chip:nth-child(3) { animation-delay: 0.15s; }
+.medal-chip:nth-child(4) { animation-delay: 0.2s; }
+.medal-chip:nth-child(5) { animation-delay: 0.25s; }
+
+/* ── Filter pill press ── */
+.pill {
+  transition: all 0.2s ease !important;
+}
+.pill:active {
+  transform: scale(0.93) !important;
+}
+
+/* ── Snippet card hover ── */
+.snippet-card {
+  transition: box-shadow 0.25s ease, transform 0.15s ease !important;
+}
+.snippet-card:active {
+  transform: scale(0.985) !important;
+}
+
+/* ── Like/save button pop ── */
+.action-btn {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease !important;
+}
+.action-btn:active {
+  transform: scale(0.85) !important;
+}
+
+/* ── Continue ring spin on mount ── */
+.continue-ring {
+  animation: ring-spin 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes ring-spin {
+  from { opacity: 0; transform: rotate(-20deg) scale(0.8); }
+  to   { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+/* ── Toast / error shake ── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.error {
+  animation: shake 0.4s ease both;
+}
+
+/* ── Smooth opacity on empty/loading states ── */
+.empty,
+.loading-row {
+  animation: fade-in 0.4s ease both;
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

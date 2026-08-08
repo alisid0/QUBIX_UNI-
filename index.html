@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+  <title>Change Laboratory | Qubix University</title>
+  <meta name="description" content="Learn the first ideas of calculus through five tiny, interactive experiments with variables, change and rates.">
+  <link rel="canonical" href="https://qubix.university/">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Qubix University">
+  <meta property="og:title" content="Change Laboratory | Qubix University">
+  <meta property="og:description" content="Five tiny, interactive experiments that lead from a changing value to the first idea of the derivative.">
+  <meta property="og:url" content="https://qubix.university/">
+  <meta name="twitter:card" content="summary">
+
+  <meta name="theme-color" content="#F6F1E8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Qubix">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Change Laboratory",
+    "provider": { "@type": "Organization", "name": "Qubix University", "url": "https://qubix.university/" },
+    "educationalLevel": "Beginner",
+    "learningResourceType": "Interactive lesson",
+    "about": ["Variables", "Change", "Average rate of change", "Derivative"]
+  }
+  </script>
+</head>
+<body>
+  <div id="seo-splash">
+    <main class="seo-hero">
+      <div class="seo-brand">QUBIX UNIVERSITY</div>
+      <div class="seo-course">CHANGE LABORATORY · COURSE 01</div>
+      <h1>See change before you calculate it.</h1>
+      <p>Five small interactive experiments lead from a moving value to the first idea of the derivative.</p>
+      <div class="seo-loading" aria-hidden="true"><span></span><span></span><span></span></div>
+    </main>
+  </div>
+
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; }
+    #seo-splash {
+      position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center;
+      padding: 32px; background: #F6F1E8; color: #231F1A;
+      font-family: 'Mulish', system-ui, sans-serif; text-align: center;
+    }
+    .seo-hero { width: min(100%, 440px); }
+    .seo-brand { color: #B75E35; font-size: 12px; font-weight: 900; letter-spacing: .18em; }
+    .seo-course { margin-top: 12px; color: #897E70; font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+    .seo-hero h1 { margin: 28px 0 14px; font-size: clamp(31px, 8vw, 48px); line-height: 1.05; letter-spacing: -.04em; }
+    .seo-hero p { margin: 0 auto; max-width: 36ch; color: #665E54; font-size: 16px; line-height: 1.55; }
+    .seo-loading { display: flex; justify-content: center; gap: 7px; margin-top: 28px; }
+    .seo-loading span { width: 7px; height: 7px; border-radius: 50%; background: #B75E35; animation: pulse 1.2s ease-in-out infinite; }
+    .seo-loading span:nth-child(2) { animation-delay: .15s; }
+    .seo-loading span:nth-child(3) { animation-delay: .3s; }
+    @keyframes pulse { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1); } }
+  </style>
+</body>
+</html>
