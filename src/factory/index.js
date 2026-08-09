@@ -10,6 +10,7 @@ import { bb8, selections as sel8, finalised as fin8, gated as gate8 } from './bb
 import { bb9, bb10, selections as sel9, finalised as fin9, gated as gate9 } from './bb9-options.js';
 import { bb11, bb12, selections as sel11, finalised as fin11, gated as gate11 } from './bb11-options.js';
 import { area, selections as selA, finalised as finA, rejected as rejA, gated as gateA } from './area-options.js';
+import { plane, selections as selP, finalised as finP, rejected as rejP, gated as gateP } from './plane-options.js';
 
 export { sources };
 
@@ -30,7 +31,8 @@ export const registry = [
   { key: '12', label: 'BB12', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 },
   // Proposed pilot. No board number until the map is approved and the existing
   // BB6 to BB12 are renumbered.
-  { key: 'area', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA }
+  { key: 'area', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA },
+  { key: 'plane', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP }
 ];
 
 export const entryFor = key => registry.find(e => e.key === key) || registry[0];

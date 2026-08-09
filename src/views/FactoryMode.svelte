@@ -7,7 +7,7 @@
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
 
   // Interaction kinds that carry their own controls or are deliberately fixed.
-  const NO_CONTROL = ['unit-square', 'unit-square-fixed', 'unit-scale', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match'];
+  const NO_CONTROL = ['line-fails', 'axes-build', 'find-place', 'quadrants', 'diagonal-bench-stage', 'unit-square', 'unit-square-fixed', 'unit-scale', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match'];
 
   let active = new URLSearchParams(window.location.search).get('bb') || '1';
   $: entry = entryFor(active);
@@ -107,7 +107,7 @@
   // The three states are passed in rather than read from scope: Svelte tracks
   // dependencies at the call site, so reading them inside the body would leave
   // the goal list frozen.
-  function goalMet(kind, id, bench, cb, db, sb, dt, sp, dd, bench24) {
+  function goalMet(kind, id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) {
     if (kind === 'assignment-bench') {
       const a = bench.assigned;
       if (id === 'g1') return a.x === 7;
@@ -143,6 +143,14 @@
       // a2 is unreachable on purpose: 24 has no whole-number square root.
       if (id === 'a2') return false;
       return bench24.done.includes(id);
+    }
+    if (kind === 'diagonal-bench') {
+      if (id === 'p1') return placed3.includes('2,2');
+      if (id === 'p2') return placed3.includes('3,3');
+      if (id === 'p3') return placed3.includes('4,4');
+      // A fourth point where both readings agree, which can only be found by
+      // noticing the pattern the first three make.
+      if (id === 'p4') return placed3.some(k => { const [a, b] = k.split(',').map(Number); return a === b && ![2, 3, 4].includes(a); });
     }
     if (kind === 'derivative-dial') {
       const r = 2 * dd.x;
@@ -196,6 +204,24 @@
 
   let unitRefused = false;
   let unitSide = 1;
+
+  // Coordinate plane board. One shared point, since only one stage shows at once.
+  const PX = 6, PY = 5;                 // grid extent each side of the origin
+  let pt = { x: 3, y: 4 };
+  let axesOn = false;
+  let placed3 = [];                     // diagonal workshop
+  const quadName = p =>
+    p.x === 0 || p.y === 0 ? 'on an axis'
+      : `(${p.x > 0 ? '+' : '−'}, ${p.y > 0 ? '+' : '−'})`;
+  function placeDiag(x, y) {
+    pt = { x, y };
+    const key = `${x},${y}`;
+    if (!placed3.includes(key)) placed3 = [...placed3, key];
+  }
+  // Note for future work: do not wrap these lookups in helper functions and call
+  // them from the template. Svelte tracks dependencies where they are read, so a
+  // helper that reads placed3 inside its body leaves the markup frozen. This has
+  // now caught four separate interactions in this file; read the state directly.
   let splitTried = false;
   let sp = { a: 1, b: 2, hits: [] };
   function spStep(which, delta) {
@@ -423,6 +449,61 @@
                     {:else}
                       <p class="stage-note">Try to make it bigger.</p>
                     {/if}
+                  </div>
+
+                {:else if interaction.kind === 'line-fails' || interaction.kind === 'axes-build'}
+                  {@const showY = interaction.kind === 'axes-build' || axesOn}
+                  <div class="rows centre">
+                    <svg viewBox="0 0 300 190" class="mini-svg" role="img"
+                      aria-label={showY ? 'Two axes crossed at a right angle' : 'A number line with two points above the same mark'}>
+                      <path class="ax" d="M20 150H280"/>
+                      {#each [1, 2, 3, 4, 5] as t}
+                        <path class="ax" d={`M${20 + t * 44} 144v12`}/>
+                        <text x={20 + t * 44} y="172">{t}</text>
+                      {/each}
+                      {#if showY}
+                        <path class="ax" d="M152 20V178"/>
+                        {#each [1, 2, 3, 4] as t}
+                          <path class="ax" d={`M146 ${150 - t * 30}h12`}/>
+                          <text x="138" y={154 - t * 30} text-anchor="end">{t}</text>
+                        {/each}
+                        <circle class="new" cx="152" cy="150" r="5"/>
+                        <text x="168" y="166" text-anchor="start">origin</text>
+                      {/if}
+                      <circle class="old" cx={20 + 3 * 44} cy="60" r="7"/>
+                      <text x={20 + 3 * 44 + 16} y="65" text-anchor="start">A</text>
+                      <circle class="old" cx={20 + 3 * 44} cy="110" r="7"/>
+                      <text x={20 + 3 * 44 + 16} y="115" text-anchor="start">B</text>
+                    </svg>
+                    {#if showY}
+                      <p class="ok">With a second reading, A is (3, 3) and B is (3, 1). Two different places, told apart at last.</p>
+                    {:else}
+                      <div class="fails-read"><span>A is at 3</span><span>B is at 3</span></div>
+                      <p class="stage-note">The line gives the same answer for both, and they are not the same place.</p>
+                      <button class="reveal-btn" on:click={() => (axesOn = true)}>Add a second line</button>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'find-place' || interaction.kind === 'quadrants' || interaction.kind === 'diagonal-bench-stage'}
+                  {@const full = interaction.kind !== 'find-place'}
+                  <div class="rows centre">
+                    <div class="plane" style={`--cols:${full ? PX * 2 + 1 : PX + 1}`}>
+                      {#each Array(full ? PY * 2 + 1 : PY + 1) as _, r}
+                        {#each Array(full ? PX * 2 + 1 : PX + 1) as _, c}
+                          {@const gx = full ? c - PX : c}
+                          {@const gy = full ? PY - r : PY - r}
+                          <button class="pcell"
+                            class:axis={gx === 0 || gy === 0}
+                            class:here={pt.x === gx && pt.y === gy}
+                            on:click={() => (pt = { x: gx, y: gy })}
+                            aria-label={`Place at ${gx}, ${gy}`}></button>
+                        {/each}
+                      {/each}
+                    </div>
+                    <div class="plane-read">
+                      <span>( {pt.x} , {pt.y} )</span>
+                      {#if interaction.kind === 'quadrants'}<em>{quadName(pt)}</em>{/if}
+                    </div>
                   </div>
 
                 {:else if interaction.kind === 'unit-scale'}
@@ -737,6 +818,23 @@
                     <p class="fb">{o.feedback}</p>
                   {/each}
                 {/if}
+              {:else if ex.kind === 'find-target'}
+                <div class="plane" style={`--cols:${PX + 1}`}>
+                  {#each Array(PY + 1) as _, r}
+                    {#each Array(PX + 1) as _, c}
+                      <button class="pcell"
+                        class:axis={c === 0 || PY - r === 0}
+                        class:here={pt.x === c && pt.y === PY - r}
+                        on:click={() => (pt = { x: c, y: PY - r })}
+                        aria-label={`Place at ${c}, ${PY - r}`}></button>
+                    {/each}
+                  {/each}
+                </div>
+                <p class="kind-note">
+                  you placed ( {pt.x} , {pt.y} ) ·
+                  <b class:hit={pt.x === ex.tx && pt.y === ex.ty}>{pt.x === ex.tx && pt.y === ex.ty ? 'that is it' : 'not yet'}</b>
+                </p>
+
               {:else if ex.kind === 'set-grid'}
                 <div class="grid-wrap small"
                   on:pointerdown={() => (gridDrag = true)}
@@ -873,8 +971,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -901,8 +999,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -928,8 +1026,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -951,8 +1049,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -977,8 +1075,8 @@
                     {/if}
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -1015,8 +1113,8 @@
                     {/if}
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -1036,8 +1134,35 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'diagonal-bench'}
+                  <div class="rows centre">
+                    <div class="plane" style={`--cols:${PX + 1}`}>
+                      {#each Array(PY + 1) as _, r}
+                        {#each Array(PX + 1) as _, c}
+                          <button class="pcell"
+                            class:axis={c === 0 || PY - r === 0}
+                            class:dot={placed3.includes(`${c},${PY - r}`)}
+                            class:here={pt.x === c && pt.y === PY - r}
+                            on:click={() => placeDiag(c, PY - r)}
+                            aria-label={`Place at ${c}, ${PY - r}`}></button>
+                        {/each}
+                      {/each}
+                    </div>
+                    <div class="plane-read"><span>( {pt.x} , {pt.y} )</span></div>
+                    {#if placed3.length}
+                      <p class="stage-note">Placed: {placed3.map(k => '(' + k.replace(',', ', ') + ')').join('  ')}</p>
+                    {/if}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -1074,8 +1199,8 @@
                     {/if}
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24, placed3) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -1340,6 +1465,17 @@
   .unit-sq.refused { border-style: dashed; }
   .unit-stack { display: grid; grid-template-columns: repeat(var(--n), 30px); grid-template-rows: repeat(var(--n), 30px); gap: 2px; }
   .unit-stack i { border: 1px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 2px; }
+
+  .plane { display: grid; grid-template-columns: repeat(var(--cols), 26px); gap: 1px; touch-action: none; }
+  .pcell { width: 26px; height: 26px; border: 1px solid var(--qx-border); background: var(--qx-surface); border-radius: 2px; padding: 0; cursor: pointer; }
+  .pcell.axis { background: var(--qx-surface-3); }
+  .pcell.dot { background: var(--qx-green); border-color: var(--qx-green); }
+  .pcell.here { background: var(--qx-accent); border-color: var(--qx-accent); }
+  .plane-read { display: flex; align-items: baseline; gap: 10px; font-size: 19px; font-weight: 900; color: var(--qx-accent-text); }
+  .plane-read em { font-style: normal; font-size: 11px; letter-spacing: .08em; font-weight: 800; color: var(--qx-text-faint); }
+  .fails-read { display: flex; gap: 14px; }
+  .fails-read span { border: 1px solid var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 800; }
+  .reveal-btn { border: 1px solid var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); border-radius: 11px; padding: 9px 14px; font-weight: 900; font-size: 12px; cursor: pointer; }
   .side-mark { font-size: 13px; font-weight: 900; color: var(--qx-accent-text); }
   .side-mark.under { grid-column: 2; }
 
