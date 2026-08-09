@@ -16,23 +16,43 @@ export { sources };
 
 // Every BB currently in the Factory, in curriculum order. Each carries its own
 // selection and finalisation maps so one BB's decisions never leak into another.
+//
+// Boards are identified by name rather than by number. A number is a position in
+// a sequence, and the pilot proposal would move most of these: inserting the two
+// geometry boards renumbers everything after BB5, so BB7 would silently become a
+// different board. A name survives that. The board number still exists as the
+// running order below and in the curriculum map; it is simply no longer what the
+// board is called.
+//
+// The permanent identifier is still bb.id (CME-CHANGE-007, FCG-AREA-001). Those
+// are per-strand and unaffected by renumbering, so they are not touched here.
 export const registry = [
-  { key: '1', label: 'BB1', bb: bb1, selections: sel1, finalised: fin1 },
-  { key: '2', label: 'BB2', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
-  { key: '3', label: 'BB3', bb: bb3, selections: sel3, finalised: fin3, rejected: rej3 },
-  { key: '4', label: 'BB4', bb: bb4, selections: sel4, finalised: fin4 },
-  { key: '5', label: 'BB5', bb: bb5, selections: sel5, finalised: fin5 },
-  { key: '6', label: 'BB6', bb: bb6, selections: sel6, finalised: fin6, gated: gate6 },
-  { key: '7', label: 'BB7', bb: bb7, selections: sel7, finalised: fin7, gated: gate7 },
-  { key: '8', label: 'BB8', bb: bb8, selections: sel8, finalised: fin8, gated: gate8 },
-  { key: '9', label: 'BB9', bb: bb9, selections: sel9, finalised: fin9, gated: gate9 },
-  { key: '10', label: 'BB10', bb: bb10, selections: sel9, finalised: fin9, gated: gate9 },
-  { key: '11', label: 'BB11', bb: bb11, selections: sel11, finalised: fin11, gated: gate11 },
-  { key: '12', label: 'BB12', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 },
-  // Proposed pilot. No board number until the map is approved and the existing
-  // BB6 to BB12 are renumbered.
+  { key: 'letter', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1 },
+  { key: 'gap', label: 'Gap', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
+  { key: 'second', label: 'Second Letter', bb: bb3, selections: sel3, finalised: fin3, rejected: rej3 },
+  { key: 'rate', label: 'Rate', bb: bb4, selections: sel4, finalised: fin4 },
+  { key: 'points', label: 'Two Points', bb: bb5, selections: sel5, finalised: fin5 },
+  { key: 'notation', label: 'Notation', bb: bb6, selections: sel6, finalised: fin6, gated: gate6 },
+  { key: 'powers', label: 'Powers', bb: bb7, selections: sel7, finalised: fin7, gated: gate7 },
+  { key: 'time', label: 'Time', bb: bb8, selections: sel8, finalised: fin8, gated: gate8 },
+  { key: 'constants', label: 'Constants', bb: bb9, selections: sel9, finalised: fin9, gated: gate9 },
+  { key: 'sum', label: 'Sum', bb: bb10, selections: sel9, finalised: fin9, gated: gate9 },
+  { key: 'slope', label: 'Slope', bb: bb11, selections: sel11, finalised: fin11, gated: gate11 },
+  { key: 'turning', label: 'Turning', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 },
+  // Proposed pilot. These sit at the end of the strip rather than in their
+  // teaching position, which is before Rate, until the proposal is approved.
   { key: 'area', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA },
   { key: 'plane', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP }
 ];
 
-export const entryFor = key => registry.find(e => e.key === key) || registry[0];
+// Links written before the rename used ?bb=7. Kept so the founder's saved URLs
+// and anything quoted in the curriculum documents still open the right board.
+const LEGACY_KEYS = {
+  '1': 'letter', '2': 'gap', '3': 'second', '4': 'rate', '5': 'points', '6': 'notation',
+  '7': 'powers', '8': 'time', '9': 'constants', '10': 'sum', '11': 'slope', '12': 'turning'
+};
+
+export const entryFor = key =>
+  registry.find(e => e.key === key) ||
+  registry.find(e => e.key === LEGACY_KEYS[key]) ||
+  registry[0];

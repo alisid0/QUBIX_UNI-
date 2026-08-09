@@ -6,28 +6,78 @@ This is a dependency skeleton, not permission to generate all listed content.
 
 ## First pathway: from change to derivative
 
-| Order | Unit | Intended understanding | Depends on | State |
-|---:|---|---|---|---|
-| 1 | Assigning Values to Letters | A letter represents a number, and any particular value may be assigned to it | P-01, P-03, P-08 | Pilot BB1 — `AI_DRAFT` |
-| 2 | Change in a Variable | `Δx = new − old`, including direction | P-02, P-03, Unit 1 | Pilot BB2 — `AI_DRAFT` |
-| 3 | Dependent Variables | An output changes because its input changes | P-05, P-06, Unit 2 | Pilot BB3 — `AI_DRAFT` |
-| 4 | Average Rate of Change | Compare output change with input change | P-07, Unit 3 | Pilot BB4 — `AI_DRAFT` |
-| 5 | Instantaneous Rate of Change | Rates can settle as an interval shrinks | Unit 4 | Pilot BB5 — `AI_DRAFT` |
-| 6 | Derivative language | Connect the observed local rate to `dy/dx` | Unit 5 | `LOCKED` |
-| 7 | Derivative rules | Build rules from repeated examples | Unit 6 | `LOCKED` |
-| 8 | Applications | Use derivatives to describe motion and shape | Unit 7 | `LOCKED` |
+Boards are named, not numbered. The order column below is the running order and
+may change; the name and the identifier do not. See the naming note at the foot
+of this file.
+
+| Order | Board | Key | Identifier | Intended understanding | Depends on | State |
+|---:|---|---|---|---|---|---|
+| 1 | A Letter for a Number | `letter` | `CME-CHANGE-001` | A letter represents a number, and any particular value may be assigned to it | P-01, P-03, P-08 | `AI_DRAFT` |
+| 2 | The Gap Between Two Values | `gap` | `CME-CHANGE-002` | `Δx = new − old`, including direction | P-02, P-03, Unit 1 | `AI_DRAFT` |
+| 3 | A Second Letter, Tied to the First | `second` | `CME-CHANGE-003` | An output changes because its input changes | P-05, P-06, Unit 2 | `AI_DRAFT` |
+| 4 | One Change Against Another | `rate` | `CME-CHANGE-004` | Compare output change with input change | P-07, Unit 3 | `AI_DRAFT` |
+| 5 | Two Points, Almost Touching | `points` | `CME-CHANGE-005` | Rates can settle as an interval shrinks | Unit 4 | `AI_DRAFT` |
+| 6 | The Notation dy/dx | `notation` | `CME-CHANGE-006` | Connect the observed local rate to `dy/dx` | Unit 5 | `AI_DRAFT`, gated |
+| 7 | The Pattern in the Powers | `powers` | `CME-CHANGE-007` | Read the rule off repeated derivations | not yet mapped | `AI_DRAFT`, gated |
+| 8 | Time as the Variable | `time` | `CME-CHANGE-008` | A rate against time is a speed | not yet mapped | `AI_DRAFT`, gated |
+| 9 | The Two Kinds of Constant | `constants` | `CME-CHANGE-009` | Added constants vanish, multiplying constants survive | not yet mapped | `AI_DRAFT`, gated |
+| 10 | Term by Term | `sum` | `CME-CHANGE-010` | A sum may be differentiated one term at a time | not yet mapped | `AI_DRAFT`, gated |
+| 11 | The Slope of a Curve | `slope` | `CME-CHANGE-011` | The derivative has a picture: steepness | not yet mapped | `AI_DRAFT`, gated |
+| 12 | Where a Curve Turns | `turning` | `CME-CHANGE-012` | The derivative is zero at a high or low point | not yet mapped | `AI_DRAFT`, gated |
+
+Rows 7 to 12 carry no dependency entry because the earlier skeleton did not have
+them as separate boards. It ended at three generic units named *Derivative
+language*, *Derivative rules* and *Applications*, and the seven boards that now
+exist in the Factory were built inside those without the map being brought up to
+date. Naming them has exposed that gap rather than created it; the dependencies
+still need mapping.
+
+## Proposed, not placed
+
+Two boards exist in the Factory with no position in the order above, because the
+proposal that places them is unapproved.
+
+| Board | Key | Identifier | State |
+|---|---|---|---|
+| Area on the Grid | `area` | `FCG-AREA-001` | `AI_DRAFT`, gated |
+| The Coordinate Plane | `plane` | `FCG-PLANE-001` | `AI_DRAFT`, gated |
 
 ## Review sequence for the current pilot
 
 The founder reviews in this exact order:
 
-1. BB1 wording and the assignment interaction.
-2. BB2 meaning of delta and negative change.
-3. BB3 dependency and square-area model.
-4. BB4 meaning and units of average rate.
-5. BB5 shrinking interval and the appearance of 4.
+1. *A Letter for a Number* — wording and the assignment interaction.
+2. *The Gap Between Two Values* — meaning of delta and negative change.
+3. *A Second Letter, Tied to the First* — dependency and square-area model.
+4. *One Change Against Another* — meaning and units of average rate.
+5. *Two Points, Almost Touching* — shrinking interval and the appearance of 4.
 
-BB6 remains locked until BB1–BB5 are individually approved and the transition to Thompson's notation is agreed.
+*The Notation dy/dx* remains gated until the five above are individually approved
+and the move into the source's own notation is agreed.
+
+## How boards are named
+
+A board is identified by a name and by an identifier. It is not identified by its
+number.
+
+The number is a position in a running order, and the order is not settled: the
+pilot proposal inserts *Area on the Grid* and *The Coordinate Plane* before
+*One Change Against Another*, which would renumber every board after it. Under a
+numbering scheme, BB7 would then quietly mean a different board in every document
+written before the change, with nothing to show that it had moved.
+
+Names do not move. Neither do the identifiers, which are numbered within a source
+strand (`CME-CHANGE-*`, `FCG-*`) and so are unaffected when a strand is inserted
+elsewhere in the order.
+
+The `key` column is what appears in the Factory URL, as `?mode=factory&bb=letter`.
+The old numeric form still resolves, so links written before this change continue
+to open the right board.
+
+Where earlier documents and code comments say BB2 or BB7, they still mean the
+board at that position on the day they were written. Those references were left
+alone rather than rewritten, so any that were already stale stay visible as
+stale.
 
 ## Source anchors
 

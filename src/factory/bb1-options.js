@@ -27,7 +27,7 @@ export const finalised = {
 
 export const bb1 = {
   id: 'CME-CHANGE-001',
-  title: 'Assigning Values to Letters',
+  title: 'A Letter for a Number',
 
   // A workshop is larger than a section check: several objects on one screen and
   // a short list of goals, so the learner works rather than answers. Adapted from

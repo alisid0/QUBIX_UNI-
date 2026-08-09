@@ -95,7 +95,7 @@
 
   function buildReviewNote() {
     const lines = [
-      '# Qubix curriculum review — BB1: Assigning Values to Letters',
+      '# Qubix curriculum review — A Letter for a Number',
       '',
       `Decision: ${decision || 'Not decided'}`,
       ''
@@ -199,14 +199,14 @@
 
       <aside class="sequence-card">
         <div class="sequence-top"><span>SEQUENCE UNDER REVIEW</span><b>AI_DRAFT</b></div>
-        <h3>BB1: Assigning Values to Letters</h3>
+        <h3>A Letter for a Number</h3>
         <p>One objective · three steps · one interaction</p>
         <ol>
-          <li><span>01</span><div><b>Assigning Values to Letters</b><small>AI_DRAFT · under review</small></div></li>
-          <li><span>02</span><div><b>Change in a Variable</b><small>LOCKED</small></div></li>
-          <li><span>03</span><div><b>Dependent Variables</b><small>LOCKED</small></div></li>
-          <li><span>04</span><div><b>Average Rate of Change</b><small>LOCKED</small></div></li>
-          <li><span>05</span><div><b>Instantaneous Rate of Change</b><small>LOCKED</small></div></li>
+          <li><span>01</span><div><b>A Letter for a Number</b><small>AI_DRAFT · under review</small></div></li>
+          <li><span>02</span><div><b>The Gap Between Two Values</b><small>LOCKED</small></div></li>
+          <li><span>03</span><div><b>A Second Letter, Tied to the First</b><small>LOCKED</small></div></li>
+          <li><span>04</span><div><b>One Change Against Another</b><small>LOCKED</small></div></li>
+          <li><span>05</span><div><b>Two Points, Almost Touching</b><small>LOCKED</small></div></li>
         </ol>
         <div class="source-note"><span>PRIMARY SOURCE</span><b>G. A. Wentworth</b><small>The First Steps in Algebra · Chapter I, §6, printed page 2</small></div>
       </aside>

@@ -13,7 +13,7 @@ export const gated = 'Locked by 02-MAIN-CURRICULUM-MAP until BB1–BB5 are appro
 
 export const bb6 = {
   id: 'CME-CHANGE-006',
-  title: 'Derivative Language',
+  title: 'The Notation dy/dx',
   fork: 'Retell BB5 in Thompson’s own notation rather than teaching a new idea.',
   structure: 'Four sections.',
   sections: [

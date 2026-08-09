@@ -51,7 +51,7 @@ export const finalised = {
 
 export const bb3 = {
   id: 'CME-CHANGE-003',
-  title: 'Dependent Variables',
+  title: 'A Second Letter, Tied to the First',
 
   workshops: [
     {

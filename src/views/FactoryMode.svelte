@@ -20,7 +20,7 @@
     history.replaceState({}, '', url);
   }
 
-  let active = new URLSearchParams(window.location.search).get('bb') || '1';
+  let active = new URLSearchParams(window.location.search).get('bb') || 'letter';
   $: entry = entryFor(active);
   $: bb1 = entry.bb;
   $: selections = entry.selections;
@@ -45,7 +45,7 @@
 
   // One live control value per section, so every interaction variant in a
   // section is driven by the same number and can be compared side by side.
-  let values = entryFor(new URLSearchParams(window.location.search).get('bb') || '1').bb.sections.map(() => 2);
+  let values = entryFor(new URLSearchParams(window.location.search).get('bb') || 'letter').bb.sections.map(() => 2);
 
   // Sorter state for S1-I2: each chip cycles pool -> fixed -> varies -> pool.
   const bins = ['unfiled', 'fixed', 'can vary'];

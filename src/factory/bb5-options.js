@@ -13,7 +13,7 @@ export const finalised = {};
 
 export const bb5 = {
   id: 'CME-CHANGE-005',
-  title: 'Instantaneous Rate of Change',
+  title: 'Two Points, Almost Touching',
 
   workshops: [
     {

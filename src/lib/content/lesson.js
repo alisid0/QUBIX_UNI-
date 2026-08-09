@@ -6,7 +6,7 @@
 export const boards = [
     {
       id: 'CME-CHANGE-001',
-      title: 'Assigning Values to Letters',
+      title: 'A Letter for a Number',
       marker: 'Variables',
       floors: [
         {
@@ -67,7 +67,7 @@ export const boards = [
     },
     {
       id: 'CME-CHANGE-002',
-      title: 'Change in a Variable',
+      title: 'The Gap Between Two Values',
       marker: 'Change',
       floors: [
         {
@@ -236,7 +236,7 @@ export const boards = [
     },
     {
       id: 'CME-CHANGE-003',
-      title: 'Dependent Variables',
+      title: 'A Second Letter, Tied to the First',
       marker: 'Functions',
       floors: [
         {
@@ -392,7 +392,7 @@ export const boards = [
     },
     {
       id: 'CME-CHANGE-004',
-      title: 'Average Rate of Change',
+      title: 'One Change Against Another',
       marker: 'Rate of change',
       floors: [
         {
@@ -437,7 +437,7 @@ export const boards = [
     },
     {
       id: 'CME-CHANGE-005',
-      title: 'Instantaneous Rate of Change',
+      title: 'Two Points, Almost Touching',
       marker: 'A shrinking interval',
       floors: [
         {

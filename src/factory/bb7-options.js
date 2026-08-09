@@ -10,7 +10,7 @@ export const gated = 'Locked by 02-MAIN-CURRICULUM-MAP until BB1–BB6 are appro
 
 export const bb7 = {
   id: 'CME-CHANGE-007',
-  title: 'The Rule for Powers',
+  title: 'The Pattern in the Powers',
   fork: 'Derive twice more, then read the pattern. The rule arrives last, not first.',
   structure: 'Four sections.',
   sections: [

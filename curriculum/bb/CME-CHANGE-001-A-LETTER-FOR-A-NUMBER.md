@@ -1,14 +1,19 @@
-# BB1: Assigning Values to Letters
+# A Letter for a Number
 
 Status: `AI_DRAFT`
 Identifier: `CME-CHANGE-001`
 Course: *Variables and Rates of Change*
+Board number: **first in the running order**, which is not settled. The board is
+called by its name; see the naming note in `curriculum/02-MAIN-CURRICULUM-MAP.md`.
 Founder gate: reviewed and tested; awaiting explicit approval
 Record rewritten: 2026-08-09, from Factory selections
-Retitled: 2026-08-09, by the founder, from *Variables and Changing Values*
+Retitled: 2026-08-09 from *Variables and Changing Values*, then again on
+2026-08-09 to the present name. Both by the founder.
 
-The former title described variation, which fork F-2 moved to BB2. The present
-title describes what the four sections do.
+*Variables and Changing Values* described variation, which fork F-2 moved to the
+next board. *Assigning Values to Letters* replaced it and described what the four
+sections do. The present name says what the learner ends up holding rather than
+what the board does to them, which is the register the geometry boards set.
 
 ## One learning objective
 
@@ -208,6 +213,7 @@ side 3.0 cm."
 | 2026-08-09 | The section reading now stays on screen through its check, instead of being replaced by it. | AI, founder-reported |
 | 2026-08-09 | Founder review run: all five checks positive, decision `APPROVE_CANDIDATE`. | Founder |
 | 2026-08-09 | Retitled *Assigning Values to Letters*; prerequisite map corrected to match. | Founder |
+| 2026-08-09 | Retitled *A Letter for a Number*. Every board renamed in the same pass and board numbers dropped as identity; record file renamed to identifier-plus-name. | Founder ordered the rename; the names themselves are AI, pending founder confirmation |
 
 ## Founder review
 
@@ -217,8 +223,10 @@ side 3.0 cm."
 - [ ] The four readings are clear and mathematically accurate.
 - [ ] The four interactions expose the intended relationship on phone and desktop.
 - [ ] The four exercises identify the recorded misconceptions.
-- [x] The title question is resolved. *Assigning Values to Letters*, 2026-08-09.
+- [ ] The title question is resolved. Reopened 2026-08-09 when every board was
+  renamed; the present answer is *A Letter for a Number*, chosen by me rather
+  than by the founder and so not yet ticked.
 - [ ] Founder marks the BB `APPROVED`.
 
-Until the final box is explicitly completed by the founder, BB1 remains
-`AI_DRAFT` and BB2 remains locked.
+Until the final box is explicitly completed by the founder, this board remains
+`AI_DRAFT` and *The Gap Between Two Values* remains locked.

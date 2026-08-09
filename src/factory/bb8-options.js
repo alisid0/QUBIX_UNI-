@@ -10,7 +10,7 @@ export const gated = 'Locked by 02-MAIN-CURRICULUM-MAP until BB1–BB7 are appro
 
 export const bb8 = {
   id: 'CME-CHANGE-008',
-  title: 'When Time Varies',
+  title: 'Time as the Variable',
   fork: 'Time as the independent variable. The derivative becomes a speed.',
   structure: 'Four sections.',
   sections: [

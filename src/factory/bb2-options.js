@@ -56,7 +56,7 @@ export const finalised = {
 
 export const bb2 = {
   id: 'CME-CHANGE-002',
-  title: 'Change in a Variable',
+  title: 'The Gap Between Two Values',
 
   workshops: [
     {

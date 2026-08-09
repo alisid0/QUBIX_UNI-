@@ -14,7 +14,9 @@ Qubix University is being rebuilt slowly from first principles. Its current prod
 8. [Current Status](./curriculum/STATUS.md)
 9. [Founder Review Protocol](./docs/REVIEW-PROTOCOL.md)
 
-The active curriculum item is [BB1: Assigning Values to Letters](./curriculum/bb/BB1-ASSIGNING-VALUES-TO-LETTERS.md). BB2–BB5 remain locked.
+The active curriculum item is [A Letter for a Number](./curriculum/bb/CME-CHANGE-001-A-LETTER-FOR-A-NUMBER.md). The four boards after it remain locked.
+
+Boards are named rather than numbered, because the running order is not settled. The naming note is at the foot of [the main curriculum map](./curriculum/02-MAIN-CURRICULUM-MAP.md).
 
 No additional curriculum should be generated until these gates are reviewed.
 

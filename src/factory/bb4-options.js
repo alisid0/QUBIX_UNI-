@@ -14,7 +14,7 @@ export const finalised = {};
 
 export const bb4 = {
   id: 'CME-CHANGE-004',
-  title: 'Average Rate of Change',
+  title: 'One Change Against Another',
 
   workshops: [
     {

@@ -11,7 +11,7 @@ export const gated = 'Beyond the end of the curriculum map, which stops at unit 
 
 export const bb9 = {
   id: 'CME-CHANGE-009',
-  title: 'What Constants Do',
+  title: 'The Two Kinds of Constant',
   fork: 'A constant has no rate of its own. Added constants vanish; multiplying constants survive.',
   structure: 'Three sections.',
   sections: [
@@ -114,7 +114,7 @@ export const bb9 = {
 
 export const bb10 = {
   id: 'CME-CHANGE-010',
-  title: 'Differentiating a Sum',
+  title: 'Term by Term',
   fork: 'One rule, one section of evidence, one section of practice.',
   structure: 'Three sections.',
   sections: [

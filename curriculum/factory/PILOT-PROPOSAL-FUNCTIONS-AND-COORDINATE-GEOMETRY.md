@@ -34,14 +34,14 @@ Nine boards in three units. Boards 1 to 3 exist and are selected.
 
 ### Unit 1 — Variables *(built)*
 
-**BB1 · Assigning Values to Letters** — `AI_DRAFT`, 12 slots selected, record written.
+**A Letter for a Number** (`letter`) — `AI_DRAFT`, 12 slots selected, record written.
 Source: Wentworth, *The First Steps in Algebra*, ch. I arts. 5–6, folios 1–2.
 
-**BB2 · Change in a Variable** — `AI_DRAFT`, 23 selections, 1 rejection, no record.
+**The Gap Between Two Values** (`gap`) — `AI_DRAFT`, 23 selections, 1 rejection, no record.
 Source: Thompson, *Calculus Made Easy*, ch. III, pp. 9–10. Δ notation is a
 modernisation; Thompson does not use it.
 
-**BB3 · Dependent Variables** — `AI_DRAFT`, 23 selections, 2 rejections, no record.
+**A Second Letter, Tied to the First** (`second`) — `AI_DRAFT`, 23 selections, 2 rejections, no record.
 Source: Thompson ch. II pp. 6–7 and ch. III pp. 9–10.
 
 ### Unit 2 — Functions *(new)*
@@ -142,15 +142,16 @@ Source: Thompson ch. II pp. 6–7 and ch. III pp. 9–10.
 
 ## 3. What happens to the existing work
 
-**Current BB4 (Average Rate of Change) and BB5 (Instantaneous Rate of Change)**
-leave the pilot and join the gated drafts. Nothing is discarded. They become the
-opening of the following course and will be better for arriving after the plane,
-the curve and the slope exist. Their Factory options, workshops and exercises all
-stand.
+**One Change Against Another** (`rate`) **and Two Points, Almost Touching**
+(`points`) leave the pilot and join the gated drafts. Nothing is discarded. They
+become the opening of the following course and will be better for arriving after
+the plane, the curve and the slope exist. Their Factory options, workshops and
+exercises all stand.
 
-**BB6 to BB12 in the current numbering** stay gated and unchanged. Their board
-numbers will need reassigning once this map is agreed, which is a renumbering
-exercise, not a rewrite.
+**The seven boards from The Notation dy/dx onward** stay gated and unchanged.
+Since the rename of 2026-08-09 this costs nothing: boards are identified by name
+and by identifier, not by position, so adopting this map reorders them without
+renaming anything or invalidating a single reference.
 
 ## 4. Strata as reference, not as a source
 

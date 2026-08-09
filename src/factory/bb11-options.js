@@ -116,7 +116,7 @@ export const bb11 = {
 
 export const bb12 = {
   id: 'CME-CHANGE-012',
-  title: 'Highest and Lowest Points',
+  title: 'Where a Curve Turns',
   fork: 'The first thing the derivative is used for rather than explained by.',
   structure: 'Three sections.',
   sections: [
