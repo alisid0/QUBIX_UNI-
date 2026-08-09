@@ -3,7 +3,6 @@
   import { get } from 'svelte/store';
   import { theme } from '../lib/stores/theme.js';
   import { boards } from '../lib/content/lesson.js';
-  import SquareScene from '../lib/components/SquareScene.svelte';
   import { progress } from '../lib/stores/progress.js';
   import { view } from '../lib/stores/view.js';
 
@@ -57,6 +56,8 @@
   // Use a real minus sign, not a hyphen: BB2 section 5 teaches what that sign records.
   $: deltaXLabel = deltaX.toFixed(1).replace('-', '−');
   $: newAreaSize = 76 + (dependentX - 2) * 38;
+  // The growth band, in SVG units, at the same scale as the 104px base square.
+  $: growSize = (dependentX - 2) * 52;
   $: dependentY = dependentX * dependentX;
   $: dependentDeltaY = dependentY - 4;
   $: rateDeltaX = rateX - 2;
@@ -451,15 +452,16 @@
                 </div>
               </div>
             {:else if floorIndex === 1}
-              <!-- Section 2 is the relationship itself, so the area becomes a lit
-                   surface rather than an outline. Inert by design: no rotation,
-                   nothing to touch. A slab and not a cube, since a cube is x³. -->
-              <div class="three-stage">
-                <SquareScene side={dependentX} height={188} />
-                <div class="role-cards">
-                  <span class="role-card"><b>x = {dependentX.toFixed(1)}</b><em>you assign</em></span>
-                  <span class="role-card follows"><b>y = {dependentY.toFixed(2)}</b><em>the rule settles</em></span>
-                </div>
+              <!-- The rule as a step between the two, with both ends named: a
+                   learner should not have to work out which figure is which. -->
+              <div class="machine-stage">
+                <span class="assign-card val">x = {dependentX.toFixed(1)}</span>
+                <span class="machine-box">× itself</span>
+                <span class="assign-card">y = {dependentY.toFixed(2)}</span>
+              </div>
+              <div class="role-cards">
+                <span class="role-card"><b>x</b><em>you assign</em></span>
+                <span class="role-card follows"><b>y</b><em>the rule settles</em></span>
               </div>
             {:else if floorIndex === 2}
               <div class="flow-stage">
@@ -468,18 +470,25 @@
                 <span class="flow-card dep"><b>y = {dependentY.toFixed(2)}</b><em>DEPENDENT · this follows</em></span>
               </div>
             {:else}
-              <div class="paired-stage">
-                <div class="pair old-pair">
-                  <div class="area-square old-area" style="width:76px;height:76px"><span>y = 4</span></div>
-                  <span class="edge-label sm" style="width:76px">x = 2</span>
-                </div>
-                <svg class="pair-arrow" viewBox="0 0 52 30" aria-hidden="true"><path d="M2 15h42M38 8l7 7-7 7"/></svg>
-                <div class="pair">
-                  <div class="area-square new-area" style={`width:${newAreaSize}px;height:${newAreaSize}px`}><span>y = {dependentY.toFixed(2)}</span></div>
-                  <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
-                </div>
+              <!-- The growth region split into its parts: the original square,
+                   the two strips along the sides, and the small corner. It shows
+                   why the area gain outruns the side gain instead of reporting it. -->
+              <div class="decomp-stage">
+                <!-- base square x², a strip along the top and one along the
+                     right, each x by Δx, and the small corner Δx by Δx. -->
+                <svg viewBox="0 0 200 200" role="img" aria-label={`Square of side 2 grown to ${dependentX.toFixed(1)}`}>
+                  <rect class="strip" x="20" y={76 - growSize} width="104" height={growSize}/>
+                  <rect class="strip" x="124" y="76" width={growSize} height="104"/>
+                  <rect class="corner" x="124" y={76 - growSize} width={growSize} height={growSize}/>
+                  <rect class="base" x="20" y="76" width="104" height="104"/>
+                  <text x="72" y="134">4</text>
+                  {#if growSize > 16}
+                    <text class="tiny" x="72" y={76 - growSize / 2 + 4}>x · Δx</text>
+                    <text class="tiny" x={124 + growSize / 2} y="132">x · Δx</text>
+                  {/if}
+                </svg>
+                <div class="delta-pills"><span>Δx = {(dependentX - 2).toFixed(1)}</span><span>Δy = {dependentDeltaY.toFixed(2)}</span></div>
               </div>
-              <div class="delta-pills"><span>Δx = {(dependentX - 2).toFixed(1)}</span><span>Δy = {dependentDeltaY.toFixed(2)}</span></div>
             {/if}
             <label class="range-row">
               <span>2.1</span>
@@ -728,10 +737,8 @@
   .paired-stage { min-height: 185px; display: flex; align-items: center; justify-content: center; gap: 12px; }
   .pair { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; min-width: 84px; min-height: 140px; }
   .area-square { display: grid; place-items: center; border-radius: 5px; transition: width .12s, height .12s; }
-  .old-area { width: 76px; height: 76px; border: 2px solid var(--qx-text-faint); background: var(--qx-surface-3); }
   .new-area { max-width: 122px; max-height: 122px; border: 3px solid var(--qx-green); background: var(--qx-green-soft); }
   .area-square span { font-size: 18px; font-weight: 900; color: var(--qx-text); }
-  .pair-arrow { width: 42px; fill: none; stroke: var(--qx-accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   .delta-pills { display: flex; justify-content: center; gap: 8px; }
   .delta-pills span { border-radius: 99px; padding: 7px 11px; background: var(--qx-surface); border: 1px solid var(--qx-border); color: var(--qx-text-2); font-size: 12px; font-weight: 800; }
   .delta-pills span:last-child { color: var(--qx-green-text); }
@@ -750,7 +757,15 @@
   .change-bars .bar { height: 16px; border-radius: 5px; background: var(--qx-accent); display: inline-block; }
   .change-bars .bar.wide { background: var(--qx-green); }
   .change-bars b { font-size: 15px; }
-  .three-stage { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+  .machine-stage { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .machine-box { border: 1px dashed var(--qx-border-2); border-radius: 10px; padding: 10px 13px; font-size: 12px; font-weight: 900; color: var(--qx-text-dim); letter-spacing: .05em; }
+  .decomp-stage { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .decomp-stage svg { width: 100%; max-width: 220px; height: auto; }
+  .decomp-stage .base { fill: var(--qx-accent-soft); stroke: var(--qx-accent); stroke-width: 2; }
+  .decomp-stage .strip { fill: var(--qx-green-soft); stroke: var(--qx-green); stroke-width: 1.5; }
+  .decomp-stage .corner { fill: var(--qx-surface-3); stroke: var(--qx-text-faint); stroke-width: 1.5; }
+  .decomp-stage text { fill: var(--qx-accent-text); font-size: 17px; font-weight: 900; text-anchor: middle; }
+  .decomp-stage text.tiny { fill: var(--qx-green-text); font-size: 9px; letter-spacing: .08em; }
   .flow-stage { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 200px; }
   .flow-card { display: flex; flex-direction: column; gap: 4px; align-items: center; border: 2px solid var(--qx-accent); border-radius: 13px; padding: 14px 16px; background: var(--qx-accent-soft); color: var(--qx-accent-text); }
   .flow-card.dep { border-style: dashed; border-color: var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); }

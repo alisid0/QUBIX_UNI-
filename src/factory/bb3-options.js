@@ -15,19 +15,30 @@ export const selections = {
   // S2-B rewritten to founder note: a value is settled by a relationship
   // between two variables, not by a second choice.
   'S2-B': '2026-08-09',
-  'S2-I3': '2026-08-09',
+  'S2-I1': '2026-08-09',
+  'S2-I2': '2026-08-09',
   'S2-X1': '2026-08-09',
   'S2-X2': '2026-08-09',
   'S2-X3': '2026-08-09',
   'S2-X4': '2026-08-09',
   'S2-X5': '2026-08-09',
   // S3: exercises kept, reading and interaction replaced as repetitive.
+  'S3-I3': '2026-08-09',
   'S3-X1': '2026-08-09',
   'S3-X2': '2026-08-09',
-  'S3-X3': '2026-08-09'
+  'S3-X3': '2026-08-09',
+  // S4 settled in full.
+  'S4-A': '2026-08-09',
+  'S4-I2': '2026-08-09',
+  'S4-X1': '2026-08-09',
+  'S4-X2': '2026-08-09',
+  // Both workshops kept.
+  'W1': '2026-08-09',
+  'W2': '2026-08-09'
 };
 
 export const rejected = {
+  'S2-I3': 'Founder, 2026-08-09: dropped. The three.js slab is not wanted here.',
   'S3-A': 'Founder, 2026-08-09: repeats S2.',
   'S3-B': 'Founder, 2026-08-09: repeats S2.',
   'S3-I1': 'Founder, 2026-08-09: repeats S2\'s stage.',
@@ -35,8 +46,7 @@ export const rejected = {
 };
 
 export const finalised = {
-  'S3-C': 'Written to replace the rejected readings: adds that working backwards is arithmetic you do, not control the square has.',
-  'S3-I3': 'Written to replace the rejected interactions: the one-way arrow shown as motion rather than as a label.'
+  'S3-C': 'Written to replace the rejected readings: adds that working backwards is arithmetic you do, not control the square has.'
 };
 
 export const bb3 = {
@@ -129,12 +139,15 @@ export const bb3 = {
         }
       ],
       interactions: [
+        { code: 'S2-I1', kind: 'locked-pair', note: 'Two cards, one with a control and one without. Only x can be assigned; y follows and is visibly not adjustable.' },
+        {
+          code: 'S2-I2', kind: 'machine', labelled: true,
+          note: 'x in, x² out, with both ends now named rather than shown as bare figures: a learner should not have to work out which number is which. The tie is drawn as a step between the two rather than stated.'
+        },
         {
           code: 'S2-I3', kind: 'square-3d',
-          note: 'A three.js square slab, lit and in perspective, growing with x. Deliberately inert: no rotation, no controls, nothing to touch. It makes the area read as a surface rather than an outline, which is the thing y measures. A slab and not a cube on purpose, since a cube would show x³ and contradict the board.'
-        },
-        { code: 'S2-I1', kind: 'locked-pair', note: 'Two cards, one with a control and one without. Only x can be assigned; y follows and is visibly not adjustable.' },
-        { code: 'S2-I2', kind: 'machine', note: 'x in, x² out. The tie is drawn as a step between the two rather than stated.' }
+          note: 'Rejected by the founder, 2026-08-09. A three.js slab, lit and inert, growing with x. Kept in the Factory as a candidate for a later board; a genuine cube belongs in BB7, where x³ arrives.'
+        }
       ],
       exercises: [
         {

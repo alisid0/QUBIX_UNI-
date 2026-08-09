@@ -368,17 +368,25 @@ export const boards = [
         },
         {
           text: 'Alter x and y alters too. From 2 to 2.5 the side gains 0.5, but the area goes from 4 to 6.25, a gain of 2.25. Δx = 0.5 and Δy = 2.25. The two changes are not the same size.',
-          exercise: {
-            kind: 'choice',
-            prompt: 'The side gains 0.5 and the area gains 2.25. Why is the area gain bigger?',
-            options: [
-              { label: 'The new area adds a strip along two sides, not one length', correct: true },
-              { label: 'Because 2.25 is 0.5 squared', feedback: '0.5 squared is 0.25, which is only the small corner. Most of the gain is the two strips.' },
-              { label: 'Because area is always bigger than length', feedback: 'They are different kinds of quantity, so one is not simply bigger. The question is why the gains differ.' }
-            ],
-            successNote: 'Correct. Widening the side adds a strip down two sides plus a small corner.',
-            revealNote: 'The area gain is two strips plus a corner, which is why it outruns the side gain.'
-          }
+          exercises: [
+            {
+              kind: 'choice',
+              prompt: 'The side gains 0.5 and the area gains 2.25. Why is the area gain bigger?',
+              options: [
+                { label: 'The new area adds a strip along two sides, not one length', correct: true },
+                { label: 'Because 2.25 is 0.5 squared', feedback: '0.5 squared is 0.25, which is only the small corner. Most of the gain is the two strips.' },
+                { label: 'Because area is always bigger than length', feedback: 'They are different kinds of quantity, so one is not simply bigger. The question is why the gains differ.' }
+              ],
+              successNote: 'Correct. Widening the side adds a strip down two sides plus a small corner.',
+              revealNote: 'The area gain is two strips plus a corner, which is why it outruns the side gain.'
+            },
+            {
+              kind: 'set-control',
+              prompt: 'Widen the side until the area gain passes 2.25.',
+              above: 2.5, from: 2.1,
+              successNote: 'The strips grow with the side, so the area gain climbs faster than the side gain does.'
+            }
+          ]
         }
       ]
     },

@@ -464,9 +464,9 @@
                 {:else if interaction.kind === 'machine'}
                   <div class="rows centre">
                     <div class="pair">
-                      <span class="card sym">{fmt(values[si])}</span>
+                      <span class="card sym">{interaction.labelled ? `x = ${fmt(values[si])}` : fmt(values[si])}</span>
                       <span class="machine-box">× itself</span>
-                      <span class="card val">{(values[si] * values[si]).toFixed(2)}</span>
+                      <span class="card val">{interaction.labelled ? `y = ${(values[si] * values[si]).toFixed(2)}` : (values[si] * values[si]).toFixed(2)}</span>
                     </div>
                   </div>
 
