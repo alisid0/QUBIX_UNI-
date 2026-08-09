@@ -44,14 +44,30 @@ export const selections = {
   'S3-B': '2026-08-09',
   'S3-X1': '2026-08-09',
   'S3-X2': '2026-08-09',
-  'S3-X3': '2026-08-09'
+  'S3-X3': '2026-08-09',
+  // Taken after both S3 interactions were rebuilt. The founder chose the one
+  // that asks for a prediction before it reveals anything.
+  'S3-I2': '2026-08-09',
+  'S4-B': '2026-08-09',
+  // Founder: neither S4 variant is an interaction in any real sense, and we
+  // should not have interactions merely for the sake of them. S4-I2 taken as
+  // the honest version: a figure, not a control. See the note on that variant.
+  'S4-I2': '2026-08-09',
+  'S4-X1': '2026-08-09',
+  'S4-X2': '2026-08-09',
+  'S4-X3': '2026-08-09',
+  'W1': '2026-08-09',
+  'W2': '2026-08-09'
 };
 export const finalised = {};
 
 export const rejected = {
   'S1-B': 'Not selected; S1-A carries Wentworth\'s worked example rather than describing it.',
   'S2-B': 'Not selected; S2-A names the three rules and the fixed input column outright.',
-  'S3-A': 'Not selected; S3-B states the definition first and uses the ladder as the illustration rather than the other way round.'
+  'S3-A': 'Not selected; S3-B states the definition first and uses the ladder as the illustration rather than the other way round.',
+  'S3-I1': 'Not selected; S3-I2 asks the learner to commit to a prediction before the readouts are shown.',
+  'S4-A': 'Not selected; S4-B states what the notation records and what F is not, without the aside about tiresome writing.',
+  'S4-I1': 'Founder, 2026-08-09: not an interaction in any real sense. Cycling a letter is a control invented to fill the slot rather than something the learner needs to do.'
 };
 export const gated = 'Belongs to a proposed pilot that has not been approved. See PILOT-PROPOSAL-FUNCTIONS-AND-COORDINATE-GEOMETRY.md. Nothing here has been selected yet.';
 
@@ -263,7 +279,7 @@ export const func1 = {
         },
         {
           code: 'S4-I2', kind: 'notation-card',
-          note: 'The three forms shown together on one card with the shared meaning beneath. Quicker to read, but it states the equivalence rather than letting the learner watch the letter change under a fixed meaning.'
+          note: 'A figure, and deliberately so. Founder, 2026-08-09: neither variant here is an interaction in any real sense, and we should not have interactions merely for the sake of them. A notation is a convention; there is nothing in it to vary, and a control would invent work for the learner rather than give them any. The three forms sit together with the shared meaning beneath, which is all this section needs.'
         }
       ],
       exercises: [

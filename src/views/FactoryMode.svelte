@@ -6,6 +6,27 @@
 
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
 
+  // Founder, 2026-08-09: we should not have interactions merely for the sake of
+  // them. Some ideas have nothing to vary. A notation is a convention, a unit
+  // square is a unit by definition, and putting a control on either invents work
+  // for the learner rather than giving them any.
+  //
+  // These kinds are figures, not interactions, and are labelled as such so that
+  // choosing one is a decision rather than something that looks like a failed
+  // control. Determined by counting the controls each stage actually renders,
+  // not by intention: every one of these draws zero.
+  const STATIC_KINDS = ['delta-facts', 'notation-card', 'square-back', 'accepted-list',
+    'unit-square', 'axes-build', 'glyph-card'];
+  const isFigure = kind => STATIC_KINDS.includes(kind);
+  // sel and fin are passed in rather than read from scope. Svelte tracks
+  // dependencies where they are read, and a helper reaching into the closure
+  // would leave this heading frozen; that fault has caught four interactions in
+  // this file already.
+  const keptIsFigure = (section, sel, fin) => {
+    const chosen = section.interactions.find(i => sel[i.code] || fin[i.code]);
+    return !!chosen && isFigure(chosen.kind);
+  };
+
   // Interaction kinds that carry their own controls or are deliberately fixed.
   const NO_CONTROL = ['line-fails', 'axes-build', 'find-place', 'quadrants', 'diagonal-bench-stage', 'unit-square', 'unit-square-fixed', 'unit-scale', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match',
     // The functions boards. Every one of these carries its own stepper, plate
@@ -530,11 +551,12 @@
           {/each}
         </div>
 
-        <h3>Interaction {#if !keptOnly}<em>— drag the sliders, these are live</em>{/if}</h3>
+        <h3>{keptOnly && keptIsFigure(section, selections, finalised) ? 'Figure' : 'Interaction'} {#if !keptOnly}<em>— or a figure, where there is nothing to vary</em>{/if}</h3>
         <div class="variant-grid">
           {#each (keptOnly ? section.interactions.filter(i => selections[i.code] || finalised[i.code]) : section.interactions) as interaction}
             <article class="variant" class:selected={selections[interaction.code] && !keptOnly} class:finalised={finalised[interaction.code]} class:rejected={rejected[interaction.code]}>
               <span class="code">{interaction.code}{#if selections[interaction.code] && !keptOnly} · SELECTED{:else if finalised[interaction.code]} · FINALISED{:else if rejected[interaction.code]} · REJECTED{/if}</span>
+              {#if isFigure(interaction.kind)}<span class="tag-figure">figure · nothing to move</span>{/if}
               <div class="stage">
                 {#if interaction.kind === 'figures-letters'}
                   <div class="rows">
@@ -2123,6 +2145,8 @@
   .bb-switch button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
 
   /* Units. A unit is a group of boards that may not be reordered or split. */
+  .tag-figure { align-self: flex-start; font-size: 9px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--qx-text-faint); border: 1px dashed var(--qx-border-2); border-radius: 6px; padding: 2px 6px; margin-top: -4px; }
+
   .unit { display: flex; flex-direction: column; gap: 8px; }
   .unit-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
   .unit-head h3 { font-size: 11px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; color: var(--qx-text-2); margin: 0; }
