@@ -332,7 +332,9 @@
         <p class="gate">Gated · {entry.gated} These are drafts for later selection. They must not reach a learner while the gate stands.</p>
       {/if}
 
-      <div class="fork-note">
+      <!-- Authoring metadata. Nothing here reaches a learner, so the kept sheet
+           hides it: that sheet shows what goes into the app and nothing else. -->
+      <div class="fork-note" class:hidden={keptOnly}>
         <div><b>Fork</b><span>{bb1.fork}</span></div>
         <div><b>Structure</b><span>{bb1.structure}</span></div>
       </div>
@@ -345,20 +347,22 @@
           <h2>{section.name}</h2>
         </div>
 
-        <div class="sources">
-          {#each section.sources as key}
-            <blockquote>
-              <p>{sources[key].quote}</p>
-              <cite>{key} · {sources[key].ref}</cite>
-            </blockquote>
-          {/each}
-        </div>
+        {#if !keptOnly}
+          <div class="sources">
+            {#each section.sources as key}
+              <blockquote>
+                <p>{sources[key].quote}</p>
+                <cite>{key} · {sources[key].ref}</cite>
+              </blockquote>
+            {/each}
+          </div>
+        {/if}
 
         <h3>Reading</h3>
         <div class="variant-grid">
           {#each (keptOnly ? section.readings.filter(r => selections[r.code] || finalised[r.code]) : section.readings) as reading}
-            <article class="variant" class:selected={selections[reading.code]} class:finalised={finalised[reading.code]} class:rejected={rejected[reading.code]}>
-              <span class="code">{reading.code}{#if selections[reading.code]} · SELECTED{:else if finalised[reading.code]} · FINALISED{:else if rejected[reading.code]} · REJECTED{/if}</span>
+            <article class="variant" class:selected={selections[reading.code] && !keptOnly} class:finalised={finalised[reading.code]} class:rejected={rejected[reading.code]}>
+              <span class="code">{reading.code}{#if selections[reading.code] && !keptOnly} · SELECTED{:else if finalised[reading.code]} · FINALISED{:else if rejected[reading.code]} · REJECTED{/if}</span>
               <p class="reading-text" class:verbatim={reading.verbatim}>{reading.text}</p>
               {#if reading.verbatim}
                 <p class="verbatim-tag">Author's own words, unaltered · {sources[reading.verbatim].ref}</p>
@@ -368,11 +372,11 @@
           {/each}
         </div>
 
-        <h3>Interaction <em>— drag the sliders, these are live</em></h3>
+        <h3>Interaction {#if !keptOnly}<em>— drag the sliders, these are live</em>{/if}</h3>
         <div class="variant-grid">
           {#each (keptOnly ? section.interactions.filter(i => selections[i.code] || finalised[i.code]) : section.interactions) as interaction}
-            <article class="variant" class:selected={selections[interaction.code]} class:finalised={finalised[interaction.code]} class:rejected={rejected[interaction.code]}>
-              <span class="code">{interaction.code}{#if selections[interaction.code]} · SELECTED{:else if finalised[interaction.code]} · FINALISED{:else if rejected[interaction.code]} · REJECTED{/if}</span>
+            <article class="variant" class:selected={selections[interaction.code] && !keptOnly} class:finalised={finalised[interaction.code]} class:rejected={rejected[interaction.code]}>
+              <span class="code">{interaction.code}{#if selections[interaction.code] && !keptOnly} · SELECTED{:else if finalised[interaction.code]} · FINALISED{:else if rejected[interaction.code]} · REJECTED{/if}</span>
               <div class="stage">
                 {#if interaction.kind === 'figures-letters'}
                   <div class="rows">
@@ -816,17 +820,19 @@
                   </label>
                 {/if}
               </div>
-              <p class="note">{interaction.note}</p>
-              {#if finalised[interaction.code]}<p class="why">{finalised[interaction.code]}</p>{/if}
+              {#if !keptOnly}
+                <p class="note">{interaction.note}</p>
+                {#if finalised[interaction.code]}<p class="why">{finalised[interaction.code]}</p>{/if}
+              {/if}
             </article>
           {/each}
         </div>
 
-        <h3>Exercise <em>— clickable, answers reveal</em></h3>
+        <h3>{keptOnly ? 'Checks' : 'Exercise'} {#if !keptOnly}<em>— clickable, answers reveal</em>{/if}</h3>
         <div class="variant-grid">
           {#each (keptOnly ? section.exercises.filter(e => selections[e.code] || finalised[e.code]) : section.exercises) as ex}
-            <article class="variant" class:selected={selections[ex.code]} class:finalised={finalised[ex.code]}>
-              <span class="code">{ex.code}{#if selections[ex.code]} · SELECTED{:else if finalised[ex.code]} · FINALISED{/if}</span>
+            <article class="variant" class:selected={selections[ex.code] && !keptOnly} class:finalised={finalised[ex.code]}>
+              <span class="code">{ex.code}{#if selections[ex.code] && !keptOnly} · SELECTED{:else if finalised[ex.code]} · FINALISED{/if}</span>
               <p class="prompt">{ex.prompt}</p>
               {#if ex.kind === 'choice'}
                 <div class="options">
@@ -969,10 +975,11 @@
         </div>
         <div class="variant-grid">
           {#each (keptOnly ? bb1.workshops.filter(w => selections[w.code] || finalised[w.code]) : bb1.workshops) as w}
-            <article class="variant" class:selected={selections[w.code]} class:finalised={finalised[w.code]} class:rejected={rejected[w.code]}>
-              <span class="code">{w.code}{#if selections[w.code]} · SELECTED{:else if finalised[w.code]} · FINALISED{:else if rejected[w.code]} · REJECTED{/if}</span>
+            <article class="variant" class:selected={selections[w.code] && !keptOnly} class:finalised={finalised[w.code]} class:rejected={rejected[w.code]}>
+              <span class="code">{w.code}{#if selections[w.code] && !keptOnly} · SELECTED{:else if finalised[w.code]} · FINALISED{:else if rejected[w.code]} · REJECTED{/if}</span>
               <p class="prompt">{w.name}</p>
               <p class="reading-text">{w.blurb}</p>
+              {#if keptOnly}<span class="spacer"></span>{/if}
 
               <div class="stage">
                 {#if w.kind === 'assignment-bench'}
@@ -1242,7 +1249,7 @@
                 {/if}
               </div>
 
-              <p class="note">{w.note}</p>
+              {#if !keptOnly}<p class="note">{w.note}</p>{/if}
             </article>
           {/each}
         </div>
@@ -1557,6 +1564,8 @@
   .bench-targets button { min-width: 44px; height: 36px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font-weight: 900; cursor: pointer; }
   .bench-targets button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
 
+  .hidden { display: none; }
+  .spacer { display: none; }
   .variant.rejected { opacity: .55; }
   .variant.rejected .code { border-color: var(--qx-danger); color: var(--qx-danger-text); }
   .facts-head { display: flex; justify-content: center; margin-bottom: 4px; }
