@@ -362,6 +362,26 @@
                 <span>3.5</span>
               </label>
             {/if}
+          {:else if boardIndex === 1 && floorIndex === 4}
+            <!-- Section 5 is about direction, so zero sits at the centre and the
+                 bar grows the way the change runs. Founder specification. -->
+            <div class="signed-stage">
+              <div class="signed-track">
+                <span class="signed-axis"></span>
+                <span class="signed-zero"></span>
+                <span class="signed-fill" class:neg={deltaX < 0}
+                  style={`width:${Math.min(48, Math.abs(deltaX) * 46)}%; ${deltaX < 0 ? 'right:50%' : 'left:50%'}`}></span>
+              </div>
+              <div class="signed-labels"><span>negative</span><span>0</span><span>positive</span></div>
+              <div class="signed-read" class:neg={deltaX < 0}>
+                Δx = {deltaEnd.toFixed(1)} − 2.0 = {deltaXLabel}
+              </div>
+            </div>
+            <label class="range-row">
+              <span>1.2</span>
+              <input aria-label="Choose the new x value" type="range" min="1.2" max="3" step="0.1" bind:value={deltaEnd}/>
+              <span>3.0</span>
+            </label>
           {:else if boardIndex === 1}
             <div class="number-stage">
               <svg viewBox="0 0 320 128" role="img" aria-label={`Number line from 1 to 3. Current x is ${deltaEnd}`}>
@@ -637,6 +657,15 @@
   .value-readout small, .local-readout small, .rate-fraction small { font-size: 9px; font-weight: 900; letter-spacing: .11em; color: var(--qx-text-faint); }
   .value-readout strong, .local-readout strong { font-size: 23px; color: var(--qx-text); }
   .value-readout span, .local-readout span { font-size: 12px; color: var(--qx-text-dim); }
+  .signed-stage { display: flex; flex-direction: column; gap: 14px; justify-content: center; align-items: center; }
+  .signed-track { position: relative; width: 100%; height: 54px; }
+  .signed-axis { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--qx-text-dim); }
+  .signed-zero { position: absolute; left: 50%; top: 9px; bottom: 9px; width: 2px; background: var(--qx-text-dim); }
+  .signed-fill { position: absolute; top: 50%; transform: translateY(-50%); height: 22px; border-radius: 5px; background: var(--qx-accent); transition: width .12s; }
+  .signed-fill.neg { background: var(--qx-danger); }
+  .signed-labels { display: flex; justify-content: space-between; width: 100%; font-size: 9px; letter-spacing: .1em; font-weight: 900; color: var(--qx-text-faint); }
+  .signed-read { font-size: 19px; font-weight: 900; color: var(--qx-accent-text); }
+  .signed-read.neg { color: var(--qx-danger-text); }
   .number-stage svg { width: 100%; height: 165px; overflow: visible; }
   .number-stage .axis, .number-stage .tick { fill: none; stroke: var(--qx-text-dim); stroke-width: 2; stroke-linecap: round; }
   .number-stage text { fill: var(--qx-text-dim); font-size: 11px; text-anchor: middle; font-weight: 700; }

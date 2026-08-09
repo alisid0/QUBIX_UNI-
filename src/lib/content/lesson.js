@@ -165,28 +165,72 @@ export const boards = [
           ]
         },
         {
-          text: 'Now attach Δ to x. Δx is read “delta x” and means the change in x: Δx = new − old. Moving from 2 to 2.5 gives Δx = 0.5.',
-          exercise: {
-            kind: 'choice',
-            prompt: 'What does Δx mean?',
-            options: [
-              { label: 'The change in x', correct: true },
-              { label: 'Δ multiplied by x', feedback: 'Δ is not a number, so it cannot multiply anything. Δ and x are read together as one name.' },
-              { label: 'A new variable, separate from x', feedback: 'Δx is not independent. It measures how far this same x has moved.' }
-            ],
-            successNote: 'Correct. Δx is one name meaning the change in x.',
-            revealNote: 'Δx is read as one thing: the change in x. Δ never multiplies.'
-          }
+          text: 'Attach Δ to x. Δx means the change in x, and you find it by subtracting: Δx = new − old. The same relation reads the other way round too: the new value is the old value plus the change, x + Δx.',
+          exercises: [
+            {
+              kind: 'choice',
+              prompt: 'What does Δx mean?',
+              options: [
+                { label: 'The change in x', correct: true },
+                { label: 'Δ multiplied by x', feedback: 'Δ is not a number, so it cannot multiply anything. Δ and x are read together as one name.' },
+                { label: 'A new variable, separate from x', feedback: 'Δx is not independent. It measures how far this same x has moved.' }
+              ],
+              successNote: 'Correct. Δx is one name meaning the change in x.',
+              revealNote: 'Δx is read as one thing: the change in x. Δ never multiplies.'
+            },
+            {
+              kind: 'choice',
+              prompt: 'x is 2 and Δx is 0.5. What is the new value of x?',
+              options: [
+                { label: '2.5', correct: true },
+                { label: '0.5', feedback: 'That is the change itself, not the value after it.' },
+                { label: '1.0', feedback: 'The change is added to the old value, not multiplied by it.' }
+              ],
+              successNote: 'Correct. The new value is the old value plus the change.',
+              revealNote: '2 + 0.5 = 2.5. The relation runs both ways.'
+            },
+            {
+              kind: 'stepper',
+              prompt: 'x starts at 2. Step the new value until Δx is 0.8.',
+              target: 2.8, min: 1.2, max: 3, step: 0.1, start: 2, unit: '',
+              successNote: 'Δx = 2.8 − 2 = 0.8. You had to run the subtraction backwards to know where to stop.'
+            }
+          ]
         },
         {
           text: 'Δx can also be negative. Move the new value below 2 and the subtraction turns the other way. The sign records the direction of the move, not only its size.',
-          exercise: {
-            kind: 'set-control',
-            prompt: 'Move the new value so that Δx becomes negative.',
-            below: 2,
-            from: 2.5,
-            successNote: 'Δx is now negative. x decreased, and the minus sign is what records that.'
-          }
+          exercises: [
+            {
+              kind: 'set-control',
+              prompt: 'Move the new value so that Δx becomes negative.',
+              below: 2,
+              from: 2.5,
+              successNote: 'Δx is now negative. x decreased, and the minus sign is what records that.'
+            },
+            {
+              kind: 'choice',
+              prompt: 'x moves from 3 to 2.5. What is Δx?',
+              options: [
+                { label: '−0.5', correct: true },
+                { label: '0.5', feedback: 'That is the size of the move but not its direction. x decreased.' },
+                { label: '5.5', feedback: 'Adding gives the wrong quantity. Δx is new − old.' }
+              ],
+              successNote: 'Correct. 2.5 − 3 = −0.5, so the move runs downward.',
+              revealNote: 'new − old gives 2.5 − 3 = −0.5. The sign is part of the answer.'
+            },
+            {
+              kind: 'match',
+              prompt: 'Sort each move by the direction of its change.',
+              bins: ['Δx positive', 'Δx negative'],
+              items: [
+                { label: '2 → 2.5', bin: 'Δx positive' },
+                { label: '3 → 2.5', bin: 'Δx negative' },
+                { label: '2 → 1.2', bin: 'Δx negative' },
+                { label: '1.5 → 2', bin: 'Δx positive' }
+              ],
+              successNote: 'Direction is decided by which value is larger, not by which number looks bigger on the page.'
+            }
+          ]
         }
       ]
     },
