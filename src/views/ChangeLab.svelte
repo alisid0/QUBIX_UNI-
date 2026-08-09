@@ -8,20 +8,129 @@
       title: 'Variables and Changing Values',
       marker: 'Variables',
       floors: [
-        'x = 2 means that the variable x currently represents the number 2. If its value becomes 3, the symbol is still x.',
-        'A variable is a symbol that represents a number. In this lesson, x can take different values.',
-        'Here x represents the side length of a square. Change x with the slider; the displayed length and the square change together.'
+        {
+          text: 'Arithmetic uses figures to represent numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 0. Algebra uses the letters of the alphabet as well.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'Which of these always stands for the same number?',
+            options: [
+              { label: '7', correct: true },
+              { label: 'x', feedback: 'A letter has no fixed value until one is assigned to it.' },
+              { label: 'y', feedback: 'A letter has no fixed value until one is assigned to it.' }
+            ],
+            successNote: 'Correct. A figure always represents the same number. A letter does not.',
+            revealNote: '7 is a figure, so it always represents the same number. x and y are letters.'
+          }
+        },
+        {
+          text: 'Write x = 2. This assigns the number 2 to the letter x. In this lesson x now represents 2.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'x has been assigned the value 5. What does x stand for?',
+            options: [
+              { label: 'The number 5', correct: true },
+              { label: 'The letter x', feedback: 'x is how it is written. The question is what it stands for.' },
+              { label: 'Any number at all', feedback: 'That was true before a value was assigned. It is not true now.' }
+            ],
+            successNote: 'Correct. Once 5 is assigned to x, x represents 5.',
+            revealNote: 'x stands for the number assigned to it, which here is 5.'
+          }
+        },
+        {
+          text: 'Any particular value may be assigned to a letter. Assign 3 to x and x represents 3. Assign 1.5 and x represents 1.5. The letter is not altered by this.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'x is assigned 2, then assigned 3. What changed?',
+            options: [
+              { label: 'The value assigned to x', correct: true },
+              { label: 'The symbol changed from x to another letter', feedback: 'The letter is written the same way both times.' },
+              { label: 'The number 2 became a letter', feedback: '2 is a figure. It always represents the same number.' }
+            ],
+            successNote: 'Correct. The letter stayed x. The number assigned to it was replaced.',
+            revealNote: 'x is the letter in both statements. The value assigned to it was replaced.'
+          }
+        },
+        {
+          text: 'A letter may represent a measured quantity. Let x be the length of the side of this square, in centimetres. The square is drawn at whatever value is assigned to x.',
+          exercise: {
+            kind: 'set-control',
+            prompt: 'Assign x the value that makes each side 3.0 cm.',
+            target: 3,
+            tolerance: 0.05,
+            from: 2,
+            successNote: 'x = 3.0 cm. The square is drawn from the value assigned to x.'
+          }
+        }
       ]
     },
     {
       id: 'CME-CHANGE-002',
       title: 'Change in a Variable',
-      marker: 'Δx = new − old',
+      marker: 'Change',
       floors: [
-        'The side moves from 2 cm to 2.5 cm. The move itself has a size: 0.5 cm.',
-        'We write that change as Δx, read “delta x.” Here, Δx = 2.5 − 2 = 0.5 cm.',
-        'The new value is the old value plus the change: x + Δx.',
-        'A change can be negative. The minus sign records the direction of the move.'
+        {
+          text: 'This is the same x you have just met. It starts at 2. Move it and x takes a new value, while the symbol stays x.',
+          exercise: {
+            kind: 'set-control',
+            prompt: 'Move x to 2.5.',
+            target: 2.5,
+            tolerance: 0.05,
+            from: 2,
+            successNote: 'x is now 2.5. One symbol, a second value.'
+          }
+        },
+        {
+          text: 'Between the old value and the new one there is a gap, and that gap has a size of its own: new − old. From 2 to 2.5, the gap is 0.5.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'x moves from 2 to 2.75. How big is the change?',
+            options: [
+              { label: '0.75', correct: true },
+              { label: '2.75', feedback: '2.75 is where x ended up, not how far it travelled.' },
+              { label: '4.75', feedback: 'Adding gives the wrong quantity. The gap is a subtraction: new − old.' }
+            ],
+            successNote: 'Correct. 2.75 − 2 = 0.75. The change is a quantity in its own right.',
+            revealNote: 'The change is new − old, so 2.75 − 2 = 0.75.'
+          }
+        },
+        {
+          text: 'That gap needs a name. Mathematicians write “the change in” using the Greek capital letter Δ, read “delta”. On its own Δ is not a number, and it does not multiply. It is waiting for a variable to attach to.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'On its own, what does Δ mean?',
+            options: [
+              { label: 'The change in', correct: true },
+              { label: 'Multiply by delta', feedback: 'Δ is not a quantity, so there is nothing to multiply by. It is a word, written short.' },
+              { label: 'A very small amount', feedback: 'Δ says nothing about size. A change can be large or small.' }
+            ],
+            successNote: 'Correct. Δ is shorthand for the words “the change in”.',
+            revealNote: 'Δ is shorthand for “the change in”. It is a word, not a number.'
+          }
+        },
+        {
+          text: 'Now attach Δ to x. Δx is read “delta x” and means the change in x: Δx = new − old. Moving from 2 to 2.5 gives Δx = 0.5.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'What does Δx mean?',
+            options: [
+              { label: 'The change in x', correct: true },
+              { label: 'Δ multiplied by x', feedback: 'Δ is not a number, so it cannot multiply anything. Δ and x are read together as one name.' },
+              { label: 'A new variable, separate from x', feedback: 'Δx is not independent. It measures how far this same x has moved.' }
+            ],
+            successNote: 'Correct. Δx is one name meaning the change in x.',
+            revealNote: 'Δx is read as one thing: the change in x. Δ never multiplies.'
+          }
+        },
+        {
+          text: 'Δx can also be negative. Move the new value below 2 and the subtraction turns the other way. The sign records the direction of the move, not only its size.',
+          exercise: {
+            kind: 'set-control',
+            prompt: 'Move the new value so that Δx becomes negative.',
+            below: 2,
+            from: 2.5,
+            successNote: 'Δx is now negative. x decreased, and the minus sign is what records that.'
+          }
+        }
       ]
     },
     {
@@ -29,10 +138,10 @@
       title: 'Dependent Variables',
       marker: 'Functions',
       floors: [
-        'Let x be the side of a square and y be its area. They are tied together by y = x².',
-        'At x = 2, y = 4. Change x to 2.5 and the area becomes 6.25.',
-        'x is the independent variable. y depends on it. The area change is Δy = 2.25.',
-        'We now have a paired move: Δx = 0.5 and Δy = 2.25.'
+        { text: 'Let x be the side of a square and y be its area. They are tied together by y = x².' },
+        { text: 'At x = 2, y = 4. Change x to 2.5 and the area becomes 6.25.' },
+        { text: 'x is the independent variable. y depends on it. The area change is Δy = 2.25.' },
+        { text: 'We now have a paired move: Δx = 0.5 and Δy = 2.25.' }
       ]
     },
     {
@@ -40,9 +149,9 @@
       title: 'Average Rate of Change',
       marker: 'Rate of change',
       floors: [
-        'The side grows by 0.5 cm while the area grows by 2.25 cm². Compare the two changes.',
-        'Δy/Δx = 2.25/0.5 = 4.5. That is the average area growth for each centimetre added.',
-        'Average rate of change means change in output divided by change in input.'
+        { text: 'The side grows by 0.5 cm while the area grows by 2.25 cm². Compare the two changes.' },
+        { text: 'Δy/Δx = 2.25/0.5 = 4.5. That is the average area growth for each centimetre added.' },
+        { text: 'Average rate of change means change in output divided by change in input.' }
       ]
     },
     {
@@ -50,10 +159,10 @@
       title: 'Instantaneous Rate of Change',
       marker: 'A shrinking interval',
       floors: [
-        'Keep the starting value at x = 2. Move the other value closer.',
-        'The average rates are 5, then 4.5, 4.1, 4.01, and 4.001.',
-        'The interval shrinks while the rates settle near 4. That value describes the rate right at x = 2.',
-        'Calculus calls this local rate the derivative. Next comes Thompson’s notation: dy/dx.'
+        { text: 'Keep the starting value at x = 2. Move the other value closer.' },
+        { text: 'The average rates are 5, then 4.5, 4.1, 4.01, and 4.001.' },
+        { text: 'The interval shrinks while the rates settle near 4. That value describes the rate right at x = 2.' },
+        { text: 'Calculus calls this local rate the derivative. Next comes Thompson’s notation: dy/dx.' }
       ]
     }
   ];
@@ -67,21 +176,35 @@
   let boardIndex = 0;
   let floorIndex = 0;
   let squareX = 2;
-  let deltaEnd = 2.5;
+  let deltaEnd = 2;
   let dependentX = 2.5;
   let rateX = 2.5;
   let stepIndex = 0;
-  let showCheck = false;
-  let checkAttempts = 0;
-  let checkDone = false;
-  let checkMessage = '';
+  let exerciseOpen = false;
+  let picked = null;
+  let attempts = 0;
+  let feedback = '';
+  let completed = {};
+  let lastKey = '';
   let finished = false;
   let hydrated = false;
   let pointerStart = null;
 
   $: board = boards[boardIndex];
-  $: floor = board?.floors[floorIndex] || '';
+  $: floorData = board?.floors[floorIndex] || { text: '' };
+  $: floor = floorData.text || '';
+  $: exercise = floorData.exercise || null;
+  // Note: do not derive a `cleared` value with `$:`. clearSetControl() assigns
+  // `completed` from inside a reactive block, and a derived alias computed earlier
+  // in the same update pass would keep a stale value. Read completed[exerciseKey].
+  $: exerciseKey = `${boardIndex}:${floorIndex}`;
+  $: controlValue = [squareX, deltaEnd, dependentX, rateX, stepIndex][boardIndex];
+  // 1.5 -> 74px, 3.5 -> 152px. No cap: the old max-width froze the square above
+  // x = 3.0 while the readout kept climbing, which contradicted the lesson.
+  $: squareSize = 74 + (squareX - 1.5) * 39;
   $: deltaX = deltaEnd - 2;
+  // Use a real minus sign, not a hyphen: BB2 section 5 teaches what that sign records.
+  $: deltaXLabel = deltaX.toFixed(1).replace('-', '−');
   $: dependentY = dependentX * dependentX;
   $: dependentDeltaY = dependentY - 4;
   $: rateDeltaX = rateX - 2;
@@ -92,13 +215,30 @@
   $: secantEndX = 160 + step * 60;
   $: secantEndY = 144 - (4 * step + step * step) * 8.5;
 
+  // Reset the per-question state whenever the learner moves to another floor.
+  $: if (exerciseKey !== lastKey) {
+    lastKey = exerciseKey;
+    exerciseOpen = false;
+    picked = null;
+    attempts = 0;
+    feedback = '';
+  }
+
+  // A set-control exercise is answered with the board's own slider. This must not
+  // read exerciseCleared: that would make completed -> exerciseCleared -> completed
+  // a cycle, and the cleared state would never reach the Continue button.
+  $: if (exerciseOpen && exercise && exercise.kind === 'set-control'
+      && setControlSatisfied(exercise, controlValue)) {
+    clearSetControl();
+  }
+
   onMount(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('qubix-university-variables-rates-v2') || 'null');
+      const saved = JSON.parse(localStorage.getItem('qubix-university-variables-rates-v3') || 'null');
       if (saved && Number.isInteger(saved.boardIndex) && saved.boardIndex >= 0 && saved.boardIndex < boards.length) {
         boardIndex = saved.boardIndex;
         floorIndex = Math.min(saved.floorIndex || 0, boards[boardIndex].floors.length - 1);
-        checkDone = !!saved.checkDone;
+        completed = saved.completed && typeof saved.completed === 'object' ? saved.completed : {};
       }
     } catch (_) {}
     hydrated = true;
@@ -106,17 +246,24 @@
 
   $: if (hydrated) {
     try {
-      localStorage.setItem('qubix-university-variables-rates-v2', JSON.stringify({ boardIndex, floorIndex, checkDone }));
+      localStorage.setItem('qubix-university-variables-rates-v3', JSON.stringify({ boardIndex, floorIndex, completed }));
     } catch (_) {}
   }
 
   function advance() {
-    if (floorIndex < board.floors.length - 1) {
-      floorIndex += 1;
+    // A floor with an unanswered exercise opens it instead of moving on.
+    if (exercise && !completed[exerciseKey]) {
+      // If the control already happens to satisfy the task, the learner would
+      // get it for free. Wind it back so the task is always real work.
+      if (exercise.kind === 'set-control' && setControlSatisfied(exercise, controlValue)) {
+        setControl(exercise.from);
+      }
+      exerciseOpen = true;
       return;
     }
-    if (boardIndex === 0 && !checkDone) {
-      showCheck = true;
+    exerciseOpen = false;
+    if (floorIndex < board.floors.length - 1) {
+      floorIndex += 1;
       return;
     }
     if (boardIndex < boards.length - 1) {
@@ -128,8 +275,9 @@
   }
 
   function retreat() {
-    if (showCheck) {
-      showCheck = false;
+    if (exerciseOpen) {
+      exerciseOpen = false;
+      picked = null;
       return;
     }
     if (floorIndex > 0) {
@@ -142,32 +290,55 @@
     }
   }
 
-  function chooseCheck(value) {
-    checkAttempts += 1;
-    if (value === 'The value of x') {
-      checkDone = true;
-      checkMessage = 'Correct. x remains the variable; the value assigned to x changes from 2 to 3.';
-    } else if (checkAttempts === 1) {
-      checkMessage = 'Try once more. Identify the symbol and the number represented by that symbol.';
+  function chooseOption(option) {
+    if (completed[exerciseKey]) return;
+    picked = option.label;
+    attempts += 1;
+    if (option.correct) {
+      markCleared(exercise.successNote);
+    } else if (attempts === 1) {
+      feedback = option.feedback || 'Not quite. Try once more.';
     } else {
-      checkDone = true;
-      checkMessage = 'x is the variable in both statements. Its assigned value changes from 2 to 3.';
+      markCleared(exercise.revealNote || exercise.successNote);
     }
   }
 
-  function leaveCheck() {
-    showCheck = false;
-    boardIndex = 1;
-    floorIndex = 0;
+  function markCleared(message) {
+    completed = { ...completed, [exerciseKey]: true };
+    feedback = message || '';
+  }
+
+  // A set-control exercise is satisfied either by landing on a target value or by
+  // pushing the control past a bound, which is how "make Δx negative" is expressed.
+  function setControlSatisfied(ex, value) {
+    if (typeof ex.below === 'number') return value < ex.below;
+    if (typeof ex.above === 'number') return value > ex.above;
+    return Math.abs(value - ex.target) <= (ex.tolerance ?? 0.05);
+  }
+
+  // Each board is driven by one control; this writes back to the current one.
+  function setControl(value) {
+    if (value == null) return;
+    if (boardIndex === 0) squareX = value;
+    else if (boardIndex === 1) deltaEnd = value;
+    else if (boardIndex === 2) dependentX = value;
+    else if (boardIndex === 3) rateX = value;
+    else stepIndex = value;
+  }
+
+  function clearSetControl() {
+    if (completed[exerciseKey]) return;
+    markCleared(exercise.successNote);
   }
 
   function restart() {
     boardIndex = 0;
     floorIndex = 0;
-    showCheck = false;
-    checkAttempts = 0;
-    checkDone = false;
-    checkMessage = '';
+    exerciseOpen = false;
+    picked = null;
+    attempts = 0;
+    feedback = '';
+    completed = {};
     finished = false;
   }
 
@@ -176,7 +347,7 @@
   }
 
   function handlePointerUp(event) {
-    if (!pointerStart || showCheck || finished) return;
+    if (!pointerStart || exerciseOpen || finished) return;
     const dx = event.clientX - pointerStart.x;
     const dy = event.clientY - pointerStart.y;
     pointerStart = null;
@@ -226,47 +397,54 @@
       </div>
     </section>
 
-    <main class="board-card" class:check-mode={showCheck}>
-      {#if showCheck}
-        <div class="check-panel">
-          <div class="check-topline"><span>QUICK CHECK</span><span>1 question</span></div>
-          <div class="check-visual" aria-hidden="true">
-            <div class="mini-square old">variable<span>x = 2</span></div>
-            <svg viewBox="0 0 54 24"><path d="M2 12h46M42 6l6 6-6 6"/></svg>
-            <div class="mini-square fresh">variable<span>x = 3</span></div>
-          </div>
-          <h1>x has value 2, then value 3.<br/>What changed?</h1>
-          <div class="check-options">
-            {#each ['The value of x', 'The symbol x', 'The number 2'] as option}
-              <button disabled={checkDone} class:correct={checkDone && option === 'The value of x'} on:click={() => chooseCheck(option)}>{option}</button>
-            {/each}
-          </div>
-          {#if checkMessage}
-            <div class:success={checkDone} class="feedback">{checkMessage}</div>
-          {/if}
-          {#if checkDone}
-            <button class="primary wide" on:click={leaveCheck}>Continue</button>
-          {/if}
-        </div>
-      {:else}
-        <div class="board-heading">
+    <main class="board-card">
+      <div class="board-heading">
           <span class="micro-label">{board.marker}</span>
           <h1>{board.title}</h1>
         </div>
 
         <div class="stage" aria-live="polite">
           {#if boardIndex === 0}
-            <div class="square-stage">
-              <div class="square" style={`width:${74 + (squareX - 1.5) * 52}px;height:${74 + (squareX - 1.5) * 52}px`}>
-                <span>x</span>
+            <!-- BB1 under fork F-2: figures and letters, then a value assigned,
+                 then a value replaced, then a value that measures something. -->
+            {#if floorIndex === 0}
+              <div class="symbol-rows">
+                <div class="symbol-row">
+                  <small>FIGURES</small>
+                  {#each ['1', '2', '3', '7'] as figure}<span class="symbol fig">{figure}</span>{/each}
+                </div>
+                <div class="symbol-row">
+                  <small>LETTERS</small>
+                  {#each ['x', 'y', 'z'] as letter}<span class="symbol let">{letter}</span>{/each}
+                </div>
               </div>
-              <div class="value-readout"><small>CURRENT VALUE</small><strong>x = {Number(squareX).toFixed(1)}</strong><span>cm</span></div>
-            </div>
-            <label class="range-row">
-              <span>1.5</span>
-              <input aria-label="Change x" type="range" min="1.5" max="3.5" step="0.1" bind:value={squareX}/>
-              <span>3.5</span>
-            </label>
+            {:else if floorIndex === 1}
+              <div class="pair-stage">
+                <span class="assign-card sym">x</span>
+                <span class="assign-joiner" aria-hidden="true"></span>
+                <span class="assign-card val">{Number(squareX).toFixed(1)}</span>
+              </div>
+            {:else if floorIndex === 2}
+              <div class="assign-stage">
+                <div class="assign-card ghost">x = 2.0</div>
+                <div class="assign-card live">x = {Number(squareX).toFixed(1)}</div>
+              </div>
+            {:else}
+              <div class="square-stage">
+                <div class="square-figure">
+                  <div class="square" style={`width:${squareSize}px;height:${squareSize}px`}></div>
+                  <span class="edge-label" style={`width:${squareSize}px`} aria-hidden="true">x</span>
+                </div>
+                <div class="value-readout"><small>CURRENT VALUE</small><strong>x = {Number(squareX).toFixed(1)}</strong><span>cm</span></div>
+              </div>
+            {/if}
+            {#if floorIndex >= 1}
+              <label class="range-row">
+                <span>1.5</span>
+                <input aria-label="Assign a value to x" type="range" min="1.5" max="3.5" step="0.1" bind:value={squareX}/>
+                <span>3.5</span>
+              </label>
+            {/if}
           {:else if boardIndex === 1}
             <div class="number-stage">
               <svg viewBox="0 0 320 128" role="img" aria-label={`Number line from 1 to 3. Current x is ${deltaEnd}`}>
@@ -276,10 +454,20 @@
                   <text x={28 + (tick - 1) * 132} y="98">{tick}</text>
                 {/each}
                 <circle class="old-dot" cx="160" cy="72" r="6"/>
-                <path class="move-line" d={`M160 46 H${28 + (deltaEnd - 1) * 132}`}/>
+                {#if floorIndex >= 1}
+                  <path class="move-line" d={`M160 46 H${28 + (deltaEnd - 1) * 132}`}/>
+                {/if}
                 <circle class="new-dot" cx={28 + (deltaEnd - 1) * 132} cy="72" r="8"/>
               </svg>
-              <div class="equation-strip"><span>Δx</span><strong>= {deltaEnd.toFixed(1)} − 2.0</strong><b>= {deltaX.toFixed(1)}</b></div>
+              <!-- The notation appears only once the sequence has introduced it:
+                   the value alone, then the change in words, then Δx. -->
+              {#if floorIndex === 0}
+                <div class="equation-strip"><span>x</span><strong>=</strong><b>{deltaEnd.toFixed(1)}</b></div>
+              {:else if floorIndex < 3}
+                <div class="equation-strip"><span class="word">change</span><strong>= {deltaEnd.toFixed(1)} − 2.0</strong><b>= {deltaXLabel}</b></div>
+              {:else}
+                <div class="equation-strip"><span>Δx</span><strong>= {deltaEnd.toFixed(1)} − 2.0</strong><b>= {deltaXLabel}</b></div>
+              {/if}
             </div>
             <label class="range-row">
               <span>1.2</span>
@@ -342,22 +530,67 @@
         <section class="floor-copy">
           <div class="floor-dots" aria-label={`Depth ${floorIndex + 1} of ${board.floors.length}`}>
             {#each board.floors as _, index}
-              <span class:active={index === floorIndex} class:read={index < floorIndex}></span>
+              <span class:active={index === floorIndex} class:read={index < floorIndex} class:checked={completed[`${boardIndex}:${index}`]}></span>
             {/each}
           </div>
-          <p>{floor}</p>
+
+          {#if exerciseOpen && exercise}
+            <div class="exercise" aria-live="polite">
+              <div class="check-topline">
+                <span>QUICK CHECK</span>
+                <span>Section {floorIndex + 1} of {board.floors.length}</span>
+              </div>
+
+              {#if exercise.visual === 'symbol-value'}
+                <div class="check-visual" aria-hidden="true">
+                  <div class="mini-square old">variable<span>x = 2</span></div>
+                  <svg viewBox="0 0 54 24"><path d="M2 12h46M42 6l6 6-6 6"/></svg>
+                  <div class="mini-square fresh">variable<span>x = 3</span></div>
+                </div>
+              {/if}
+
+              <p class="exercise-prompt">{exercise.prompt}</p>
+
+              {#if exercise.kind === 'choice'}
+                <div class="check-options">
+                  {#each exercise.options as option}
+                    <button
+                      disabled={completed[exerciseKey]}
+                      class:correct={completed[exerciseKey] && option.correct}
+                      class:missed={picked === option.label && !option.correct}
+                      on:click={() => chooseOption(option)}>{option.label}</button>
+                  {/each}
+                </div>
+              {/if}
+
+              {#if feedback}
+                <div class="feedback" class:success={completed[exerciseKey]}>{feedback}</div>
+              {/if}
+            </div>
+          {:else}
+            <p>{floor}</p>
+          {/if}
         </section>
 
         <div class="board-actions">
-          <button class="secondary" on:click={retreat} disabled={boardIndex === 0 && floorIndex === 0} aria-label="Previous step">
+          <button class="secondary" on:click={retreat} disabled={boardIndex === 0 && floorIndex === 0 && !exerciseOpen} aria-label="Previous step">
             <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <button class="primary" on:click={advance}>
-            {floorIndex < board.floors.length - 1 ? 'Continue' : boardIndex === boards.length - 1 ? 'Finish' : 'Next section'}
+          <button class="primary" on:click={advance} disabled={exerciseOpen && !completed[exerciseKey]}>
+            {#if exerciseOpen}
+              Continue
+            {:else if exercise && !completed[exerciseKey]}
+              Check
+            {:else if floorIndex < board.floors.length - 1}
+              Continue
+            {:else if boardIndex === boards.length - 1}
+              Finish
+            {:else}
+              Next section
+            {/if}
             <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
-      {/if}
     </main>
 
     <p class="swipe-note">Swipe sideways or use the buttons</p>
@@ -384,18 +617,30 @@
   .segments span { height: 4px; border-radius: 9px; background: var(--qx-surface-3); transition: background .2s, transform .2s; }
   .segments span.complete { background: var(--qx-green); }
   .segments span.active { background: var(--qx-accent); transform: scaleY(1.35); }
-  .board-card { flex: 1; min-height: 610px; background: var(--qx-surface); border: 1px solid var(--qx-border); border-radius: 24px; box-shadow: var(--qx-shadow-card); padding: 21px 18px 18px; display: flex; flex-direction: column; overflow: hidden; }
-  .board-card.check-mode { justify-content: center; }
+  .board-card { flex: 1 0 auto; min-height: 610px; background: var(--qx-surface); border: 1px solid var(--qx-border); border-radius: 24px; box-shadow: var(--qx-shadow-card); padding: 21px 18px 18px; display: flex; flex-direction: column; }
   .board-heading { margin-bottom: 13px; }
   .micro-label { color: var(--qx-accent-text); font-size: 10px; line-height: 1; letter-spacing: .13em; font-weight: 900; text-transform: uppercase; }
   h1 { color: var(--qx-text); font-size: 27px; line-height: 1.08; letter-spacing: -.035em; margin-top: 7px; }
-  .stage { min-height: 300px; border-radius: 18px; border: 1px solid var(--qx-border); background: var(--qx-surface-2); padding: 17px 14px 13px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+  .stage { min-height: 300px; flex-shrink: 0; border-radius: 18px; border: 1px solid var(--qx-border); background: var(--qx-surface-2); padding: 17px 14px 13px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
   .range-row { display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; gap: 8px; color: var(--qx-text-faint); font-size: 10px; font-weight: 800; width: 100%; margin-top: 13px; }
   .range-row span:last-child { text-align: right; }
   input[type='range'] { width: 100%; accent-color: var(--qx-accent); cursor: pointer; }
   .square-stage { min-height: 215px; display: grid; grid-template-columns: 1fr 126px; align-items: center; gap: 10px; }
-  .square { max-width: 152px; max-height: 152px; justify-self: center; border: 3px solid var(--qx-accent); background: var(--qx-accent-soft); display: grid; place-items: center; border-radius: 5px; transition: width .12s, height .12s; }
-  .square span { font: italic 800 34px/1 Georgia, serif; color: var(--qx-accent-text); }
+  .square-figure { justify-self: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .symbol-rows { display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+  .symbol-row { display: flex; align-items: center; gap: 8px; }
+  .symbol-row small { width: 62px; font-size: 9px; letter-spacing: .11em; font-weight: 900; color: var(--qx-text-faint); }
+  .symbol { min-width: 42px; height: 46px; padding: 0 11px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); display: inline-flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; }
+  .symbol.let { font: italic 800 22px/1 Georgia, serif; color: var(--qx-accent-text); border-style: dashed; }
+  .pair-stage, .assign-stage { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 150px; }
+  .assign-card { border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); border-radius: 13px; padding: 16px 22px; font-size: 26px; font-weight: 900; }
+  .assign-card.sym { font: italic 800 30px/1 Georgia, serif; }
+  .assign-card.val { background: var(--qx-surface); border-color: var(--qx-border-2); color: var(--qx-text); }
+  .assign-card.ghost { border-style: dashed; border-color: var(--qx-border-2); background: transparent; color: var(--qx-text-faint); font-size: 18px; padding: 11px 16px; }
+  .assign-joiner { width: 34px; height: 1px; background: var(--qx-border-2); }
+  .square { border: 3px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 5px; transition: width .12s, height .12s; }
+  .edge-label { display: flex; align-items: center; justify-content: center; gap: 9px; font: italic 800 26px/1 Georgia, serif; color: var(--qx-accent-text); transition: width .12s; }
+  .edge-label::before, .edge-label::after { content: ''; flex: 1; height: 1px; background: var(--qx-border-2); }
   .value-readout, .local-readout { border-left: 1px solid var(--qx-border-2); padding-left: 15px; display: flex; flex-direction: column; gap: 3px; }
   .value-readout small, .local-readout small, .rate-fraction small, .rate-answer small { font-size: 9px; font-weight: 900; letter-spacing: .11em; color: var(--qx-text-faint); }
   .value-readout strong, .local-readout strong { font-size: 23px; color: var(--qx-text); }
@@ -408,6 +653,7 @@
   .move-line { fill: none; stroke: var(--qx-accent); stroke-width: 3; stroke-linecap: round; }
   .equation-strip { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; background: var(--qx-surface); border: 1px solid var(--qx-border); border-radius: 13px; padding: 12px 14px; }
   .equation-strip span { color: var(--qx-accent-text); font-weight: 900; }
+  .equation-strip span.word { font-size: 10px; letter-spacing: .11em; text-transform: uppercase; }
   .equation-strip strong { font-size: 14px; }
   .equation-strip b { color: var(--qx-green-text); }
   .paired-stage { min-height: 185px; display: flex; align-items: center; justify-content: center; gap: 12px; }
@@ -438,7 +684,7 @@
   .fixed-point { fill: var(--qx-green); stroke: var(--qx-surface-2); stroke-width: 3; }
   .moving-point { fill: var(--qx-accent); stroke: var(--qx-surface-2); stroke-width: 3; }
   .curve-stage text { fill: var(--qx-text-dim); font-size: 10px; font-weight: 800; }
-  .floor-copy { padding: 15px 4px 5px; min-height: 122px; }
+  .floor-copy { padding: 15px 4px 5px; min-height: 122px; flex-shrink: 0; }
   .floor-dots { display: flex; gap: 5px; margin-bottom: 11px; }
   .floor-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--qx-surface-3); }
   .floor-dots span.read { background: var(--qx-green); }
@@ -452,19 +698,23 @@
   .secondary:disabled { opacity: .32; cursor: default; }
   .wide { width: 100%; }
   .swipe-note { text-align: center; color: var(--qx-text-faint); font-size: 10px; font-weight: 700; padding-bottom: 2px; }
-  .check-panel { display: flex; flex-direction: column; gap: 17px; }
+  .exercise { display: flex; flex-direction: column; gap: 12px; }
+  .exercise-prompt { color: var(--qx-text); font-size: 17px; line-height: 1.45; font-weight: 800; }
   .check-topline { display: flex; justify-content: space-between; color: var(--qx-accent-text); font-size: 10px; letter-spacing: .12em; font-weight: 900; }
   .check-topline span:last-child { color: var(--qx-text-faint); letter-spacing: 0; }
-  .check-visual { min-height: 150px; display: flex; align-items: center; justify-content: center; gap: 16px; background: var(--qx-surface-2); border: 1px solid var(--qx-border); border-radius: 18px; }
+  .check-visual { min-height: 116px; display: flex; align-items: center; justify-content: center; gap: 16px; background: var(--qx-surface-2); border: 1px solid var(--qx-border); border-radius: 18px; padding: 10px; }
   .check-visual svg { width: 44px; fill: none; stroke: var(--qx-accent); stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
   .mini-square { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 6px; font-size: 12px; font-weight: 900; color: var(--qx-text-dim); }
   .mini-square span { color: var(--qx-text); font-size: 23px; }
   .mini-square.old { width: 78px; height: 78px; border: 2px solid var(--qx-text-faint); }
   .mini-square.fresh { width: 100px; height: 100px; border: 3px solid var(--qx-green); background: var(--qx-green-soft); }
-  .check-panel h1 { font-size: 25px; }
-  .check-options { display: grid; grid-template-columns: 1fr; gap: 9px; }
-  .check-options button { min-height: 52px; border-radius: 13px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 18px; font-weight: 900; cursor: pointer; }
+  .check-options { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .check-options button { min-height: 48px; border-radius: 13px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 16px; font-weight: 800; cursor: pointer; padding: 8px 14px; text-align: left; }
   .check-options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .check-options button.missed { border-color: var(--qx-danger); }
+  .check-options button:disabled { cursor: default; }
+  .primary:disabled { opacity: .38; cursor: default; }
+  .floor-dots span.checked { background: var(--qx-green); }
   .feedback { padding: 12px 13px; border-radius: 12px; background: var(--qx-danger-soft); color: var(--qx-danger-text); font-size: 13px; line-height: 1.45; font-weight: 750; }
   .feedback.success { background: var(--qx-green-soft); color: var(--qx-green-text); }
   .complete-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 20px; }
