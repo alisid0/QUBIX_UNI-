@@ -75,6 +75,25 @@ export const sources = {
     ref: 'Thompson, Calculus Made Easy, ch. X, printed page 77',
     quote: 'If, however, Q and T are so near each other that the small portion QT of the curve is practically straight, then it is true to say that the ratio dy/dx is the slope of the curve.'
   },
+  // Wentworth, Plane Geometry, Gutenberg 33063. This transcription marks scan
+  // images and carries no printed folios, so citations say "scan N" rather than
+  // inventing a page number.
+  G1: {
+    ref: 'Wentworth, Plane Geometry, Book IV, Areas of Polygons, scan 193',
+    quote: 'The unit of surface is a square whose side is a unit of length.'
+  },
+  G2: {
+    ref: 'Wentworth, Plane Geometry, Book IV, scan 193',
+    quote: 'The area of a surface is the number of units of surface it contains.'
+  },
+  G3: {
+    ref: 'Wentworth, Plane Geometry, Book IV, scan 196',
+    quote: 'The area of a rectangle is equal to the product of its base by its altitude.'
+  },
+  G4: {
+    ref: 'Wentworth, Plane Geometry, Book IV, Scholium, scan 196',
+    quote: 'When the base and altitude each contain the linear unit an integral number of times, this proposition is rendered evident by dividing the figure into squares, each equal to the unit of surface. Thus, if the base contains seven linear units, and the altitude four, the figure may be divided into twenty-eight squares, each equal to the unit of surface.'
+  },
   T17: {
     ref: 'Thompson, Calculus Made Easy, ch. XI, printed page 93',
     quote: 'One of the principal uses of the process of differentiating is to find out under what conditions the value of the thing differentiated becomes a maximum, or a minimum. This is often exceedingly important in engineering questions, where it is most desirable to know what conditions will make the cost of working a minimum, or will make the efficiency a maximum.'

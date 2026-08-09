@@ -104,7 +104,7 @@
   // The three states are passed in rather than read from scope: Svelte tracks
   // dependencies at the call site, so reading them inside the body would leave
   // the goal list frozen.
-  function goalMet(kind, id, bench, cb, db, sb, dt, sp, dd) {
+  function goalMet(kind, id, bench, cb, db, sb, dt, sp, dd, bench24) {
     if (kind === 'assignment-bench') {
       const a = bench.assigned;
       if (id === 'g1') return a.x === 7;
@@ -136,6 +136,11 @@
       if (id === 'p2') return sp.hits.length > 1;
       if (id === 'p3') return sp.a === sp.b;
     }
+    if (kind === 'tiling-bench') {
+      // a2 is unreachable on purpose: 24 has no whole-number square root.
+      if (id === 'a2') return false;
+      return bench24.done.includes(id);
+    }
     if (kind === 'derivative-dial') {
       const r = 2 * dd.x;
       if (id === 'r1') return Math.abs(r - 6) < 0.001;
@@ -148,6 +153,44 @@
   // Span explorer: the average rate from a to b works out to a + b, so many
   // different spans share one rate. hits records which pairs reached 5, which
   // is how the second goal knows a *different* pair was used.
+  // Countable grid. Snapped to whole units, because Wentworth's scholium only
+  // holds when the sides contain the unit an integral number of times.
+  const GRID_W = 8, GRID_H = 6;
+  let grids = {};        // per interaction code: { b, a }
+  let gridDrag = false;
+  const gridOf = (code, g) => g[code] || { b: 3, a: 2 };
+  function setGrid(code, b, a) {
+    grids = { ...grids, [code]: { b: Math.max(1, Math.min(GRID_W, b)), a: Math.max(1, Math.min(GRID_H, a)) } };
+  }
+
+  // Exercise-side grid, one shared cell since only one check shows at a time.
+  let exGrid = { b: 1, a: 1 };
+  const exGridOk = (ex, g) =>
+    g.b * g.a === ex.targetArea
+    && (!ex.requireBase || g.b === ex.requireBase)
+    && (!ex.requireSquare || g.b === g.a);
+
+  // Tiling bench: which distinct rectangles of area 24 have been built.
+  // Goals stick once reached. Goal a1 is about the target 24 and a3 is about any
+  // other target, so without this, meeting one would un-tick the other and the
+  // list would read as current state rather than as things achieved.
+  let bench24 = { b: 1, a: 1, found: [], target: 24, done: [] };
+  function benchSet(b, a) {
+    const next = { ...bench24, b: Math.max(1, Math.min(GRID_W, b)), a: Math.max(1, Math.min(GRID_H, a)) };
+    if (next.b * next.a === next.target) {
+      const key = `${next.b}×${next.a}`;
+      if (!next.found.includes(key)) next.found = [...next.found, key];
+    }
+    const hit = [];
+    if (next.target === 24 && next.found.length >= 3) hit.push('a1');
+    if (next.target !== 24 && next.b === next.a && next.b * next.a === next.target) hit.push('a3');
+    next.done = [...new Set([...next.done, ...hit])];
+    bench24 = next;
+  }
+  function benchTarget(t) {
+    bench24 = { ...bench24, target: t, found: [] };
+  }
+
   let splitTried = false;
   let sp = { a: 1, b: 2, hits: [] };
   function spStep(which, delta) {
@@ -350,6 +393,49 @@
                       <b class="accent">{(values[si] - 2).toFixed(1).replace('-', '−')}</b>
                     </div>
                     <p class="stage-note">Δ is not a value. It is an instruction to take the new figure and subtract the old.</p>
+                  </div>
+
+                {:else if interaction.kind === 'unit-square'}
+                  <div class="rows centre">
+                    <div class="unit-fig">
+                      <span class="side-mark">1</span>
+                      <span class="unit-sq"></span>
+                      <span class="side-mark under">1</span>
+                    </div>
+                    <p class="stage-note">The unit of surface. Everything on this board is counted in these.</p>
+                  </div>
+
+                {:else if interaction.kind === 'count-grid'}
+                  {@const g = gridOf(interaction.code, grids)}
+                  <div class="rows centre">
+                    <div class="grid-wrap"
+                      on:pointerdown={() => (gridDrag = true)}
+                      on:pointerup={() => (gridDrag = false)}
+                      on:pointerleave={() => (gridDrag = false)}>
+                      {#each Array(GRID_H) as _, r}
+                        <div class="grid-row">
+                          {#each Array(GRID_W) as _, c}
+                            <button class="cell"
+                              class:on={c < g.b && (GRID_H - 1 - r) < g.a}
+                              class:sq={interaction.requireSquare && g.b === g.a && c < g.b && (GRID_H - 1 - r) < g.a}
+                              on:pointerdown={() => setGrid(interaction.code, c + 1, GRID_H - r)}
+                              on:pointerenter={() => gridDrag && setGrid(interaction.code, c + 1, GRID_H - r)}
+                              aria-label={`Set ${c + 1} by ${GRID_H - r}`}></button>
+                          {/each}
+                        </div>
+                      {/each}
+                    </div>
+                    <div class="grid-read">
+                      <span><small>BASE</small><b>{g.b}</b></span>
+                      <span><small>ALTITUDE</small><b>{g.a}</b></span>
+                      <span><small>SQUARES COUNTED</small><b class="accent">{g.b * g.a}</b></span>
+                    </div>
+                    {#if interaction.showProduct}
+                      <div class="grid-product">{g.b} × {g.a} = {g.b * g.a}</div>
+                    {/if}
+                    {#if interaction.requireSquare && g.b === g.a}
+                      <p class="ok">Base and altitude agree, so this is a square. Its area is a side times itself, written x².</p>
+                    {/if}
                   </div>
 
                 {:else if interaction.kind === 'delta-facts'}
@@ -606,6 +692,28 @@
                     <p class="fb">{o.feedback}</p>
                   {/each}
                 {/if}
+              {:else if ex.kind === 'set-grid'}
+                <div class="grid-wrap small"
+                  on:pointerdown={() => (gridDrag = true)}
+                  on:pointerup={() => (gridDrag = false)}
+                  on:pointerleave={() => (gridDrag = false)}>
+                  {#each Array(GRID_H) as _, r}
+                    <div class="grid-row">
+                      {#each Array(GRID_W) as _, c}
+                        <button class="cell"
+                          class:on={c < exGrid.b && (GRID_H - 1 - r) < exGrid.a}
+                          on:pointerdown={() => (exGrid = { b: c + 1, a: GRID_H - r })}
+                          on:pointerenter={() => gridDrag && (exGrid = { b: c + 1, a: GRID_H - r })}
+                          aria-label={`Set ${c + 1} by ${GRID_H - r}`}></button>
+                      {/each}
+                    </div>
+                  {/each}
+                </div>
+                <p class="kind-note">
+                  {exGrid.b} × {exGrid.a} = {exGrid.b * exGrid.a} ·
+                  <b class:hit={exGridOk(ex, exGrid)}>{exGridOk(ex, exGrid) ? 'that is it' : 'not yet'}</b>
+                </p>
+
               {:else if ex.kind === 'stepper'}
                 <div class="stepper">
                   <button aria-label="Decrease" on:click={() => stepBy(ex, -1)}>−</button>
@@ -720,8 +828,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -748,8 +856,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -775,8 +883,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -798,8 +906,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -824,8 +932,8 @@
                     {/if}
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -862,8 +970,8 @@
                     {/if}
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -883,8 +991,46 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'tiling-bench'}
+                  <div class="rows">
+                    <div class="bench-target">TARGET AREA <b>{bench24.target}</b></div>
+                    <div class="grid-wrap"
+                      on:pointerdown={() => (gridDrag = true)}
+                      on:pointerup={() => (gridDrag = false)}
+                      on:pointerleave={() => (gridDrag = false)}>
+                      {#each Array(GRID_H) as _, r}
+                        <div class="grid-row">
+                          {#each Array(GRID_W) as _, c}
+                            <button class="cell"
+                              class:on={c < bench24.b && (GRID_H - 1 - r) < bench24.a}
+                              class:hitarea={bench24.b * bench24.a === bench24.target && c < bench24.b && (GRID_H - 1 - r) < bench24.a}
+                              on:pointerdown={() => benchSet(c + 1, GRID_H - r)}
+                              on:pointerenter={() => gridDrag && benchSet(c + 1, GRID_H - r)}
+                              aria-label={`Set ${c + 1} by ${GRID_H - r}`}></button>
+                          {/each}
+                        </div>
+                      {/each}
+                    </div>
+                    <div class="grid-product">{bench24.b} × {bench24.a} = {bench24.b * bench24.a}</div>
+                    <div class="bench-targets">
+                      <button class:on={bench24.target === 24} on:click={() => benchTarget(24)}>24</button>
+                      <button class:on={bench24.target === 16} on:click={() => benchTarget(16)}>16</button>
+                      <button class:on={bench24.target === 25} on:click={() => benchTarget(25)}>25</button>
+                    </div>
+                    {#if bench24.found.length}
+                      <p class="stage-note">Found so far: {bench24.found.join(', ')}</p>
+                    {/if}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd, bench24) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -1143,6 +1289,30 @@
   .flow-arrow { position: relative; color: var(--qx-text-faint); font-size: 22px; width: 42px; text-align: center; }
   .flow-arrow i { position: absolute; left: 0; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--qx-accent); transform: translateY(-50%); animation: pulse-right .55s ease-out; }
   @keyframes pulse-right { from { left: 0; opacity: 1; } to { left: 34px; opacity: 0; } }
+  .unit-fig { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; justify-items: center; gap: 7px; }
+  .unit-sq { width: 62px; height: 62px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 3px; }
+  .side-mark { font-size: 13px; font-weight: 900; color: var(--qx-accent-text); }
+  .side-mark.under { grid-column: 2; }
+
+  .grid-wrap { display: flex; flex-direction: column; gap: 2px; touch-action: none; user-select: none; }
+  .grid-wrap.small { transform: scale(.86); transform-origin: left top; }
+  .grid-row { display: flex; gap: 2px; }
+  .cell { width: 30px; height: 30px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); border-radius: 2px; cursor: pointer; padding: 0; }
+  .cell.on { background: var(--qx-accent-soft); border-color: var(--qx-accent); }
+  .cell.sq { background: var(--qx-green-soft); border-color: var(--qx-green); }
+  .cell.hitarea { background: var(--qx-green-soft); border-color: var(--qx-green); }
+  .grid-read { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .grid-read span { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .grid-read small { font-size: 8.5px; letter-spacing: .1em; font-weight: 900; color: var(--qx-text-faint); }
+  .grid-read b { font-size: 19px; }
+  .grid-read b.accent { color: var(--qx-accent-text); }
+  .grid-product { font-size: 18px; font-weight: 900; color: var(--qx-accent-text); }
+  .bench-target { font-size: 10px; letter-spacing: .12em; font-weight: 900; color: var(--qx-text-faint); }
+  .bench-target b { font-size: 18px; color: var(--qx-accent-text); margin-left: 6px; }
+  .bench-targets { display: flex; gap: 7px; }
+  .bench-targets button { min-width: 44px; height: 36px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font-weight: 900; cursor: pointer; }
+  .bench-targets button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+
   .variant.rejected { opacity: .55; }
   .variant.rejected .code { border-color: var(--qx-danger); color: var(--qx-danger-text); }
   .facts-head { display: flex; justify-content: center; margin-bottom: 4px; }

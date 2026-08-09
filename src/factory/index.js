@@ -9,6 +9,7 @@ import { bb7, selections as sel7, finalised as fin7, gated as gate7 } from './bb
 import { bb8, selections as sel8, finalised as fin8, gated as gate8 } from './bb8-options.js';
 import { bb9, bb10, selections as sel9, finalised as fin9, gated as gate9 } from './bb9-options.js';
 import { bb11, bb12, selections as sel11, finalised as fin11, gated as gate11 } from './bb11-options.js';
+import { area, selections as selA, finalised as finA, rejected as rejA, gated as gateA } from './area-options.js';
 
 export { sources };
 
@@ -26,7 +27,10 @@ export const registry = [
   { key: '9', label: 'BB9', bb: bb9, selections: sel9, finalised: fin9, gated: gate9 },
   { key: '10', label: 'BB10', bb: bb10, selections: sel9, finalised: fin9, gated: gate9 },
   { key: '11', label: 'BB11', bb: bb11, selections: sel11, finalised: fin11, gated: gate11 },
-  { key: '12', label: 'BB12', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 }
+  { key: '12', label: 'BB12', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 },
+  // Proposed pilot. No board number until the map is approved and the existing
+  // BB6 to BB12 are renumbered.
+  { key: 'area', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA }
 ];
 
 export const entryFor = key => registry.find(e => e.key === key) || registry[0];
