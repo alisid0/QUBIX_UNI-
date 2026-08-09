@@ -7,7 +7,12 @@
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
 
   // Interaction kinds that carry their own controls or are deliberately fixed.
-  const NO_CONTROL = ['line-fails', 'axes-build', 'find-place', 'quadrants', 'diagonal-bench-stage', 'unit-square', 'unit-square-fixed', 'unit-scale', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match'];
+  const NO_CONTROL = ['line-fails', 'axes-build', 'find-place', 'quadrants', 'diagonal-bench-stage', 'unit-square', 'unit-square-fixed', 'unit-scale', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match',
+    // The functions boards. Every one of these carries its own stepper, plate
+    // picker or number line, so the shared x slider would be dead under them.
+    'substitute-strip', 'machine-single', 'rule-swap', 'two-machines', 'relation-test', 'function-word',
+    'notation-builder', 'notation-card', 'two-answers', 'square-back', 'function-or-not', 'verdict-strip',
+    'accepted-line', 'accepted-list'];
 
   // The kept sheet: the board as chosen, with everything unselected and rejected
   // hidden. A last read before approval is asked for.
@@ -50,6 +55,89 @@
   // Sorter state for S1-I2: each chip cycles pool -> fixed -> varies -> pool.
   const bins = ['unfiled', 'fixed', 'can vary'];
   let sorted = { '2': 0, x: 0, '7': 0, y: 0 };
+
+  // ---- Functions boards -------------------------------------------------
+  // One table of rules, shared by both boards, so a rule cannot mean one thing
+  // in the machine and another in the inspector.
+  const RULES = {
+    'double it': v => v * 2,
+    'add three': v => v + 3,
+    'square it': v => v * v,
+    'take away one': v => v - 1
+  };
+  const PLATES = Object.keys(RULES);
+  const run = (name, v) => RULES[name](v);
+
+  let sub = { b: 4 };                       // substitute-strip
+  let plate = 0;                            // rule-swap: which plate is loaded
+  let mach = { x: 3 };                      // machine-single, two-machines
+  let lad = { d: 3 };                       // relation-test: foot of the ladder
+  let nota = 0;                             // notation-builder: F, f or phi
+  let fork = { x: 4 };                      // two-answers
+  let verdicts = {};                        // function-or-not, verdict-strip
+  let testedRules = {};                     // which rules have been run
+  let accept = { x: 4 };                    // accepted-line
+
+  const NOTATION = ['F', 'f', 'φ'];
+  // The ladder is 5 units long, so the height it reaches falls as the foot goes
+  // out. The other two readouts are constants and are meant to sit dead.
+  const ladHeight = d => Math.sqrt(Math.max(0, 25 - d * d));
+  const FORK_RULE = 'a number whose square is x';
+  const forkAnswers = x => x < 0 ? [] : (x === 0 ? [0] : [Math.sqrt(x), -Math.sqrt(x)]);
+  const fmt2 = n => Number(n.toFixed(2)).toString().replace('-', '−');
+
+  function judge(name, v) {
+    verdicts = { ...verdicts, [name]: v };
+  }
+  function testRule(name) {
+    testedRules = { ...testedRules, [name]: true };
+  }
+
+  // Workshop state. Kept separate from the goal checkers above so a new
+  // workshop cannot inherit another one's success conditions.
+  let fm = { plate: 0, seen: [] };          // machine bench
+  let rg = { hidden: 'add three', fed: [], guess: null };
+  let ri = { verdicts: {} };                // rule inspector
+
+  function fmFeed(input) {
+    const name = PLATES[fm.plate];
+    const out = run(name, input);
+    fm = { ...fm, seen: [...fm.seen, { plate: name, input, out }] };
+  }
+  function rgFeed(v) {
+    if (rg.fed.some(f => f.input === v)) return;
+    rg = { ...rg, fed: [...rg.fed, { input: v, out: run(rg.hidden, v) }] };
+  }
+
+  // State is passed in rather than read from scope. Svelte tracks dependencies
+  // where they are read, so a checker that reached into the closure would leave
+  // the goal list frozen; that fault has caught four interactions in this file.
+  function machineGoal(id, s) {
+    const eights = s.seen.filter(r => r.out === 8);
+    if (id === 'm1') return eights.length > 0;
+    if (id === 'm2') return new Set(eights.map(r => r.plate)).size > 1;
+    if (id === 'm3') return s.seen.some(r => r.out === r.input);
+    if (id === 'm4') {
+      return PLATES.some(p => {
+        const rows = s.seen.filter(r => r.plate === p);
+        return rows.some(a => rows.some(b => a.input !== b.input && a.out === b.out));
+      });
+    }
+    return false;
+  }
+  function guessGoal(id, s) {
+    if (id === 'g1') return s.fed.length >= 2;
+    if (id === 'g2') return s.guess === s.hidden;
+    return false;
+  }
+  function inspectorGoal(id, s, rules) {
+    const v = s.verdicts;
+    if (id === 'r1') return v['a number whose square is x'] === 'fail';
+    if (id === 'r2') return v['1 divided by it'] === 'pass';
+    if (id === 'r3') return v['a number bigger than x'] === 'fail';
+    if (id === 'r4') return rules.filter(r => r.ok).every(r => v[r.name] === 'pass');
+    return false;
+  }
 
   // Exercise preview state, keyed by exercise code.
   let picked = {};
@@ -807,6 +895,193 @@
                       <span class="edge-label" style={`width:${squareSize(values[si])}px`}>x</span>
                     </div>
                   </div>
+
+                {:else if interaction.kind === 'substitute-strip'}
+                  <div class="rows">
+                    <div class="bench-row">
+                      <small>b</small>
+                      <button on:click={() => sub = { b: Math.max(1, sub.b - 1) }} aria-label="Decrease b">−</button>
+                      <b>{sub.b}</b>
+                      <button on:click={() => sub = { b: Math.min(6, sub.b + 1) }} aria-label="Increase b">+</button>
+                    </div>
+                    <div class="work-lines">
+                      <span>3b²</span>
+                      <span>3 × {sub.b}²</span>
+                      <span>3 × {sub.b * sub.b}</span>
+                      <b>{3 * sub.b * sub.b}</b>
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'machine-single' || interaction.kind === 'two-machines'}
+                  {@const names = interaction.kind === 'two-machines' ? ['double it', 'square it'] : ['square it']}
+                  <div class="rows">
+                    <div class="bench-row">
+                      <small>IN</small>
+                      <button on:click={() => mach = { x: Math.max(0, mach.x - 1) }} aria-label="Decrease input">−</button>
+                      <b>{mach.x}</b>
+                      <button on:click={() => mach = { x: Math.min(6, mach.x + 1) }} aria-label="Increase input">+</button>
+                    </div>
+                    <div class="machine-row">
+                      {#each names as nm}
+                        <div class="machine">
+                          <span class="port">{mach.x}</span>
+                          <span class="plate">{nm}</span>
+                          <b class="port out">{run(nm, mach.x)}</b>
+                        </div>
+                      {/each}
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'rule-swap'}
+                  <div class="rows">
+                    <div class="plates">
+                      {#each PLATES.slice(0, 3) as nm, pi}
+                        <button class="chip plate-pick" class:up={plate === pi} on:click={() => plate = pi}>{nm}</button>
+                      {/each}
+                    </div>
+                    <table class="io-table">
+                      <thead><tr><th>in</th><th>out</th></tr></thead>
+                      <tbody>
+                        {#each [1, 2, 3, 4] as v}
+                          <tr><td>{v}</td><td><b>{run(PLATES[plate], v)}</b></td></tr>
+                        {/each}
+                      </tbody>
+                    </table>
+                    <p class="stage-note">The left column never moves. Only the plate does.</p>
+                  </div>
+
+                {:else if interaction.kind === 'relation-test'}
+                  <div class="rows">
+                    <label class="range-row">
+                      <span>0</span>
+                      <input type="range" min="0" max="5" step="0.5" bind:value={lad.d} aria-label="Distance of the foot of the ladder from the wall"/>
+                      <span>5</span>
+                    </label>
+                    <div class="readouts">
+                      <div class="readout live"><small>height reached</small><b>{fmt2(ladHeight(lad.d))}</b></div>
+                      <div class="readout"><small>bricks in the wall</small><b>1,240</b></div>
+                      <div class="readout"><small>year it was built</small><b>1908</b></div>
+                    </div>
+                    <p class="stage-note">Foot of the ladder, {fmt2(lad.d)} from the wall.</p>
+                  </div>
+
+                {:else if interaction.kind === 'function-word'}
+                  <div class="rows centre">
+                    <div class="glyph">function<em>a relation where changing the first changes the second</em></div>
+                  </div>
+
+                {:else if interaction.kind === 'notation-builder'}
+                  <div class="rows centre">
+                    <div class="build-line">
+                      <span class="card val">y<em>what comes out</em></span>
+                      <span class="card sym">=</span>
+                      <button class="card sym cycle" on:click={() => nota = (nota + 1) % NOTATION.length}>{NOTATION[nota]}<em>the rule</em></button>
+                      <span class="card sym">(</span>
+                      <span class="card val">x<em>what goes in</em></span>
+                      <span class="card sym">)</span>
+                    </div>
+                    <p class="stage-note">Tap the letter. The meaning underneath does not change.</p>
+                  </div>
+
+                {:else if interaction.kind === 'notation-card'}
+                  <div class="rows centre">
+                    <div class="build-line">
+                      {#each NOTATION as L}<span class="card sym">y = {L}(x)</span>{/each}
+                    </div>
+                    <p class="stage-note">All three say that y depends on x by some rule.</p>
+                  </div>
+
+                {:else if interaction.kind === 'two-answers'}
+                  {@const outs = forkAnswers(fork.x)}
+                  <div class="rows">
+                    <div class="bench-row">
+                      <small>IN</small>
+                      <button on:click={() => fork = { x: fork.x - 1 }} aria-label="Decrease input">−</button>
+                      <b>{fmt2(fork.x)}</b>
+                      <button on:click={() => fork = { x: fork.x + 1 }} aria-label="Increase input">+</button>
+                    </div>
+                    <div class="machine">
+                      <span class="plate">{FORK_RULE}</span>
+                      <div class="fork">
+                        {#if outs.length === 0}
+                          <span class="port empty">nothing comes out</span>
+                        {:else}
+                          {#each outs as o}<b class="port out">{fmt2(o)}</b>{/each}
+                        {/if}
+                      </div>
+                    </div>
+                    <p class="stage-note">
+                      {outs.length === 0 ? 'No number multiplied by itself gives a negative.'
+                        : outs.length === 1 ? 'Only here do the two answers land on top of each other.'
+                        : 'Two answers, and both are right.'}
+                    </p>
+                  </div>
+
+                {:else if interaction.kind === 'square-back'}
+                  <div class="rows">
+                    <table class="io-table">
+                      <thead><tr><th>n</th><th>n²</th></tr></thead>
+                      <tbody>
+                        {#each [-3, -2, -1, 0, 1, 2, 3] as n}
+                          <tr><td>{fmt2(n)}</td><td><b>{n * n}</b></td></tr>
+                        {/each}
+                      </tbody>
+                    </table>
+                    <p class="stage-note">Read the right column backwards and 9 has two rows pointing at it.</p>
+                  </div>
+
+                {:else if interaction.kind === 'function-or-not' || interaction.kind === 'verdict-strip'}
+                  {@const cards = [
+                    { name: 'double it', runs: '2 → 4, 3 → 6, 4 → 8' },
+                    { name: 'square it', runs: '−2 → 4, 0 → 0, 2 → 4' },
+                    { name: 'a number whose square is x', runs: '9 → 3 and −3' },
+                    { name: '1 divided by it', runs: '2 → 0.5, 0 → refused' },
+                    { name: 'a number bigger than x', runs: '3 → 4, 5, 6, …' }
+                  ]}
+                  {@const shown = interaction.kind === 'verdict-strip' ? cards.slice(0, 3) : cards}
+                  <div class="rows">
+                    {#each shown as c}
+                      <div class="rule-card" class:passed={verdicts[c.name] === 'pass'} class:failed={verdicts[c.name] === 'fail'}>
+                        <b>{c.name}</b>
+                        {#if testedRules[c.name]}
+                          <em>{c.runs}</em>
+                        {:else}
+                          <button class="chip" on:click={() => testRule(c.name)}>test it</button>
+                        {/if}
+                        <div class="verdict">
+                          <button class="chip" on:click={() => judge(c.name, 'pass')}>function</button>
+                          <button class="chip" on:click={() => judge(c.name, 'fail')}>not</button>
+                        </div>
+                      </div>
+                    {/each}
+                  </div>
+
+                {:else if interaction.kind === 'accepted-line'}
+                  {@const ok = accept.x >= 0}
+                  <div class="rows">
+                    <label class="range-row">
+                      <span>−9</span>
+                      <input type="range" min="-9" max="9" step="1" bind:value={accept.x} aria-label="Number offered to the rule"/>
+                      <span>9</span>
+                    </label>
+                    <div class="accept-strip" class:ok>
+                      <span>{fmt2(accept.x)}</span>
+                      <b>{ok ? `accepted → ${fmt2(Math.sqrt(accept.x))} and ${fmt2(-Math.sqrt(accept.x))}` : 'refused'}</b>
+                    </div>
+                    <p class="stage-note">Drag across nought and watch where the refusal starts.</p>
+                  </div>
+
+                {:else if interaction.kind === 'accepted-list'}
+                  <div class="rows">
+                    <table class="io-table">
+                      <thead><tr><th>input</th><th>verdict</th></tr></thead>
+                      <tbody>
+                        {#each [-4, -1, 0, 1, 4, 9] as n}
+                          <tr><td>{fmt2(n)}</td><td><b>{n < 0 ? 'refused' : 'accepted'}</b></td></tr>
+                        {/each}
+                      </tbody>
+                    </table>
+                  </div>
                 {/if}
 
                 <!-- Only the kinds that actually read the section value get a
@@ -1239,6 +1514,79 @@
                     </ul>
                   </div>
 
+                {:else if w.kind === 'machine-bench'}
+                  <div class="rows">
+                    <div class="plates">
+                      {#each w.plates as nm, pi}
+                        <button class="chip plate-pick" class:up={fm.plate === pi} on:click={() => fm = { ...fm, plate: pi }}>{nm}</button>
+                      {/each}
+                    </div>
+                    <div class="tray">
+                      {#each w.inputs as v}
+                        <button class="chip pick" on:click={() => fmFeed(v)}>{fmt2(v)}</button>
+                      {/each}
+                    </div>
+                    {#if fm.seen.length}
+                      <p class="stage-note">
+                        {fm.seen.slice(-6).map(r => `${fmt2(r.input)} → ${fmt2(r.out)}`).join('   ')}
+                      </p>
+                    {/if}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={machineGoal(g.id, fm)}>
+                          <i>{machineGoal(g.id, fm) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'rule-guess'}
+                  <div class="rows">
+                    <div class="tray">
+                      {#each w.inputs as v}
+                        <button class="chip pick" on:click={() => rgFeed(v)}>{fmt2(v)}</button>
+                      {/each}
+                    </div>
+                    <table class="io-table">
+                      <thead><tr><th>in</th><th>out</th></tr></thead>
+                      <tbody>
+                        {#each rg.fed as f}<tr><td>{fmt2(f.input)}</td><td><b>{fmt2(f.out)}</b></td></tr>{/each}
+                      </tbody>
+                    </table>
+                    <div class="plates">
+                      {#each w.plates as nm}
+                        <button class="chip plate-pick" class:up={rg.guess === nm} on:click={() => rg = { ...rg, guess: nm }}>{nm}</button>
+                      {/each}
+                    </div>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={guessGoal(g.id, rg)}>
+                          <i>{guessGoal(g.id, rg) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'rule-inspector'}
+                  <div class="rows">
+                    {#each w.rules as r}
+                      <div class="rule-card" class:passed={ri.verdicts[r.name] === 'pass'} class:failed={ri.verdicts[r.name] === 'fail'}>
+                        <b>{r.name}</b>
+                        <div class="verdict">
+                          <button class="chip" on:click={() => ri = { verdicts: { ...ri.verdicts, [r.name]: 'pass' } }}>function</button>
+                          <button class="chip" on:click={() => ri = { verdicts: { ...ri.verdicts, [r.name]: 'fail' } }}>not</button>
+                        </div>
+                      </div>
+                    {/each}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={inspectorGoal(g.id, ri, w.rules)}>
+                          <i>{inspectorGoal(g.id, ri, w.rules) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
                 {:else if w.kind === 'statement-match'}
                   <div class="rows">
                     {#each w.pairs as p}
@@ -1454,6 +1802,40 @@
   .pair-row b { min-width: 52px; font-size: 15px; color: var(--qx-accent-text); }
   .pair-row i { font-style: normal; color: var(--qx-text-faint); }
   .ok { font-size: 12px; line-height: 1.45; color: var(--qx-green-text); background: var(--qx-green-soft); border-radius: 9px; padding: 8px 11px; }
+
+  /* Functions boards. */
+  .work-lines { display: flex; flex-direction: column; gap: 5px; font-size: 14px; color: var(--qx-text-2); }
+  .work-lines b { font-size: 19px; color: var(--qx-accent-text); }
+  .machine-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .machine { flex: 1; min-width: 128px; display: flex; flex-direction: column; align-items: center; gap: 7px; border: 1px solid var(--qx-border-2); border-radius: 12px; padding: 11px 9px; }
+  .machine .port { font-size: 16px; font-weight: 800; color: var(--qx-text-2); }
+  .machine .port.out { font-size: 21px; color: var(--qx-accent-text); }
+  .machine .port.empty { font-size: 12px; font-weight: 700; color: var(--qx-text-faint); }
+  .machine .plate { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--qx-text-dim); border-top: 1px dashed var(--qx-border-2); border-bottom: 1px dashed var(--qx-border-2); padding: 5px 0; width: 100%; text-align: center; }
+  .fork { display: flex; gap: 14px; align-items: center; }
+  .plates { display: flex; gap: 6px; flex-wrap: wrap; }
+  .plate-pick { font-size: 11.5px; }
+  .io-table { border-collapse: collapse; font-size: 13px; align-self: flex-start; }
+  .io-table th { font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--qx-text-faint); text-align: left; padding: 0 16px 4px 0; font-weight: 800; }
+  .io-table td { padding: 2px 16px 2px 0; color: var(--qx-text-2); }
+  .io-table b { color: var(--qx-accent-text); font-size: 15px; }
+  .readouts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .readout { flex: 1; min-width: 96px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 8px 9px; opacity: .5; }
+  .readout.live { opacity: 1; border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .readout small { display: block; font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
+  .readout b { font-size: 18px; color: var(--qx-accent-text); }
+  .cycle { cursor: pointer; }
+  .rule-card { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; border: 1px solid var(--qx-border-2); border-radius: 11px; padding: 9px 11px; }
+  .rule-card b { font-size: 13px; flex: 1; min-width: 132px; }
+  .rule-card em { font-style: normal; font-size: 11.5px; color: var(--qx-text-faint); }
+  .rule-card.passed { border-color: var(--qx-green); background: var(--qx-green-soft); }
+  .rule-card.failed { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .verdict { display: flex; gap: 5px; }
+  .accept-strip { display: flex; align-items: center; gap: 11px; border: 1px dashed var(--qx-border-2); border-radius: 10px; padding: 9px 11px; font-size: 13px; }
+  .accept-strip span { font-size: 18px; font-weight: 800; min-width: 34px; }
+  .accept-strip b { color: var(--qx-text-faint); }
+  .accept-strip.ok { border-style: solid; border-color: var(--qx-green); }
+  .accept-strip.ok b { color: var(--qx-green-text); }
 
   .kind-note { font-size: 12.5px; color: var(--qx-text-dim); line-height: 1.5; }
   .kind-note b { color: var(--qx-text-dim); }

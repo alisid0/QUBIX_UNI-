@@ -102,6 +102,66 @@ export const sources = {
     ref: 'Wentworth, Plane Geometry, Book IV, Scholium, scan 196',
     quote: 'When the base and altitude each contain the linear unit an integral number of times, this proposition is rendered evident by dividing the figure into squares, each equal to the unit of surface. Thus, if the base contains seven linear units, and the altitude four, the figure may be divided into twenty-eight squares, each equal to the unit of surface.'
   },
+  // Functions. Three sources at three levels: Wentworth for the procedure,
+  // Thompson for the name and the notation, Hardy for the precise property.
+  // Added 2026-08-09, all read in the transcriptions rather than recalled.
+  //
+  // These correct the pilot proposal, which stated that the word "function" in
+  // its modern sense is not on the shelf and that the function boards would be
+  // ORIGINAL. Thompson defines the word outright; Hardy states the one-value
+  // property exactly.
+  F1: {
+    ref: 'Wentworth, The First Steps in Algebra, ch. I art. 40, printed folio 12',
+    quote: 'The numerical value of an algebraic expression is the number obtained by putting for the letters involved the numbers for which these letters stand, and then performing the operations required by the signs.'
+  },
+  F2: {
+    ref: 'Thompson, Calculus Made Easy, ch. III, printed page 13',
+    quote: 'It should be noted here that we can only find this ratio dy/dx when y and x are related to each other in some way, so that whenever x varies y does vary also.'
+  },
+  // Thompson makes the relation fail before he names it. The same shape as the
+  // failing number line in The Coordinate Plane, and his own device, not ours.
+  F3: {
+    ref: 'Thompson, Calculus Made Easy, ch. III, printed pages 13–14',
+    quote: 'If, while x is, as before, the distance of the foot of the ladder from the wall, y is, instead of the height reached, the horizontal length of the wall, or the number of bricks in it, or the number of years since it was built, any change in x would naturally cause no change whatever in y; in this case dy/dx has no meaning whatever, and it is not possible to find an expression for it.'
+  },
+  F4: {
+    ref: 'Thompson, Calculus Made Easy, ch. III, printed page 14',
+    quote: 'Whenever we use differentials dx, dy, dz, etc., the existence of some kind of relation between x, y, z, etc., is implied, and this relation is called a "function" in x, y, z, etc.'
+  },
+  F5: {
+    ref: 'Thompson, Calculus Made Easy, ch. III, printed pages 14–15',
+    quote: 'We see that an explicit function in x, y, z, etc., is simply something the value of which changes when x, y, z, etc., are changing, either one at the time or several together. Because of this, the value of the explicit function is called the dependent variable, as it depends on the value of the other variable quantities in the function; these other variables are called the independent variables because their value is not determined from the value assumed by the function.'
+  },
+  F6: {
+    ref: 'Thompson, Calculus Made Easy, ch. III, printed page 15',
+    quote: 'Sometimes the letter f or φ is used instead of F, so that y = F(x), y = f(x) and y = φ(x) all mean the same thing, namely, that the value of y depends on the value of x in some way which is not stated.'
+  },
+  // Hardy, A Course of Pure Mathematics, 3rd edition, Gutenberg 38769. Hardy
+  // died in 1947, so the text is outside the UK life-plus-70 term. The Gutenberg
+  // edition credits transcribers and proofreaders only, no editor.
+  H1: {
+    ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §20, printed page 38',
+    quote: 'And let us suppose that the positions of the points P and Q are not independent, but connected by a relation which we can imagine to be expressed as a relation between x and y: so that, when P and x are known, Q and y are also known. … In these circumstances y is said to be a function of x.'
+  },
+  H2: {
+    ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §20, printed page 38',
+    quote: '(1) y is determined for every value of x; (2) to each value of x for which y is given corresponds one and only one value of y; (3) the relation between x and y is expressed by means of an analytical formula, from which the value of y corresponding to a given value of x can be calculated by direct substitution of the latter.'
+  },
+  // The catch, and it must be recorded rather than quietly dropped: Hardy lists
+  // the one-value property and then refuses to make it part of the definition.
+  // Modern school usage took the opposite decision.
+  H3: {
+    ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §20, printed page 39',
+    quote: 'It is indeed the case that these particular characteristics are possessed by many of the most important functions. But the consideration of the following examples will make it clear that they are by no means essential to a function. All that is essential is that there should be some relation between x and y such that to some values of x at any rate correspond values of y.'
+  },
+  H4: {
+    ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §20, Examples X.3, printed page 39',
+    quote: 'Let y² = x. Then if x is positive this equation defines two values of y corresponding to each value of x, viz. ±√x. If x = 0, y = 0. Hence to the particular value 0 of x corresponds one and only one value of y. But if x is negative there is no value of y which satisfies the equation. That is to say, the function y is not defined for negative values of x.'
+  },
+  H5: {
+    ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §26, printed pages 49–50',
+    quote: 'It would be natural to denote by √x, where x is any positive number, the positive square root of x, in which case y = √x would be a one-valued function of x. It is however often more convenient to regard √x as standing for the two-valued function whose two values are the positive and negative square roots of x.'
+  },
   T17: {
     ref: 'Thompson, Calculus Made Easy, ch. XI, printed page 93',
     quote: 'One of the principal uses of the process of differentiating is to find out under what conditions the value of the thing differentiated becomes a maximum, or a minimum. This is often exceedingly important in engineering questions, where it is most desirable to know what conditions will make the cost of working a minimum, or will make the efficiency a maximum.'

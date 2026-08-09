@@ -11,6 +11,8 @@ import { bb9, bb10, selections as sel9, finalised as fin9, gated as gate9 } from
 import { bb11, bb12, selections as sel11, finalised as fin11, gated as gate11 } from './bb11-options.js';
 import { area, selections as selA, finalised as finA, rejected as rejA, gated as gateA } from './area-options.js';
 import { plane, selections as selP, finalised as finP, rejected as rejP, gated as gateP } from './plane-options.js';
+import { func1, selections as selF1, finalised as finF1, rejected as rejF1, gated as gateF1 } from './func1-options.js';
+import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gated as gateF2 } from './func2-options.js';
 
 export { sources };
 
@@ -42,7 +44,9 @@ export const registry = [
   // Proposed pilot. These sit at the end of the strip rather than in their
   // teaching position, which is before Rate, until the proposal is approved.
   { key: 'area', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA },
-  { key: 'plane', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP }
+  { key: 'plane', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP },
+  { key: 'machine', label: 'Machine', bb: func1, selections: selF1, finalised: finF1, rejected: rejF1, gated: gateF1 },
+  { key: 'oneanswer', label: 'One Answer', bb: func2, selections: selF2, finalised: finF2, rejected: rejF2, gated: gateF2 }
 ];
 
 // Links written before the rename used ?bb=7. Kept so the founder's saved URLs
