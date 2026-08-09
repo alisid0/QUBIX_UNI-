@@ -12,7 +12,9 @@
     // picker or number line, so the shared x slider would be dead under them.
     'substitute-strip', 'machine-single', 'rule-swap', 'two-machines', 'relation-test', 'function-word',
     'notation-builder', 'notation-card', 'two-answers', 'square-back', 'function-or-not', 'verdict-strip',
-    'accepted-line', 'accepted-list'];
+    'accepted-line', 'accepted-list',
+    'switch-toggle', 'switch-plain', 'tap-valve', 'tap-piston', 'machine-panel', 'machine-labels',
+    'forked-button', 'flaky-button'];
 
   // The kept sheet: the board as chosen, with everything unselected and rejected
   // hidden. A last read before approval is asked for.
@@ -98,6 +100,48 @@
   let fm = { plate: 0, seen: [] };          // machine bench
   let rg = { hidden: 'add three', fed: [], guess: null };
   let ri = { verdicts: {} };                // rule inspector
+
+  // ---- What a Button Does ----------------------------------------------
+  let sw = { up: false, tally: { up: 0, down: 0 } };
+  let tap = { turn: 3, visited: {} };
+  let panel = { log: [] };
+  const PANEL = ['tea', 'coffee', 'soup', 'coffee'];
+  let broken = { log: [] };
+  const SOUND = ['tea', 'coffee', 'soup', 'water'];
+  const FORKED = ['tea', 'coffee', ['tea', 'coffee'], 'water'];
+
+  function flick(up) {
+    sw = { up, tally: { ...sw.tally, [up ? 'up' : 'down']: sw.tally[up ? 'up' : 'down'] + 1 } };
+  }
+  function turnTap(v) {
+    tap = { turn: v, visited: { ...tap.visited, [v]: (tap.visited[v] || 0) + 1 } };
+  }
+  const flow = t => Number((t * 0.4).toFixed(1));
+  function press(i) {
+    panel = { log: [...panel.log, { button: i + 1, out: PANEL[i] }] };
+  }
+  function pressBroken(which, i) {
+    const out = which === 'sound' ? SOUND[i] : FORKED[i];
+    broken = { log: [...broken.log, { which, button: i + 1, out: Array.isArray(out) ? out.join(' and ') : out, forked: Array.isArray(out) }] };
+  }
+
+  // Repair bench. Verdicts and presses are tracked per machine.
+  let rb = { pressed: {}, verdicts: {} };
+  function rbPress(mi, bi, label) {
+    rb = { ...rb, pressed: { ...rb.pressed, [`${mi}:${bi}`]: label } };
+  }
+  function rbJudge(mi, v) {
+    rb = { ...rb, verdicts: { ...rb.verdicts, [mi]: v } };
+  }
+  function benchGoal(id, s, machines) {
+    if (id === 'b1') {
+      return machines.every((m, mi) => m.buttons.every((_, bi) => s.pressed[`${mi}:${bi}`] !== undefined));
+    }
+    if (id === 'b2') return Object.values(s.pressed).some(v => typeof v === 'string' && v.includes(' and '));
+    if (id === 'b3') return machines.every((m, mi) => m.kind !== 'sound' || s.verdicts[mi] === 'pass');
+    if (id === 'b4') return machines.every((m, mi) => m.kind !== 'forked' || s.verdicts[mi] === 'fail');
+    return false;
+  }
 
   function fmFeed(input) {
     const name = PLATES[fm.plate];
@@ -896,6 +940,101 @@
                     </div>
                   </div>
 
+                {:else if interaction.kind === 'switch-toggle' || interaction.kind === 'switch-plain'}
+                  <div class="rows centre">
+                    <div class="lamp" class:lit={sw.up}>{sw.up ? 'ON' : 'OFF'}</div>
+                    <div class="switch-body">
+                      <button class="switch-half" class:on={sw.up} on:click={() => flick(true)}>up</button>
+                      <button class="switch-half" class:on={!sw.up} on:click={() => flick(false)}>down</button>
+                    </div>
+                    {#if interaction.kind === 'switch-toggle'}
+                      <p class="stage-note">
+                        up chosen {sw.tally.up} {sw.tally.up === 1 ? 'time' : 'times'}, light came on {sw.tally.up} {sw.tally.up === 1 ? 'time' : 'times'}.
+                        down chosen {sw.tally.down} {sw.tally.down === 1 ? 'time' : 'times'}, light went off {sw.tally.down} {sw.tally.down === 1 ? 'time' : 'times'}.
+                      </p>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'tap-valve' || interaction.kind === 'tap-piston'}
+                  <div class="rows">
+                    <label class="range-row">
+                      <span>shut</span>
+                      <input type="range" min="0" max="10" step="1" value={tap.turn}
+                        on:input={e => turnTap(Number(e.target.value))} aria-label="Tap setting"/>
+                      <span>open</span>
+                    </label>
+                    {#if interaction.kind === 'tap-valve'}
+                      <div class="flow-row">
+                        <b>{flow(tap.turn)}</b><small>litres a minute</small>
+                      </div>
+                      <div class="flow-bar"><i style={`width:${tap.turn * 10}%`}></i></div>
+                      {#if tap.visited[tap.turn] > 1}
+                        <p class="stage-note">You have been at this setting {tap.visited[tap.turn]} times. The flow was {flow(tap.turn)} every time.</p>
+                      {/if}
+                    {:else}
+                      <div class="readouts">
+                        <div class="readout live"><small>volume</small><b>{(12 - tap.turn).toFixed(0)}</b></div>
+                        <div class="readout live"><small>pressure</small><b>{(24 / Math.max(1, 12 - tap.turn)).toFixed(1)}</b></div>
+                      </div>
+                      <p class="stage-note">Weight on the piston. The volume falls as the pressure rises.</p>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'machine-panel' || interaction.kind === 'machine-labels'}
+                  <div class="rows">
+                    <div class="panel">
+                      {#each PANEL as drink, bi}
+                        <button class="panel-btn" on:click={() => press(bi)}>
+                          <b>{bi + 1}</b>
+                          {#if interaction.kind === 'machine-labels'}<em>{drink}</em>{/if}
+                        </button>
+                      {/each}
+                    </div>
+                    {#if interaction.kind === 'machine-panel'}
+                      {#if panel.log.length}
+                        <table class="io-table">
+                          <thead><tr><th>pressed</th><th>arrived</th></tr></thead>
+                          <tbody>
+                            {#each panel.log.slice(-6) as r}<tr><td>{r.button}</td><td><b>{r.out}</b></td></tr>{/each}
+                          </tbody>
+                        </table>
+                      {:else}
+                        <p class="stage-note">Press a button. What arrives is recorded below it.</p>
+                      {/if}
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'forked-button' || interaction.kind === 'flaky-button'}
+                  <div class="rows">
+                    <div class="machine-row">
+                      {#each [['sound', 'Machine A'], ['broken', interaction.kind === 'forked-button' ? 'Machine B, one button wired twice' : 'Machine B, will not settle']] as [which, label]}
+                        <div class="machine">
+                          <span class="plate">{label}</span>
+                          <div class="panel">
+                            {#each SOUND as _, bi}
+                              <button class="panel-btn" on:click={() => pressBroken(which, bi)}><b>{bi + 1}</b></button>
+                            {/each}
+                          </div>
+                        </div>
+                      {/each}
+                    </div>
+                    {#if broken.log.length}
+                      <table class="io-table">
+                        <thead><tr><th>machine</th><th>button</th><th>arrived</th></tr></thead>
+                        <tbody>
+                          {#each broken.log.slice(-6) as r}
+                            <tr><td>{r.which === 'sound' ? 'A' : 'B'}</td><td>{r.button}</td><td><b class:two={r.forked}>{r.out}</b></td></tr>
+                          {/each}
+                        </tbody>
+                      </table>
+                    {/if}
+                    <p class="stage-note">
+                      {interaction.kind === 'forked-button'
+                        ? 'Button 3 on machine B sends out both, every time. Predictable, and still no answer to "which".'
+                        : 'Machine B is drafted here as forking too. Built as written, its button would vary between presses instead.'}
+                    </p>
+                  </div>
+
                 {:else if interaction.kind === 'substitute-strip'}
                   <div class="rows">
                     <div class="bench-row">
@@ -1514,6 +1653,34 @@
                     </ul>
                   </div>
 
+                {:else if w.kind === 'repair-bench'}
+                  <div class="rows">
+                    {#each w.machines as m, mi}
+                      <div class="rule-card" class:passed={rb.verdicts[mi] === 'pass'} class:failed={rb.verdicts[mi] === 'fail'}>
+                        <b>{m.name}</b>
+                        <div class="panel">
+                          {#each m.buttons as label, bi}
+                            <button class="panel-btn sm" on:click={() => rbPress(mi, bi, label)}>
+                              <b>{bi + 1}</b>
+                              {#if rb.pressed[`${mi}:${bi}`]}<em>{rb.pressed[`${mi}:${bi}`]}</em>{/if}
+                            </button>
+                          {/each}
+                        </div>
+                        <div class="verdict">
+                          <button class="chip" on:click={() => rbJudge(mi, 'pass')}>can be relied on</button>
+                          <button class="chip" on:click={() => rbJudge(mi, 'fail')}>cannot</button>
+                        </div>
+                      </div>
+                    {/each}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={benchGoal(g.id, rb, w.machines)}>
+                          <i>{benchGoal(g.id, rb, w.machines) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
                 {:else if w.kind === 'machine-bench'}
                   <div class="rows">
                     <div class="plates">
@@ -1836,6 +2003,25 @@
   .accept-strip b { color: var(--qx-text-faint); }
   .accept-strip.ok { border-style: solid; border-color: var(--qx-green); }
   .accept-strip.ok b { color: var(--qx-green-text); }
+
+  /* What a Button Does. */
+  .lamp { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 900; letter-spacing: .08em; border: 2px solid var(--qx-border-2); color: var(--qx-text-faint); transition: background .12s, color .12s, border-color .12s; }
+  .lamp.lit { background: var(--qx-accent-soft); border-color: var(--qx-accent); color: var(--qx-accent-text); box-shadow: 0 0 0 7px var(--qx-accent-soft); }
+  .switch-body { display: flex; flex-direction: column; border: 1px solid var(--qx-border-2); border-radius: 11px; overflow: hidden; width: 96px; }
+  .switch-half { padding: 9px 0; font-size: 12px; font-weight: 800; letter-spacing: .05em; background: transparent; border: 0; color: var(--qx-text-dim); cursor: pointer; }
+  .switch-half + .switch-half { border-top: 1px solid var(--qx-border-2); }
+  .switch-half.on { background: var(--qx-accent); color: #fff; }
+  .flow-row { display: flex; align-items: baseline; gap: 7px; }
+  .flow-row b { font-size: 25px; color: var(--qx-accent-text); }
+  .flow-row small { font-size: 11px; color: var(--qx-text-faint); }
+  .flow-bar { height: 9px; border-radius: 5px; background: var(--qx-border-1); overflow: hidden; }
+  .flow-bar i { display: block; height: 100%; background: var(--qx-accent); }
+  .panel { display: flex; gap: 6px; flex-wrap: wrap; }
+  .panel-btn { min-width: 46px; padding: 8px 9px; border: 1px solid var(--qx-border-2); border-radius: 9px; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .panel-btn b { font-size: 15px; color: var(--qx-accent-text); }
+  .panel-btn em { font-style: normal; font-size: 10px; color: var(--qx-text-faint); }
+  .panel-btn.sm { min-width: 40px; padding: 6px 7px; }
+  .io-table b.two { color: var(--qx-accent-text); background: var(--qx-accent-soft); border-radius: 5px; padding: 1px 5px; }
 
   .kind-note { font-size: 12.5px; color: var(--qx-text-dim); line-height: 1.5; }
   .kind-note b { color: var(--qx-text-dim); }

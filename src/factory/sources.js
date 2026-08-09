@@ -158,6 +158,13 @@ export const sources = {
     ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §20, Examples X.3, printed page 39',
     quote: 'Let y² = x. Then if x is positive this equation defines two values of y corresponding to each value of x, viz. ±√x. If x = 0, y = 0. Hence to the particular value 0 of x corresponds one and only one value of y. But if x is negative there is no value of y which satisfies the equation. That is to say, the function y is not defined for negative values of x.'
   },
+  // Hardy reaches for a physical apparatus to introduce the idea, and credits it
+  // to Carslaw. This is the precedent for the switch-and-tap board: the move is
+  // his, and only the apparatus is modernised.
+  H6: {
+    ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §20, Examples X.4, printed page 39',
+    quote: 'Consider a volume of gas maintained at a constant temperature and contained in a cylinder closed by a sliding piston. … If additional weight is placed upon the piston the latter is forced downwards. The volume (v) of the gas diminishes; the pressure (p) which it exerts upon unit area of the piston increases.'
+  },
   H5: {
     ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §26, printed pages 49–50',
     quote: 'It would be natural to denote by √x, where x is any positive number, the positive square root of x, in which case y = √x would be a one-valued function of x. It is however often more convenient to regard √x as standing for the two-valued function whose two values are the positive and negative square roots of x.'
