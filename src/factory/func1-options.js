@@ -19,9 +19,40 @@
 // second letter board only ever had one rule, y = x², which quietly suggests
 // that depending on something and squaring it are the same idea.
 
-export const selections = {};
+// Founder pass of 2026-08-09. Sections 1 to 3 settled; section 3's interaction
+// sent back and rebuilt; section 4 and both workshops still open.
+//
+// Both interactions were kept in sections 1 and 2 rather than one of each. That
+// is deliberate on the founder's part and it doubles those sections: S1-I1 and
+// S1-I2 show the same substitution twice, once as working and once as a box,
+// and S2-I1 and S2-I2 show rule-swapping twice. Worth a look at length before
+// the record is written.
+export const selections = {
+  'S1-A': '2026-08-09',
+  'S1-I1': '2026-08-09',
+  'S1-I2': '2026-08-09',
+  'S1-X1': '2026-08-09',
+  'S1-X2': '2026-08-09',
+  'S1-X3': '2026-08-09',
+  'S2-A': '2026-08-09',
+  'S2-I1': '2026-08-09',
+  'S2-I2': '2026-08-09',
+  'S2-X1': '2026-08-09',
+  'S2-X2': '2026-08-09',
+  'S2-X3': '2026-08-09',
+  // Founder: "a big revelation".
+  'S3-B': '2026-08-09',
+  'S3-X1': '2026-08-09',
+  'S3-X2': '2026-08-09',
+  'S3-X3': '2026-08-09'
+};
 export const finalised = {};
-export const rejected = {};
+
+export const rejected = {
+  'S1-B': 'Not selected; S1-A carries Wentworth\'s worked example rather than describing it.',
+  'S2-B': 'Not selected; S2-A names the three rules and the fixed input column outright.',
+  'S3-A': 'Not selected; S3-B states the definition first and uses the ladder as the illustration rather than the other way round.'
+};
 export const gated = 'Belongs to a proposed pilot that has not been approved. See PILOT-PROPOSAL-FUNCTIONS-AND-COORDINATE-GEOMETRY.md. Nothing here has been selected yet.';
 
 export const func1 = {
@@ -167,11 +198,11 @@ export const func1 = {
       interactions: [
         {
           code: 'S3-I1', kind: 'relation-test',
-          note: 'The ladder from the source, with a slider for the distance of its foot from the wall and three readouts beside it: the height reached, the number of bricks in the wall, the year it was built. Move the slider and one of the three responds. The learner is told nothing; the two dead readouts say it. Thompson makes the relation fail before he names it, and this is his device rather than one imposed on him.'
+          note: 'Rebuilt 2026-08-09 after the founder reported that section 3\'s interactions did not work. The first build had no ladder in it: a slider and three number boxes, with the two unresponsive readouts greyed to half opacity. Greying them said the machine had switched them off, when the whole point is that nothing joins them to the foot of the ladder in the first place. The ladder is now drawn against a brick wall with a date plaque, the foot slides and the top comes down the wall, the height is marked on the wall itself, and all three readouts carry equal weight so that two of them visibly failing to move is something the learner sees rather than something the styling has pre-announced.'
         },
         {
-          code: 'S3-I2', kind: 'function-word',
-          note: 'A card that states the definition with the ladder drawn beside it, static. Keeps the reading and the picture together but asks nothing, so the failure has to be taken on trust rather than seen.'
+          code: 'S3-I2', kind: 'relation-guess',
+          note: 'Also rebuilt. The first build was a static card with no controls at all, and its note claimed a ladder was drawn beside it when none was. Same ladder as I1, but each readout is covered until the learner has said whether it will change. Predicting before testing is a different act from watching, and it catches the learner who would have said the year changes.'
         }
       ],
       exercises: [

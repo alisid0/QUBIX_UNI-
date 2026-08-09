@@ -11,6 +11,7 @@
     // The functions boards. Every one of these carries its own stepper, plate
     // picker or number line, so the shared x slider would be dead under them.
     'substitute-strip', 'machine-single', 'rule-swap', 'two-machines', 'relation-test', 'function-word',
+    'relation-guess',
     'notation-builder', 'notation-card', 'two-answers', 'square-back', 'function-or-not', 'verdict-strip',
     'accepted-line', 'accepted-list',
     'switch-toggle', 'switch-plain', 'tap-valve', 'tap-piston', 'machine-panel', 'machine-labels',
@@ -77,6 +78,7 @@
   let plate = 0;                            // rule-swap: which plate is loaded
   let mach = { x: 3 };                      // machine-single, two-machines
   let lad = { d: 3 };                       // relation-test: foot of the ladder
+  let guessed = {};                         // relation-guess: which readouts are revealed
   let nota = 0;                             // notation-builder: F, f or phi
   let fork = { x: 4 };                      // two-answers
   let verdicts = {};                        // function-or-not, verdict-strip
@@ -1113,24 +1115,66 @@
                     <p class="stage-note">The left column never moves. Only the plate does.</p>
                   </div>
 
-                {:else if interaction.kind === 'relation-test'}
+                {:else if interaction.kind === 'relation-test' || interaction.kind === 'relation-guess'}
+                  {@const h = ladHeight(lad.d)}
+                  {@const footX = 40 + lad.d * 25}
+                  {@const topY = 136 - h * 25}
                   <div class="rows">
+                    <svg class="ladder-svg" viewBox="0 0 210 150" role="img" aria-label={`A ladder with its foot ${fmt2(lad.d)} from the wall, reaching ${fmt2(h)} up it`}>
+                      <!-- The wall, with courses of brick, and a date plaque. The
+                           two quantities that will not respond have to be visibly
+                           present, or their not responding says nothing. -->
+                      <rect class="wall" x="6" y="6" width="34" height="130"/>
+                      {#each [20, 34, 48, 62, 76, 90, 104, 118, 132] as by}
+                        <line class="brick" x1="6" y1={by} x2="40" y2={by}/>
+                      {/each}
+                      {#each [20, 48, 76, 104] as by}<line class="brick" x1="23" y1={by} x2="23" y2={by + 14}/>{/each}
+                      {#each [34, 62, 90, 118] as by}<line class="brick" x1="14" y1={by} x2="14" y2={by + 14}/>{/each}
+                      {#each [34, 62, 90, 118] as by}<line class="brick" x1="32" y1={by} x2="32" y2={by + 14}/>{/each}
+                      <rect class="plaque" x="12" y="120" width="22" height="11" rx="2"/>
+                      <text class="plaque-text" x="23" y="128">1908</text>
+                      <line class="floor" x1="0" y1="136" x2="210" y2="136"/>
+                      <!-- Height reached, marked on the wall itself. -->
+                      <line class="hmark" x1="40" y1={topY} x2="52" y2={topY}/>
+                      <text class="hmark-text" x="55" y={topY + 4}>{fmt2(h)}</text>
+                      <line class="ladder" x1={footX} y1="136" x2="40" y2={topY}/>
+                      <line class="ladder rail" x1={footX - 7} y1="136" x2="33" y2={topY}/>
+                      <circle class="foot" cx={footX} cy="136" r="4"/>
+                    </svg>
                     <label class="range-row">
-                      <span>0</span>
+                      <span>at the wall</span>
                       <input type="range" min="0" max="5" step="0.5" bind:value={lad.d} aria-label="Distance of the foot of the ladder from the wall"/>
-                      <span>5</span>
+                      <span>far out</span>
                     </label>
-                    <div class="readouts">
-                      <div class="readout live"><small>height reached</small><b>{fmt2(ladHeight(lad.d))}</b></div>
-                      <div class="readout"><small>bricks in the wall</small><b>1,240</b></div>
-                      <div class="readout"><small>year it was built</small><b>1908</b></div>
-                    </div>
-                    <p class="stage-note">Foot of the ladder, {fmt2(lad.d)} from the wall.</p>
-                  </div>
 
-                {:else if interaction.kind === 'function-word'}
-                  <div class="rows centre">
-                    <div class="glyph">function<em>a relation where changing the first changes the second</em></div>
+                    {#if interaction.kind === 'relation-test'}
+                      <!-- All three carry equal weight. Greying the two that do
+                           not move would say the machine had switched them off,
+                           when the point is that nothing joins them to the foot
+                           of the ladder in the first place. -->
+                      <div class="readouts">
+                        <div class="readout"><small>height reached</small><b>{fmt2(h)}</b></div>
+                        <div class="readout"><small>bricks in the wall</small><b>1,240</b></div>
+                        <div class="readout"><small>year it was built</small><b>1908</b></div>
+                      </div>
+                    {:else}
+                      <div class="readouts">
+                        {#each [['height reached', fmt2(h)], ['bricks in the wall', '1,240'], ['year it was built', '1908']] as [name, val], qi}
+                          <div class="readout" class:revealed={guessed[qi]}>
+                            <small>{name}</small>
+                            {#if guessed[qi]}
+                              <b>{val}</b>
+                            {:else}
+                              <div class="guess">
+                                <button class="chip" on:click={() => guessed = { ...guessed, [qi]: 1 }}>changes</button>
+                                <button class="chip" on:click={() => guessed = { ...guessed, [qi]: 1 }}>does not</button>
+                              </div>
+                            {/if}
+                          </div>
+                        {/each}
+                      </div>
+                      <p class="stage-note">Say what each one will do, then move the ladder and find out.</p>
+                    {/if}
                   </div>
 
                 {:else if interaction.kind === 'notation-builder'}
@@ -2011,8 +2055,23 @@
   .io-table td { padding: 2px 16px 2px 0; color: var(--qx-text-2); }
   .io-table b { color: var(--qx-accent-text); font-size: 15px; }
   .readouts { display: flex; gap: 8px; flex-wrap: wrap; }
-  .readout { flex: 1; min-width: 96px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 8px 9px; opacity: .5; }
-  .readout.live { opacity: 1; border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .readout { flex: 1; min-width: 96px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 8px 9px; }
+  .readout.live { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .readout.revealed { border-color: var(--qx-accent); }
+  .guess { display: flex; gap: 4px; margin-top: 3px; }
+  .guess .chip { font-size: 10px; padding: 3px 7px; }
+
+  .ladder-svg { width: 100%; max-width: 300px; height: auto; }
+  .ladder-svg .wall { fill: var(--qx-surface-2); stroke: var(--qx-border-2); stroke-width: 1; }
+  .ladder-svg .brick { stroke: var(--qx-text-faint); stroke-width: .6; opacity: .55; }
+  .ladder-svg .floor { stroke: var(--qx-text-dim); stroke-width: 2; }
+  .ladder-svg .plaque { fill: var(--qx-surface); stroke: var(--qx-text-faint); stroke-width: .8; }
+  .ladder-svg .plaque-text { fill: var(--qx-text-dim); font-size: 7px; font-weight: 800; text-anchor: middle; }
+  .ladder-svg .ladder { stroke: var(--qx-accent); stroke-width: 3.5; stroke-linecap: round; }
+  .ladder-svg .ladder.rail { stroke-width: 2; opacity: .55; }
+  .ladder-svg .foot { fill: var(--qx-accent); }
+  .ladder-svg .hmark { stroke: var(--qx-accent); stroke-width: 1.5; stroke-dasharray: 3 2; }
+  .ladder-svg .hmark-text { fill: var(--qx-accent-text); font-size: 9px; font-weight: 800; }
   .readout small { display: block; font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
   .readout b { font-size: 18px; color: var(--qx-accent-text); }
   .cycle { cursor: pointer; }
@@ -2038,7 +2097,7 @@
   .flow-row { display: flex; align-items: baseline; gap: 7px; }
   .flow-row b { font-size: 25px; color: var(--qx-accent-text); }
   .flow-row small { font-size: 11px; color: var(--qx-text-faint); }
-  .flow-bar { height: 9px; border-radius: 5px; background: var(--qx-border-1); overflow: hidden; }
+  .flow-bar { height: 9px; border-radius: 5px; background: var(--qx-surface-2); overflow: hidden; }
   .flow-bar i { display: block; height: 100%; background: var(--qx-accent); }
   .panel { display: flex; gap: 6px; flex-wrap: wrap; }
   .panel-btn { min-width: 46px; padding: 8px 9px; border: 1px solid var(--qx-border-2); border-radius: 9px; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -2075,7 +2134,7 @@
   .chain { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin: 2px 0 4px; }
   .chain-arrow { color: var(--qx-text-faint); font-size: 13px; }
   .chain-link { display: flex; align-items: center; gap: 6px; border: 1px solid var(--qx-border-2); background: transparent; color: var(--qx-text-dim); border-radius: 999px; padding: 4px 11px 4px 4px; font-size: 11.5px; font-weight: 800; cursor: pointer; }
-  .chain-link i { font-style: normal; width: 17px; height: 17px; border-radius: 50%; background: var(--qx-border-1); color: var(--qx-text-2); font-size: 9.5px; display: grid; place-items: center; }
+  .chain-link i { font-style: normal; width: 17px; height: 17px; border-radius: 50%; background: var(--qx-surface-2); color: var(--qx-text-2); font-size: 9.5px; display: grid; place-items: center; }
   .chain-link.here { border-color: var(--qx-accent); color: var(--qx-accent-text); background: var(--qx-accent-soft); }
   .chain-link.here i { background: var(--qx-accent); color: #fff; }
 
