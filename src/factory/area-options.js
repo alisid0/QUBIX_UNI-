@@ -20,9 +20,21 @@ export const selections = {
   'S1-X1': '2026-08-09',
   'S1-X2': '2026-08-09',
   'S2-I1': '2026-08-09',
+  'S2-X1': '2026-08-09',
+  'S2-X2': '2026-08-09',
   // S3-B rewritten to founder dictation: count along the base, count up the
   // altitude, multiply the two.
-  'S3-B': '2026-08-09'
+  'S3-B': '2026-08-09',
+  'S3-X1': '2026-08-09',
+  'S3-X2': '2026-08-09',
+  'S3-X3': '2026-08-09',
+  // Section 4 settled in full: the reading, the stage and all three checks.
+  'S4-A': '2026-08-09',
+  'S4-I1': '2026-08-09',
+  'S4-X1': '2026-08-09',
+  'S4-X2': '2026-08-09',
+  'S4-X3': '2026-08-09',
+  'W1': '2026-08-09'
 };
 export const finalised = {};
 export const rejected = {};
