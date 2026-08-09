@@ -241,42 +241,130 @@ export const boards = [
       floors: [
         {
           text: 'One letter was enough while there was one quantity to record. A square has two: the length of its side, and the area inside it. Call the side x and call the area y.',
-          exercise: {
-            kind: 'choice',
-            prompt: 'In this square, what does y represent?',
-            options: [
-              { label: 'The area inside the square', correct: true },
-              { label: 'The length of the side', feedback: 'That is x. y was given to the other quantity.' },
-              { label: 'A second, unrelated number', feedback: 'y measures something about this same square.' }
-            ],
-            successNote: 'Correct. x measures the side, y measures the area inside.',
-            revealNote: 'x is the side. y is the area, which is why it is written inside the square.'
-          }
+          exercises: [
+            {
+              kind: 'choice',
+              prompt: 'In this square, what does y represent?',
+              options: [
+                { label: 'The area inside the square', correct: true },
+                { label: 'The length of the side', feedback: 'That is x. y was given to the other quantity.' },
+                { label: 'A second, unrelated number', feedback: 'y measures something about this same square.' }
+              ],
+              successNote: 'Correct. x measures the side, y measures the area inside.',
+              revealNote: 'x is the side. y is the area, which is why it is written inside the square.'
+            },
+            {
+              kind: 'choice',
+              prompt: 'Why does this square need two letters?',
+              options: [
+                { label: 'It has two quantities worth recording', correct: true },
+                { label: 'Because x was already used', feedback: 'Running out of letters is not the reason. There are two different things to measure.' },
+                { label: 'Because the square can change size', feedback: 'A fixed square still has both a side and an area.' }
+              ],
+              successNote: 'Correct. Two quantities, so two letters.',
+              revealNote: 'A side and an area are different quantities, so each gets its own letter.'
+            },
+            {
+              kind: 'match',
+              prompt: 'Sort each description under the letter it belongs to.',
+              bins: ['x', 'y'],
+              items: [
+                { label: 'the length of one side', bin: 'x' },
+                { label: '2 cm', bin: 'x' },
+                { label: 'the space inside', bin: 'y' },
+                { label: '4 cm²', bin: 'y' }
+              ],
+              successNote: 'The units separate them as firmly as the words do: one is a length, the other an area.'
+            }
+          ]
         },
         {
-          text: 'x and y are not both yours to choose. Assign a value to x and the area is already settled: y = x². Assign 2 to x and y is 4, whether you wanted it or not.',
-          exercise: {
-            kind: 'set-control',
-            prompt: 'Assign x so that y becomes 9.',
-            target: 3,
-            tolerance: 0.05,
-            from: 2.1,
-            successNote: 'x = 3 gives y = 9. You set x; the square settled y.'
-          }
+          text: 'A value may be assigned to x. No value may be assigned to y, because the square decides it. What settles y is not a second choice but a relationship between the two letters, and here that relationship is multiplying the side by itself: y = x². Once such a rule exists between two variables, only one of them is left free.',
+          exercises: [
+            {
+              kind: 'choice',
+              prompt: 'x is assigned 3. What is y?',
+              options: [
+                { label: '9', correct: true },
+                { label: '6', feedback: 'That is 3 added to itself. Area multiplies the side by itself.' },
+                { label: '3', feedback: 'That is x again. y is the area.' }
+              ],
+              successNote: 'Correct. 3 × 3 = 9. The rule settled it, not a second choice.',
+              revealNote: 'The relationship is y = x², so 3 gives 9.'
+            },
+            {
+              kind: 'set-control',
+              prompt: 'Assign x so that y becomes 9.',
+              target: 3, tolerance: 0.05, from: 2.1,
+              successNote: 'x = 3 gives y = 9. You set x; the rule settled y.'
+            },
+            {
+              kind: 'stepper',
+              prompt: 'Step x until the area reaches 9.',
+              target: 3, min: 2.1, max: 3, step: 0.1, start: 2.1, unit: '',
+              successNote: 'You never touched the area. You set the side, and the relationship did the rest.'
+            },
+            {
+              kind: 'match',
+              prompt: 'Put each side with the area it produces.',
+              bins: ['4', '9', '25'],
+              items: [
+                { label: 'x = 2', bin: '4' },
+                { label: 'x = 3', bin: '9' },
+                { label: 'x = 5', bin: '25' }
+              ],
+              successNote: 'One rule, applied three times. Nothing was chosen on the area side.'
+            },
+            {
+              kind: 'choice',
+              prompt: 'x doubles from 2 to 4. Does the area double as well?',
+              options: [
+                { label: 'No, it goes from 4 to 16', correct: true },
+                { label: 'Yes, it goes from 4 to 8', feedback: 'The area is the side multiplied by itself, so doubling the side multiplies the area by four.' },
+                { label: 'No, it goes from 4 to 6', feedback: '4 × 4 is 16. The relationship is a multiplication, not an addition.' }
+              ],
+              successNote: 'Doubling the side quadruples the area. A relationship between two variables need not treat them alike.',
+              revealNote: '2² is 4 and 4² is 16, so the area multiplies by four when the side doubles.'
+            }
+          ]
         },
         {
-          text: 'The one you choose is called the independent variable. The one that follows is called the dependent variable. Here x is independent and y depends on it.',
-          exercise: {
-            kind: 'choice',
-            prompt: 'Which variable is the dependent one?',
-            options: [
-              { label: 'y, the area', correct: true },
-              { label: 'x, the side', feedback: 'x is the one you assign. Nothing determines it for you.' },
-              { label: 'Neither; they are equal partners', feedback: 'Only one of them can be chosen freely here.' }
-            ],
-            successNote: 'Correct. y depends on x, so y is the dependent variable.',
-            revealNote: 'x is independent because you assign it. y is dependent because the square settles it.'
-          }
+          text: 'Both names come from who does the choosing. You set x, so x is called the independent variable. y is settled by the rule, so y is called the dependent one. You can still work out a side from an area, but that is arithmetic done by you; the square itself never chooses its own side.',
+          exercises: [
+            {
+              kind: 'choice',
+              prompt: 'Which variable is the dependent one?',
+              options: [
+                { label: 'y, the area', correct: true },
+                { label: 'x, the side', feedback: 'x is the one you assign. Nothing determines it for you.' },
+                { label: 'Neither; they are equal partners', feedback: 'Only one of them can be chosen freely here.' }
+              ],
+              successNote: 'Correct. y depends on x, so y is the dependent variable.',
+              revealNote: 'x is independent because you assign it. y is dependent because the rule settles it.'
+            },
+            {
+              kind: 'choice',
+              prompt: 'A square has area 25. What must its side be?',
+              options: [
+                { label: '5', correct: true },
+                { label: '12.5', feedback: 'That halves the area. The side multiplied by itself must give 25.' },
+                { label: '625', feedback: 'That squares the area instead of the side.' }
+              ],
+              successNote: 'Correct, and you worked that out yourself. The square did not offer it.',
+              revealNote: '5 × 5 = 25. Working backwards is arithmetic you do, not control the square has.'
+            },
+            {
+              kind: 'order',
+              prompt: 'Put these in the order they happen.',
+              items: [
+                'You assign a value to x',
+                'The side takes that length',
+                'The area is settled by the side',
+                'y takes that value'
+              ],
+              successNote: 'Nothing in this chain runs backwards. That one-way direction is what independent and dependent mean.'
+            }
+          ]
         },
         {
           text: 'Alter x and y alters too. From 2 to 2.5 the side gains 0.5, but the area goes from 4 to 6.25, a gain of 2.25. Δx = 0.5 and Δy = 2.25. The two changes are not the same size.',

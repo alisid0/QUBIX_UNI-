@@ -1,6 +1,7 @@
 <script>
   import { theme } from '../lib/stores/theme.js';
   import { registry, entryFor, sources } from '../factory/index.js';
+  import SquareScene from '../lib/components/SquareScene.svelte';
   $: rejected = entry.rejected || {};
 
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
@@ -256,8 +257,8 @@
         <h3>Reading</h3>
         <div class="variant-grid">
           {#each section.readings as reading}
-            <article class="variant" class:selected={selections[reading.code]} class:finalised={finalised[reading.code]}>
-              <span class="code">{reading.code}{#if selections[reading.code]} · SELECTED{:else if finalised[reading.code]} · FINALISED{/if}</span>
+            <article class="variant" class:selected={selections[reading.code]} class:finalised={finalised[reading.code]} class:rejected={rejected[reading.code]}>
+              <span class="code">{reading.code}{#if selections[reading.code]} · SELECTED{:else if finalised[reading.code]} · FINALISED{:else if rejected[reading.code]} · REJECTED{/if}</span>
               <p class="reading-text" class:verbatim={reading.verbatim}>{reading.text}</p>
               {#if reading.verbatim}
                 <p class="verbatim-tag">Author's own words, unaltered · {sources[reading.verbatim].ref}</p>
@@ -415,6 +416,23 @@
                 {:else if interaction.kind === 'glyph-card'}
                   <div class="rows centre">
                     <div class="glyph">Δ<em>the change in</em></div>
+                  </div>
+
+                {:else if interaction.kind === 'square-3d'}
+                  <div class="rows">
+                    <SquareScene side={values[si]} height={190} />
+                    <div class="bar-row"><small>SIDE x</small><b>{fmt(values[si])}</b></div>
+                    <div class="bar-row"><small>AREA y</small><b>{(values[si] ** 2).toFixed(2)}</b></div>
+                  </div>
+
+                {:else if interaction.kind === 'role-flow'}
+                  <div class="rows centre">
+                    <div class="flow">
+                      <span class="flow-card">x = {fmt(values[si])}<em>you set this</em></span>
+                      <span class="flow-arrow">{#key values[si]}<i></i>{/key}→</span>
+                      <span class="flow-card dep">y = {(values[si] ** 2).toFixed(2)}<em>this follows</em></span>
+                    </div>
+                    <p class="stage-note">Move the control and the pulse runs one way only. Nothing travels back from y to x.</p>
                   </div>
 
                 {:else if interaction.kind === 'two-labels'}
@@ -1118,6 +1136,13 @@
 
   .variant.selected { border-color: var(--qx-green); background: var(--qx-green-soft); }
   .variant.selected .code { border-color: var(--qx-green); color: var(--qx-green-text); }
+  .flow { display: flex; align-items: center; gap: 10px; }
+  .flow-card { display: flex; flex-direction: column; gap: 3px; border: 2px solid var(--qx-accent); border-radius: 12px; padding: 11px 15px; background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 17px; font-weight: 900; }
+  .flow-card.dep { border-style: dashed; border-color: var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); }
+  .flow-card em { font-style: normal; font-size: 8.5px; letter-spacing: .09em; color: var(--qx-text-faint); font-weight: 800; }
+  .flow-arrow { position: relative; color: var(--qx-text-faint); font-size: 22px; width: 42px; text-align: center; }
+  .flow-arrow i { position: absolute; left: 0; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--qx-accent); transform: translateY(-50%); animation: pulse-right .55s ease-out; }
+  @keyframes pulse-right { from { left: 0; opacity: 1; } to { left: 34px; opacity: 0; } }
   .variant.rejected { opacity: .55; }
   .variant.rejected .code { border-color: var(--qx-danger); color: var(--qx-danger-text); }
   .facts-head { display: flex; justify-content: center; margin-bottom: 4px; }

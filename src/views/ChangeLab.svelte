@@ -3,6 +3,7 @@
   import { get } from 'svelte/store';
   import { theme } from '../lib/stores/theme.js';
   import { boards } from '../lib/content/lesson.js';
+  import SquareScene from '../lib/components/SquareScene.svelte';
   import { progress } from '../lib/stores/progress.js';
   import { view } from '../lib/stores/view.js';
 
@@ -26,6 +27,7 @@
   let stepCleared = false;   // current check within the section
   let heldItem = null;       // match: item picked up
   let placedItems = {};      // match: label -> bin
+  let orderState = [];       // order: current arrangement
   let picked = null;
   let attempts = 0;
   let feedback = '';
@@ -42,6 +44,7 @@
   // one-per-section was my assumption rather than a rule.
   $: exercises = floorData.exercises || (floorData.exercise ? [floorData.exercise] : []);
   $: exercise = exercises[exIndex] || null;
+  $: orderRows = orderState.length ? orderState : (exercise?.items?.map((_, i) => i) ?? []);
   // Note: do not derive a `cleared` value with `$:`. clearSetControl() assigns
   // `completed` from inside a reactive block, and a derived alias computed earlier
   // in the same update pass would keep a stale value. Read completed[exerciseKey].
@@ -84,6 +87,11 @@
     feedback = '';
     heldItem = null;
     placedItems = {};
+    // Shuffled so it never opens already solved.
+    const ex = exercises[exIndex];
+    orderState = ex && ex.kind === 'order'
+      ? ex.items.map((_, i) => i).slice().reverse()
+      : [];
   }
 
   // A set-control exercise is answered with the board's own slider. This must not
@@ -196,6 +204,20 @@
 
   // A placement must be undoable. Without this one mistaken tap leaves the
   // section permanently unclearable, with no way back.
+  // Order: arrows rather than drag, so it works with a thumb and with a keyboard.
+  // orderRows must be a reactive value, not a function call in the template:
+  // Svelte tracks dependencies where they are read, so a helper that reads
+  // orderState inside its body leaves the list frozen on screen.
+  function moveOrder(from, dir) {
+    if (stepCleared) return;
+    const list = [...orderRows];
+    const to = from + dir;
+    if (to < 0 || to >= list.length) return;
+    [list[from], list[to]] = [list[to], list[from]];
+    orderState = list;
+    if (list.every((v, i) => v === i)) markCleared(exercise.successNote);
+  }
+
   function unplaceItem(label) {
     if (stepCleared) return;
     const next = { ...placedItems };
@@ -428,16 +450,22 @@
                   <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
                 </div>
               </div>
-            {:else if floorIndex < 3}
-              <div class="paired-stage">
-                <div class="pair">
-                  <div class="area-square new-area" style={`width:${newAreaSize}px;height:${newAreaSize}px`}><span>y = {dependentY.toFixed(2)}</span></div>
-                  <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
-                </div>
+            {:else if floorIndex === 1}
+              <!-- Section 2 is the relationship itself, so the area becomes a lit
+                   surface rather than an outline. Inert by design: no rotation,
+                   nothing to touch. A slab and not a cube, since a cube is x³. -->
+              <div class="three-stage">
+                <SquareScene side={dependentX} height={188} />
                 <div class="role-cards">
-                  <span class="role-card"><b>x = {dependentX.toFixed(1)}</b><em>{floorIndex === 2 ? 'independent · you assign' : 'you assign'}</em></span>
-                  <span class="role-card follows"><b>y = {dependentY.toFixed(2)}</b><em>{floorIndex === 2 ? 'dependent · follows' : 'follows'}</em></span>
+                  <span class="role-card"><b>x = {dependentX.toFixed(1)}</b><em>you assign</em></span>
+                  <span class="role-card follows"><b>y = {dependentY.toFixed(2)}</b><em>the rule settles</em></span>
                 </div>
+              </div>
+            {:else if floorIndex === 2}
+              <div class="flow-stage">
+                <span class="flow-card"><b>x = {dependentX.toFixed(1)}</b><em>INDEPENDENT · you set this</em></span>
+                <span class="flow-arrow">{#key dependentX}<i></i>{/key}→</span>
+                <span class="flow-card dep"><b>y = {dependentY.toFixed(2)}</b><em>DEPENDENT · this follows</em></span>
               </div>
             {:else}
               <div class="paired-stage">
@@ -580,6 +608,19 @@
                     </div>
                   {/each}
                 </div>
+
+              {:else if exercise.kind === 'order'}
+                <div class="lab-order">
+                  {#each orderRows as idx, pos}
+                    <div class="lab-order-row" data-idx={idx}>
+                      <span>{exercise.items[idx]}</span>
+                      <span class="lab-order-btns">
+                        <button aria-label="Move up" disabled={stepCleared || pos === 0} on:click={() => moveOrder(pos, -1)}>↑</button>
+                        <button aria-label="Move down" disabled={stepCleared || pos === orderRows.length - 1} on:click={() => moveOrder(pos, 1)}>↓</button>
+                      </span>
+                    </div>
+                  {/each}
+                </div>
               {/if}
 
               {#if feedback}
@@ -709,6 +750,15 @@
   .change-bars .bar { height: 16px; border-radius: 5px; background: var(--qx-accent); display: inline-block; }
   .change-bars .bar.wide { background: var(--qx-green); }
   .change-bars b { font-size: 15px; }
+  .three-stage { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+  .flow-stage { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 200px; }
+  .flow-card { display: flex; flex-direction: column; gap: 4px; align-items: center; border: 2px solid var(--qx-accent); border-radius: 13px; padding: 14px 16px; background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .flow-card.dep { border-style: dashed; border-color: var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); }
+  .flow-card b { font-size: 18px; }
+  .flow-card em { font-style: normal; font-size: 8px; letter-spacing: .09em; font-weight: 900; color: var(--qx-text-faint); text-align: center; }
+  .flow-arrow { position: relative; width: 46px; text-align: center; font-size: 22px; color: var(--qx-text-faint); }
+  .flow-arrow i { position: absolute; left: 0; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--qx-accent); transform: translateY(-50%); animation: flow-pulse .6s ease-out; }
+  @keyframes flow-pulse { from { left: 0; opacity: 1; } to { left: 36px; opacity: 0; } }
   .role-cards { display: flex; gap: 9px; justify-content: center; margin-top: 12px; }
   .role-card { display: flex; flex-direction: column; gap: 3px; border: 1px solid var(--qx-accent); border-radius: 11px; padding: 8px 13px; background: var(--qx-accent-soft); color: var(--qx-accent-text); }
   .role-card.follows { border-color: var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); }
@@ -767,6 +817,12 @@
   .lab-bin .placed { border: 1px solid var(--qx-green); border-radius: 8px; background: var(--qx-green-soft); color: var(--qx-green-text); font-weight: 900; font-size: 15px; padding: 3px 9px; cursor: pointer; }
   .lab-bin .placed.wrong { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .lab-bin .placed:disabled { cursor: default; }
+  .lab-order { display: flex; flex-direction: column; gap: 7px; }
+  .lab-order-row { display: flex; align-items: center; gap: 10px; border: 1px solid var(--qx-border-2); border-radius: 11px; padding: 10px 12px; background: var(--qx-surface-2); font-size: 14px; font-weight: 700; }
+  .lab-order-row span:first-child { flex: 1; }
+  .lab-order-btns { display: flex; gap: 6px; }
+  .lab-order-btns button { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); cursor: pointer; font-weight: 900; }
+  .lab-order-btns button:disabled { opacity: .3; cursor: default; }
   .check-options button:disabled { cursor: default; }
   .primary:disabled { opacity: .38; cursor: default; }
   .floor-dots span.checked { background: var(--qx-green); }
