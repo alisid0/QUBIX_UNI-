@@ -2,7 +2,8 @@
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import { theme } from '../lib/stores/theme.js';
-  import { boards } from '../lib/content/lesson.js';
+  import { boards, declaredBoards } from '../lib/content/course.js';
+  import Stage from '../lib/components/Stage.svelte';
   import { progress } from '../lib/stores/progress.js';
   import { view } from '../lib/stores/view.js';
 
@@ -48,7 +49,12 @@
   // `completed` from inside a reactive block, and a derived alias computed earlier
   // in the same update pass would keep a stale value. Read completed[exerciseKey].
   $: exerciseKey = `${boardIndex}:${floorIndex}`;
-  $: controlValue = [squareX, deltaEnd, dependentX, rateX, stepIndex][boardIndex];
+  // The hardcoded stages and the per-board control variables are keyed to the
+  // declared boards, so they must be looked up by position within THAT list.
+  // Using boardIndex here broke the moment Factory boards were inserted in the
+  // middle: board 3 stopped being the rate board.
+  $: declaredIndex = declaredBoards.indexOf(board);
+  $: controlValue = [squareX, deltaEnd, dependentX, rateX, stepIndex][declaredIndex];
   // 1.5 -> 74px, 3.5 -> 152px. No cap: the old max-width froze the square above
   // x = 3.0 while the readout kept climbing, which contradicted the lesson.
   $: squareSize = 74 + (squareX - 1.5) * 39;
@@ -257,11 +263,12 @@
   // Each board is driven by one control; this writes back to the current one.
   function setControl(value) {
     if (value == null) return;
-    if (boardIndex === 0) squareX = value;
-    else if (boardIndex === 1) deltaEnd = value;
-    else if (boardIndex === 2) dependentX = value;
-    else if (boardIndex === 3) rateX = value;
-    else stepIndex = value;
+    const d = declaredBoards.indexOf(boards[boardIndex]);
+    if (d === 0) squareX = value;
+    else if (d === 1) deltaEnd = value;
+    else if (d === 2) dependentX = value;
+    else if (d === 3) rateX = value;
+    else if (d === 4) stepIndex = value;
   }
 
   function clearSetControl() {
@@ -350,7 +357,15 @@
         <!-- While a stepper check runs, the board's slider stands down: the task
              is to step, and leaving both on screen makes it bypassable. -->
         <div class="stage" class:stepping={exerciseOpen && exercise && exercise.kind === 'stepper'} aria-live="polite">
-          {#if boardIndex === 0}
+          {#if board.fromFactory}
+            <!-- Built from the founder's Factory selections. The figure is
+                 whatever variant was chosen for this section, or nothing at all
+                 where the section was given a reading and no figure. -->
+            {#each floorData.stages || [] as st (st.code)}
+              <Stage stage={st}/>
+            {/each}
+
+          {:else if declaredIndex === 0}
             <!-- BB1 under fork F-2: figures and letters, then a value assigned,
                  then a value replaced, then a value that measures something. -->
             {#if floorIndex === 0}
@@ -391,7 +406,7 @@
                 <span>3.5</span>
               </label>
             {/if}
-          {:else if boardIndex === 1 && floorIndex === 4}
+          {:else if declaredIndex === 1 && floorIndex === 4}
             <!-- Section 5 is about direction, so zero sits at the centre and the
                  bar grows the way the change runs. Founder specification. -->
             <div class="signed-stage">
@@ -411,7 +426,7 @@
               <input aria-label="Choose the new x value" type="range" min="1.2" max="3" step="0.1" bind:value={deltaEnd}/>
               <span>3.0</span>
             </label>
-          {:else if boardIndex === 1}
+          {:else if declaredIndex === 1}
             <div class="number-stage">
               <svg viewBox="0 0 320 128" role="img" aria-label={`Number line from 1 to 3. Current x is ${deltaEnd}`}>
                 <path class="axis" d="M28 72H292"/>
@@ -440,7 +455,7 @@
               <input aria-label="Choose the new x value" type="range" min="1.2" max="3" step="0.1" bind:value={deltaEnd}/>
               <span>3.0</span>
             </label>
-          {:else if boardIndex === 2}
+          {:else if declaredIndex === 2}
             <!-- x labels the side, y labels the interior. One square while the
                  two letters are being introduced; the pair only once there is a
                  change to compare. -->
@@ -495,7 +510,7 @@
               <input aria-label="Change the square side" type="range" min="2.1" max="3" step="0.1" bind:value={dependentX}/>
               <span>3.0</span>
             </label>
-          {:else if boardIndex === 3}
+          {:else if declaredIndex === 3}
             <!-- The result is a ratio, so it is never drawn inside a shape. The
                  division only appears once section 2 introduces it. -->
             {#if floorIndex === 0}

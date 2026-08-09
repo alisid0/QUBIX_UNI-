@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "node scripts/deploy.mjs"

@@ -2,6 +2,13 @@
   import { theme } from '../lib/stores/theme.js';
   import { progress, summary } from '../lib/stores/progress.js';
   import { view } from '../lib/stores/view.js';
+  import { boards, TOTAL_SECTIONS } from '../lib/content/course.js';
+
+  // Counted, not written down. The line here used to say "five boards, twenty
+  // sections" in the markup, which stopped being true the moment the pilot
+  // boards were added.
+  const words = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+  const count = n => words[n] || String(n);
 
   function resume() {
     view.set('lesson');
@@ -39,7 +46,7 @@
         </p>
       {:else}
         <h1>Variables and Rates of Change</h1>
-        <p class="where">Five boards, twenty sections, from a letter standing for a number to the rate at a single point.</p>
+        <p class="where">{count(boards.length).replace(/^\w/, c => c.toUpperCase())} boards, {TOTAL_SECTIONS} sections, from a letter standing for a number to the rate at a single point.</p>
       {/if}
 
       <div class="track" aria-label={`${$summary.doneCount} of ${$summary.totalSections} sections done`}>

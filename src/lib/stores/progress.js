@@ -1,5 +1,5 @@
 import { writable, derived, get } from 'svelte/store';
-import { boards } from '../content/lesson.js';
+import { boards } from '../content/course.js';
 
 // Quiet tracking, per the founder decision of 2026-08-09: record everything,
 // display no score. There is deliberately no streak, no points and no league
