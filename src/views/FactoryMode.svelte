@@ -88,10 +88,37 @@
     delete next[letter];
     bench = { ...bench, assigned: next };
   }
-  function goalMet(id, a) {
-    if (id === 'g1') return a.x === 7;
-    if (id === 'g2') return a.y !== undefined && a.x !== undefined && a.y !== a.x;
-    if (id === 'g3') return a.z === undefined;
+  // Change bench (BB2 W1) and delta builder (BB2 W2).
+  let cb = { oldV: 2, newV: 2 };
+  let db = { letter: null };
+  const cbDelta = s => Number((s.newV - s.oldV).toFixed(2));
+  function cbStep(which, delta) {
+    const next = Number(Math.min(4, Math.max(0, cb[which] + delta * 0.1)).toFixed(2));
+    cb = { ...cb, [which]: next };
+  }
+
+  // Goals are checked per workshop kind rather than by a global id lookup, so a
+  // new workshop cannot silently inherit another one's success conditions.
+  // The three states are passed in rather than read from scope: Svelte tracks
+  // dependencies at the call site, so reading them inside the body would leave
+  // the goal list frozen.
+  function goalMet(kind, id, bench, cb, db) {
+    if (kind === 'assignment-bench') {
+      const a = bench.assigned;
+      if (id === 'g1') return a.x === 7;
+      if (id === 'g2') return a.y !== undefined && a.x !== undefined && a.y !== a.x;
+      if (id === 'g3') return a.z === undefined;
+    }
+    if (kind === 'change-bench') {
+      const d = cbDelta(cb);
+      if (id === 'b1') return Math.abs(d - 0.5) < 0.001;
+      if (id === 'b2') return d < -0.001;
+      if (id === 'b3') return Math.abs(d) < 0.001 && (cb.oldV !== 2 || cb.newV !== 2);
+    }
+    if (kind === 'delta-builder') {
+      if (id === 'd1') return db.letter === 't';
+      if (id === 'd2') return db.letter === 'y';
+    }
     return false;
   }
 
@@ -533,8 +560,63 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(g.id, bench.assigned)}>
-                          <i>{goalMet(g.id, bench.assigned) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'change-bench'}
+                  <div class="rows">
+                    <div class="bench-row">
+                      <small>OLD</small>
+                      <button on:click={() => cbStep('oldV', -1)} aria-label="Decrease old">−</button>
+                      <b>{cb.oldV.toFixed(1)}</b>
+                      <button on:click={() => cbStep('oldV', 1)} aria-label="Increase old">+</button>
+                    </div>
+                    <div class="bench-row">
+                      <small>NEW</small>
+                      <button on:click={() => cbStep('newV', -1)} aria-label="Decrease new">−</button>
+                      <b>{cb.newV.toFixed(1)}</b>
+                      <button on:click={() => cbStep('newV', 1)} aria-label="Increase new">+</button>
+                    </div>
+                    <div class="equation-strip">
+                      <span>Δx</span>
+                      <strong>= {cb.newV.toFixed(1)} − {cb.oldV.toFixed(1)}</strong>
+                      <b>= {cbDelta(cb).toFixed(1).replace('-', '−')}</b>
+                    </div>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'delta-builder'}
+                  <div class="rows centre">
+                    <div class="build-line">
+                      <span class="glyph-sm">Δ</span>
+                      {#if db.letter}
+                        <span class="glyph-sm let">{db.letter}</span>
+                      {:else}
+                        <span class="glyph-sm empty">?</span>
+                      {/if}
+                    </div>
+                    <p class="build-read">
+                      {db.letter ? `the change in ${db.letter}` : 'attach a letter'}
+                    </p>
+                    <div class="tray">
+                      {#each w.letters as L}
+                        <button class="chip pick" class:up={db.letter === L} on:click={() => db = { letter: db.letter === L ? null : L }}>{L}</button>
+                      {/each}
+                    </div>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -696,6 +778,15 @@
   .goals li i { font-style: normal; color: var(--qx-text-faint); font-weight: 900; }
   .goals li.met { color: var(--qx-green-text); }
   .goals li.met i { color: var(--qx-green); }
+  .bench-row { display: flex; align-items: center; gap: 9px; }
+  .bench-row small { width: 44px; font-size: 9px; letter-spacing: .1em; font-weight: 900; color: var(--qx-text-faint); }
+  .bench-row button { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font-size: 19px; font-weight: 900; cursor: pointer; }
+  .bench-row b { flex: 1; text-align: center; font-size: 19px; }
+  .build-line { display: flex; align-items: center; gap: 4px; }
+  .glyph-sm { min-width: 46px; height: 56px; border: 2px solid var(--qx-accent); border-radius: 11px; background: var(--qx-accent-soft); color: var(--qx-accent-text); display: grid; place-items: center; font-size: 28px; font-weight: 900; padding: 0 10px; }
+  .glyph-sm.let { font: italic 800 28px/1 Georgia, serif; }
+  .glyph-sm.empty { border-style: dashed; border-color: var(--qx-border-2); background: transparent; color: var(--qx-text-faint); }
+  .build-read { font-size: 13px; font-weight: 800; color: var(--qx-text-2); }
   .pair-row { display: flex; align-items: center; gap: 9px; font-size: 13px; }
   .pair-row b { min-width: 52px; font-size: 15px; color: var(--qx-accent-text); }
   .pair-row i { font-style: normal; color: var(--qx-text-faint); }

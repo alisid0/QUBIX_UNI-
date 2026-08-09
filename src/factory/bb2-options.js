@@ -12,6 +12,34 @@ export const finalised = {};
 export const bb2 = {
   id: 'CME-CHANGE-002',
   title: 'Change in a Variable',
+
+  workshops: [
+    {
+      code: 'W1',
+      name: 'The change bench',
+      kind: 'change-bench',
+      blurb: 'Set an old value and a new one with the buttons. The change between them is worked out as you go.',
+      goals: [
+        { id: 'b1', text: 'Make the change exactly 0.5' },
+        { id: 'b2', text: 'Make the change negative' },
+        { id: 'b3', text: 'Make the change nothing at all' }
+      ],
+      note: 'The third goal is the one to keep. A change of zero is still a change with a value, and nothing else in BB2 makes that point.'
+    },
+    {
+      code: 'W2',
+      name: 'The delta builder',
+      kind: 'delta-builder',
+      blurb: 'Attach Δ to a letter and read what you have built. Shows that Δ takes whatever follows it, rather than belonging to x.',
+      letters: ['x', 'y', 't'],
+      goals: [
+        { id: 'd1', text: 'Build the change in t' },
+        { id: 'd2', text: 'Build the change in y' }
+      ],
+      note: 'BB2 only ever shows Δx, which quietly suggests Δ and x are one symbol. Building Δt breaks that before BB3 needs it.'
+    }
+  ],
+
   fork: 'x, then Δ, then Δx. Founder ordering of 2026-08-09.',
   structure: 'Five sections.',
   sections: [
@@ -32,6 +60,12 @@ export const bb2 = {
       ],
       exercises: [
         { code: 'S1-X1', kind: 'set-control', prompt: 'Move x to 2.5.', target: 2.5, tolerance: 0.05, from: 2 },
+        {
+          code: 'S1-X3', kind: 'stepper',
+          prompt: 'Step x up to 2.5.',
+          target: 2.5, min: 1.2, max: 3, step: 0.1, start: 2, unit: '',
+          successNote: 'One symbol, a second value. Stepping makes the two values feel separate in a way that sliding does not.'
+        },
         {
           code: 'S1-X2', kind: 'choice',
           prompt: 'Which of these is a constant?',
@@ -65,7 +99,18 @@ export const bb2 = {
             { label: '4.75', feedback: 'Adding gives the wrong quantity. The gap is a subtraction: new − old.' }
           ]
         },
-        { code: 'S2-X2', kind: 'set-control', prompt: 'Move x so that the change is exactly 1.0.', target: 3, tolerance: 0.05, from: 2 }
+        { code: 'S2-X2', kind: 'set-control', prompt: 'Move x so that the change is exactly 1.0.', target: 3, tolerance: 0.05, from: 2 },
+        {
+          code: 'S2-X3', kind: 'match',
+          prompt: 'Sort each move by the size of its change.',
+          bins: ['0.5', '1.0', '−0.5'],
+          items: [
+            { label: '2 → 2.5', bin: '0.5' },
+            { label: '2 → 3', bin: '1.0' },
+            { label: '2 → 1.5', bin: '−0.5' }
+          ],
+          successNote: 'Every one is new − old. The third runs the subtraction the other way, which is section 5 arriving early.'
+        }
       ]
     },
     {
@@ -89,6 +134,17 @@ export const bb2 = {
             { label: 'Multiply by delta', feedback: 'Δ is not a quantity, so there is nothing to multiply by. It is a word, written short.' },
             { label: 'A very small amount', feedback: 'Δ says nothing about size. A change can be large or small.' }
           ]
+        },
+        {
+          code: 'S3-X3', kind: 'match',
+          prompt: 'Put each symbol with what it is.',
+          bins: ['A word, written short', 'A symbol for a number', 'A fixed number'],
+          items: [
+            { label: 'Δ', bin: 'A word, written short' },
+            { label: 'x', bin: 'A symbol for a number' },
+            { label: '2', bin: 'A fixed number' }
+          ],
+          successNote: 'Three symbols, three different jobs. Only one of them has a value.'
         },
         {
           code: 'S3-X2', kind: 'choice',
@@ -124,6 +180,12 @@ export const bb2 = {
           ]
         },
         {
+          code: 'S4-X3', kind: 'stepper',
+          prompt: 'x starts at 2. Step the new value until Δx is 0.8.',
+          target: 2.8, min: 1.2, max: 3, step: 0.1, start: 2, unit: '',
+          successNote: 'Δx = 2.8 − 2 = 0.8. You had to run the subtraction backwards to know where to stop.'
+        },
+        {
           code: 'S4-X2', kind: 'choice',
           prompt: 'x is 2 and Δx is 0.5. What is the new value of x?',
           options: [
@@ -148,6 +210,18 @@ export const bb2 = {
       ],
       exercises: [
         { code: 'S5-X1', kind: 'set-control', prompt: 'Move the new value so that Δx becomes negative.', below: 2, from: 2.5 },
+        {
+          code: 'S5-X3', kind: 'match',
+          prompt: 'Sort each move by the direction of its change.',
+          bins: ['Δx positive', 'Δx negative'],
+          items: [
+            { label: '2 → 2.5', bin: 'Δx positive' },
+            { label: '3 → 2.5', bin: 'Δx negative' },
+            { label: '2 → 1.2', bin: 'Δx negative' },
+            { label: '1.5 → 2', bin: 'Δx positive' }
+          ],
+          successNote: 'Direction is decided by which value is larger, not by which number looks bigger on the page.'
+        },
         {
           code: 'S5-X2', kind: 'choice',
           prompt: 'x moves from 3 to 2.5. What is Δx?',
