@@ -1,5 +1,5 @@
 import { sources } from './sources.js';
-import { bb1, selections as sel1, finalised as fin1 } from './bb1-options.js';
+import { bb1, selections as sel1, finalised as fin1, rejected as rej1 } from './bb1-options.js';
 import { bb2, selections as sel2, finalised as fin2, rejected as rej2 } from './bb2-options.js';
 import { bb3, selections as sel3, finalised as fin3, rejected as rej3 } from './bb3-options.js';
 import { bb4, selections as sel4, finalised as fin4 } from './bb4-options.js';
@@ -27,7 +27,7 @@ export { sources };
 // The permanent identifier is still bb.id (CME-CHANGE-007, FCG-AREA-001). Those
 // are per-strand and unaffected by renumbering, so they are not touched here.
 export const registry = [
-  { key: 'letter', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1 },
+  { key: 'letter', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1, rejected: rej1 },
   { key: 'gap', label: 'Gap', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
   { key: 'second', label: 'Second Letter', bb: bb3, selections: sel3, finalised: fin3, rejected: rej3 },
   { key: 'rate', label: 'Rate', bb: bb4, selections: sel4, finalised: fin4 },

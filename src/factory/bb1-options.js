@@ -3,26 +3,56 @@
 // Nothing here is approved, and nothing here is what the Viewer currently shows.
 
 // Founder selections, by variant code. A code listed here is chosen and will be
-// written into the BB1 record. Everything else is still a candidate.
+// written into the record. Everything else is still a candidate.
+//
+// Founder pass of 2026-08-09 settled every slot but one: S1-I1, all of S1's
+// checks, S2-I2, all of S2's checks, S3-B, all of S3's and S4's checks, and both
+// workshops. The readings S1-A, S2-B and S4-A and the interaction S4-I1 had
+// already been chosen earlier the same day.
 export const selections = {
   'S1-A': '2026-08-09',
+  'S1-I1': '2026-08-09',
+  'S1-X1': '2026-08-09',
+  'S1-X2': '2026-08-09',
+  'S1-X3': '2026-08-09',
   'S2-B': '2026-08-09',
+  'S2-I2': '2026-08-09',
+  'S2-X1': '2026-08-09',
+  'S2-X2': '2026-08-09',
+  'S2-X3': '2026-08-09',
+  'S3-B': '2026-08-09',
+  'S3-X1': '2026-08-09',
+  'S3-X2': '2026-08-09',
+  'S3-X3': '2026-08-09',
   'S4-A': '2026-08-09',
-  'S4-I1': '2026-08-09'
+  'S4-I1': '2026-08-09',
+  'S4-X1': '2026-08-09',
+  'S4-X2': '2026-08-09',
+  'S4-X3': '2026-08-09',
+  // Both kept, deliberately. The bench and the statement match are different
+  // sizes of the same idea and the founder wanted to compare them in place.
+  'W1': '2026-08-09',
+  'W2': '2026-08-09'
 };
 
-// Chosen by me under the founder's standing instruction of 2026-08-09: let the
-// interactions stand provided no two repeat, and keep momentum. These are
-// finalised conclusions, not founder selections, and are reversible on request.
+// The one slot the founder's pass did not reach. Section 3 got a reading and all
+// three checks but no interaction, so this still stands on my judgement under the
+// standing no-repeat instruction. Reversible.
 export const finalised = {
-  'S1-I1': 'no repeat: the only variant that shows figures and letters side by side',
-  'S2-I2': 'no repeat: symbol and value as two separate cards, not a third value card',
-  'S3-A': 'carries Wentworth’s own phrase, which is the section’s subject',
-  'S3-I1': 'no repeat: the only variant that leaves the replaced value visible',
-  'S1-X1': 'tests the figure/letter contrast S1-A actually makes',
-  'S2-X1': 'tests assignment in words; the slider form would repeat S4-X1',
-  'S3-X1': 'tests that a value was replaced, not the letter',
-  'S4-X1': 'the one slider task in BB1; S4-X2 would repeat S3-X1’s question shape'
+  'S3-I1': 'not chosen by the founder: section 3 was settled except for its interaction. Kept because it is the only variant that leaves the replaced value visible, which is the section\'s whole subject.'
+};
+
+export const rejected = {
+  'S1-B': 'Not selected; S1-A is the shorter statement of the same contrast.',
+  'S1-C': 'Not selected; S1-A carries the source\'s own list of figures.',
+  'S1-I2': 'Not selected; S1-I1 kept. The sorter would repeat the match check S1-X3 immediately below it.',
+  'S2-A': 'Not selected; S2-B states the assignment without a preamble.',
+  'S2-C': 'Not selected; S2-B avoids the phrase "general symbol", which S1-X2 already tests.',
+  'S2-I1': 'Not selected; S2-I2 kept, which reads symbol and value as two things rather than one card.',
+  'S3-A': 'Superseded. I had finalised this for carrying Wentworth\'s own phrase; the founder chose S3-B on 2026-08-09.',
+  'S3-I2': 'Not selected; it is the S2 card again with no ghost, so a replacement is hard to notice.',
+  'S4-B': 'Not selected; S4-A names the unit, which S4-X1 and S4-X3 both depend on.',
+  'S4-I2': 'Not selected; S4-I1 kept. The ghost outline is S3-I1\'s device and would repeat it.'
 };
 
 export const bb1 = {

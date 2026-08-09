@@ -119,57 +119,101 @@ Modernised:
 
 ## Learner sequence
 
-Twelve variants were drafted in the Factory. Four were selected by the founder
-and eight finalised by AI under a standing instruction of 2026-08-09 to let the
-interactions stand provided no two repeat.
+Thirty-two variants were drafted in the Factory. **Twenty-one were selected by the
+founder** in two passes on 2026-08-09, ten are recorded as rejected, and one slot
+remains AI-finalised. Each section now carries its reading, one interaction and
+all three of its checks.
 
-### Section 1 — Figures and letters `S1-A` selected
+### Section 1 — Figures and letters `S1-A`
 
 > Arithmetic uses figures to represent numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 0.
 > Algebra uses the letters of the alphabet as well.
 
-Interaction `S1-I1` (AI-finalised): two rows. Figures display their number.
-Letters display nothing, because no value has been assigned yet. No control on
-this section; there is nothing to assign.
+Interaction `S1-I1`: two rows. Figures display their number. Letters display
+nothing, because no value has been assigned yet. No control on this section;
+there is nothing to assign.
 
-Exercise `S1-X1` (AI-finalised), choice: "Which of these always stands for the
-same number?" → **7** / x / y.
+Checks: `S1-X1` choice, which symbol always stands for the same number. `S1-X3`
+match, sorting `7`, `0`, `x` and `n` into figure or letter. `S1-X2` choice, what
+"general symbol" means, whose distractor is that a letter means *unknown*.
 
-### Section 2 — A letter stands for a number `S2-B` selected
+### Section 2 — A letter stands for a number `S2-B`
 
 > Write x = 2. This assigns the number 2 to the letter x. In this lesson x now
 > represents 2.
 
-Interaction `S2-I2` (AI-finalised): the symbol and the value as two separate
-cards joined by a rule, so they read as distinct things. The control assigns the
-value.
+Interaction `S2-I2`: the symbol and the value as two separate cards joined by a
+rule, so they read as distinct things. The control assigns the value.
 
-Exercise `S2-X1` (AI-finalised), choice: "x has been assigned the value 5. What
-does x stand for?" → **The number 5** / The letter x / Any number at all.
+Checks: `S2-X1` choice, what x stands for once 5 is assigned. `S2-X2`
+set-control, assign x the value 3. `S2-X3` stepper, step up until x represents 5.
 
-### Section 3 — Any particular value may be assigned `S3-A` AI-finalised
+### Section 3 — Any particular value may be assigned `S3-B`
 
-> Any particular value may be assigned to a letter. Assign 3 to x and x
-> represents 3. Assign 1.5 and x represents 1.5. The letter is not altered by
-> this.
+> x is not fixed at 2. A different value may be assigned to it. The letter written
+> on the page stays the same. The number assigned to it does not.
 
-Interaction `S3-I1` (AI-finalised): the current value card with the replaced
-value left behind as a ghost, so a replacement is visible rather than inferred.
+Interaction `S3-I1`, **AI-finalised, not founder-selected**: the current value
+card with the replaced value left behind as a ghost, so a replacement is visible
+rather than inferred. This is the only slot in the board the founder's pass did
+not reach.
 
-Exercise `S3-X1` (AI-finalised), choice: "x is assigned 2, then assigned 3. What
-changed?" → **The value assigned to x** / The symbol changed from x to another
-letter / The number 2 became a letter.
+Checks: `S3-X1` choice, what changed between two assignments. `S3-X2`
+set-control, replace 2 with 3. `S3-X3` order, putting the four steps of an
+assignment into sequence.
 
-### Section 4 — A letter can label a quantity `S4-A` selected
+### Section 4 — A letter can label a quantity `S4-A`
 
 > A letter may represent a measured quantity. Let x be the length of the side of
 > this square, in centimetres. The square is drawn at whatever value is assigned
 > to x.
 
-Interaction `S4-I1` (founder-selected): the square with x labelling its edge.
+Interaction `S4-I1`: the square with x labelling its edge.
 
-Exercise `S4-X1` (AI-finalised), set-control: "Assign x the value that makes each
-side 3.0 cm."
+Checks: `S4-X1` set-control, make each side 3.0 cm. `S4-X3` stepper, the same
+target reached by stepping. `S4-X2` choice, what you changed when the square grew.
+
+> **Repetition to settle before this board is approved.** Keeping all three
+> checks in sections 2, 3 and 4 puts the same two gestures on screen repeatedly:
+> `set-control` appears three times (`S2-X2`, `S3-X2`, `S4-X1`) and each one asks
+> for the value 3, and `stepper` appears twice (`S2-X3`, `S4-X3`). The
+> mathematical point differs every time, which is the argument for keeping them:
+> S2 assigns for the first time, S3 replaces an existing value, S4 assigns a
+> length rather than a bare number. But the learner performs an identical action.
+> The cheapest fix is to vary the targets so the three are not all 3. Left as
+> selected pending a founder decision.
+
+## Workshops `W1` and `W2` — both kept
+
+Unusually, both workshop variants were selected. They are different sizes of the
+same idea and the founder wanted them in place rather than chosen between.
+
+**`W1` The assignment bench.** Three letters, a tray of numbers, and three goals:
+make x represent 7; give y a different value from x; clear z so it represents
+nothing again. The third is the one worth having. It shows a letter going back to
+being general, which no multiple-choice question makes a learner feel.
+
+**`W2` Match the statement.** Pair `x = 2`, `2` and `x` with what each means in
+words. Smaller than the bench and closer to a check; it tests reading of notation
+rather than arithmetic.
+
+Keeping both means the board ends with a large open task and then a small closed
+one. That ordering has not been tested on a learner and may want reversing.
+
+## Rejected variants
+
+| Code | Reason |
+|---|---|
+| `S1-B` | Not selected; `S1-A` is the shorter statement of the same contrast. |
+| `S1-C` | Not selected; `S1-A` carries the source's own list of figures. |
+| `S1-I2` | Not selected; the sorter would repeat the match check `S1-X3` directly below it. |
+| `S2-A` | Not selected; `S2-B` states the assignment without a preamble. |
+| `S2-C` | Not selected; `S2-B` avoids "general symbol", which `S1-X2` already tests. |
+| `S2-I1` | Not selected; `S2-I2` reads symbol and value as two things rather than one card. |
+| `S3-A` | Superseded. AI-finalised for carrying Wentworth's own phrase; the founder chose `S3-B`. |
+| `S3-I2` | Not selected; it is the section 2 card again with no ghost, so a replacement is hard to notice. |
+| `S4-B` | Not selected; `S4-A` names the unit, which `S4-X1` and `S4-X3` both depend on. |
+| `S4-I2` | Not selected; the ghost outline is `S3-I1`'s device and would repeat it. |
 
 ## Interaction specification
 
@@ -195,8 +239,10 @@ side 3.0 cm."
 4. A letter means "unknown" rather than "not yet committed". *(section 2, tested
    by S2-X1)*
 5. Operating the control is sufficient evidence of understanding without a
-   selected or spoken explanation. *(three of the four exercises are verbal for
-   this reason)*
+   selected or spoken explanation. *(five of the twelve checks are verbal for this
+   reason, and every section opens with one)*
+6. A letter, once assigned, is stuck with that value. *(the assignment bench's
+   third goal, by making the learner clear a letter back to nothing)*
 
 ## Amendment history
 
@@ -214,6 +260,8 @@ side 3.0 cm."
 | 2026-08-09 | Founder review run: all five checks positive, decision `APPROVE_CANDIDATE`. | Founder |
 | 2026-08-09 | Retitled *Assigning Values to Letters*; prerequisite map corrected to match. | Founder |
 | 2026-08-09 | Retitled *A Letter for a Number*. Every board renamed in the same pass and board numbers dropped as identity; record file renamed to identifier-plus-name. | Founder ordered the rename; the names themselves are AI, pending founder confirmation |
+| 2026-08-09 | Second selection pass: 21 of 32 variants selected, taking every check in all four sections and both workshops. `S3-B` replaces the AI-finalised `S3-A`. Ten variants recorded as rejected. | Founder |
+| 2026-08-09 | Repeated `set-control` and `stepper` gestures across sections 2 to 4 flagged for decision; selections left as made. | AI, flagged |
 
 ## Founder review
 
