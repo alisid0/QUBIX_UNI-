@@ -24,7 +24,6 @@
   let exerciseOpen = false;
   let exIndex = 0;
   let stepCleared = false;   // current check within the section
-  let stepValue = 0;         // stepper
   let heldItem = null;       // match: item picked up
   let placedItems = {};      // match: label -> bin
   let picked = null;
@@ -85,8 +84,6 @@
     feedback = '';
     heldItem = null;
     placedItems = {};
-    const ex = exercises[exIndex];
-    stepValue = ex && ex.kind === 'stepper' ? (ex.start ?? ex.min) : 0;
   }
 
   // A set-control exercise is answered with the board's own slider. This must not
@@ -174,11 +171,14 @@
   }
 
   // Stepper: plus and minus rather than a slider, so a value is chosen rather
-  // than swept. Used where the lesson needs discrete choices.
+  // than swept. It drives the board's own control, so the stage and the stepper
+  // are the same number. Keeping a private value produced two different figures
+  // on screen both labelled x, and stepping moved nothing.
   function stepBy(delta) {
     if (stepCleared) return;
-    stepValue = Math.min(exercise.max, Math.max(exercise.min, Number((stepValue + delta * exercise.step).toFixed(4))));
-    if (Math.abs(stepValue - exercise.target) < exercise.step / 2) markCleared(exercise.successNote);
+    const next = Math.min(exercise.max, Math.max(exercise.min, Number((controlValue + delta * exercise.step).toFixed(4))));
+    setControl(next);
+    if (Math.abs(next - exercise.target) < exercise.step / 2) markCleared(exercise.successNote);
   }
 
   // Match: tap an item, tap a bin. Tap-to-place works with a thumb; HTML5 drag
@@ -216,7 +216,11 @@
 
   function primeSetControl() {
     const ex = exercises[exIndex];
-    if (ex && ex.kind === 'set-control' && setControlSatisfied(ex, controlValue)) setControl(ex.from);
+    if (!ex) return;
+    // A stepper starts from a declared value so the task is always real work
+    // and the learner is never dropped onto the answer.
+    if (ex.kind === 'stepper' && ex.start != null) setControl(ex.start);
+    if (ex.kind === 'set-control' && setControlSatisfied(ex, controlValue)) setControl(ex.from);
   }
 
   // A set-control exercise is satisfied either by landing on a target value or by
@@ -320,7 +324,9 @@
           <h1>{board.title}</h1>
         </div>
 
-        <div class="stage" aria-live="polite">
+        <!-- While a stepper check runs, the board's slider stands down: the task
+             is to step, and leaving both on screen makes it bypassable. -->
+        <div class="stage" class:stepping={exerciseOpen && exercise && exercise.kind === 'stepper'} aria-live="polite">
           {#if boardIndex === 0}
             <!-- BB1 under fork F-2: figures and letters, then a value assigned,
                  then a value replaced, then a value that measures something. -->
@@ -545,9 +551,9 @@
 
               {:else if exercise.kind === 'stepper'}
                 <div class="lab-stepper">
-                  <button aria-label="Decrease" disabled={stepCleared} on:click={() => stepBy(-1)}>−</button>
-                  <span>x = {stepValue.toFixed(exercise.step < 1 ? 1 : 0)}{exercise.unit ? ' ' + exercise.unit : ''}</span>
-                  <button aria-label="Increase" disabled={stepCleared} on:click={() => stepBy(1)}>+</button>
+                  <button aria-label="Decrease" disabled={stepCleared || controlValue <= exercise.min} on:click={() => stepBy(-1)}>−</button>
+                  <span>x = {controlValue.toFixed(exercise.step < 1 ? 1 : 0)}{exercise.unit ? ' ' + exercise.unit : ''}</span>
+                  <button aria-label="Increase" disabled={stepCleared || controlValue >= exercise.max} on:click={() => stepBy(1)}>+</button>
                 </div>
 
               {:else if exercise.kind === 'match'}
@@ -635,6 +641,7 @@
   .stage { min-height: 300px; flex-shrink: 0; border-radius: 18px; border: 1px solid var(--qx-border); background: var(--qx-surface-2); padding: 17px 14px 13px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
   .range-row { display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; gap: 8px; color: var(--qx-text-faint); font-size: 10px; font-weight: 800; width: 100%; margin-top: 13px; }
   .range-row span:last-child { text-align: right; }
+  .stage.stepping .range-row { display: none; }
   input[type='range'] { width: 100%; accent-color: var(--qx-accent); cursor: pointer; }
   .square-stage { min-height: 215px; display: grid; grid-template-columns: 1fr 126px; align-items: center; gap: 10px; }
   .square-figure { justify-self: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
