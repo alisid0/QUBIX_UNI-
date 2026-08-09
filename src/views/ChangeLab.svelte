@@ -22,6 +22,11 @@
   let rateX = 2.5;
   let stepIndex = 0;
   let exerciseOpen = false;
+  let exIndex = 0;
+  let stepCleared = false;   // current check within the section
+  let stepValue = 0;         // stepper
+  let heldItem = null;       // match: item picked up
+  let placedItems = {};      // match: label -> bin
   let picked = null;
   let attempts = 0;
   let feedback = '';
@@ -34,7 +39,10 @@
   $: board = boards[boardIndex];
   $: floorData = board?.floors[floorIndex] || { text: '' };
   $: floor = floorData.text || '';
-  $: exercise = floorData.exercise || null;
+  // A section may carry more than one check. The founder kept two on BB2 S1, so
+  // one-per-section was my assumption rather than a rule.
+  $: exercises = floorData.exercises || (floorData.exercise ? [floorData.exercise] : []);
+  $: exercise = exercises[exIndex] || null;
   // Note: do not derive a `cleared` value with `$:`. clearSetControl() assigns
   // `completed` from inside a reactive block, and a derived alias computed earlier
   // in the same update pass would keep a stale value. Read completed[exerciseKey].
@@ -66,17 +74,27 @@
   $: if (exerciseKey !== lastKey) {
     lastKey = exerciseKey;
     exerciseOpen = false;
+    exIndex = 0;
+    resetCheck();
+  }
+
+  function resetCheck() {
+    stepCleared = false;
     picked = null;
     attempts = 0;
     feedback = '';
+    heldItem = null;
+    placedItems = {};
+    const ex = exercises[exIndex];
+    stepValue = ex && ex.kind === 'stepper' ? (ex.start ?? ex.min) : 0;
   }
 
   // A set-control exercise is answered with the board's own slider. This must not
   // read exerciseCleared: that would make completed -> exerciseCleared -> completed
   // a cycle, and the cleared state would never reach the Continue button.
   $: if (exerciseOpen && exercise && exercise.kind === 'set-control'
-      && setControlSatisfied(exercise, controlValue)) {
-    clearSetControl();
+      && !stepCleared && setControlSatisfied(exercise, controlValue)) {
+    markCleared(exercise.successNote);
   }
 
   // Position and completion now live in the progress store, which owns the
@@ -95,15 +113,23 @@
   $: if (hydrated) progress.setCompleted(completed);
 
   function advance() {
-    // A floor with an unanswered exercise opens it instead of moving on.
-    if (exercise && !completed[exerciseKey]) {
-      // If the control already happens to satisfy the task, the learner would
-      // get it for free. Wind it back so the task is always real work.
-      if (exercise.kind === 'set-control' && setControlSatisfied(exercise, controlValue)) {
-        setControl(exercise.from);
+    // A floor with unanswered checks opens them instead of moving on, and works
+    // through them in order before the section is counted as done.
+    if (exercises.length && !completed[exerciseKey]) {
+      if (!exerciseOpen) {
+        exIndex = 0;
+        resetCheck();
+        primeSetControl();
+        exerciseOpen = true;
+        return;
       }
-      exerciseOpen = true;
-      return;
+      if (exIndex < exercises.length - 1) {
+        exIndex += 1;
+        resetCheck();
+        primeSetControl();
+        return;
+      }
+      completed = { ...completed, [exerciseKey]: true };
     }
     exerciseOpen = false;
     if (floorIndex < board.floors.length - 1) {
@@ -135,7 +161,7 @@
   }
 
   function chooseOption(option) {
-    if (completed[exerciseKey]) return;
+    if (stepCleared) return;
     picked = option.label;
     attempts += 1;
     if (option.correct) {
@@ -147,14 +173,50 @@
     }
   }
 
+  // Stepper: plus and minus rather than a slider, so a value is chosen rather
+  // than swept. Used where the lesson needs discrete choices.
+  function stepBy(delta) {
+    if (stepCleared) return;
+    stepValue = Math.min(exercise.max, Math.max(exercise.min, Number((stepValue + delta * exercise.step).toFixed(4))));
+    if (Math.abs(stepValue - exercise.target) < exercise.step / 2) markCleared(exercise.successNote);
+  }
+
+  // Match: tap an item, tap a bin. Tap-to-place works with a thumb; HTML5 drag
+  // does not.
+  function takeItem(label) {
+    if (stepCleared) return;
+    heldItem = heldItem === label ? null : label;
+  }
+  function placeItem(bin) {
+    if (stepCleared || !heldItem) return;
+    placedItems = { ...placedItems, [heldItem]: bin };
+    heldItem = null;
+    if (exercise.items.every(i => placedItems[i.label] === i.bin)) markCleared(exercise.successNote);
+  }
+
+  // A placement must be undoable. Without this one mistaken tap leaves the
+  // section permanently unclearable, with no way back.
+  function unplaceItem(label) {
+    if (stepCleared) return;
+    const next = { ...placedItems };
+    delete next[label];
+    placedItems = next;
+    heldItem = label;
+  }
+
   function markCleared(message) {
     // Recorded but never shown: whether this took more than one attempt is the
     // only quality signal kept, and no score is derived from it yet.
-    if (!completed[exerciseKey]) {
-      progress.recordAttempt(exerciseKey, { tries: Math.max(attempts, 1), firstTime: attempts <= 1 });
+    if (!stepCleared) {
+      progress.recordAttempt(`${exerciseKey}:${exIndex}`, { tries: Math.max(attempts, 1), firstTime: attempts <= 1 });
     }
-    completed = { ...completed, [exerciseKey]: true };
+    stepCleared = true;
     feedback = message || '';
+  }
+
+  function primeSetControl() {
+    const ex = exercises[exIndex];
+    if (ex && ex.kind === 'set-control' && setControlSatisfied(ex, controlValue)) setControl(ex.from);
   }
 
   // A set-control exercise is satisfied either by landing on a target value or by
@@ -435,7 +497,9 @@
             <div class="exercise" aria-live="polite">
               <div class="check-topline">
                 <span>QUICK CHECK</span>
-                <span>Section {floorIndex + 1} of {board.floors.length}</span>
+                <span>
+                  {#if exercises.length > 1}{exIndex + 1} of {exercises.length} · {/if}Section {floorIndex + 1} of {board.floors.length}
+                </span>
               </div>
 
               {#if exercise.visual === 'symbol-value'}
@@ -452,16 +516,48 @@
                 <div class="check-options">
                   {#each exercise.options as option}
                     <button
-                      disabled={completed[exerciseKey]}
-                      class:correct={completed[exerciseKey] && option.correct}
+                      disabled={stepCleared}
+                      class:correct={stepCleared && option.correct}
                       class:missed={picked === option.label && !option.correct}
                       on:click={() => chooseOption(option)}>{option.label}</button>
+                  {/each}
+                </div>
+
+              {:else if exercise.kind === 'stepper'}
+                <div class="lab-stepper">
+                  <button aria-label="Decrease" disabled={stepCleared} on:click={() => stepBy(-1)}>−</button>
+                  <span>x = {stepValue.toFixed(exercise.step < 1 ? 1 : 0)}{exercise.unit ? ' ' + exercise.unit : ''}</span>
+                  <button aria-label="Increase" disabled={stepCleared} on:click={() => stepBy(1)}>+</button>
+                </div>
+
+              {:else if exercise.kind === 'match'}
+                <div class="lab-tray">
+                  {#each exercise.items as item}
+                    {#if !placedItems[item.label]}
+                      <button class="lab-chip" class:up={heldItem === item.label} on:click={() => takeItem(item.label)}>{item.label}</button>
+                    {/if}
+                  {/each}
+                </div>
+                <div class="lab-bins">
+                  {#each exercise.bins as bin}
+                    <div class="lab-bin" class:armed={heldItem}>
+                      <button class="bin-hit" on:click={() => placeItem(bin)} aria-label={`Place in ${bin}`}>
+                        <small>{bin}</small>
+                      </button>
+                      <span>
+                        {#each exercise.items.filter(i => placedItems[i.label] === bin) as i}
+                          <button class="placed" class:wrong={i.bin !== bin} disabled={stepCleared}
+                            on:click|stopPropagation={() => unplaceItem(i.label)}
+                            aria-label={`Take ${i.label} back`}>{i.label}</button>
+                        {/each}
+                      </span>
+                    </div>
                   {/each}
                 </div>
               {/if}
 
               {#if feedback}
-                <div class="feedback" class:success={completed[exerciseKey]}>{feedback}</div>
+                <div class="feedback" class:success={stepCleared}>{feedback}</div>
               {/if}
             </div>
           {/if}
@@ -471,10 +567,10 @@
           <button class="secondary" on:click={retreat} disabled={boardIndex === 0 && floorIndex === 0 && !exerciseOpen} aria-label="Previous step">
             <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <button class="primary" on:click={advance} disabled={exerciseOpen && !completed[exerciseKey]}>
+          <button class="primary" on:click={advance} disabled={exerciseOpen && !stepCleared}>
             {#if exerciseOpen}
-              Continue
-            {:else if exercise && !completed[exerciseKey]}
+              {exIndex < exercises.length - 1 ? 'Next check' : 'Continue'}
+            {:else if exercises.length && !completed[exerciseKey]}
               Check
             {:else if floorIndex < board.floors.length - 1}
               Continue
@@ -619,6 +715,22 @@
   .check-options button { min-height: 48px; border-radius: 13px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 16px; font-weight: 800; cursor: pointer; padding: 8px 14px; text-align: left; }
   .check-options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .check-options button.missed { border-color: var(--qx-danger); }
+  .lab-stepper { display: flex; align-items: center; gap: 10px; }
+  .lab-stepper button { width: 52px; height: 52px; border-radius: 13px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 24px; font-weight: 900; cursor: pointer; }
+  .lab-stepper button:disabled { opacity: .35; cursor: default; }
+  .lab-stepper span { flex: 1; text-align: center; font-size: 22px; font-weight: 900; color: var(--qx-accent-text); }
+  .lab-tray { display: flex; flex-wrap: wrap; gap: 8px; min-height: 48px; align-items: center; }
+  .lab-chip { min-width: 46px; height: 46px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 17px; font-weight: 900; cursor: pointer; }
+  .lab-chip.up { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); transform: translateY(-3px); }
+  .lab-bins { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .lab-bin { min-height: 78px; border: 1px dashed var(--qx-border-2); border-radius: 13px; background: var(--qx-surface-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 9px; cursor: pointer; }
+  .lab-bin.armed { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .lab-bin small { font-size: 9px; letter-spacing: .1em; font-weight: 900; color: var(--qx-text-faint); text-align: center; }
+  .lab-bin span { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+  .lab-bin .bin-hit { flex: 1; width: 100%; border: 0; background: none; cursor: pointer; display: grid; place-items: center; padding: 4px; }
+  .lab-bin .placed { border: 1px solid var(--qx-green); border-radius: 8px; background: var(--qx-green-soft); color: var(--qx-green-text); font-weight: 900; font-size: 15px; padding: 3px 9px; cursor: pointer; }
+  .lab-bin .placed.wrong { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .lab-bin .placed:disabled { cursor: default; }
   .check-options button:disabled { cursor: default; }
   .primary:disabled { opacity: .38; cursor: default; }
   .floor-dots span.checked { background: var(--qx-green); }

@@ -6,7 +6,26 @@
 // in Calculus Made Easy is ∂ for partial derivatives in ch. XVI. The concept is
 // his; the notation is a modernisation and is recorded as one.
 
-export const selections = {};
+// Founder selections. Note S1 carries two exercises: the founder kept X3 and X2
+// together, so a section is not limited to one check.
+export const selections = {
+  'S1-A': '2026-08-09',
+  'S1-I2': '2026-08-09',
+  'S1-X3': '2026-08-09',
+  'S1-X2': '2026-08-09',
+  'S2-A': '2026-08-09',
+  'S2-I2': '2026-08-09',
+  // All three S2 exercises kept.
+  'S2-X1': '2026-08-09',
+  'S2-X2': '2026-08-09',
+  'S2-X3': '2026-08-09',
+  // S3 reading rewritten to founder dictation: no "frightening", and Δ stated
+  // as marking a subtraction. All three S3 exercises kept.
+  'S3-A': '2026-08-09',
+  'S3-X1': '2026-08-09',
+  'S3-X2': '2026-08-09',
+  'S3-X3': '2026-08-09'
+};
 export const finalised = {};
 
 export const bb2 = {
@@ -56,7 +75,7 @@ export const bb2 = {
       ],
       interactions: [
         { code: 'S1-I1', kind: 'number-line', note: 'A number line with the old position marked and the new one draggable. As built.' },
-        { code: 'S1-I2', kind: 'two-bars', note: 'Two stacked bars, old length and new length. Length rather than position, which suits a quantity more than a place.' }
+        { code: 'S1-I2', kind: 'two-bars', bars: 2, note: 'Two stacked bars, old length and new length, and nothing else. Length rather than position, which suits a quantity more than a place. The gap is visible but unnamed, which is section 2\'s job.' }
       ],
       exercises: [
         { code: 'S1-X1', kind: 'set-control', prompt: 'Move x to 2.5.', target: 2.5, tolerance: 0.05, from: 2 },
@@ -87,7 +106,7 @@ export const bb2 = {
       ],
       interactions: [
         { code: 'S2-I1', kind: 'number-line', note: 'The gap drawn as a bar above the line between the two points. As built.' },
-        { code: 'S2-I2', kind: 'two-bars', note: 'The difference shown as a third bar of its own, so the change is an object rather than a distance between objects.' }
+        { code: 'S2-I2', kind: 'two-bars', bars: 3, note: 'The difference shown as a third bar of its own, so the change is an object rather than a distance between objects. Exactly section 1\'s stage plus the one thing section 2 adds.' }
       ],
       exercises: [
         {
@@ -118,12 +137,20 @@ export const bb2 = {
       name: 'Δ on its own',
       sources: [],
       readings: [
-        { code: 'S3-A', text: 'A frightening symbol stops being frightening the moment someone says plainly what it means. So: the Greek capital letter Δ, read "delta", is shorthand for the words "the change in". It is not a number, and it does not multiply.' },
+        { code: 'S3-A', text: 'Mathematicians write "the change in" using the Greek capital letter Δ, read "delta". On its own Δ is not a number. It does not multiply. It marks a subtraction: whatever follows it, new value minus old.' },
         { code: 'S3-B', text: 'That gap needs a name. Mathematicians write "the change in" using the Greek capital letter Δ, read "delta". On its own Δ is not a number, and it does not multiply. It is waiting for a variable to attach to.' }
       ],
       interactions: [
-        { code: 'S3-I1', kind: 'number-line', note: 'Unchanged stage, with the strip still naming the change in words rather than notation. As built.' },
-        { code: 'S3-I2', kind: 'glyph-card', note: 'Δ alone on a card, with its plain-English reading beneath it. Nothing to drag, because there is nothing to vary yet.' }
+        {
+          code: 'S3-I3', kind: 'delta-expand',
+          note: 'Δx unfolds into the subtraction it stands for, live. Drag and the expansion recomputes, so Δ is seen doing something rather than being defined. Answers "how".'
+        },
+        {
+          code: 'S3-I4', kind: 'delta-applied',
+          note: 'The same Δ attached to a length, an area and a time, each with its own numbers. Answers "change in what", and shows the operation never varies while the quantity does.'
+        },
+        { code: 'S3-I1', kind: 'number-line', note: 'Retained but weak: the stage does not change at all in this section, so nothing on screen relates to what is being introduced.' },
+        { code: 'S3-I2', kind: 'glyph-card', note: 'Retained but weak: Δ on a card with its reading beneath. States the words and demonstrates nothing.' }
       ],
       exercises: [
         {

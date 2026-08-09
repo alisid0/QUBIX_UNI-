@@ -71,43 +71,98 @@ export const boards = [
       marker: 'Change',
       floors: [
         {
-          text: 'This is the same x you have just met. It starts at 2. Move it and x takes a new value, while the symbol stays x.',
-          exercise: {
-            kind: 'set-control',
-            prompt: 'Move x to 2.5.',
-            target: 2.5,
-            tolerance: 0.05,
-            from: 2,
-            successNote: 'x is now 2.5. One symbol, a second value.'
-          }
+          // BB2 sections 1 to 3 are founder-selected, 2026-08-09.
+          text: 'Quantities come in two kinds. Some hold a fixed value and are called constants. Others are able to grow or shrink, and those are called variables. x is a variable. Here it sits at 2. Move it and x takes a new value, while the symbol stays x.',
+          exercises: [
+            {
+              kind: 'stepper',
+              prompt: 'Step x up to 2.5.',
+              target: 2.5, min: 1.2, max: 3, step: 0.1, start: 2, unit: '',
+              successNote: 'One symbol, a second value. Stepping makes the two values feel separate in a way that sliding does not.'
+            },
+            {
+              kind: 'choice',
+              prompt: 'Which of these is a constant?',
+              options: [
+                { label: '2', correct: true },
+                { label: 'x', feedback: 'x has just taken a second value, so it is not of fixed value.' },
+                { label: 'The value of x', feedback: 'That is the thing which changed.' }
+              ],
+              successNote: 'Correct. 2 always represents the same number, so it is a constant.',
+              revealNote: '2 is the constant. x is the variable, and its value is what moved.'
+            }
+          ]
         },
         {
-          text: 'Between the old value and the new one there is a gap, and that gap has a size of its own: new − old. From 2 to 2.5, the gap is 0.5.',
-          exercise: {
-            kind: 'choice',
-            prompt: 'x moves from 2 to 2.75. How big is the change?',
-            options: [
-              { label: '0.75', correct: true },
-              { label: '2.75', feedback: '2.75 is where x ended up, not how far it travelled.' },
-              { label: '4.75', feedback: 'Adding gives the wrong quantity. The gap is a subtraction: new − old.' }
-            ],
-            successNote: 'Correct. 2.75 − 2 = 0.75. The change is a quantity in its own right.',
-            revealNote: 'The change is new − old, so 2.75 − 2 = 0.75.'
-          }
+          text: 'Think of the move as a bit added to x. That bit is a quantity in its own right, and you find its size by subtracting: new − old. From 2 to 2.5 the bit is 0.5.',
+          exercises: [
+            {
+              kind: 'choice',
+              prompt: 'x moves from 2 to 2.75. How big is the change?',
+              options: [
+                { label: '0.75', correct: true },
+                { label: '2.75', feedback: '2.75 is where x ended up, not how far it travelled.' },
+                { label: '4.75', feedback: 'Adding gives the wrong quantity. The gap is a subtraction: new − old.' }
+              ],
+              successNote: 'Correct. 2.75 − 2 = 0.75. The change is a quantity in its own right.',
+              revealNote: 'The change is new − old, so 2.75 − 2 = 0.75.'
+            },
+            {
+              kind: 'set-control',
+              prompt: 'Move x so that the change is exactly 1.0.',
+              target: 3, tolerance: 0.05, from: 2,
+              successNote: '3 − 2 = 1. You had to run the subtraction backwards to know where to stop.'
+            },
+            {
+              kind: 'match',
+              prompt: 'Sort each move by the size of its change.',
+              bins: ['0.5', '1.0', '−0.5'],
+              items: [
+                { label: '2 → 2.5', bin: '0.5' },
+                { label: '2 → 3', bin: '1.0' },
+                { label: '2 → 1.5', bin: '−0.5' }
+              ],
+              successNote: 'Every one is new − old. The third runs the subtraction the other way, which is section 5 arriving early.'
+            }
+          ]
         },
         {
-          text: 'That gap needs a name. Mathematicians write “the change in” using the Greek capital letter Δ, read “delta”. On its own Δ is not a number, and it does not multiply. It is waiting for a variable to attach to.',
-          exercise: {
-            kind: 'choice',
-            prompt: 'On its own, what does Δ mean?',
-            options: [
-              { label: 'The change in', correct: true },
-              { label: 'Multiply by delta', feedback: 'Δ is not a quantity, so there is nothing to multiply by. It is a word, written short.' },
-              { label: 'A very small amount', feedback: 'Δ says nothing about size. A change can be large or small.' }
-            ],
-            successNote: 'Correct. Δ is shorthand for the words “the change in”.',
-            revealNote: 'Δ is shorthand for “the change in”. It is a word, not a number.'
-          }
+          text: 'Mathematicians write “the change in” using the Greek capital letter Δ, read “delta”. On its own Δ is not a number. It does not multiply. It marks a subtraction: whatever follows it, new value minus old.',
+          exercises: [
+            {
+              kind: 'choice',
+              prompt: 'On its own, what does Δ mean?',
+              options: [
+                { label: 'The change in', correct: true },
+                { label: 'Multiply by delta', feedback: 'Δ is not a quantity, so there is nothing to multiply by. It is a word, written short.' },
+                { label: 'A very small amount', feedback: 'Δ says nothing about size. A change can be large or small.' }
+              ],
+              successNote: 'Correct. Δ is shorthand for the words “the change in”.',
+              revealNote: 'Δ is shorthand for “the change in”. It is a word, not a number.'
+            },
+            {
+              kind: 'choice',
+              prompt: 'Which is true of Δ?',
+              options: [
+                { label: 'It is a word, written short', correct: true },
+                { label: 'It is a number close to zero', feedback: 'It has no value at all on its own.' },
+                { label: 'It is an instruction to multiply', feedback: 'Nothing is multiplied. Δ marks a subtraction on whatever follows it.' }
+              ],
+              successNote: 'Correct. It carries no value of its own.',
+              revealNote: 'Δ is a word written short. Only what follows it has a value.'
+            },
+            {
+              kind: 'match',
+              prompt: 'Put each symbol with what it is.',
+              bins: ['A word, written short', 'A symbol for a number', 'A fixed number'],
+              items: [
+                { label: 'Δ', bin: 'A word, written short' },
+                { label: 'x', bin: 'A symbol for a number' },
+                { label: '2', bin: 'A fixed number' }
+              ],
+              successNote: 'Three symbols, three different jobs. Only one of them has a value.'
+            }
+          ]
         },
         {
           text: 'Now attach Δ to x. Δx is read “delta x” and means the change in x: Δx = new − old. Moving from 2 to 2.5 gives Δx = 0.5.',

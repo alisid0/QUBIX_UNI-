@@ -328,10 +328,39 @@
                   </div>
 
                 {:else if interaction.kind === 'two-bars'}
+                  <!-- bars: 2 shows only the two lengths; 3 adds the difference as
+                       an object of its own. Without this the variants are identical. -->
                   <div class="rows">
                     <div class="bar-row"><small>OLD</small><span class="bar" style="width:96px"></span><b>2.0</b></div>
                     <div class="bar-row"><small>NEW</small><span class="bar" style={`width:${values[si] * 48}px`}></span><b>{fmt(values[si])}</b></div>
-                    <div class="bar-row"><small>CHANGE</small><span class="bar diff" style={`width:${Math.abs(values[si] - 2) * 48}px`}></span><b>{(values[si] - 2).toFixed(1).replace('-', '−')}</b></div>
+                    {#if (interaction.bars ?? 3) >= 3}
+                      <div class="bar-row"><small>CHANGE</small><span class="bar diff" style={`width:${Math.abs(values[si] - 2) * 48}px`}></span><b>{(values[si] - 2).toFixed(1).replace('-', '−')}</b></div>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'delta-expand'}
+                  <div class="rows centre">
+                    <div class="expand-top"><span class="glyph-sm">Δ</span><span class="glyph-sm let">x</span></div>
+                    <span class="expand-arrow" aria-hidden="true">↓</span>
+                    <div class="expand-sum">
+                      <b>{fmt(values[si])}</b><i>−</i><b>2.0</b><i>=</i>
+                      <b class="accent">{(values[si] - 2).toFixed(1).replace('-', '−')}</b>
+                    </div>
+                    <p class="stage-note">Δ is not a value. It is an instruction to take the new figure and subtract the old.</p>
+                  </div>
+
+                {:else if interaction.kind === 'delta-applied'}
+                  <div class="rows">
+                    <div class="applied-row">
+                      <b>Δx</b><span>{fmt(values[si])} − 2.0 = {(values[si] - 2).toFixed(1).replace('-', '−')}</span><em>a length, cm</em>
+                    </div>
+                    <div class="applied-row">
+                      <b>Δy</b><span>{(values[si] ** 2).toFixed(2)} − 4.00 = {(values[si] ** 2 - 4).toFixed(2).replace('-', '−')}</span><em>an area, cm²</em>
+                    </div>
+                    <div class="applied-row">
+                      <b>Δt</b><span>9 − 4 = 5</span><em>a time, seconds</em>
+                    </div>
+                    <p class="stage-note">One symbol, three different quantities. The subtraction never changes; only what it is applied to.</p>
                   </div>
 
                 {:else if interaction.kind === 'glyph-card'}
@@ -963,6 +992,15 @@
   .dial-out b.accent { color: var(--qx-accent-text); }
   .refusal { font-size: 12px; line-height: 1.5; color: var(--qx-danger-text); background: var(--qx-danger-soft); border-radius: 9px; padding: 9px 11px; font-weight: 700; }
   .stepper-value em { display: block; font-style: normal; font-size: 12px; font-weight: 800; color: var(--qx-text-dim); margin-top: 2px; }
+  .expand-top { display: flex; align-items: center; gap: 4px; }
+  .expand-arrow { color: var(--qx-text-faint); font-size: 20px; }
+  .expand-sum { display: flex; align-items: center; gap: 8px; font-size: 21px; font-weight: 900; }
+  .expand-sum i { font-style: normal; color: var(--qx-text-faint); font-weight: 700; }
+  .expand-sum b.accent { color: var(--qx-accent-text); }
+  .applied-row { display: flex; align-items: center; gap: 10px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 9px 11px; background: var(--qx-surface); }
+  .applied-row b { min-width: 34px; font-size: 17px; color: var(--qx-accent-text); }
+  .applied-row span { flex: 1; font-size: 14px; font-weight: 800; }
+  .applied-row em { font-style: normal; font-size: 9.5px; letter-spacing: .07em; font-weight: 800; color: var(--qx-text-faint); }
   .build-line { display: flex; align-items: center; gap: 4px; }
   .glyph-sm { min-width: 46px; height: 56px; border: 2px solid var(--qx-accent); border-radius: 11px; background: var(--qx-accent-soft); color: var(--qx-accent-text); display: grid; place-items: center; font-size: 28px; font-weight: 900; padding: 0 10px; }
   .glyph-sm.let { font: italic 800 28px/1 Georgia, serif; }
