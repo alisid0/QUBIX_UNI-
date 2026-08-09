@@ -228,7 +228,7 @@
 </div>
 
 <style>
-  .review-shell { min-height: 100%; overflow-y: auto; background: radial-gradient(circle at 15% 4%, var(--qx-bg-radial), transparent 35%), var(--qx-bg); color: var(--qx-text); font-family: var(--qx-font); }
+  .review-shell { height: 100%; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: radial-gradient(circle at 15% 4%, var(--qx-bg-radial), transparent 35%), var(--qx-bg); color: var(--qx-text); font-family: var(--qx-font); }
   button, textarea { font: inherit; }
   .review-header { min-height: 76px; padding: 14px clamp(18px, 4vw, 56px); border-bottom: 1px solid var(--qx-border); display: flex; align-items: center; justify-content: space-between; background: color-mix(in srgb, var(--qx-bg) 88%, transparent); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(14px); }
   .identity { display: flex; align-items: center; gap: 11px; color: var(--qx-text); text-decoration: none; }
