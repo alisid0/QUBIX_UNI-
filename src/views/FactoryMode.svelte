@@ -6,6 +6,9 @@
 
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
 
+  // Interaction kinds that carry their own controls or are deliberately fixed.
+  const NO_CONTROL = ['unit-square', 'unit-square-fixed', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match'];
+
   let active = new URLSearchParams(window.location.search).get('bb') || '1';
   $: entry = entryFor(active);
   $: bb1 = entry.bb;
@@ -191,6 +194,7 @@
     bench24 = { ...bench24, target: t, found: [] };
   }
 
+  let unitRefused = false;
   let splitTried = false;
   let sp = { a: 1, b: 2, hits: [] };
   function spStep(which, delta) {
@@ -403,6 +407,21 @@
                       <span class="side-mark under">1</span>
                     </div>
                     <p class="stage-note">The unit of surface. Everything on this board is counted in these.</p>
+                  </div>
+
+                {:else if interaction.kind === 'unit-square-fixed'}
+                  <div class="rows centre">
+                    <div class="unit-fig">
+                      <span class="side-mark">1</span>
+                      <button class="unit-sq live" class:refused={unitRefused} on:click={() => (unitRefused = true)}
+                        aria-label="Try to resize the unit square"></button>
+                      <span class="side-mark under">1</span>
+                    </div>
+                    {#if unitRefused}
+                      <p class="refusal">It will not resize. A unit that could be any size would measure nothing, so this one is fixed at one by one and everything else is counted against it.</p>
+                    {:else}
+                      <p class="stage-note">Try to make it bigger.</p>
+                    {/if}
                   </div>
 
                 {:else if interaction.kind === 'count-grid'}
@@ -658,11 +677,16 @@
                   </div>
                 {/if}
 
-                <label class="range-row">
-                  <span>1.5</span>
-                  <input type="range" min="1.5" max="3.5" step="0.1" bind:value={values[si]} aria-label={`Assign x for ${interaction.code}`}/>
-                  <span>3.5</span>
-                </label>
+                <!-- Only the kinds that actually read the section value get a
+                     control. The harness used to add one to every preview,
+                     which put a dead slider under the grids. -->
+                {#if !NO_CONTROL.includes(interaction.kind)}
+                  <label class="range-row">
+                    <span>1.5</span>
+                    <input type="range" min="1.5" max="3.5" step="0.1" bind:value={values[si]} aria-label={`Assign x for ${interaction.code}`}/>
+                    <span>3.5</span>
+                  </label>
+                {/if}
               </div>
               <p class="note">{interaction.note}</p>
               {#if finalised[interaction.code]}<p class="why">{finalised[interaction.code]}</p>{/if}
@@ -1290,7 +1314,9 @@
   .flow-arrow i { position: absolute; left: 0; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--qx-accent); transform: translateY(-50%); animation: pulse-right .55s ease-out; }
   @keyframes pulse-right { from { left: 0; opacity: 1; } to { left: 34px; opacity: 0; } }
   .unit-fig { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; justify-items: center; gap: 7px; }
-  .unit-sq { width: 62px; height: 62px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 3px; }
+  .unit-sq { width: 62px; height: 62px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 3px; padding: 0; }
+  .unit-sq.live { cursor: pointer; }
+  .unit-sq.refused { border-style: dashed; }
   .side-mark { font-size: 13px; font-weight: 900; color: var(--qx-accent-text); }
   .side-mark.under { grid-column: 2; }
 

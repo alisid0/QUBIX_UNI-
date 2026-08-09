@@ -15,7 +15,15 @@
 // boards, and a learner who notices they cannot count 2.5 by 2.5 has found
 // something rather than hit a bug.
 
-export const selections = {};
+export const selections = {
+  'S1-I1': '2026-08-09',
+  'S1-X1': '2026-08-09',
+  'S1-X2': '2026-08-09',
+  'S2-I1': '2026-08-09',
+  // S3-B rewritten to founder dictation: count along the base, count up the
+  // altitude, multiply the two.
+  'S3-B': '2026-08-09'
+};
 export const finalised = {};
 export const rejected = {};
 export const gated = 'Belongs to a proposed pilot that has not been approved. See PILOT-PROPOSAL-FUNCTIONS-AND-COORDINATE-GEOMETRY.md.';
@@ -41,7 +49,11 @@ export const area = {
         }
       ],
       interactions: [
-        { code: 'S1-I1', kind: 'unit-square', note: 'One square, its sides marked 1, and nothing else on screen. The whole board is counted in this shape, so it is worth meeting alone before anything is built from it.' }
+        { code: 'S1-I1', kind: 'unit-square', note: 'One square, its sides marked 1, and nothing else on screen. It does not move, and it is not supposed to: a unit that could be any size would measure nothing. The whole board is counted in this shape.' },
+        {
+          code: 'S1-I2', kind: 'unit-square-fixed',
+          note: 'The same square, but it invites you to resize it and then refuses, saying why. Founder asked why the square does not move; this makes the answer something felt rather than something asserted, using the refusal pattern already proven in BB3.'
+        }
       ],
       exercises: [
         {
@@ -115,7 +127,7 @@ export const area = {
         },
         {
           code: 'S3-B',
-          text: 'Counting twenty-eight squares is slow. Notice instead that there are four rows with seven in each, and the multiplication does the counting for you. That is all the formula base times altitude ever was.'
+          text: 'It would take a long time to count twenty-eight squares one by one. There is a shorter way. Count the squares along the base, count the squares up the altitude, and multiply those two numbers together. That is all the rule base times altitude asks you to do.'
         }
       ],
       interactions: [
