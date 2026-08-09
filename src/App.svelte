@@ -2,6 +2,8 @@
   import ChangeLab from './views/ChangeLab.svelte';
   import ReviewMode from './views/ReviewMode.svelte';
   import FactoryMode from './views/FactoryMode.svelte';
+  import Home from './views/Home.svelte';
+  import { view } from './lib/stores/view.js';
 
   const params = new URLSearchParams(window.location.search);
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
@@ -16,8 +18,10 @@
     <FactoryMode />
   {:else if showReviewMode}
     <ReviewMode />
-  {:else}
+  {:else if $view === 'lesson'}
     <ChangeLab />
+  {:else}
+    <Home />
   {/if}
 </main>
 
