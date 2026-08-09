@@ -139,10 +139,59 @@
       title: 'Dependent Variables',
       marker: 'Functions',
       floors: [
-        { text: 'Let x be the side of a square and y be its area. They are tied together by y = x².' },
-        { text: 'At x = 2, y = 4. Change x to 2.5 and the area becomes 6.25.' },
-        { text: 'x is the independent variable. y depends on it. The area change is Δy = 2.25.' },
-        { text: 'We now have a paired move: Δx = 0.5 and Δy = 2.25.' }
+        {
+          text: 'One letter was enough while there was one quantity to record. A square has two: the length of its side, and the area inside it. Call the side x and call the area y.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'In this square, what does y represent?',
+            options: [
+              { label: 'The area inside the square', correct: true },
+              { label: 'The length of the side', feedback: 'That is x. y was given to the other quantity.' },
+              { label: 'A second, unrelated number', feedback: 'y measures something about this same square.' }
+            ],
+            successNote: 'Correct. x measures the side, y measures the area inside.',
+            revealNote: 'x is the side. y is the area, which is why it is written inside the square.'
+          }
+        },
+        {
+          text: 'x and y are not both yours to choose. Assign a value to x and the area is already settled: y = x². Assign 2 to x and y is 4, whether you wanted it or not.',
+          exercise: {
+            kind: 'set-control',
+            prompt: 'Assign x so that y becomes 9.',
+            target: 3,
+            tolerance: 0.05,
+            from: 2.1,
+            successNote: 'x = 3 gives y = 9. You set x; the square settled y.'
+          }
+        },
+        {
+          text: 'The one you choose is called the independent variable. The one that follows is called the dependent variable. Here x is independent and y depends on it.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'Which variable is the dependent one?',
+            options: [
+              { label: 'y, the area', correct: true },
+              { label: 'x, the side', feedback: 'x is the one you assign. Nothing determines it for you.' },
+              { label: 'Neither; they are equal partners', feedback: 'Only one of them can be chosen freely here.' }
+            ],
+            successNote: 'Correct. y depends on x, so y is the dependent variable.',
+            revealNote: 'x is independent because you assign it. y is dependent because the square settles it.'
+          }
+        },
+        {
+          text: 'Alter x and y alters too. From 2 to 2.5 the side gains 0.5, but the area goes from 4 to 6.25, a gain of 2.25. Δx = 0.5 and Δy = 2.25. The two changes are not the same size.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'The side gains 0.5 and the area gains 2.25. Why is the area gain bigger?',
+            options: [
+              { label: 'The new area adds a strip along two sides, not one length', correct: true },
+              { label: 'Because 2.25 is 0.5 squared', feedback: '0.5 squared is 0.25, which is only the small corner. Most of the gain is the two strips.' },
+              { label: 'Because area is always bigger than length', feedback: 'They are different kinds of quantity, so one is not simply bigger. The question is why the gains differ.' }
+            ],
+            successNote: 'Correct. Widening the side adds a strip down two sides plus a small corner.',
+            revealNote: 'The area gain is two strips plus a corner, which is why it outruns the side gain.'
+          }
+        }
       ]
     },
     {
@@ -150,9 +199,44 @@
       title: 'Average Rate of Change',
       marker: 'Rate of change',
       floors: [
-        { text: 'The side grows by 0.5 cm while the area grows by 2.25 cm². Compare the two changes.' },
-        { text: 'Δy/Δx = 2.25/0.5 = 4.5. That is the average area growth for each centimetre added.' },
-        { text: 'Average rate of change means change in output divided by change in input.' }
+        {
+          text: 'Widen the side and two things change at once. The side gains Δx. The area gains Δy. Thompson notes that the bit added to y will not, except by a miracle, be the same size as the bit added to x.',
+          exercise: {
+            kind: 'set-control',
+            prompt: 'Widen the side until the area gain passes 3 cm².',
+            above: 2.7,
+            from: 2.1,
+            successNote: 'The area gain has passed 3 cm² while the side gain is still well under 1 cm.'
+          }
+        },
+        {
+          text: 'To compare the two changes, divide one by the other: Δy/Δx. From 2 to 2.5 that is 2.25 ÷ 0.5 = 4.5. The area grew four and a half times as fast as the side.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'Δy is 2.25 and Δx is 0.5. What is Δy/Δx?',
+            options: [
+              { label: '4.5', correct: true },
+              { label: '1.125', feedback: 'That multiplies instead of dividing.' },
+              { label: '2.75', feedback: 'That adds the two changes. The comparison is a division.' }
+            ],
+            successNote: 'Correct. 2.25 ÷ 0.5 = 4.5.',
+            revealNote: 'Dividing the area change by the side change gives 2.25 ÷ 0.5 = 4.5.'
+          }
+        },
+        {
+          text: 'The units survive the division: cm² divided by cm leaves cm² per cm. That is why 4.5 is a rate and not an area. A rate has no shape and no size of its own; it is a comparison.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'Why is 4.5 measured in cm² per cm rather than cm²?',
+            options: [
+              { label: 'It compares an area change with a length change', correct: true },
+              { label: 'Because the square is measured in centimetres', feedback: 'The unit comes from the division, not from the square.' },
+              { label: 'It should be cm²; the extra unit is a slip', feedback: 'The unit is real. Dividing cm² by cm cannot leave cm².' }
+            ],
+            successNote: 'Correct. A rate carries the units of both quantities it compares.',
+            revealNote: 'Dividing cm² by cm leaves cm² per cm, which is what makes it a rate.'
+          }
+        }
       ]
     },
     {
@@ -160,10 +244,58 @@
       title: 'Instantaneous Rate of Change',
       marker: 'A shrinking interval',
       floors: [
-        { text: 'Keep the starting value at x = 2. The second point begins almost on top of it, and the line through the two is flat against the curve.' },
-        { text: 'Drive the points apart and the average rates run 4.001, then 4.01, 4.1, 4.5, and 5.' },
-        { text: 'Every interval wider than nothing overstates the rate. The value at the smallest interval, 4, is the one that describes the rate right at x = 2.' },
-        { text: 'Calculus calls this local rate the derivative. Next comes Thompson’s notation: dy/dx.' }
+        {
+          text: 'Keep the first point at x = 2 and put the second almost on top of it. With no gap worth speaking of, the line through the two lies flat along the curve.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'With the two points almost together, what is the average rate?',
+            options: [
+              { label: 'Almost exactly 4', correct: true },
+              { label: 'Zero, because the gap is almost zero', feedback: 'Both Δy and Δx shrink together. Their ratio does not vanish.' },
+              { label: 'Undefined', feedback: 'It would be undefined at a gap of exactly zero. Here the gap is small, not nothing.' }
+            ],
+            successNote: 'Correct. The readout says 4.001, and the gap is 0.001.',
+            revealNote: 'Both changes shrink together, so their ratio survives. It sits just above 4.'
+          }
+        },
+        {
+          text: 'Widen the gap and the average rate climbs: 4.001, then 4.01, 4.1, 4.5, and 5. The line tilts away from the curve as it goes.',
+          exercise: {
+            kind: 'set-control',
+            prompt: 'Open the interval until the average rate reaches 5.',
+            above: 3.5,
+            from: 0,
+            successNote: 'At the widest interval the average rate is 5, a whole unit above the local rate.'
+          }
+        },
+        {
+          text: 'Thompson works out the square of x + dx as x² + 2x·dx + (dx)². Subtract the original x² and divide by dx, and the average rate is 2x + dx. At x = 2 that is 4 + the interval. The drift is not roughly the interval, it is the interval.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'The average rate is 2x + Δx. At x = 2 with an interval of 0.1, what is it?',
+            options: [
+              { label: '4.1', correct: true },
+              { label: '4.0', feedback: 'That drops the interval term. It is only correct when the interval is nothing.' },
+              { label: '2.1', feedback: '2x is 4 at x = 2, not 2.' }
+            ],
+            successNote: 'Correct. 2x gives 4, and the interval adds itself on top.',
+            revealNote: '2x is 4 at x = 2, and the interval of 0.1 is added to it: 4.1.'
+          }
+        },
+        {
+          text: 'Take the interval to nothing and only 2x survives. At x = 2 that is 4. This is the rate right at that point rather than across a stretch, and calculus calls it the derivative.',
+          exercise: {
+            kind: 'choice',
+            prompt: 'At x = 3, what would the rate right at that point be?',
+            options: [
+              { label: '6', correct: true },
+              { label: '9', feedback: 'That is the area, x². The rate is 2x.' },
+              { label: '4', feedback: '4 is the rate at x = 2. The rate depends on where you stand.' }
+            ],
+            successNote: 'Correct. The derivative of x² is 2x, so at x = 3 it is 6.',
+            revealNote: 'What survives is 2x. At x = 3 that is 6, not 4.'
+          }
+        }
       ]
     }
   ];
@@ -490,35 +622,68 @@
               <span>3.0</span>
             </label>
           {:else if boardIndex === 2}
-            <!-- x labels the side, y labels the interior: the number inside a
-                 box is the area, and the diagram should say so. -->
-            <div class="paired-stage">
-              <div class="pair old-pair">
-                <div class="area-square old-area" style="width:76px;height:76px"><span>y = 4</span></div>
-                <span class="edge-label sm" style="width:76px">x = 2</span>
+            <!-- x labels the side, y labels the interior. One square while the
+                 two letters are being introduced; the pair only once there is a
+                 change to compare. -->
+            {#if floorIndex === 0}
+              <div class="paired-stage">
+                <div class="pair">
+                  <div class="area-square new-area" style={`width:${newAreaSize}px;height:${newAreaSize}px`}><span>y = {dependentY.toFixed(2)}</span></div>
+                  <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
+                </div>
               </div>
-              <svg class="pair-arrow" viewBox="0 0 52 30" aria-hidden="true"><path d="M2 15h42M38 8l7 7-7 7"/></svg>
-              <div class="pair">
-                <div class="area-square new-area" style={`width:${newAreaSize}px;height:${newAreaSize}px`}><span>y = {dependentY.toFixed(2)}</span></div>
-                <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
+            {:else if floorIndex < 3}
+              <div class="paired-stage">
+                <div class="pair">
+                  <div class="area-square new-area" style={`width:${newAreaSize}px;height:${newAreaSize}px`}><span>y = {dependentY.toFixed(2)}</span></div>
+                  <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
+                </div>
+                <div class="role-cards">
+                  <span class="role-card"><b>x = {dependentX.toFixed(1)}</b><em>{floorIndex === 2 ? 'independent · you assign' : 'you assign'}</em></span>
+                  <span class="role-card follows"><b>y = {dependentY.toFixed(2)}</b><em>{floorIndex === 2 ? 'dependent · follows' : 'follows'}</em></span>
+                </div>
               </div>
-            </div>
-            <div class="delta-pills"><span>Δx = {(dependentX - 2).toFixed(1)}</span><span>Δy = {dependentDeltaY.toFixed(2)}</span></div>
+            {:else}
+              <div class="paired-stage">
+                <div class="pair old-pair">
+                  <div class="area-square old-area" style="width:76px;height:76px"><span>y = 4</span></div>
+                  <span class="edge-label sm" style="width:76px">x = 2</span>
+                </div>
+                <svg class="pair-arrow" viewBox="0 0 52 30" aria-hidden="true"><path d="M2 15h42M38 8l7 7-7 7"/></svg>
+                <div class="pair">
+                  <div class="area-square new-area" style={`width:${newAreaSize}px;height:${newAreaSize}px`}><span>y = {dependentY.toFixed(2)}</span></div>
+                  <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
+                </div>
+              </div>
+              <div class="delta-pills"><span>Δx = {(dependentX - 2).toFixed(1)}</span><span>Δy = {dependentDeltaY.toFixed(2)}</span></div>
+            {/if}
             <label class="range-row">
               <span>2.1</span>
               <input aria-label="Change the square side" type="range" min="2.1" max="3" step="0.1" bind:value={dependentX}/>
               <span>3.0</span>
             </label>
           {:else if boardIndex === 3}
-            <div class="rate-stage">
-              <div class="rate-fraction">
-                <div><small>AREA CHANGE</small><strong>{rateDeltaY.toFixed(2)}</strong></div>
-                <span class="fraction-line"></span>
-                <div><small>SIDE CHANGE</small><strong>{rateDeltaX.toFixed(2)}</strong></div>
+            <!-- The result is a ratio, so it is never drawn inside a shape. The
+                 division only appears once section 2 introduces it. -->
+            {#if floorIndex === 0}
+              <div class="change-bars">
+                <div class="bar-row"><small>SIDE CHANGE Δx</small><span class="bar" style={`width:${Math.max(2, rateDeltaX * 90)}px`}></span><b>{rateDeltaX.toFixed(2)}</b></div>
+                <div class="bar-row"><small>AREA CHANGE Δy</small><span class="bar wide" style={`width:${Math.max(2, rateDeltaY * 26)}px`}></span><b>{rateDeltaY.toFixed(2)}</b></div>
               </div>
-              <div class="equals">=</div>
-              <div class="rate-answer"><strong>{averageRate.toFixed(2)}</strong><small>cm² / cm</small></div>
-            </div>
+            {:else}
+              <div class="rate-stage">
+                <div class="rate-fraction">
+                  <div><small>AREA CHANGE</small><strong>{rateDeltaY.toFixed(2)}</strong></div>
+                  <span class="fraction-line"></span>
+                  <div><small>SIDE CHANGE</small><strong>{rateDeltaX.toFixed(2)}</strong></div>
+                </div>
+                <div class="equals">=</div>
+                <div class="rate-result">
+                  <strong>{averageRate.toFixed(2)}</strong>
+                  {#if floorIndex >= 2}<small>cm² per cm</small>{/if}
+                </div>
+              </div>
+            {/if}
             <label class="range-row">
               <span>2.1</span>
               <input aria-label="Change the comparison endpoint" type="range" min="2.1" max="3.5" step="0.1" bind:value={rateX}/>
@@ -536,6 +701,9 @@
               </svg>
               <div class="local-readout"><small>INTERVAL</small><strong>Δx = {step}</strong><span>rate {localRate.toFixed(step < 0.01 ? 3 : step < 0.1 ? 2 : 1)}</span></div>
             </div>
+            {#if floorIndex === 2}
+              <div class="equation-strip"><span>2x + Δx</span><strong>= 4 + {step}</strong><b>= {localRate.toFixed(step < 0.01 ? 3 : step < 0.1 ? 2 : 1)}</b></div>
+            {/if}
             <label class="range-row discrete">
               <span>together</span>
               <input aria-label="Drive the two points apart" type="range" min="0" max="4" step="1" bind:value={stepIndex}/>
@@ -662,7 +830,7 @@
   .edge-label::before, .edge-label::after { content: ''; flex: 1; height: 1px; background: var(--qx-border-2); }
   .edge-label.sm { font: italic 800 14px/1 Georgia, serif; gap: 6px; }
   .value-readout, .local-readout { border-left: 1px solid var(--qx-border-2); padding-left: 15px; display: flex; flex-direction: column; gap: 3px; }
-  .value-readout small, .local-readout small, .rate-fraction small, .rate-answer small { font-size: 9px; font-weight: 900; letter-spacing: .11em; color: var(--qx-text-faint); }
+  .value-readout small, .local-readout small, .rate-fraction small { font-size: 9px; font-weight: 900; letter-spacing: .11em; color: var(--qx-text-faint); }
   .value-readout strong, .local-readout strong { font-size: 23px; color: var(--qx-text); }
   .value-readout span, .local-readout span { font-size: 12px; color: var(--qx-text-dim); }
   .number-stage svg { width: 100%; height: 165px; overflow: visible; }
@@ -692,9 +860,20 @@
   .rate-fraction strong { font-size: 22px; }
   .fraction-line { height: 2px; background: var(--qx-text); border-radius: 2px; }
   .equals { color: var(--qx-text-faint); font-size: 24px; }
-  .rate-answer { width: 98px; height: 98px; border-radius: 50%; background: var(--qx-accent-soft); border: 2px solid var(--qx-accent); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .rate-answer strong { color: var(--qx-accent-text); font-size: 27px; }
-  .rate-answer small { margin-top: 2px; letter-spacing: 0; }
+  .rate-result { display: flex; flex-direction: column; align-items: flex-start; border-left: 1px solid var(--qx-border-2); padding-left: 15px; }
+  .rate-result strong { color: var(--qx-accent-text); font-size: 30px; }
+  .rate-result small { margin-top: 3px; letter-spacing: .06em; font-size: 9px; font-weight: 900; color: var(--qx-text-faint); }
+  .change-bars { display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+  .change-bars .bar-row { display: flex; align-items: center; gap: 9px; }
+  .change-bars small { width: 108px; font-size: 9px; letter-spacing: .09em; color: var(--qx-text-faint); font-weight: 900; }
+  .change-bars .bar { height: 16px; border-radius: 5px; background: var(--qx-accent); display: inline-block; }
+  .change-bars .bar.wide { background: var(--qx-green); }
+  .change-bars b { font-size: 15px; }
+  .role-cards { display: flex; gap: 9px; justify-content: center; margin-top: 12px; }
+  .role-card { display: flex; flex-direction: column; gap: 3px; border: 1px solid var(--qx-accent); border-radius: 11px; padding: 8px 13px; background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .role-card.follows { border-color: var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); }
+  .role-card b { font-size: 16px; }
+  .role-card em { font-style: normal; font-size: 8.5px; letter-spacing: .09em; font-weight: 800; color: var(--qx-text-faint); }
   .curve-stage { min-height: 230px; display: grid; grid-template-columns: minmax(0, 1fr) 108px; align-items: center; }
   .curve-stage svg { width: 100%; height: 210px; overflow: visible; }
   .gridline { fill: none; stroke: var(--qx-border-2); stroke-width: 1.5; }
