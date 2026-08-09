@@ -5,7 +5,7 @@
   const boards = [
     {
       id: 'CME-CHANGE-001',
-      title: 'Variables and Changing Values',
+      title: 'Assigning Values to Letters',
       marker: 'Variables',
       floors: [
         {
@@ -40,6 +40,7 @@
           text: 'Any particular value may be assigned to a letter. Assign 3 to x and x represents 3. Assign 1.5 and x represents 1.5. The letter is not altered by this.',
           exercise: {
             kind: 'choice',
+            visual: 'symbol-value',
             prompt: 'x is assigned 2, then assigned 3. What changed?',
             options: [
               { label: 'The value assigned to x', correct: true },
@@ -159,15 +160,17 @@
       title: 'Instantaneous Rate of Change',
       marker: 'A shrinking interval',
       floors: [
-        { text: 'Keep the starting value at x = 2. Move the other value closer.' },
-        { text: 'The average rates are 5, then 4.5, 4.1, 4.01, and 4.001.' },
-        { text: 'The interval shrinks while the rates settle near 4. That value describes the rate right at x = 2.' },
+        { text: 'Keep the starting value at x = 2. The second point begins almost on top of it, and the line through the two is flat against the curve.' },
+        { text: 'Drive the points apart and the average rates run 4.001, then 4.01, 4.1, 4.5, and 5.' },
+        { text: 'Every interval wider than nothing overstates the rate. The value at the smallest interval, 4, is the one that describes the rate right at x = 2.' },
         { text: 'Calculus calls this local rate the derivative. Next comes Thompson’s notation: dy/dx.' }
       ]
     }
   ];
 
-  const stepOptions = [1, 0.5, 0.1, 0.01, 0.001];
+  // Closest first. The slider then reads the natural way round: dragging right
+  // drives the two points further apart instead of shrinking the gap.
+  const stepOptions = [0.001, 0.01, 0.1, 0.5, 1];
   const parabolaPoints = Array.from({ length: 61 }, (_, i) => {
     const x = i / 15;
     return `${40 + x * 60},${178 - x * x * 8.5}`;
@@ -205,6 +208,7 @@
   $: deltaX = deltaEnd - 2;
   // Use a real minus sign, not a hyphen: BB2 section 5 teaches what that sign records.
   $: deltaXLabel = deltaX.toFixed(1).replace('-', '−');
+  $: newAreaSize = 76 + (dependentX - 2) * 38;
   $: dependentY = dependentX * dependentX;
   $: dependentDeltaY = dependentY - 4;
   $: rateDeltaX = rateX - 2;
@@ -214,6 +218,11 @@
   $: localRate = 4 + step;
   $: secantEndX = 160 + step * 60;
   $: secantEndY = 144 - (4 * step + step * step) * 8.5;
+  // At the closest setting the two points coincide, so a segment drawn between
+  // them would be invisible. Extend the line through both instead: it still
+  // passes through them when they are apart, and reads as the tangent when not.
+  $: secantRise = localRate * 8.5 / 60 * 80;
+  $: secantPath = `M80 ${(144 + secantRise).toFixed(1)} L240 ${(144 - secantRise).toFixed(1)}`;
 
   // Reset the per-question state whenever the learner moves to another floor.
   $: if (exerciseKey !== lastKey) {
@@ -343,6 +352,12 @@
   }
 
   function handlePointerDown(event) {
+    // A drag that begins on a control belongs to that control. Without this,
+    // dragging the slider left is read as a swipe and navigates the deck.
+    if (event.target.closest('input, button, label, a, select, textarea')) {
+      pointerStart = null;
+      return;
+    }
     pointerStart = { x: event.clientX, y: event.clientY };
   }
 
@@ -475,15 +490,17 @@
               <span>3.0</span>
             </label>
           {:else if boardIndex === 2}
+            <!-- x labels the side, y labels the interior: the number inside a
+                 box is the area, and the diagram should say so. -->
             <div class="paired-stage">
               <div class="pair old-pair">
-                <div class="area-square old-area"><span>4</span></div>
-                <small>x = 2</small>
+                <div class="area-square old-area" style="width:76px;height:76px"><span>y = 4</span></div>
+                <span class="edge-label sm" style="width:76px">x = 2</span>
               </div>
               <svg class="pair-arrow" viewBox="0 0 52 30" aria-hidden="true"><path d="M2 15h42M38 8l7 7-7 7"/></svg>
               <div class="pair">
-                <div class="area-square new-area" style={`width:${76 + (dependentX - 2) * 38}px;height:${76 + (dependentX - 2) * 38}px`}><span>{dependentY.toFixed(2)}</span></div>
-                <small>x = {dependentX.toFixed(1)}</small>
+                <div class="area-square new-area" style={`width:${newAreaSize}px;height:${newAreaSize}px`}><span>y = {dependentY.toFixed(2)}</span></div>
+                <span class="edge-label sm" style={`width:${newAreaSize}px`}>x = {dependentX.toFixed(1)}</span>
               </div>
             </div>
             <div class="delta-pills"><span>Δx = {(dependentX - 2).toFixed(1)}</span><span>Δy = {dependentDeltaY.toFixed(2)}</span></div>
@@ -512,7 +529,7 @@
               <svg viewBox="0 0 320 205" role="img" aria-label={`Parabola with a secant interval of ${step}`}>
                 <path class="gridline" d="M40 178H296M40 178V22"/>
                 <polyline class="curve" points={parabolaPoints}/>
-                <path class="secant" d={`M160 144 L${secantEndX} ${secantEndY}`}/>
+                <path class="secant" d={secantPath}/>
                 <circle class="fixed-point" cx="160" cy="144" r="6"/>
                 <circle class="moving-point" cx={secantEndX} cy={secantEndY} r="7"/>
                 <text x="145" y="167">x = 2</text>
@@ -520,9 +537,9 @@
               <div class="local-readout"><small>INTERVAL</small><strong>Δx = {step}</strong><span>rate {localRate.toFixed(step < 0.01 ? 3 : step < 0.1 ? 2 : 1)}</span></div>
             </div>
             <label class="range-row discrete">
-              <span>wide</span>
-              <input aria-label="Shrink the interval" type="range" min="0" max="4" step="1" bind:value={stepIndex}/>
-              <span>close</span>
+              <span>together</span>
+              <input aria-label="Drive the two points apart" type="range" min="0" max="4" step="1" bind:value={stepIndex}/>
+              <span>apart</span>
             </label>
           {/if}
         </div>
@@ -533,6 +550,10 @@
               <span class:active={index === floorIndex} class:read={index < floorIndex} class:checked={completed[`${boardIndex}:${index}`]}></span>
             {/each}
           </div>
+
+          <!-- The reading stays on screen through the check. The feedback refers
+               back to it, so removing it is exactly the wrong moment to do so. -->
+          <p class:recessed={exerciseOpen}>{floor}</p>
 
           {#if exerciseOpen && exercise}
             <div class="exercise" aria-live="polite">
@@ -567,8 +588,6 @@
                 <div class="feedback" class:success={completed[exerciseKey]}>{feedback}</div>
               {/if}
             </div>
-          {:else}
-            <p>{floor}</p>
           {/if}
         </section>
 
@@ -641,6 +660,7 @@
   .square { border: 3px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 5px; transition: width .12s, height .12s; }
   .edge-label { display: flex; align-items: center; justify-content: center; gap: 9px; font: italic 800 26px/1 Georgia, serif; color: var(--qx-accent-text); transition: width .12s; }
   .edge-label::before, .edge-label::after { content: ''; flex: 1; height: 1px; background: var(--qx-border-2); }
+  .edge-label.sm { font: italic 800 14px/1 Georgia, serif; gap: 6px; }
   .value-readout, .local-readout { border-left: 1px solid var(--qx-border-2); padding-left: 15px; display: flex; flex-direction: column; gap: 3px; }
   .value-readout small, .local-readout small, .rate-fraction small, .rate-answer small { font-size: 9px; font-weight: 900; letter-spacing: .11em; color: var(--qx-text-faint); }
   .value-readout strong, .local-readout strong { font-size: 23px; color: var(--qx-text); }
@@ -658,7 +678,6 @@
   .equation-strip b { color: var(--qx-green-text); }
   .paired-stage { min-height: 185px; display: flex; align-items: center; justify-content: center; gap: 12px; }
   .pair { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; min-width: 84px; min-height: 140px; }
-  .pair small { color: var(--qx-text-dim); font-weight: 800; }
   .area-square { display: grid; place-items: center; border-radius: 5px; transition: width .12s, height .12s; }
   .old-area { width: 76px; height: 76px; border: 2px solid var(--qx-text-faint); background: var(--qx-surface-3); }
   .new-area { max-width: 122px; max-height: 122px; border: 3px solid var(--qx-green); background: var(--qx-green-soft); }
@@ -690,6 +709,7 @@
   .floor-dots span.read { background: var(--qx-green); }
   .floor-dots span.active { background: var(--qx-accent); transform: scale(1.22); }
   .floor-copy p { color: var(--qx-text-2); font-size: 17px; line-height: 1.53; font-weight: 550; }
+  .floor-copy p.recessed { font-size: 14px; line-height: 1.5; color: var(--qx-text-dim); padding-bottom: 3px; border-bottom: 1px solid var(--qx-border); margin-bottom: 3px; }
   .board-actions { margin-top: auto; display: grid; grid-template-columns: 48px 1fr; gap: 9px; }
   .primary, .secondary { border: 0; cursor: pointer; font-weight: 900; }
   .primary { min-height: 48px; border-radius: 14px; background: var(--qx-accent); color: #fffaf2; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 18px; }

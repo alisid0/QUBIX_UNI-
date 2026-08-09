@@ -14,7 +14,7 @@ Qubix University is being rebuilt slowly from first principles. Its current prod
 8. [Current Status](./curriculum/STATUS.md)
 9. [Founder Review Protocol](./docs/REVIEW-PROTOCOL.md)
 
-The active curriculum item is [BB1: Variables and Changing Values](./curriculum/bb/BB1-VARIABLES-AND-CHANGING-VALUES.md). BB2–BB5 remain locked.
+The active curriculum item is [BB1: Assigning Values to Letters](./curriculum/bb/BB1-ASSIGNING-VALUES-TO-LETTERS.md). BB2–BB5 remain locked.
 
 No additional curriculum should be generated until these gates are reviewed.
 

@@ -25,24 +25,9 @@ export const finalised = {
   'S4-X1': 'the one slider task in BB1; S4-X2 would repeat S3-X1’s question shape'
 };
 
-export const sources = {
-  W1: {
-    ref: 'Wentworth, First Steps in Algebra, ch. I art. 5, printed folio 1',
-    quote: 'Arithmetic employs the arbitrary symbols, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, called figures, to represent numbers.'
-  },
-  W2: {
-    ref: 'Wentworth, First Steps in Algebra, ch. I art. 6, printed folio 2',
-    quote: 'Algebra employs the letters of the alphabet in addition to the figures of Arithmetic to represent numbers. Letters are used as general symbols of numbers to which any particular values may be assigned.'
-  },
-  T1: {
-    ref: 'Thompson, Calculus Made Easy, ch. III, printed page 9',
-    quote: 'We classify all quantities into two classes: constants and variables. Those which we regard as of fixed value, and call constants … while those which we consider as capable of growing, or (as mathematicians say) of "varying," we denote by letters from the end of the alphabet.'
-  }
-};
-
 export const bb1 = {
   id: 'CME-CHANGE-001',
-  title: 'Variables and Changing Values',
+  title: 'Assigning Values to Letters',
   fork: 'F-2 — assignment, Wentworth-led. Movement is deferred to BB2.',
   structure: 'ST-B — four sections.',
   sections: [

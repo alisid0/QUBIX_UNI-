@@ -1,17 +1,14 @@
-# BB1: Variables and Changing Values
+# BB1: Assigning Values to Letters
 
 Status: `AI_DRAFT`
 Identifier: `CME-CHANGE-001`
 Course: *Variables and Rates of Change*
-Founder gate: awaiting reading and interaction testing
+Founder gate: reviewed and tested; awaiting explicit approval
 Record rewritten: 2026-08-09, from Factory selections
+Retitled: 2026-08-09, by the founder, from *Variables and Changing Values*
 
-> **Title flag.** Under fork F-2 this BB no longer teaches changing values; it
-> teaches assignment, and change moves to BB2. The title is therefore wrong and
-> should probably become *Letters as Symbols for Numbers* or *Assigning Values
-> to Letters*. It is left unchanged here because renaming touches `STATUS.md`,
-> `02-MAIN-CURRICULUM-MAP.md`, `README.md` and `ReviewMode.svelte`, and that is
-> a founder decision, not a side effect of this rewrite.
+The former title described variation, which fork F-2 moved to BB2. The present
+title describes what the four sections do.
 
 ## One learning objective
 
@@ -54,11 +51,12 @@ Current prerequisites:
 - `P-01` (narrowed): read a number written in figures.
 - `P-03`: read decimals such as 1.5 and 2.5, required by the slider's range and
   tenth steps.
+- `P-08` (new): read a length in centimetres, required by section 4.
 
-**Open against the prerequisite map.** Section 4 puts a centimetre measurement on
-screen, which needs a length prerequisite. The map has a `G0` node for length and
-square area but gives it no `P-` id, and its nearest entry `P-06` is assigned to
-BB3. The map needs either a new id or a reassignment. Recorded, not resolved.
+Resolved against the prerequisite map on 2026-08-09: `P-04` now sits before BB2
+rather than BB1, and `P-08` was added for reading a length in centimetres, which
+section 4 requires. The map's graph also now shows BB1 producing the
+letters-stand-for-numbers node rather than depending on it.
 
 ## Source record
 
@@ -206,6 +204,10 @@ side 3.0 cm."
 | 2026-08-09 | Remaining eight slots finalised under a standing no-repeat instruction. | AI |
 | 2026-08-09 | `P-04` removed from prerequisites; `P-01` narrowed. | AI, consequence of F-2 |
 | 2026-08-09 | Square growth rescaled; `max-width` cap removed. | AI, defect fix |
+| 2026-08-09 | Swipe-to-navigate no longer fires from a drag begun on a control. Dragging the slider was advancing the deck. | AI, defect fix |
+| 2026-08-09 | The section reading now stays on screen through its check, instead of being replaced by it. | AI, founder-reported |
+| 2026-08-09 | Founder review run: all five checks positive, decision `APPROVE_CANDIDATE`. | Founder |
+| 2026-08-09 | Retitled *Assigning Values to Letters*; prerequisite map corrected to match. | Founder |
 
 ## Founder review
 
@@ -215,7 +217,7 @@ side 3.0 cm."
 - [ ] The four readings are clear and mathematically accurate.
 - [ ] The four interactions expose the intended relationship on phone and desktop.
 - [ ] The four exercises identify the recorded misconceptions.
-- [ ] The title question is resolved.
+- [x] The title question is resolved. *Assigning Values to Letters*, 2026-08-09.
 - [ ] Founder marks the BB `APPROVED`.
 
 Until the final box is explicitly completed by the founder, BB1 remains

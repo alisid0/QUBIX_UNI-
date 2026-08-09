@@ -8,7 +8,7 @@ This is a dependency skeleton, not permission to generate all listed content.
 
 | Order | Unit | Intended understanding | Depends on | State |
 |---:|---|---|---|---|
-| 1 | Variables and Changing Values | A variable may take different values | P-01, P-04 | Pilot BB1 — `AI_DRAFT` |
+| 1 | Assigning Values to Letters | A letter represents a number, and any particular value may be assigned to it | P-01, P-03, P-08 | Pilot BB1 — `AI_DRAFT` |
 | 2 | Change in a Variable | `Δx = new − old`, including direction | P-02, P-03, Unit 1 | Pilot BB2 — `AI_DRAFT` |
 | 3 | Dependent Variables | An output changes because its input changes | P-05, P-06, Unit 2 | Pilot BB3 — `AI_DRAFT` |
 | 4 | Average Rate of Change | Compare output change with input change | P-07, Unit 3 | Pilot BB4 — `AI_DRAFT` |
@@ -21,7 +21,7 @@ This is a dependency skeleton, not permission to generate all listed content.
 
 The founder reviews in this exact order:
 
-1. BB1 wording and variable interaction.
+1. BB1 wording and the assignment interaction.
 2. BB2 meaning of delta and negative change.
 3. BB3 dependency and square-area model.
 4. BB4 meaning and units of average rate.

@@ -1,22 +1,35 @@
 <script>
   import { theme } from '../lib/stores/theme.js';
-  import { bb1, sources, selections, finalised } from '../factory/bb1-options.js';
+  import { registry, entryFor, sources } from '../factory/index.js';
 
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
-  const settled = code => selections[code] || finalised[code];
+
+  let active = new URLSearchParams(window.location.search).get('bb') || '1';
+  $: entry = entryFor(active);
+  $: bb1 = entry.bb;
+  $: selections = entry.selections;
+  $: finalised = entry.finalised;
+
+  function show(key) {
+    active = key;
+    const url = new URL(window.location.href);
+    url.searchParams.set('bb', key);
+    history.replaceState({}, '', url);
+    values = bb1.sections.map(() => 2);
+  }
 
   // What is still open, so the remaining decisions are visible at a glance.
   $: outstanding = bb1.sections.map(section => ({
     code: section.code,
     name: section.name,
     missing: slots
-      .filter(([key]) => !section[key].some(v => settled(v.code)))
+      .filter(([key]) => !section[key].some(v => selections[v.code] || finalised[v.code]))
       .map(([, label]) => label)
   })).filter(s => s.missing.length);
 
   // One live control value per section, so every interaction variant in a
   // section is driven by the same number and can be compared side by side.
-  let values = bb1.sections.map(() => 2);
+  let values = entryFor(new URLSearchParams(window.location.search).get('bb') || '1').bb.sections.map(() => 2);
 
   // Sorter state for S1-I2: each chip cycles pool -> fixed -> varies -> pool.
   const bins = ['unfiled', 'fixed', 'can vary'];
@@ -55,6 +68,14 @@
   </header>
 
   <main class="factory-body">
+    <nav class="bb-switch" aria-label="Choose a bite-sized board">
+      {#each registry as item}
+        <button class:on={item.key === active} on:click={() => show(item.key)}>
+          {item.label}<em>{item.bb.title}</em>
+        </button>
+      {/each}
+    </nav>
+
     <section class="intro">
       <span class="micro">{bb1.id}</span>
       <h1>{bb1.title}</h1>
@@ -63,6 +84,10 @@
         exercises, then send me the codes you want kept. Nothing here is live in
         the Viewer.
       </p>
+      {#if entry.gated}
+        <p class="gate">Gated · {entry.gated} These are drafts for later selection. They must not reach a learner while the gate stands.</p>
+      {/if}
+
       <div class="fork-note">
         <div><b>Fork</b><span>{bb1.fork}</span></div>
         <div><b>Structure</b><span>{bb1.structure}</span></div>
@@ -90,7 +115,10 @@
           {#each section.readings as reading}
             <article class="variant" class:selected={selections[reading.code]} class:finalised={finalised[reading.code]}>
               <span class="code">{reading.code}{#if selections[reading.code]} · SELECTED{:else if finalised[reading.code]} · FINALISED{/if}</span>
-              <p class="reading-text">{reading.text}</p>
+              <p class="reading-text" class:verbatim={reading.verbatim}>{reading.text}</p>
+              {#if reading.verbatim}
+                <p class="verbatim-tag">Author's own words, unaltered · {sources[reading.verbatim].ref}</p>
+              {/if}
               {#if finalised[reading.code]}<p class="why">{finalised[reading.code]}</p>{/if}
             </article>
           {/each}
@@ -142,6 +170,157 @@
                       <div class="value-card">x = {fmt(values[si])}</div>
                     </div>
                     <p class="stage-note">The faded card is the value you replaced.</p>
+                  </div>
+
+                {:else if interaction.kind === 'number-line'}
+                  <div class="rows centre">
+                    <svg viewBox="0 0 320 110" class="mini-svg" role="img" aria-label={`Number line, new value ${fmt(values[si])}`}>
+                      <path class="ax" d="M28 64H292"/>
+                      {#each [1.5, 2, 2.5, 3, 3.5] as tick}
+                        <path class="ax" d={`M${28 + (tick - 1.5) * 132} 58v12`}/>
+                        <text x={28 + (tick - 1.5) * 132} y="88">{tick}</text>
+                      {/each}
+                      <path class="gap" d={`M160 40 H${28 + (values[si] - 1.5) * 132}`}/>
+                      <circle class="old" cx="160" cy="64" r="5"/>
+                      <circle class="new" cx={28 + (values[si] - 1.5) * 132} cy="64" r="7"/>
+                    </svg>
+                  </div>
+
+                {:else if interaction.kind === 'two-bars'}
+                  <div class="rows">
+                    <div class="bar-row"><small>OLD</small><span class="bar" style="width:96px"></span><b>2.0</b></div>
+                    <div class="bar-row"><small>NEW</small><span class="bar" style={`width:${values[si] * 48}px`}></span><b>{fmt(values[si])}</b></div>
+                    <div class="bar-row"><small>CHANGE</small><span class="bar diff" style={`width:${Math.abs(values[si] - 2) * 48}px`}></span><b>{(values[si] - 2).toFixed(1).replace('-', '−')}</b></div>
+                  </div>
+
+                {:else if interaction.kind === 'glyph-card'}
+                  <div class="rows centre">
+                    <div class="glyph">Δ<em>the change in</em></div>
+                  </div>
+
+                {:else if interaction.kind === 'two-labels'}
+                  <div class="rows centre">
+                    <div class="square-figure">
+                      <div class="square area" style={`width:${squareSize(values[si])}px;height:${squareSize(values[si])}px`}>
+                        <span>y = {(values[si] * values[si]).toFixed(2)}</span>
+                      </div>
+                      <span class="edge-label sm" style={`width:${squareSize(values[si])}px`}>x = {fmt(values[si])}</span>
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'two-cards'}
+                  <div class="rows centre">
+                    <div class="pair">
+                      <span class="card sym">x = {fmt(values[si])}</span>
+                      <span class="card sym">y = {(values[si] * values[si]).toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'locked-pair'}
+                  <div class="rows centre">
+                    <div class="pair">
+                      <span class="card sym">x = {fmt(values[si])}<em>assign</em></span>
+                      <span class="card val locked">y = {(values[si] * values[si]).toFixed(2)}<em>follows</em></span>
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'machine'}
+                  <div class="rows centre">
+                    <div class="pair">
+                      <span class="card sym">{fmt(values[si])}</span>
+                      <span class="machine-box">× itself</span>
+                      <span class="card val">{(values[si] * values[si]).toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'two-squares'}
+                  <div class="rows centre">
+                    <div class="pair">
+                      <span class="square area small" style="width:64px;height:64px"><span>4</span></span>
+                      <span class="square area" style={`width:${squareSize(values[si])}px;height:${squareSize(values[si])}px`}>
+                        <span>{(values[si] * values[si]).toFixed(2)}</span>
+                      </span>
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'power-table'}
+                  <div class="rows">
+                    {#each [2, 3, 4, 5] as n, ni}
+                      <div class="ladder-row" class:on={Math.round((values[si] - 1.5) / 0.667) === ni}>
+                        <small>y = x{['²', '³', '⁴', '⁵'][ni]}</small>
+                        <b>dy/dx = {n}x{['', '²', '³', '⁴'][ni]}</b>
+                      </div>
+                    {/each}
+                  </div>
+
+                {:else if interaction.kind === 'speed-track'}
+                  <div class="rows">
+                    <svg viewBox="0 0 280 70" class="mini-svg" role="img" aria-label={`Train at time ${fmt(values[si])}`}>
+                      <path class="ax" d="M14 52H266"/>
+                      <rect class="train" x={14 + (values[si] - 1.5) * 118} y="30" width="26" height="15" rx="3"/>
+                    </svg>
+                    <div class="bar-row"><small>TIME t</small><b>{fmt(values[si] - 1.5)} s</b></div>
+                    <div class="bar-row"><small>DISTANCE s</small><b>{((values[si] - 1.5) * 10).toFixed(1)} m</b></div>
+                  </div>
+
+                {:else if interaction.kind === 'ratio-plain'}
+                  <div class="rows centre">
+                    <div class="ratio">
+                      <div class="frac">
+                        <span><small>AREA CHANGE</small><b>{(values[si] * values[si] - 4).toFixed(2)}</b></span>
+                        <i></i>
+                        <span><small>SIDE CHANGE</small><b>{(values[si] - 2).toFixed(2)}</b></span>
+                      </div>
+                      <span class="eq">=</span>
+                      <div class="ratio-out">
+                        <b>{values[si] > 2.001 ? (2 + values[si]).toFixed(2) : '—'}</b>
+                        <small>cm² per cm</small>
+                      </div>
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'rate-formula'}
+                  <div class="rows centre">
+                    <div class="formula">
+                      <span>Δy/Δx</span><i>=</i><span>2x + Δx</span><i>=</i>
+                      <span>4 + {(values[si] - 2).toFixed(2)}</span><i>=</i>
+                      <b>{values[si] > 2.001 ? (2 + values[si]).toFixed(2) : '4.00'}</b>
+                    </div>
+                    <p class="stage-note">2x depends only on where you stand. Δx is the gap itself.</p>
+                  </div>
+
+                {:else if interaction.kind === 'rate-ladder'}
+                  <div class="rows">
+                    {#each [1, 0.5, 0.1, 0.01, 0.001] as gap}
+                      <div class="ladder-row" class:on={Math.abs((values[si] - 1.5) / 0.5 - [1, 0.5, 0.1, 0.01, 0.001].indexOf(gap)) < 0.5}>
+                        <small>Δx = {gap}</small><b>rate {(4 + gap).toFixed(3)}</b>
+                      </div>
+                    {/each}
+                  </div>
+
+                {:else if interaction.kind === 'curve-secant'}
+                  <div class="rows centre">
+                    <svg viewBox="0 0 260 170" class="mini-svg" role="img" aria-label="Parabola with a line through two points">
+                      <path class="ax" d="M30 148H244M30 148V18"/>
+                      <polyline class="curve" points={Array.from({ length: 49 }, (_, i) => { const x = i / 16; return `${30 + x * 62},${148 - x * x * 9}`; }).join(' ')}/>
+                      {#key values[si]}
+                        <path class="sec" d={`M60 ${(148 - 36 + (4 + (values[si] - 2)) * 9 * 0.8).toFixed(1)} L220 ${(148 - 36 - (4 + (values[si] - 2)) * 9 * 1.7).toFixed(1)}`}/>
+                      {/key}
+                      <circle class="old" cx="154" cy="112" r="5"/>
+                      <circle class="new" cx={154 + (values[si] - 2) * 62} cy={148 - (2 + (values[si] - 2)) * (2 + (values[si] - 2)) * 9} r="6"/>
+                    </svg>
+                  </div>
+
+                {:else if interaction.kind === 'growth-decomposition'}
+                  <div class="rows centre">
+                    <svg viewBox="0 0 180 180" class="mini-svg decomp" role="img" aria-label="Square of side x growing by a bit, showing two rectangles and a corner square">
+                      <rect class="grow" x="20" y={180 - 20 - (values[si] * 44)} width={values[si] * 44} height={values[si] * 44}/>
+                      <rect class="base" x="20" y="72" width="88" height="88"/>
+                      <text x="60" y="122">x²</text>
+                      <text x={20 + 88 + (values[si] * 44 - 88) / 2} y="122">x·dx</text>
+                      <text x="60" y={180 - 20 - (values[si] * 44) + (values[si] * 44 - 88) / 2 + 4}>x·dx</text>
+                    </svg>
+                    <p class="stage-note">The gain is two rectangles plus a small corner, which is why the area outruns the side.</p>
                   </div>
 
                 {:else if interaction.kind === 'square-edge' || interaction.kind === 'square-ghost'}
@@ -265,6 +444,8 @@
   .code { align-self: flex-start; border: 1px solid var(--qx-border-2); border-radius: 7px; padding: 3px 8px; font-size: 10px; font-weight: 900; letter-spacing: .07em; color: var(--qx-accent-text); }
   .reading-text { color: var(--qx-text-2); font-size: 15px; line-height: 1.55; }
   .note { color: var(--qx-text-faint); font-size: 11.5px; line-height: 1.45; }
+  .reading-text.verbatim { font-style: italic; border-left: 2px solid var(--qx-accent); padding-left: 12px; }
+  .verbatim-tag { font-size: 10px; letter-spacing: .06em; font-weight: 800; color: var(--qx-accent-text); }
 
   .stage { border: 1px solid var(--qx-border); border-radius: 13px; background: var(--qx-surface-2); padding: 13px; display: flex; flex-direction: column; gap: 11px; min-height: 210px; justify-content: center; }
   .rows { display: flex; flex-direction: column; gap: 9px; }
@@ -308,6 +489,58 @@
   .kind-note { font-size: 12.5px; color: var(--qx-text-dim); line-height: 1.5; }
   .kind-note b { color: var(--qx-text-dim); }
   .kind-note b.hit { color: var(--qx-green-text); }
+
+  .gate { border: 1px dashed var(--qx-danger); border-radius: 11px; padding: 11px 13px; background: var(--qx-danger-soft); color: var(--qx-danger-text); font-size: 12.5px; line-height: 1.5; font-weight: 700; margin-top: 14px; }
+  .mini-svg .train { fill: var(--qx-accent); }
+  .bb-switch { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bb-switch button { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); border-radius: 12px; padding: 9px 14px; cursor: pointer; font-weight: 900; font-size: 12px; }
+  .bb-switch button em { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
+  .bb-switch button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+
+  .mini-svg { width: 100%; max-width: 300px; height: auto; }
+  .mini-svg .ax { fill: none; stroke: var(--qx-text-dim); stroke-width: 2; stroke-linecap: round; }
+  .mini-svg text { fill: var(--qx-text-faint); font-size: 11px; text-anchor: middle; font-weight: 700; }
+  .mini-svg .gap { fill: none; stroke: var(--qx-accent); stroke-width: 3; stroke-linecap: round; }
+  .mini-svg .old { fill: var(--qx-text-faint); }
+  .mini-svg .new { fill: var(--qx-accent); }
+  .decomp .base { fill: var(--qx-accent-soft); stroke: var(--qx-accent); stroke-width: 2; }
+  .decomp .grow { fill: none; stroke: var(--qx-green); stroke-width: 2; stroke-dasharray: 5 4; }
+
+  .mini-svg .curve { fill: none; stroke: var(--qx-text-dim); stroke-width: 2.5; }
+  .mini-svg .sec { fill: none; stroke: var(--qx-accent); stroke-width: 2.5; stroke-linecap: round; }
+
+  .ratio { display: flex; align-items: center; gap: 13px; }
+  .frac { display: flex; flex-direction: column; gap: 5px; }
+  .frac span { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .frac small { font-size: 8.5px; letter-spacing: .1em; color: var(--qx-text-faint); font-weight: 900; }
+  .frac b { font-size: 19px; }
+  .frac i { height: 1px; background: var(--qx-text-dim); display: block; }
+  .eq { font-size: 19px; color: var(--qx-text-dim); font-weight: 900; }
+  .ratio-out { display: flex; flex-direction: column; align-items: flex-start; border-left: 1px solid var(--qx-border-2); padding-left: 13px; }
+  .ratio-out b { font-size: 26px; color: var(--qx-accent-text); }
+  .ratio-out small { font-size: 9px; letter-spacing: .09em; color: var(--qx-text-faint); font-weight: 900; }
+
+  .formula { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; font-size: 15px; font-weight: 800; }
+  .formula i { font-style: normal; color: var(--qx-text-faint); }
+  .formula b { font-size: 21px; color: var(--qx-accent-text); }
+  .ladder-row { display: flex; justify-content: space-between; gap: 12px; border: 1px solid var(--qx-border); border-radius: 9px; padding: 7px 11px; font-size: 12px; }
+  .ladder-row small { color: var(--qx-text-faint); font-weight: 900; letter-spacing: .07em; }
+  .ladder-row.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+
+  .bar-row { display: flex; align-items: center; gap: 9px; }
+  .bar-row small { width: 54px; font-size: 9px; letter-spacing: .1em; color: var(--qx-text-faint); font-weight: 900; }
+  .bar-row b { font-size: 13px; }
+  .bar { height: 15px; border-radius: 5px; background: var(--qx-accent); display: inline-block; min-width: 2px; }
+  .bar.diff { background: var(--qx-green); }
+  .glyph { display: flex; flex-direction: column; align-items: center; gap: 7px; border: 2px solid var(--qx-accent); border-radius: 14px; padding: 18px 30px; background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 40px; font-weight: 900; }
+  .glyph em { font-style: normal; font-size: 11px; letter-spacing: .1em; font-weight: 800; }
+  .card em { display: block; font-style: normal; font-size: 9px; letter-spacing: .1em; color: var(--qx-text-faint); font-weight: 800; margin-top: 3px; }
+  .card.locked { opacity: .82; }
+  .machine-box { border: 1px dashed var(--qx-border-2); border-radius: 9px; padding: 9px 12px; font-size: 11px; font-weight: 800; color: var(--qx-text-dim); }
+  .square.area { display: grid; place-items: center; }
+  .square.area span { font-size: 14px; font-weight: 900; color: var(--qx-accent-text); }
+  .square.area.small { border-color: var(--qx-text-faint); background: transparent; }
+  .edge-label.sm { font: italic 800 14px/1 Georgia, serif; gap: 6px; }
 
   .variant.selected { border-color: var(--qx-green); background: var(--qx-green-soft); }
   .variant.selected .code { border-color: var(--qx-green); color: var(--qx-green-text); }
