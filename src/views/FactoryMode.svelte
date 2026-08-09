@@ -1,6 +1,6 @@
 <script>
   import { theme } from '../lib/stores/theme.js';
-  import { registry, entryFor, sources } from '../factory/index.js';
+  import { registry, byUnit, UNITS, entryFor, sources } from '../factory/index.js';
   import SquareScene from '../lib/components/SquareScene.svelte';
   $: rejected = entry.rejected || {};
 
@@ -30,6 +30,9 @@
   let active = new URLSearchParams(window.location.search).get('bb') || 'letter';
   $: entry = entryFor(active);
   $: bb1 = entry.bb;
+  $: unitOf = UNITS.find(u => u.key === entry.unit);
+  $: unitBoards = registry.filter(e => e.unit === entry.unit);
+  $: unitPos = unitBoards.findIndex(e => e.key === entry.key) + 1;
   $: selections = entry.selections;
   $: finalised = entry.finalised;
 
@@ -438,17 +441,38 @@
       </button>
     </nav>
 
-    <nav class="bb-switch" aria-label="Choose a bite-sized board">
-      {#each registry as item}
-        <button class:on={item.key === active} on:click={() => show(item.key)}>
-          {item.label}<em>{item.bb.title}</em>
-        </button>
-      {/each}
-    </nav>
+    {#each byUnit as unit}
+      <section class="unit">
+        <div class="unit-head">
+          <h3>{unit.name}</h3>
+          <em>{unit.blurb}</em>
+        </div>
+        <nav class="bb-switch" class:sequence={unit.key === 'functions'} aria-label={`Boards in ${unit.name}`}>
+          {#each unit.boards as item, i}
+            <button class:on={item.key === active} on:click={() => show(item.key)}>
+              {#if unit.key === 'functions'}<i class="step">{i + 1}</i>{/if}
+              {item.label}<em>{item.bb.title}</em>
+            </button>
+          {/each}
+        </nav>
+      </section>
+    {/each}
 
     <section class="intro">
-      <span class="micro">{bb1.id}</span>
+      <span class="micro">{bb1.id}{#if unitOf}&nbsp;· {unitOf.name}, {unitPos} of {unitBoards.length}{/if}</span>
       <h1>{bb1.title}</h1>
+      {#if entry.unit === 'functions'}
+        <!-- Founder direction: these three are one thing. The chain is drawn on
+             every one of them so it cannot be read as a standalone board. -->
+        <div class="chain">
+          {#each unitBoards as u, i}
+            {#if i}<span class="chain-arrow">→</span>{/if}
+            <button class="chain-link" class:here={u.key === entry.key} on:click={() => show(u.key)}>
+              <i>{i + 1}</i>{u.bb.title}
+            </button>
+          {/each}
+        </div>
+      {/if}
       <p class="lede">
         {#if keptOnly}
           This is the board as chosen. Everything rejected or still undecided is
@@ -2038,6 +2062,22 @@
   .bb-switch button { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); border-radius: 12px; padding: 9px 14px; cursor: pointer; font-weight: 900; font-size: 12px; }
   .bb-switch button em { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
   .bb-switch button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+
+  /* Units. A unit is a group of boards that may not be reordered or split. */
+  .unit { display: flex; flex-direction: column; gap: 8px; }
+  .unit-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .unit-head h3 { font-size: 11px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; color: var(--qx-text-2); margin: 0; }
+  .unit-head em { font-style: normal; font-size: 11px; color: var(--qx-text-faint); }
+  .bb-switch.sequence { position: relative; padding-left: 11px; border-left: 2px solid var(--qx-accent); }
+  .bb-switch button .step { font-style: normal; position: absolute; margin: -3px 0 0 -26px; width: 16px; height: 16px; border-radius: 50%; background: var(--qx-accent); color: #fff; font-size: 9.5px; display: grid; place-items: center; }
+  .bb-switch.sequence button { position: relative; margin-left: 12px; }
+
+  .chain { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin: 2px 0 4px; }
+  .chain-arrow { color: var(--qx-text-faint); font-size: 13px; }
+  .chain-link { display: flex; align-items: center; gap: 6px; border: 1px solid var(--qx-border-2); background: transparent; color: var(--qx-text-dim); border-radius: 999px; padding: 4px 11px 4px 4px; font-size: 11.5px; font-weight: 800; cursor: pointer; }
+  .chain-link i { font-style: normal; width: 17px; height: 17px; border-radius: 50%; background: var(--qx-border-1); color: var(--qx-text-2); font-size: 9.5px; display: grid; place-items: center; }
+  .chain-link.here { border-color: var(--qx-accent); color: var(--qx-accent-text); background: var(--qx-accent-soft); }
+  .chain-link.here i { background: var(--qx-accent); color: #fff; }
 
   .mini-svg { width: 100%; max-width: 300px; height: auto; }
   .mini-svg .ax { fill: none; stroke: var(--qx-text-dim); stroke-width: 2; stroke-linecap: round; }

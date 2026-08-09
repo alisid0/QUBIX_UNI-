@@ -40,10 +40,45 @@
 // one for that reason, but I2 is the more intuitive picture of "you cannot rely
 // on it" and is drafted in full so the two can be compared in place.
 
-export const selections = {};
+// Founder pass of 2026-08-09. Twenty of twenty-eight, every slot settled.
+export const selections = {
+  'S1-A': '2026-08-09',
+  'S1-I2': '2026-08-09',
+  'S1-X1': '2026-08-09',
+  'S1-X2': '2026-08-09',
+  'S1-X3': '2026-08-09',
+  'S2-A': '2026-08-09',
+  'S2-I1': '2026-08-09',
+  'S2-X1': '2026-08-09',
+  'S2-X2': '2026-08-09',
+  'S3-B': '2026-08-09',
+  'S3-I1': '2026-08-09',
+  'S3-X1': '2026-08-09',
+  'S3-X2': '2026-08-09',
+  'S3-X3': '2026-08-09',
+  'S4-B': '2026-08-09',
+  // Taken under "rest of everything keep as it is", which I have read as
+  // accepting the recommendation in S4-I1's note rather than as keeping both.
+  // Reversible.
+  'S4-I1': '2026-08-09',
+  'S4-X1': '2026-08-09',
+  'S4-X2': '2026-08-09',
+  'S4-X3': '2026-08-09',
+  'W1': '2026-08-09'
+};
 export const finalised = {};
-export const rejected = {};
-export const gated = 'Belongs to a proposed pilot that has not been approved, and is ORIGINAL, a status the declaration does not yet carry. Nothing here has been selected yet.';
+
+export const rejected = {
+  'S1-B': 'Not selected; S1-A carries the same point and states the repeat outright.',
+  'S1-I1': 'Not selected. The founder took the plain switch over the one with the tally.',
+  'S2-B': 'Not selected; S2-A gives the quarter-turn example rather than describing the range in general.',
+  'S2-I2': 'Not selected; the tap was preferred to Hardy\'s gas cylinder, which is the point of the board.',
+  'S3-A': 'Not selected; S3-B builds the panel out of the switches already met rather than opening on the machine.',
+  'S3-I2': 'Not selected; the pre-labelled panel hands over the table instead of letting it accumulate.',
+  'S4-A': 'Not selected; S4-B covers both ways a machine can fail rather than only the forked one.',
+  'S4-I2': 'Not selected. The failure the course returns to is two answers at once, not unpredictability.'
+};
+export const gated = 'Belongs to a proposed pilot that has not been approved, and is ORIGINAL, a status the declaration does not yet carry. Every slot is selected; the gate is the pilot and the status, not the content.';
 
 export const func0 = {
   id: 'FCG-FUNC-000',
@@ -169,8 +204,15 @@ export const func0 = {
           text: 'A drinks machine has a row of buttons. Each one has a job: this button is for tea, that one for coffee, that one for soup. The job a button does is called its function, and the word has been used that way for far longer than it has been used in mathematics. Press a button and one drink arrives. The panel is a list of what goes in, and beside each entry, what comes out.'
         },
         {
+          // Amended by AI, 2026-08-09, and flagged. The founder selected S3-B
+          // and all three of S3's checks, but S3-X3 asks why the job a button
+          // does is called its function, and S3-B as drafted never used the
+          // word. The naming sentence from the rejected S3-A is appended here,
+          // at the end of the section where the naming belongs, rather than the
+          // check being dropped. Reversible, and the alternative is to drop
+          // S3-X3 instead.
           code: 'S3-B',
-          text: 'Put several switches side by side, give each one a job, and you have a machine with a panel. Press any button and you get the one thing that button is for. Which button you press is what goes in. Which drink arrives is what comes out.'
+          text: 'Put several switches side by side, give each one a job, and you have a machine with a panel. Press any button and you get the one thing that button is for. Which button you press is what goes in. Which drink arrives is what comes out. The job a button does is what we call its function, and the word has been used that way for far longer than it has been used in mathematics.'
         }
       ],
       interactions: [

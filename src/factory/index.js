@@ -29,27 +29,48 @@ export { sources };
 //
 // The permanent identifier is still bb.id (CME-CHANGE-007, FCG-AREA-001). Those
 // are per-strand and unaffected by renumbering, so they are not touched here.
+// Boards belong to a unit. Founder direction of 2026-08-09: the three function
+// boards are one thing, not three, because each is unusable without the one
+// before it. The switch earns the machine and the machine earns the rule.
+//
+// A unit is not a bigger board. Each of its boards is still selected, recorded
+// and approved on its own. What the unit says is that they may not be reordered
+// or split up, and that a learner meets them in this order or not at all.
 export const registry = [
-  { key: 'letter', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1, rejected: rej1 },
-  { key: 'gap', label: 'Gap', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
-  { key: 'second', label: 'Second Letter', bb: bb3, selections: sel3, finalised: fin3, rejected: rej3 },
-  { key: 'rate', label: 'Rate', bb: bb4, selections: sel4, finalised: fin4 },
-  { key: 'points', label: 'Two Points', bb: bb5, selections: sel5, finalised: fin5 },
-  { key: 'notation', label: 'Notation', bb: bb6, selections: sel6, finalised: fin6, gated: gate6 },
-  { key: 'powers', label: 'Powers', bb: bb7, selections: sel7, finalised: fin7, gated: gate7 },
-  { key: 'time', label: 'Time', bb: bb8, selections: sel8, finalised: fin8, gated: gate8 },
-  { key: 'constants', label: 'Constants', bb: bb9, selections: sel9, finalised: fin9, gated: gate9 },
-  { key: 'sum', label: 'Sum', bb: bb10, selections: sel9, finalised: fin9, gated: gate9 },
-  { key: 'slope', label: 'Slope', bb: bb11, selections: sel11, finalised: fin11, gated: gate11 },
-  { key: 'turning', label: 'Turning', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 },
-  // Proposed pilot. These sit at the end of the strip rather than in their
-  // teaching position, which is before Rate, until the proposal is approved.
-  { key: 'area', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA },
-  { key: 'plane', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP },
-  { key: 'button', label: 'Button', bb: func0, selections: selF0, finalised: finF0, rejected: rejF0, gated: gateF0 },
-  { key: 'machine', label: 'Machine', bb: func1, selections: selF1, finalised: finF1, rejected: rejF1, gated: gateF1 },
-  { key: 'oneanswer', label: 'One Answer', bb: func2, selections: selF2, finalised: finF2, rejected: rejF2, gated: gateF2 }
+  { key: 'letter', unit: 'variables', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1, rejected: rej1 },
+  { key: 'gap', unit: 'variables', label: 'Gap', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
+  { key: 'second', unit: 'variables', label: 'Second Letter', bb: bb3, selections: sel3, finalised: fin3, rejected: rej3 },
+  // Functions. One sequence, three boards, strictly in this order.
+  { key: 'button', unit: 'functions', label: 'Button', bb: func0, selections: selF0, finalised: finF0, rejected: rejF0, gated: gateF0 },
+  { key: 'machine', unit: 'functions', label: 'Machine', bb: func1, selections: selF1, finalised: finF1, rejected: rejF1, gated: gateF1 },
+  { key: 'oneanswer', unit: 'functions', label: 'One Answer', bb: func2, selections: selF2, finalised: finF2, rejected: rejF2, gated: gateF2 },
+  { key: 'area', unit: 'geometry', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA },
+  { key: 'plane', unit: 'geometry', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP },
+  // The differential calculus. The pilot proposal moves these out of the first
+  // course and makes them the opening of the next one.
+  { key: 'rate', unit: 'rates', label: 'Rate', bb: bb4, selections: sel4, finalised: fin4 },
+  { key: 'points', unit: 'rates', label: 'Two Points', bb: bb5, selections: sel5, finalised: fin5 },
+  { key: 'notation', unit: 'rates', label: 'Notation', bb: bb6, selections: sel6, finalised: fin6, gated: gate6 },
+  { key: 'powers', unit: 'rates', label: 'Powers', bb: bb7, selections: sel7, finalised: fin7, gated: gate7 },
+  { key: 'time', unit: 'rates', label: 'Time', bb: bb8, selections: sel8, finalised: fin8, gated: gate8 },
+  { key: 'constants', unit: 'rates', label: 'Constants', bb: bb9, selections: sel9, finalised: fin9, gated: gate9 },
+  { key: 'sum', unit: 'rates', label: 'Sum', bb: bb10, selections: sel9, finalised: fin9, gated: gate9 },
+  { key: 'slope', unit: 'rates', label: 'Slope', bb: bb11, selections: sel11, finalised: fin11, gated: gate11 },
+  { key: 'turning', unit: 'rates', label: 'Turning', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 }
 ];
+
+export const UNITS = [
+  { key: 'variables', name: 'Variables', blurb: 'What a letter is, and what changing one means.' },
+  { key: 'functions', name: 'Functions', blurb: 'One sequence. The switch earns the machine, and the machine earns the rule.' },
+  { key: 'geometry', name: 'Coordinate geometry', blurb: 'Counting a surface, then finding a place on one.' },
+  { key: 'rates', name: 'Rates and derivatives', blurb: 'Proposed to leave this course and open the next.' }
+];
+
+// The strip is drawn from this, so a board with no unit cannot silently vanish.
+export const byUnit = UNITS.map(u => ({
+  ...u,
+  boards: registry.filter(e => e.unit === u.key)
+}));
 
 // Links written before the rename used ?bb=7. Kept so the founder's saved URLs
 // and anything quoted in the curriculum documents still open the right board.
