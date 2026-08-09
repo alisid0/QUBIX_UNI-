@@ -12,6 +12,33 @@ export const finalised = {};
 export const bb3 = {
   id: 'CME-CHANGE-003',
   title: 'Dependent Variables',
+
+  workshops: [
+    {
+      code: 'W1',
+      name: 'The square builder',
+      kind: 'square-builder',
+      blurb: 'Step the side and the square is drawn from it. The area is never set directly, only arrived at.',
+      goals: [
+        { id: 's1', text: 'Make the area exactly 9' },
+        { id: 's2', text: 'Make the area larger than 20' },
+        { id: 's3', text: 'Find a side where the area is smaller than the side' }
+      ],
+      note: 'The third goal is the reason to build this. Below a side of 1 the area falls under the side, which contradicts what everyone assumes about squares and cannot be met by guessing. It also needs a range wider than the lesson uses.'
+    },
+    {
+      code: 'W2',
+      name: 'The dependence tester',
+      kind: 'dependence-tester',
+      blurb: 'Two sets of buttons, one for x and one for y. Only one of them works, and finding out which is the exercise.',
+      goals: [
+        { id: 't1', text: 'Set x to 4 and watch y follow' },
+        { id: 't2', text: 'Try to set y on its own' }
+      ],
+      note: 'Being told y is dependent is weak. Pressing a button that refuses is not. The refusal explains itself rather than just failing.'
+    }
+  ],
+
   fork: 'Pieces separately: y as a second letter, then the tie, then the naming, then paired movement.',
   structure: 'Four sections.',
   sections: [
@@ -36,6 +63,18 @@ export const bb3 = {
             { label: 'The length of the side', feedback: 'That is x. y was given to the other quantity.' },
             { label: 'A second, unrelated number', feedback: 'y measures something about this same square.' }
           ]
+        },
+        {
+          code: 'S1-X3', kind: 'match',
+          prompt: 'Sort each description under the letter it belongs to.',
+          bins: ['x', 'y'],
+          items: [
+            { label: 'the length of one side', bin: 'x' },
+            { label: '2 cm', bin: 'x' },
+            { label: 'the space inside', bin: 'y' },
+            { label: '4 cm²', bin: 'y' }
+          ],
+          successNote: 'The units separate them as firmly as the words do: one is a length, the other an area.'
         },
         {
           code: 'S1-X2', kind: 'choice',
@@ -70,7 +109,13 @@ export const bb3 = {
             { label: '3', feedback: 'That is x again. y is the area.' }
           ]
         },
-        { code: 'S2-X2', kind: 'set-control', prompt: 'Assign x so that y becomes 9.', target: 3, tolerance: 0.05, from: 2 }
+        { code: 'S2-X2', kind: 'set-control', prompt: 'Assign x so that y becomes 9.', target: 3, tolerance: 0.05, from: 2 },
+        {
+          code: 'S2-X3', kind: 'stepper',
+          prompt: 'Step x until the area reaches 9.',
+          target: 3, min: 1, max: 5, step: 0.5, start: 1.5, unit: '', derive: 'square',
+          successNote: 'You never touched the area. You set the side, and the area was settled for you.'
+        }
       ]
     },
     {
@@ -94,6 +139,17 @@ export const bb3 = {
             { label: 'x, the side', feedback: 'x is the one you assign. Nothing determines it for you.' },
             { label: 'Neither; they are equal partners', feedback: 'Only one of them can be chosen freely here.' }
           ]
+        },
+        {
+          code: 'S3-X3', kind: 'order',
+          prompt: 'Put these in the order they happen.',
+          items: [
+            'You assign a value to x',
+            'The side takes that length',
+            'The area is settled by the side',
+            'y takes that value'
+          ],
+          successNote: 'Nothing in this chain runs backwards. That one-way direction is what independent and dependent mean.'
         },
         {
           code: 'S3-X2', kind: 'choice',
@@ -128,7 +184,19 @@ export const bb3 = {
             { label: 'Because area is always bigger than length', feedback: 'They are different kinds of quantity, so one is not simply bigger. The question is why the gain differs.' }
           ]
         },
-        { code: 'S4-X2', kind: 'set-control', prompt: 'Assign x so that Δy is greater than 2.25.', above: 2.5, from: 2.1 }
+        { code: 'S4-X2', kind: 'set-control', prompt: 'Assign x so that Δy is greater than 2.25.', above: 2.5, from: 2.1 },
+        {
+          code: 'S4-X3', kind: 'match',
+          prompt: 'x moves from 2 to 2.5. Put each quantity with its value.',
+          bins: ['0.5', '2.25', '2.5', '6.25'],
+          items: [
+            { label: 'Δx', bin: '0.5' },
+            { label: 'Δy', bin: '2.25' },
+            { label: 'the new x', bin: '2.5' },
+            { label: 'the new y', bin: '6.25' }
+          ],
+          successNote: 'Four numbers from one move. Telling the changes apart from the values is most of the work in BB4.'
+        }
       ]
     }
   ]

@@ -102,7 +102,7 @@
   // The three states are passed in rather than read from scope: Svelte tracks
   // dependencies at the call site, so reading them inside the body would leave
   // the goal list frozen.
-  function goalMet(kind, id, bench, cb, db) {
+  function goalMet(kind, id, bench, cb, db, sb, dt) {
     if (kind === 'assignment-bench') {
       const a = bench.assigned;
       if (id === 'g1') return a.x === 7;
@@ -119,7 +119,33 @@
       if (id === 'd1') return db.letter === 't';
       if (id === 'd2') return db.letter === 'y';
     }
+    if (kind === 'square-builder') {
+      const a = sb.side ** 2;
+      if (id === 's1') return Math.abs(a - 9) < 0.001;
+      if (id === 's2') return a > 20;
+      if (id === 's3') return sb.side > 0 && a < sb.side;
+    }
+    if (kind === 'dependence-tester') {
+      if (id === 't1') return Math.abs(dt.x - 4) < 0.001;
+      if (id === 't2') return dt.refused;
+    }
     return false;
+  }
+
+  // Square builder: a deliberately wider range than the lesson uses, so the
+  // area can be driven below the side, which only happens under 1.
+  let sb = { side: 2 };
+  function sbStep(delta) {
+    sb = { side: Number(Math.min(5, Math.max(0.5, sb.side + delta * 0.1)).toFixed(2)) };
+  }
+
+  // Dependence tester: the y buttons are live but refuse, and say why.
+  let dt = { x: 2, refused: false };
+  function dtStep(delta) {
+    dt = { ...dt, x: Number(Math.min(6, Math.max(1, dt.x + delta)).toFixed(0)) };
+  }
+  function dtRefuse() {
+    dt = { ...dt, refused: true };
   }
 
   const squareSize = v => 74 + (v - 1.5) * 39; // 1.5 -> 74px, 3.5 -> 152px, no cap
@@ -458,6 +484,9 @@
                   <button aria-label="Decrease" on:click={() => stepBy(ex, -1)}>−</button>
                   <span class="stepper-value">
                     x = {stepValue(ex, stepped).toFixed(ex.step < 1 ? 1 : 0)}{ex.unit ? ' ' + ex.unit : ''}
+                    {#if ex.derive === 'square'}
+                      <em>y = {(stepValue(ex, stepped) ** 2).toFixed(2)}</em>
+                    {/if}
                   </span>
                   <button aria-label="Increase" on:click={() => stepBy(ex, 1)}>+</button>
                 </div>
@@ -560,8 +589,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -588,8 +617,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -615,8 +644,57 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'square-builder'}
+                  <div class="rows centre">
+                    <div class="square-figure">
+                      <div class="square area" style={`width:${Math.min(150, sb.side * 34)}px;height:${Math.min(150, sb.side * 34)}px`}>
+                        <span>{(sb.side ** 2).toFixed(2)}</span>
+                      </div>
+                      <span class="edge-label sm" style={`width:${Math.min(150, sb.side * 34)}px`}>x = {sb.side.toFixed(1)}</span>
+                    </div>
+                    <div class="bench-row">
+                      <small>SIDE</small>
+                      <button on:click={() => sbStep(-1)} aria-label="Decrease side">−</button>
+                      <b>{sb.side.toFixed(1)}</b>
+                      <button on:click={() => sbStep(1)} aria-label="Increase side">+</button>
+                    </div>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'dependence-tester'}
+                  <div class="rows">
+                    <div class="bench-row">
+                      <small>x</small>
+                      <button on:click={() => dtStep(-1)} aria-label="Decrease x">−</button>
+                      <b>{dt.x}</b>
+                      <button on:click={() => dtStep(1)} aria-label="Increase x">+</button>
+                    </div>
+                    <div class="bench-row locked">
+                      <small>y</small>
+                      <button on:click={dtRefuse} aria-label="Try to decrease y">−</button>
+                      <b>{dt.x ** 2}</b>
+                      <button on:click={dtRefuse} aria-label="Try to increase y">+</button>
+                    </div>
+                    {#if dt.refused}
+                      <p class="refusal">y cannot be set on its own. It is whatever x² comes to, so the only way to move it is to move x.</p>
+                    {/if}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -782,6 +860,10 @@
   .bench-row small { width: 44px; font-size: 9px; letter-spacing: .1em; font-weight: 900; color: var(--qx-text-faint); }
   .bench-row button { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font-size: 19px; font-weight: 900; cursor: pointer; }
   .bench-row b { flex: 1; text-align: center; font-size: 19px; }
+  .bench-row.locked button { border-style: dashed; color: var(--qx-text-faint); }
+  .bench-row.locked b { color: var(--qx-text-dim); }
+  .refusal { font-size: 12px; line-height: 1.5; color: var(--qx-danger-text); background: var(--qx-danger-soft); border-radius: 9px; padding: 9px 11px; font-weight: 700; }
+  .stepper-value em { display: block; font-style: normal; font-size: 12px; font-weight: 800; color: var(--qx-text-dim); margin-top: 2px; }
   .build-line { display: flex; align-items: center; gap: 4px; }
   .glyph-sm { min-width: 46px; height: 56px; border: 2px solid var(--qx-accent); border-radius: 11px; background: var(--qx-accent-soft); color: var(--qx-accent-text); display: grid; place-items: center; font-size: 28px; font-weight: 900; padding: 0 10px; }
   .glyph-sm.let { font: italic 800 28px/1 Georgia, serif; }
