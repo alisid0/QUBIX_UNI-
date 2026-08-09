@@ -1,6 +1,12 @@
 // Passages quoted from the Project Gutenberg LaTeX transcriptions, with the
 // printed page or article recorded. Verified by reading the transcription, not
 // recalled. Shared across every BB option set.
+//
+// Audited 2026-08-09: all seventeen Thompson entries were rechecked by locating
+// each quote in 33283-t.tex and reading the printed page off the nearest
+// preceding \DPPageSep marker. T6 was wrong on both counts and is corrected
+// above its entry. T2, T5 and T15 claimed page ranges where the quoted words sit
+// on a single page; narrowed. The other thirteen were right as recorded.
 
 export const sources = {
   W1: {
@@ -16,7 +22,7 @@ export const sources = {
     quote: 'We classify all quantities into two classes: constants and variables. Those which we regard as of fixed value, and call constants … while those which we consider as capable of growing, or (as mathematicians say) of "varying," we denote by letters from the end of the alphabet.'
   },
   T2: {
-    ref: 'Thompson, Calculus Made Easy, ch. III, printed pages 9–10',
+    ref: 'Thompson, Calculus Made Easy, ch. III, printed page 10',
     quote: 'Suppose we have got two such variables that depend one on the other. An alteration in one will bring about an alteration in the other, because of this dependence. Let us call one of the variables x, and the other that depends on it y.'
   },
   T3: {
@@ -28,12 +34,14 @@ export const sources = {
     quote: 'Let us think of x as a quantity that can grow by a small amount so as to become x + dx, where dx is the small increment added by growth. The square of this is x² + 2x·dx + (dx)².'
   },
   T5: {
-    ref: 'Thompson, Calculus Made Easy, ch. II, printed pages 6–7, Fig. 1',
+    ref: 'Thompson, Calculus Made Easy, ch. II, printed page 6, Fig. 1',
     quote: 'Draw a square the side of which we will take to represent x. Now suppose the square to grow by having a bit dx added to its size each way. The enlarged square is made up of the original square x², the two rectangles at the top and on the right, each of which is of area x·dx (or together 2x·dx), and the little square at the top right-hand corner.'
   },
+  // Corrected 2026-08-09 against the LaTeX page markers. This entry previously
+  // said printed page 10 and dropped two of the three "hunting"s. Both wrong.
   T6: {
-    ref: 'Thompson, Calculus Made Easy, ch. III, printed page 10',
-    quote: 'Now right through the differential calculus we are hunting for a curious thing, a mere ratio, namely, the proportion which dy bears to dx when both of them are indefinitely small.'
+    ref: 'Thompson, Calculus Made Easy, ch. III, printed page 12',
+    quote: 'Now right through the differential calculus we are hunting, hunting, hunting for a curious thing, a mere ratio, namely, the proportion which dy bears to dx when both of them are indefinitely small.'
   },
   T7: {
     ref: 'Thompson, Calculus Made Easy, ch. IV, printed page 18',
@@ -68,7 +76,7 @@ export const sources = {
     quote: 'We have now to consider how to tackle the sum of two or more functions. … The answer to this question is quite simple: just differentiate them, one after the other.'
   },
   T15: {
-    ref: 'Thompson, Calculus Made Easy, ch. X, printed pages 76–77',
+    ref: 'Thompson, Calculus Made Easy, ch. X, printed page 77',
     quote: 'Now observe how y changes when x is varied. If x is made to increase by a small increment dx, to the right, it will be observed that y also increases by a small increment dy. Then the ratio of dy to dx is a measure of the degree to which the curve is sloping up between the two points Q and T.'
   },
   T16: {
