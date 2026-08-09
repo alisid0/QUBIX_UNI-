@@ -28,6 +28,39 @@ export const finalised = {
 export const bb1 = {
   id: 'CME-CHANGE-001',
   title: 'Assigning Values to Letters',
+
+  // A workshop is larger than a section check: several objects on one screen and
+  // a short list of goals, so the learner works rather than answers. Adapted from
+  // W2, not copied: the source states the idea, the bench makes you do it.
+  workshops: [
+    {
+      code: 'W1',
+      name: 'The assignment bench',
+      kind: 'assignment-bench',
+      blurb: 'Three letters and a tray of numbers. Drop a number onto a letter and the letter represents it until you change your mind.',
+      letters: ['x', 'y', 'z'],
+      values: [0, 1, 2, 3, 5, 7],
+      goals: [
+        { id: 'g1', text: 'Make x represent 7' },
+        { id: 'g2', text: 'Give y a different value from x' },
+        { id: 'g3', text: 'Clear z so it represents nothing again' }
+      ],
+      note: 'Goal 3 is the one worth having. It shows a letter can go back to being general, which no multiple-choice question makes you feel.'
+    },
+    {
+      code: 'W2',
+      name: 'Match the statement',
+      kind: 'statement-match',
+      blurb: 'Pair each written statement with what it means in words. Tests reading of notation rather than arithmetic.',
+      pairs: [
+        { left: 'x = 2', right: 'The value 2 is assigned to x' },
+        { left: '2', right: 'A figure, always the same number' },
+        { left: 'x', right: 'A letter, no value assigned yet' }
+      ],
+      note: 'Smaller than the bench and closer to a check. Worth comparing before deciding what a workshop should be.'
+    }
+  ],
+
   fork: 'F-2 — assignment, Wentworth-led. Movement is deferred to BB2.',
   structure: 'ST-B — four sections.',
   sections: [
@@ -64,8 +97,20 @@ export const bb1 = {
           ]
         },
         {
+          code: 'S1-X3', kind: 'match',
+          prompt: 'Put each symbol where it belongs.',
+          bins: ['Figure', 'Letter'],
+          items: [
+            { label: '7', bin: 'Figure' },
+            { label: '0', bin: 'Figure' },
+            { label: 'x', bin: 'Letter' },
+            { label: 'n', bin: 'Letter' }
+          ],
+          successNote: 'Figures are the ten symbols of arithmetic. Letters are what algebra adds.'
+        },
+        {
           code: 'S1-X2', kind: 'choice',
-          prompt: 'Wentworth calls a letter a general symbol. What does general mean here?',
+          prompt: 'A letter is called a general symbol. What does general mean here?',
           options: [
             { label: 'Any particular value may be assigned to it', correct: true },
             { label: 'It is always unknown', feedback: 'It is not unknown once you assign it. Before that it is simply uncommitted.' },
@@ -106,7 +151,13 @@ export const bb1 = {
             { label: 'Any number at all', feedback: 'That was true before a value was assigned. It is not true now.' }
           ]
         },
-        { code: 'S2-X2', kind: 'set-control', prompt: 'Assign x the value 3.', target: 3, tolerance: 0.05 }
+        { code: 'S2-X2', kind: 'set-control', prompt: 'Assign x the value 3.', target: 3, tolerance: 0.05 },
+        {
+          code: 'S2-X3', kind: 'stepper',
+          prompt: 'Step the value up until x represents 5.',
+          target: 5, min: 0, max: 9, step: 1, start: 2, unit: '',
+          successNote: 'x now represents 5. The letter did not change while you were stepping.'
+        }
       ]
     },
     {
@@ -137,7 +188,18 @@ export const bb1 = {
             { label: 'The number 2 became a letter', feedback: '2 is a figure. It always stands for the same number.' }
           ]
         },
-        { code: 'S3-X2', kind: 'set-control', prompt: 'x is at 2. Assign it the value 3 instead.', target: 3, tolerance: 0.05 }
+        { code: 'S3-X2', kind: 'set-control', prompt: 'x is at 2. Assign it the value 3 instead.', target: 3, tolerance: 0.05 },
+        {
+          code: 'S3-X3', kind: 'order',
+          prompt: 'Put an assignment in the order it happens.',
+          items: [
+            'Choose a letter: x',
+            'Choose a number: 5',
+            'Write x = 5',
+            'x now represents 5'
+          ],
+          successNote: 'The letter comes first and is never altered. Only the number attached to it is chosen.'
+        }
       ]
     },
     {
@@ -160,6 +222,12 @@ export const bb1 = {
       ],
       exercises: [
         { code: 'S4-X1', kind: 'set-control', prompt: 'Assign x the value that makes each side 3.0 cm.', target: 3, tolerance: 0.05 },
+        {
+          code: 'S4-X3', kind: 'stepper',
+          prompt: 'Step x up until each side of the square is 3.0 cm.',
+          target: 3, min: 1.5, max: 3.5, step: 0.1, start: 2, unit: 'cm',
+          successNote: 'The square follows the value you assigned. Nothing about the letter changed.'
+        },
         {
           code: 'S4-X2', kind: 'choice',
           prompt: 'The square is drawn larger than before. What did you change?',

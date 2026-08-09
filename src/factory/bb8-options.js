@@ -126,7 +126,7 @@ export const bb8 = {
       exercises: [
         {
           code: 'S4-X1', kind: 'choice',
-          prompt: 'Thompson asks: which is growing at the greater rate, a plant 12 inches high that becomes 14 inches in one month, or a tree 12 feet high that becomes 14 feet in a year?',
+          prompt: 'Which is growing at the greater rate: a plant 12 inches high that becomes 14 inches in one month, or a tree 12 feet high that becomes 14 feet in a year?',
           options: [
             { label: 'The plant, because its gain took one month rather than a year', correct: true },
             { label: 'The tree, because feet are larger than inches', feedback: 'Both grew by the same proportion. The difference is the time each took.' },

@@ -44,7 +44,7 @@ export const bb6 = {
         },
         {
           code: 'S1-X2', kind: 'choice',
-          prompt: 'Thompson says these little bits "may be considered to be indefinitely small." What does that rule out?',
+          prompt: 'These little bits may be considered indefinitely small. What does that rule out?',
           options: [
             { label: 'Treating dx as a fixed quantity you could measure', correct: true },
             { label: 'Using dx in arithmetic at all', feedback: 'He does arithmetic with it throughout. It is the fixed size that is ruled out.' },
@@ -96,11 +96,11 @@ export const bb6 = {
       exercises: [
         {
           code: 'S3-X1', kind: 'choice',
-          prompt: 'Thompson calls dy/dx "a mere ratio". Why does that matter?',
+          prompt: 'dy/dx is described as a mere ratio. Why does that matter?',
           options: [
             { label: 'The two bits vanish, but their proportion survives', correct: true },
             { label: 'Because ratios are easier than subtraction', feedback: 'Ease is not the point. The point is what is left when both bits go.' },
-            { label: 'Because dy and dx are always equal', feedback: 'They are not, except by a miracle, as Thompson puts it.' }
+            { label: 'Because dy and dx are always equal', feedback: 'They are not. There is no reason for the two bits to come out the same size.' }
           ]
         },
         {

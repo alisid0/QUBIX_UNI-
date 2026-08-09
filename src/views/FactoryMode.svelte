@@ -37,6 +37,63 @@
 
   // Exercise preview state, keyed by exercise code.
   let picked = {};
+  let stepped = {};   // stepper current values
+  let placed = {};    // match: item label -> bin
+  let held = {};      // match/workshop: what is currently picked up
+  let ordered = {};   // order: current arrangement
+  let bench = { assigned: {}, held: null };
+
+  function stepBy(ex, delta) {
+    const cur = stepped[ex.code] ?? ex.start ?? ex.min;
+    const next = Math.min(ex.max, Math.max(ex.min, Number((cur + delta * ex.step).toFixed(4))));
+    stepped = { ...stepped, [ex.code]: next };
+  }
+  const stepValue = (ex, s) => s[ex.code] ?? ex.start ?? ex.min;
+  const stepHit = (ex, s) => Math.abs(stepValue(ex, s) - ex.target) < ex.step / 2;
+
+  // Tap to pick up, tap to place. Works with a mouse and with a thumb, which
+  // HTML5 drag-and-drop does not.
+  function takeItem(code, label) {
+    held = { ...held, [code]: held[code] === label ? null : label };
+  }
+  function placeItem(code, bin) {
+    const label = held[code];
+    if (!label) return;
+    placed = { ...placed, [code]: { ...(placed[code] || {}), [label]: bin } };
+    held = { ...held, [code]: null };
+  }
+  const matchDone = (ex, p) => ex.items.every(i => (p[ex.code] || {})[i.label] === i.bin);
+
+  function orderList(ex) {
+    return ordered[ex.code] || ex.items.map((_, i) => i);
+  }
+  function moveItem(ex, from, dir) {
+    const list = [...orderList(ex)];
+    const to = from + dir;
+    if (to < 0 || to >= list.length) return;
+    [list[from], list[to]] = [list[to], list[from]];
+    ordered = { ...ordered, [ex.code]: list };
+  }
+  const orderDone = (ex, o) => (o[ex.code] || ex.items.map((_, i) => i)).every((v, i) => v === i);
+
+  function benchTake(v) {
+    bench = { ...bench, held: bench.held === v ? null : v };
+  }
+  function benchDrop(letter) {
+    if (bench.held === null) return;
+    bench = { assigned: { ...bench.assigned, [letter]: bench.held }, held: null };
+  }
+  function benchClear(letter) {
+    const next = { ...bench.assigned };
+    delete next[letter];
+    bench = { ...bench, assigned: next };
+  }
+  function goalMet(id, a) {
+    if (id === 'g1') return a.x === 7;
+    if (id === 'g2') return a.y !== undefined && a.x !== undefined && a.y !== a.x;
+    if (id === 'g3') return a.z === undefined;
+    return false;
+  }
 
   const squareSize = v => 74 + (v - 1.5) * 39; // 1.5 -> 74px, 3.5 -> 152px, no cap
   const fmt = v => Number(v).toFixed(1);
@@ -369,6 +426,62 @@
                     <p class="fb">{o.feedback}</p>
                   {/each}
                 {/if}
+              {:else if ex.kind === 'stepper'}
+                <div class="stepper">
+                  <button aria-label="Decrease" on:click={() => stepBy(ex, -1)}>−</button>
+                  <span class="stepper-value">
+                    x = {stepValue(ex, stepped).toFixed(ex.step < 1 ? 1 : 0)}{ex.unit ? ' ' + ex.unit : ''}
+                  </span>
+                  <button aria-label="Increase" on:click={() => stepBy(ex, 1)}>+</button>
+                </div>
+                <p class="kind-note">Target {ex.target}{ex.unit ? ' ' + ex.unit : ''} ·
+                  <b class:hit={stepHit(ex, stepped)}>{stepHit(ex, stepped) ? 'reached' : 'not yet'}</b></p>
+                {#if stepHit(ex, stepped) && ex.successNote}<p class="ok">{ex.successNote}</p>{/if}
+
+              {:else if ex.kind === 'match'}
+                <div class="tray">
+                  {#each ex.items as item}
+                    {#if !(placed[ex.code] || {})[item.label]}
+                      <button class="chip pick" class:up={held[ex.code] === item.label}
+                        on:click={() => takeItem(ex.code, item.label)}>{item.label}</button>
+                    {/if}
+                  {/each}
+                  {#if !ex.items.some(i => !(placed[ex.code] || {})[i.label])}
+                    <span class="tray-empty">tray empty</span>
+                  {/if}
+                </div>
+                <div class="bins">
+                  {#each ex.bins as bin}
+                    <button class="bin" class:armed={held[ex.code]} on:click={() => placeItem(ex.code, bin)}>
+                      <small>{bin}</small>
+                      <span class="bin-items">
+                        {#each ex.items.filter(i => (placed[ex.code] || {})[i.label] === bin) as i}
+                          <em class:wrong={i.bin !== bin}>{i.label}</em>
+                        {/each}
+                      </span>
+                    </button>
+                  {/each}
+                </div>
+                <p class="kind-note">Tap a symbol, then tap a box ·
+                  <b class:hit={matchDone(ex, placed)}>{matchDone(ex, placed) ? 'all correct' : 'in progress'}</b></p>
+                {#if matchDone(ex, placed) && ex.successNote}<p class="ok">{ex.successNote}</p>{/if}
+
+              {:else if ex.kind === 'order'}
+                <div class="order-list">
+                  {#each orderList(ex) as idx, pos}
+                    <div class="order-row">
+                      <span>{ex.items[idx]}</span>
+                      <span class="order-btns">
+                        <button aria-label="Move up" disabled={pos === 0} on:click={() => moveItem(ex, pos, -1)}>↑</button>
+                        <button aria-label="Move down" disabled={pos === orderList(ex).length - 1} on:click={() => moveItem(ex, pos, 1)}>↓</button>
+                      </span>
+                    </div>
+                  {/each}
+                </div>
+                <p class="kind-note">Reorder with the arrows ·
+                  <b class:hit={orderDone(ex, ordered)}>{orderDone(ex, ordered) ? 'correct order' : 'not yet'}</b></p>
+                {#if orderDone(ex, ordered) && ex.successNote}<p class="ok">{ex.successNote}</p>{/if}
+
               {:else}
                 <p class="kind-note">
                   Slider task · target x = {ex.target}. Answered with the section's own control,
@@ -383,6 +496,66 @@
         </div>
       </section>
     {/each}
+
+    {#if bb1.workshops}
+      <section class="section-block">
+        <div class="section-head">
+          <span class="section-code">W</span>
+          <h2>Workshops <em>— larger than a check: several objects, a few goals</em></h2>
+        </div>
+        <div class="variant-grid">
+          {#each bb1.workshops as w}
+            <article class="variant">
+              <span class="code">{w.code}</span>
+              <p class="prompt">{w.name}</p>
+              <p class="reading-text">{w.blurb}</p>
+
+              <div class="stage">
+                {#if w.kind === 'assignment-bench'}
+                  <div class="rows">
+                    <div class="tray">
+                      {#each w.values as v}
+                        <button class="chip pick" class:up={bench.held === v} on:click={() => benchTake(v)}>{v}</button>
+                      {/each}
+                    </div>
+                    <div class="letters">
+                      {#each w.letters as L}
+                        <div class="letter-slot" class:armed={bench.held !== null} class:filled={bench.assigned[L] !== undefined}>
+                          <button class="slot-hit" on:click={() => benchDrop(L)}>
+                            <b>{L}</b>
+                            <span>{bench.assigned[L] !== undefined ? '= ' + bench.assigned[L] : 'no value'}</span>
+                          </button>
+                          {#if bench.assigned[L] !== undefined}
+                            <button class="clear" aria-label={`Clear ${L}`} on:click={() => benchClear(L)}>×</button>
+                          {/if}
+                        </div>
+                      {/each}
+                    </div>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(g.id, bench.assigned)}>
+                          <i>{goalMet(g.id, bench.assigned) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'statement-match'}
+                  <div class="rows">
+                    {#each w.pairs as p}
+                      <div class="pair-row"><b>{p.left}</b><i>→</i><span>{p.right}</span></div>
+                    {/each}
+                    <p class="stage-note">Shown paired here. Built, the right column would be shuffled and tapped into place.</p>
+                  </div>
+                {/if}
+              </div>
+
+              <p class="note">{w.note}</p>
+            </article>
+          {/each}
+        </div>
+      </section>
+    {/if}
 
     <section class="closing">
       <h2>Still open</h2>
@@ -486,6 +659,48 @@
   .options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .options button.wrong { border-color: var(--qx-danger); }
   .fb { font-size: 12px; line-height: 1.45; color: var(--qx-danger-text); background: var(--qx-danger-soft); border-radius: 9px; padding: 9px 11px; }
+  .stepper { display: flex; align-items: center; gap: 10px; }
+  .stepper button { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 22px; font-weight: 900; cursor: pointer; }
+  .stepper button:active { background: var(--qx-accent-soft); }
+  .stepper-value { flex: 1; text-align: center; font-size: 20px; font-weight: 900; color: var(--qx-accent-text); }
+
+  .tray { display: flex; flex-wrap: wrap; gap: 7px; min-height: 44px; align-items: center; }
+  .tray-empty { font-size: 11px; color: var(--qx-text-faint); font-weight: 700; }
+  .chip.pick { min-width: 40px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font-size: 17px; font-weight: 900; cursor: pointer; }
+  .chip.pick.up { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); transform: translateY(-3px); }
+  .bins { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .bin { min-height: 74px; border: 1px dashed var(--qx-border-2); border-radius: 12px; background: var(--qx-surface-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; padding: 9px; }
+  .bin.armed { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .bin small { font-size: 9px; letter-spacing: .1em; font-weight: 900; color: var(--qx-text-faint); }
+  .bin-items { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .bin-items em { font-style: normal; font-weight: 900; font-size: 15px; color: var(--qx-green-text); }
+  .bin-items em.wrong { color: var(--qx-danger-text); text-decoration: line-through; }
+
+  .order-list { display: flex; flex-direction: column; gap: 6px; }
+  .order-row { display: flex; align-items: center; gap: 9px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 8px 10px; background: var(--qx-surface-2); font-size: 13px; font-weight: 700; }
+  .order-row span:first-child { flex: 1; }
+  .order-btns { display: flex; gap: 5px; }
+  .order-btns button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); cursor: pointer; font-weight: 900; }
+  .order-btns button:disabled { opacity: .3; cursor: default; }
+
+  .letters { display: flex; gap: 9px; flex-wrap: wrap; }
+  .letter-slot { position: relative; flex: 1 1 84px; }
+  .letter-slot .slot-hit { width: 100%; min-height: 66px; border: 1px dashed var(--qx-border-2); border-radius: 12px; background: var(--qx-surface-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; color: var(--qx-text); }
+  .letter-slot.armed .slot-hit { border-color: var(--qx-accent); }
+  .letter-slot.filled .slot-hit { border-style: solid; border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .letter-slot b { font: italic 800 22px/1 Georgia, serif; color: var(--qx-accent-text); }
+  .letter-slot span { font-size: 11px; font-weight: 800; color: var(--qx-text-dim); }
+  .clear { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text-dim); cursor: pointer; font-size: 12px; line-height: 1; }
+  .goals { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .goals li { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--qx-text-2); }
+  .goals li i { font-style: normal; color: var(--qx-text-faint); font-weight: 900; }
+  .goals li.met { color: var(--qx-green-text); }
+  .goals li.met i { color: var(--qx-green); }
+  .pair-row { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+  .pair-row b { min-width: 52px; font-size: 15px; color: var(--qx-accent-text); }
+  .pair-row i { font-style: normal; color: var(--qx-text-faint); }
+  .ok { font-size: 12px; line-height: 1.45; color: var(--qx-green-text); background: var(--qx-green-soft); border-radius: 9px; padding: 8px 11px; }
+
   .kind-note { font-size: 12.5px; color: var(--qx-text-dim); line-height: 1.5; }
   .kind-note b { color: var(--qx-text-dim); }
   .kind-note b.hit { color: var(--qx-green-text); }
