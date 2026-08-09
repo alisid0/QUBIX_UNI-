@@ -13,9 +13,37 @@
 // screen. That status does not yet exist in the declaration; see the pilot
 // proposal.
 
-export const selections = {};
-export const finalised = {};
-export const rejected = {};
+export const selections = {
+  'S1-A': '2026-08-09',
+  'S1-I1': '2026-08-09',
+  'S1-X1': '2026-08-09',
+  'S1-X2': '2026-08-09',
+  'S2-A': '2026-08-09',
+  'S2-I1': '2026-08-09',
+  'S2-X1': '2026-08-09',
+  'S2-X2': '2026-08-09',
+  'S3-A': '2026-08-09',
+  'S3-I1': '2026-08-09',
+  'S3-X1': '2026-08-09',
+  'S3-X2': '2026-08-09',
+  'S3-X3': '2026-08-09',
+  'S4-A': '2026-08-09',
+  'S4-I1': '2026-08-09',
+  'S4-X1': '2026-08-09',
+  'S4-X2': '2026-08-09',
+  'W1': '2026-08-09'
+};
+
+export const finalised = {
+  'S2-A': 'Taken on the founder\'s pattern: A was named for S1, S3 and S4 and S2 was left unstated. Reversible.'
+};
+
+export const rejected = {
+  'S1-B': 'Not selected; S1-A states the failure more directly.',
+  'S2-B': 'Not selected; S2-A names the axes and the origin in one pass.',
+  'S3-B': 'Not selected; S3-A gives the worked example (3, 4) against (4, 3).',
+  'S4-B': 'Not selected; S4-A states the sign rule for each direction separately.'
+};
 export const gated = 'Belongs to a proposed pilot that has not been approved, and uses an ORIGINAL source status the declaration does not yet have.';
 
 export const plane = {
