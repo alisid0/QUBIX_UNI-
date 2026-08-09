@@ -24,9 +24,35 @@ export const selections = {
   'S3-A': '2026-08-09',
   'S3-X1': '2026-08-09',
   'S3-X2': '2026-08-09',
-  'S3-X3': '2026-08-09'
+  'S3-X3': '2026-08-09',
+  // S3 keeps both new interactions; the founder wanted the how and the what.
+  'S3-I3': '2026-08-09',
+  'S3-I4': '2026-08-09',
+  // S4: all three checks kept. Interactions were rejected as repeats, so I3 and
+  // I4 were built to replace them and await a decision.
+  'S4-X1': '2026-08-09',
+  'S4-X2': '2026-08-09',
+  'S4-X3': '2026-08-09',
+  // S5: reading B, the rebuilt signed bar, all three checks.
+  'S5-B': '2026-08-09',
+  'S5-I2': '2026-08-09',
+  'S5-X1': '2026-08-09',
+  'S5-X2': '2026-08-09',
+  'S5-X3': '2026-08-09',
+  // Both workshops kept.
+  'W1': '2026-08-09',
+  'W2': '2026-08-09'
 };
-export const finalised = {};
+
+// Rejected outright, recorded so the record shows what was considered and
+// refused rather than merely unchosen.
+export const rejected = {
+  'S5-I1': 'Founder, 2026-08-09: not needed.'
+};
+
+export const finalised = {
+  'S4-A': 'AI-finalised: the founder settled S4\'s checks and interactions but not its reading. S4-A states the relation both ways round, which is what the new S4-I3 shows.'
+};
 
 export const bb2 = {
   id: 'CME-CHANGE-002',
@@ -150,7 +176,10 @@ export const bb2 = {
           note: 'The same Δ attached to a length, an area and a time, each with its own numbers. Answers "change in what", and shows the operation never varies while the quantity does.'
         },
         { code: 'S3-I1', kind: 'number-line', note: 'Retained but weak: the stage does not change at all in this section, so nothing on screen relates to what is being introduced.' },
-        { code: 'S3-I2', kind: 'glyph-card', note: 'Retained but weak: Δ on a card with its reading beneath. States the words and demonstrates nothing.' }
+        {
+          code: 'S3-I2', kind: 'delta-facts',
+          note: 'Rebuilt on founder note that the old card said almost nothing. Now states what Δ is not as firmly as what it is, since both misreadings, a number and a multiplier, are what the section exists to prevent.'
+        }
       ],
       exercises: [
         {
@@ -193,8 +222,16 @@ export const bb2 = {
         { code: 'S4-B', text: 'Now attach Δ to x. Δx is read "delta x" and means the change in x: Δx = new − old. Moving from 2 to 2.5 gives Δx = 0.5.' }
       ],
       interactions: [
-        { code: 'S4-I1', kind: 'number-line', note: 'The strip now reads Δx = new − old. As built.' },
-        { code: 'S4-I2', kind: 'two-bars', note: 'Old bar, new bar, and the difference bar labelled Δx, so the notation lands on a shape already established.' }
+        {
+          code: 'S4-I3', kind: 'delta-rearrange',
+          note: 'New. The same relation written both ways at once and both live: Δx = new − old, and new = old + Δx. That is exactly what the reading claims, shown rather than asserted.'
+        },
+        {
+          code: 'S4-I4', kind: 'delta-token',
+          note: 'New. Δx as one tile that refuses to be pulled apart, beside x which is its own tile. Attacks Δ times x by making the separation physically impossible rather than by denying it in words.'
+        },
+        { code: 'S4-I1', kind: 'number-line', note: 'Retained but repeated: this is S1, S2 and S3\'s stage again with a different strip.' },
+        { code: 'S4-I2', kind: 'two-bars', bars: 3, note: 'Retained but repeated: identical to S2-I2 except for the label.' }
       ],
       exercises: [
         {
@@ -232,8 +269,11 @@ export const bb2 = {
         { code: 'S5-B', text: 'Δx can also be negative. Move the new value below 2 and the subtraction turns the other way. The sign records the direction of the move, not only its size.' }
       ],
       interactions: [
-        { code: 'S5-I1', kind: 'number-line', note: 'The new point can sit either side of the old one. As built.' },
-        { code: 'S5-I2', kind: 'two-bars', note: 'The difference bar flips to the other side of the baseline when the move is negative.' }
+        {
+          code: 'S5-I2', kind: 'signed-bar',
+          note: 'Rebuilt to founder specification. Zero sits at the centre; the bar grows right in the accent colour for a positive change and left in red for a negative one, with the notation centred and recolouring with the sign. Direction becomes a place on the page rather than a minus sign to be noticed.'
+        },
+        { code: 'S5-I1', kind: 'number-line', note: 'Rejected by the founder, 2026-08-09. Kept only so the record shows it was considered.' }
       ],
       exercises: [
         { code: 'S5-X1', kind: 'set-control', prompt: 'Move the new value so that Δx becomes negative.', below: 2, from: 2.5 },

@@ -1,6 +1,7 @@
 <script>
   import { theme } from '../lib/stores/theme.js';
   import { registry, entryFor, sources } from '../factory/index.js';
+  $: rejected = entry.rejected || {};
 
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
 
@@ -146,6 +147,7 @@
   // Span explorer: the average rate from a to b works out to a + b, so many
   // different spans share one rate. hits records which pairs reached 5, which
   // is how the second goal knows a *different* pair was used.
+  let splitTried = false;
   let sp = { a: 1, b: 2, hits: [] };
   function spStep(which, delta) {
     const next = Number(Math.min(5, Math.max(0.5, sp[which] + delta * 0.5)).toFixed(1));
@@ -268,8 +270,8 @@
         <h3>Interaction <em>— drag the sliders, these are live</em></h3>
         <div class="variant-grid">
           {#each section.interactions as interaction}
-            <article class="variant" class:selected={selections[interaction.code]} class:finalised={finalised[interaction.code]}>
-              <span class="code">{interaction.code}{#if selections[interaction.code]} · SELECTED{:else if finalised[interaction.code]} · FINALISED{/if}</span>
+            <article class="variant" class:selected={selections[interaction.code]} class:finalised={finalised[interaction.code]} class:rejected={rejected[interaction.code]}>
+              <span class="code">{interaction.code}{#if selections[interaction.code]} · SELECTED{:else if finalised[interaction.code]} · FINALISED{:else if rejected[interaction.code]} · REJECTED{/if}</span>
               <div class="stage">
                 {#if interaction.kind === 'figures-letters'}
                   <div class="rows">
@@ -347,6 +349,53 @@
                       <b class="accent">{(values[si] - 2).toFixed(1).replace('-', '−')}</b>
                     </div>
                     <p class="stage-note">Δ is not a value. It is an instruction to take the new figure and subtract the old.</p>
+                  </div>
+
+                {:else if interaction.kind === 'delta-facts'}
+                  <div class="rows">
+                    <div class="facts-head"><span class="glyph-sm">Δ</span></div>
+                    <div class="fact no">✗<span>is not a number</span></div>
+                    <div class="fact no">✗<span>does not multiply</span></div>
+                    <div class="fact yes">✓<span>is a word, written short: the change in</span></div>
+                    <div class="fact yes">✓<span>marks a subtraction: new − old</span></div>
+                  </div>
+
+                {:else if interaction.kind === 'delta-rearrange'}
+                  <div class="rows">
+                    <div class="rearrange">
+                      <b>Δx</b><i>=</i><span>{fmt(values[si])} − 2.0</span><i>=</i><b class="accent">{(values[si] - 2).toFixed(1)}</b>
+                    </div>
+                    <div class="rearrange">
+                      <b>{fmt(values[si])}</b><i>=</i><span>2.0 + {(values[si] - 2).toFixed(1)}</span>
+                    </div>
+                    <p class="stage-note">One relation, written two ways. Subtract to find the change; add to find where you land.</p>
+                  </div>
+
+                {:else if interaction.kind === 'delta-token'}
+                  <div class="rows centre">
+                    <div class="tokens">
+                      <button class="token joined" on:click={() => splitTried = true}>Δx</button>
+                      <button class="token">x</button>
+                    </div>
+                    {#if splitTried}
+                      <p class="refusal">Δx will not come apart. Δ and x are read together as one name, so there is no Δ to multiply by.</p>
+                    {:else}
+                      <p class="stage-note">Try pulling Δx apart.</p>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'signed-bar'}
+                  <div class="rows centre">
+                    <div class="signed">
+                      <span class="axis-line"></span>
+                      <span class="zero-tick"></span>
+                      <span class="signed-fill" class:neg={values[si] < 2}
+                        style={`width:${Math.min(48, Math.abs(values[si] - 2) * 46)}%; ${values[si] < 2 ? 'right:50%' : 'left:50%'}`}></span>
+                    </div>
+                    <div class="signed-read" class:neg={values[si] < 2}>
+                      Δx = {fmt(values[si])} − 2.0 = {(values[si] - 2).toFixed(1).replace('-', '−')}
+                    </div>
+                    <p class="stage-note">Zero is the middle. A change to the left of it is negative.</p>
                   </div>
 
                 {:else if interaction.kind === 'delta-applied'}
@@ -1069,6 +1118,25 @@
 
   .variant.selected { border-color: var(--qx-green); background: var(--qx-green-soft); }
   .variant.selected .code { border-color: var(--qx-green); color: var(--qx-green-text); }
+  .variant.rejected { opacity: .55; }
+  .variant.rejected .code { border-color: var(--qx-danger); color: var(--qx-danger-text); }
+  .facts-head { display: flex; justify-content: center; margin-bottom: 4px; }
+  .fact { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 700; border: 1px solid var(--qx-border); border-radius: 9px; padding: 8px 11px; }
+  .fact.no { color: var(--qx-danger-text); background: var(--qx-danger-soft); border-color: var(--qx-danger); }
+  .fact.yes { color: var(--qx-green-text); background: var(--qx-green-soft); border-color: var(--qx-green); }
+  .rearrange { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 10px 12px; background: var(--qx-surface); }
+  .rearrange i { font-style: normal; color: var(--qx-text-faint); }
+  .rearrange b.accent { color: var(--qx-accent-text); }
+  .tokens { display: flex; gap: 12px; }
+  .token { min-width: 62px; height: 58px; border-radius: 13px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); font: italic 800 26px/1 Georgia, serif; cursor: pointer; }
+  .token.joined { letter-spacing: -1px; }
+  .signed { position: relative; width: 100%; max-width: 300px; height: 46px; }
+  .signed .axis-line { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--qx-text-dim); }
+  .signed .zero-tick { position: absolute; left: 50%; top: 8px; bottom: 8px; width: 2px; background: var(--qx-text-dim); }
+  .signed-fill { position: absolute; top: 50%; transform: translateY(-50%); height: 18px; border-radius: 4px; background: var(--qx-accent); transition: width .12s; }
+  .signed-fill.neg { background: var(--qx-danger); }
+  .signed-read { font-size: 16px; font-weight: 900; color: var(--qx-accent-text); }
+  .signed-read.neg { color: var(--qx-danger-text); }
   .variant.finalised { border-color: var(--qx-accent); border-style: dashed; }
   .variant.finalised .code { border-color: var(--qx-accent); border-style: dashed; }
   .why { font-size: 11.5px; line-height: 1.45; color: var(--qx-accent-text); border-top: 1px dashed var(--qx-border-2); padding-top: 7px; }

@@ -1,6 +1,6 @@
 import { sources } from './sources.js';
 import { bb1, selections as sel1, finalised as fin1 } from './bb1-options.js';
-import { bb2, selections as sel2, finalised as fin2 } from './bb2-options.js';
+import { bb2, selections as sel2, finalised as fin2, rejected as rej2 } from './bb2-options.js';
 import { bb3, selections as sel3, finalised as fin3 } from './bb3-options.js';
 import { bb4, selections as sel4, finalised as fin4 } from './bb4-options.js';
 import { bb5, selections as sel5, finalised as fin5 } from './bb5-options.js';
@@ -16,7 +16,7 @@ export { sources };
 // selection and finalisation maps so one BB's decisions never leak into another.
 export const registry = [
   { key: '1', label: 'BB1', bb: bb1, selections: sel1, finalised: fin1 },
-  { key: '2', label: 'BB2', bb: bb2, selections: sel2, finalised: fin2 },
+  { key: '2', label: 'BB2', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
   { key: '3', label: 'BB3', bb: bb3, selections: sel3, finalised: fin3 },
   { key: '4', label: 'BB4', bb: bb4, selections: sel4, finalised: fin4 },
   { key: '5', label: 'BB5', bb: bb5, selections: sel5, finalised: fin5 },
