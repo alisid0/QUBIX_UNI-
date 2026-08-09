@@ -7,7 +7,7 @@
   const slots = [['readings', 'reading'], ['interactions', 'interaction'], ['exercises', 'exercise']];
 
   // Interaction kinds that carry their own controls or are deliberately fixed.
-  const NO_CONTROL = ['unit-square', 'unit-square-fixed', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match'];
+  const NO_CONTROL = ['unit-square', 'unit-square-fixed', 'unit-scale', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match'];
 
   let active = new URLSearchParams(window.location.search).get('bb') || '1';
   $: entry = entryFor(active);
@@ -195,6 +195,7 @@
   }
 
   let unitRefused = false;
+  let unitSide = 1;
   let splitTried = false;
   let sp = { a: 1, b: 2, hits: [] };
   function spStep(which, delta) {
@@ -422,6 +423,26 @@
                     {:else}
                       <p class="stage-note">Try to make it bigger.</p>
                     {/if}
+                  </div>
+
+                {:else if interaction.kind === 'unit-scale'}
+                  {@const n = unitSide}
+                  <div class="rows centre">
+                    <div class="unit-fig">
+                      <span class="side-mark">{n}</span>
+                      <span class="unit-stack" style={`--n:${n}`}>
+                        {#each Array(n * n) as _}<i></i>{/each}
+                      </span>
+                      <span class="side-mark under">{n}</span>
+                    </div>
+                    <div class="stepper">
+                      <button aria-label="Shorter side" disabled={n <= 1} on:click={() => (unitSide = Math.max(1, n - 1))}>−</button>
+                      <span class="stepper-value">side {n}<em>{n * n} unit {n * n === 1 ? 'square' : 'squares'}</em></span>
+                      <button aria-label="Longer side" disabled={n >= 4} on:click={() => (unitSide = Math.min(4, n + 1))}>+</button>
+                    </div>
+                    <p class="stage-note">
+                      {n === 1 ? 'At a side of one this is the unit itself: the square everything else is counted in.' : `A side of ${n} holds ${n * n} of the unit square.`}
+                    </p>
                   </div>
 
                 {:else if interaction.kind === 'count-grid'}
@@ -824,8 +845,8 @@
         </div>
         <div class="variant-grid">
           {#each bb1.workshops as w}
-            <article class="variant">
-              <span class="code">{w.code}</span>
+            <article class="variant" class:selected={selections[w.code]} class:finalised={finalised[w.code]} class:rejected={rejected[w.code]}>
+              <span class="code">{w.code}{#if selections[w.code]} · SELECTED{:else if finalised[w.code]} · FINALISED{:else if rejected[w.code]} · REJECTED{/if}</span>
               <p class="prompt">{w.name}</p>
               <p class="reading-text">{w.blurb}</p>
 
@@ -1086,7 +1107,7 @@
           {/each}
         </ul>
       {:else}
-        <p>Every slot is filled. BB1 is ready to be written into its record.</p>
+        <p>Every slot is filled. {bb1.title} is ready to be written into its record.</p>
       {/if}
 
       <h2>Sending your selection</h2>
@@ -1317,6 +1338,8 @@
   .unit-sq { width: 62px; height: 62px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 3px; padding: 0; }
   .unit-sq.live { cursor: pointer; }
   .unit-sq.refused { border-style: dashed; }
+  .unit-stack { display: grid; grid-template-columns: repeat(var(--n), 30px); grid-template-rows: repeat(var(--n), 30px); gap: 2px; }
+  .unit-stack i { border: 1px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 2px; }
   .side-mark { font-size: 13px; font-weight: 900; color: var(--qx-accent-text); }
   .side-mark.under { grid-column: 2; }
 

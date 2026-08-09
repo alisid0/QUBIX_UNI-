@@ -16,12 +16,17 @@
 // something rather than hit a bug.
 
 export const selections = {
-  'S1-I1': '2026-08-09',
+  // S1-B rewritten in a plainer textbook register on founder note that S1-A read
+  // as AI prose. S1-I3 replaces the static square: the side steps 1 to 4.
+  'S1-B': '2026-08-09',
+  'S1-I3': '2026-08-09',
   'S1-X1': '2026-08-09',
   'S1-X2': '2026-08-09',
+  'S2-B': '2026-08-09',
   'S2-I1': '2026-08-09',
   'S2-X1': '2026-08-09',
   'S2-X2': '2026-08-09',
+  'S3-I1': '2026-08-09',
   // S3-B rewritten to founder dictation: count along the base, count up the
   // altitude, multiply the two.
   'S3-B': '2026-08-09',
@@ -37,7 +42,15 @@ export const selections = {
   'W1': '2026-08-09'
 };
 export const finalised = {};
-export const rejected = {};
+
+export const rejected = {
+  'S1-A': 'Founder, 2026-08-09: reads as AI prose rather than a textbook.',
+  'S1-I1': 'Founder, 2026-08-09: a square that cannot move at all. Replaced by I3.',
+  'S1-I2': 'Superseded by I3, which changes the side rather than refusing to.',
+  'S2-A': 'Not selected; S2-B carries the same idea without repeating S1\'s closing line.',
+  'S3-A': 'Not selected; S3-B was rewritten to founder dictation.',
+  'S4-B': 'Not selected; S4-A states the link back to y explicitly.'
+};
 export const gated = 'Belongs to a proposed pilot that has not been approved. See PILOT-PROPOSAL-FUNCTIONS-AND-COORDINATE-GEOMETRY.md.';
 
 export const area = {
@@ -52,19 +65,23 @@ export const area = {
       sources: ['G1', 'G2'],
       readings: [
         {
-          code: 'S1-A',
-          text: 'Before anything can be measured, there has to be something to measure with. For surfaces that something is a square, one unit long on every side. It is called the unit of surface, and everything from here is counted in these.'
+          code: 'S1-B',
+          text: 'A length is measured with a unit of length. A surface is measured with a unit of surface, which is a square whose side is one unit of length. The area of a surface is the number of units of surface it contains.'
         },
         {
-          code: 'S1-B',
-          text: 'A length is measured against a unit of length. A surface is measured against a unit of surface: a square whose side is one unit. The area of a surface is simply how many of these it contains.'
+          code: 'S1-A',
+          text: 'Before anything can be measured, there has to be something to measure with. For surfaces that something is a square, one unit long on every side. It is called the unit of surface, and everything from here is counted in these.'
         }
       ],
       interactions: [
         { code: 'S1-I1', kind: 'unit-square', note: 'One square, its sides marked 1, and nothing else on screen. It does not move, and it is not supposed to: a unit that could be any size would measure nothing. The whole board is counted in this shape.' },
         {
+          code: 'S1-I3', kind: 'unit-scale',
+          note: 'Founder direction: the side steps 1, 2, 3, 4 and the square fills with unit squares, so at a side of 1 the learner sees the unit itself and at 4 sees sixteen of them. Note that this shows 1, 4, 9, 16 in section 1, which is section 4\'s payoff arriving early. Seeing before naming may be the better order, but the surprise is spent here rather than there.'
+        },
+        {
           code: 'S1-I2', kind: 'unit-square-fixed',
-          note: 'The same square, but it invites you to resize it and then refuses, saying why. Founder asked why the square does not move; this makes the answer something felt rather than something asserted, using the refusal pattern already proven in BB3.'
+          note: 'The same square, but it invites you to resize it and then refuses, saying why. Superseded by I3, which lets the side change instead of refusing.'
         }
       ],
       exercises: [
@@ -104,7 +121,7 @@ export const area = {
         },
         {
           code: 'S2-B',
-          text: 'The area of a surface is the number of units of surface it contains. Nothing more is meant by the word. Drag the corner and watch the count rise as more squares fit inside.'
+          text: 'Drag the corner and the shape fills with unit squares. Count them, and that number is the area. Nothing has to be worked out; the squares are there to be counted.'
         }
       ],
       interactions: [
