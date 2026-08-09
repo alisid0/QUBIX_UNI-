@@ -21,7 +21,7 @@ export const bb3 = {
       sources: ['T2'],
       readings: [
         { code: 'S1-A', text: 'One letter was enough while there was one quantity to record. A square has two: the length of its side, and the area inside it. Call the side x and call the area y.' },
-        { code: 'S1-B', text: 'Thompson uses two letters when two quantities are in play. Let x be the side of this square. Let y be its area. Both are letters, and each represents a number.' }
+        { code: 'S1-B', text: 'Two quantities need two letters. Let x be the side of this square. Let y be its area. Both are letters, and each represents a number.' }
       ],
       interactions: [
         { code: 'S1-I1', kind: 'two-labels', note: 'One square, x labelling the edge and y labelling the interior. The two letters are visibly measuring different things.' },
@@ -79,7 +79,7 @@ export const bb3 = {
       sources: ['T2'],
       readings: [
         { code: 'S3-A', text: 'The one you choose is called the independent variable. The one that follows is called the dependent variable. Here x is independent and y depends on it.' },
-        { code: 'S3-B', text: 'Thompson writes that an alteration in one brings about an alteration in the other, because of this dependence. x is the independent variable. y is the dependent variable.' }
+        { code: 'S3-B', text: 'A change in one brings about a change in the other, because of this dependence. x is the independent variable. y is the dependent variable.' }
       ],
       interactions: [
         { code: 'S3-I1', kind: 'locked-pair', note: 'Same pair as S2, now labelled independent and dependent.' },
@@ -112,7 +112,7 @@ export const bb3 = {
       sources: ['T3', 'T4', 'T5'],
       readings: [
         { code: 'S4-A', text: 'Alter x and y alters too. From 2 to 2.5 the side gains 0.5, but the area goes from 4 to 6.25, a gain of 2.25. Δx = 0.5 and Δy = 2.25. The two changes are not the same size.' },
-        { code: 'S4-B', text: 'Thompson notes that the bit added to y will not, except by a miracle, be the same size as the bit added to x. Widen the side by 0.5 and the area gains 2.25.' }
+        { code: 'S4-B', text: 'There is no reason for the bit added to y to match the bit added to x, and it almost never does. Widen the side by 0.5 and the area gains 2.25.' }
       ],
       interactions: [
         { code: 'S4-I1', kind: 'two-squares', note: 'Old and new square side by side, y inside and x on the edge, with Δx and Δy below. As built.' },

@@ -21,8 +21,7 @@ export const bb11 = {
       readings: [
         {
           code: 'S1-A',
-          verbatim: 'T15',
-          text: 'Now observe how y changes when x is varied. If x is made to increase by a small increment dx, to the right, it will be observed that y also increases by a small increment dy. Then the ratio of dy to dx is a measure of the degree to which the curve is sloping up between the two points Q and T.'
+          text: 'Watch how y changes as x is varied. Increase x by a small amount dx, moving to the right, and y increases by a small amount dy. The ratio of dy to dx measures how steeply the curve rises between the two points.'
         },
         { code: 'S1-B', text: 'Move right along a curve by dx and you also move up by dy. How steep the climb feels is the comparison between the two: a large dy for a small dx is steep, and the reverse is gentle.' }
       ],
@@ -50,8 +49,7 @@ export const bb11 = {
       readings: [
         {
           code: 'S2-A',
-          verbatim: 'T16',
-          text: 'If, however, Q and T are so near each other that the small portion QT of the curve is practically straight, then it is true to say that the ratio dy/dx is the slope of the curve.'
+          text: 'Bring the two points so close together that the piece of curve between them is as good as straight, and it becomes true to say that dy/dx is the slope of the curve.'
         },
         { code: 'S2-B', text: 'A curve has no single steepness across a stretch, because it bends. Bring the two points together until the piece between them is as good as straight, and dy/dx is the slope right there.' }
       ],
@@ -129,8 +127,7 @@ export const bb12 = {
       readings: [
         {
           code: 'S1-A',
-          verbatim: 'T17',
-          text: 'One of the principal uses of the process of differentiating is to find out under what conditions the value of the thing differentiated becomes a maximum, or a minimum. This is often exceedingly important in engineering questions, where it is most desirable to know what conditions will make the cost of working a minimum, or will make the efficiency a maximum.'
+          text: 'One of the main uses of differentiating is to find the conditions under which a quantity reaches its largest or smallest value. That matters in engineering, where you often need to know which setting makes the running cost lowest, or the efficiency highest.'
         },
         { code: 'S1-B', text: 'Most practical questions are not "what is the value" but "what setting makes it best": cheapest to run, strongest for its weight, furthest for the fuel. Those ask for the highest or lowest point of a curve.' }
       ],
@@ -193,7 +190,7 @@ export const bb12 = {
       name: 'Solving for the turn',
       sources: ['T17'],
       readings: [
-        { code: 'S3-A', text: 'Thompson works y = x² − 4x + 7. Differentiating gives dy/dx = 2x − 4. Setting that to zero gives x = 2, and putting x = 2 back into the original gives y = 3. So the lowest point sits at (2, 3), found by algebra rather than by hunting along the curve.' },
+        { code: 'S3-A', text: 'Take y = x² − 4x + 7. Differentiating gives dy/dx = 2x − 4. Setting that to zero gives x = 2, and putting x = 2 back into the original gives y = 3. So the lowest point sits at (2, 3), found by algebra rather than by hunting along the curve.' },
         { code: 'S3-B', text: 'Differentiate, set the result to zero, solve for x. For y = x² − 4x + 7 that is 2x − 4 = 0, so x = 2. The method replaces guessing with a single equation.' }
       ],
       interactions: [

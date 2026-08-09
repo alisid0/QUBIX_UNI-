@@ -21,8 +21,7 @@ export const bb8 = {
       readings: [
         {
           code: 'S1-A',
-          verbatim: 'T10',
-          text: 'Some of the most important problems of the calculus are those where time is the independent variable, and we have to think about the values of some other quantity that varies when the time varies.'
+          text: 'Many of the most useful problems in calculus are ones where time is the independent variable, and some other quantity changes as the time runs on.'
         },
         { code: 'S1-B', text: 'Until now x has been a side length. It can equally be a time. Call it t, let the distance a train has travelled be s, and s depends on t exactly as area depended on side.' }
       ],
@@ -50,8 +49,7 @@ export const bb8 = {
       readings: [
         {
           code: 'S2-A',
-          verbatim: 'T12',
-          text: 'What do we mean by rate? … we are making a mental comparison of something that is happening, and the length of time that it takes to happen.'
+          text: 'What is a rate? It is a comparison between something that happens and the length of time it takes to happen.'
         },
         { code: 'S2-B', text: 'A rate compares something that happens with the time it takes to happen. Distance compared with time is a speed. Nothing new is being introduced: this is Δy/Δx with time underneath.' }
       ],
@@ -85,7 +83,7 @@ export const bb8 = {
       name: 'The same rate, different numbers',
       sources: ['T12'],
       readings: [
-        { code: 'S3-A', text: 'Thompson points out that 10 yards per second is the same rate as 600 yards per minute, or over 20 miles an hour. Ten yards is not 600 yards and a second is not a minute, yet the rate is unchanged, because the proportion between distance and time is unchanged.' },
+        { code: 'S3-A', text: '10 yards per second is the same rate as 600 yards per minute, or a little over 20 miles an hour. Ten yards is not 600 yards and a second is not a minute, yet the rate is unchanged, because the proportion between distance and time is unchanged.' },
         { code: 'S3-B', text: '10 yards per second and 600 yards per minute are the same speed written differently. The pair of numbers changes; the proportion between them does not.' }
       ],
       interactions: [

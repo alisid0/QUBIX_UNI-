@@ -22,10 +22,9 @@ export const bb9 = {
       readings: [
         {
           code: 'S1-A',
-          verbatim: 'T13',
-          text: 'Our next step is to find out what effect on the process of differentiating is caused by the presence of constants, that is, of numbers which don’t change when x or y change their values.'
+          text: 'The next question is what constants do to the process. A constant is a number that does not change when x or y change.'
         },
-        { code: 'S1-B', text: 'A constant is a number that stays put while x moves. Thompson met them in BB2 as the quantities of fixed value. The question now is what they do to a rate.' }
+        { code: 'S1-B', text: 'A constant is a number that stays put while x moves. You met them back in BB2 as the quantities of fixed value. The question now is what they do to a rate.' }
       ],
       interactions: [
         { code: 'S1-I1', kind: 'sorter', note: 'The chips from BB2 return: file each as fixed or able to vary. The distinction BB2 made is the one this BB needs.' },
@@ -126,8 +125,7 @@ export const bb10 = {
       readings: [
         {
           code: 'S1-A',
-          verbatim: 'T14',
-          text: 'We have now to consider how to tackle the sum of two or more functions. … The answer to this question is quite simple: just differentiate them, one after the other.'
+          text: 'What about the sum of two or more functions? The answer is simpler than it looks: differentiate them one after the other.'
         },
         { code: 'S1-B', text: 'An expression is often several pieces added together. Each piece grows at its own rate, and the growth of the whole is those growths added up. So differentiate the pieces one at a time.' }
       ],

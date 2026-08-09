@@ -23,7 +23,7 @@ export const bb4 = {
       name: 'Two changes, not one',
       sources: ['T3'],
       readings: [
-        { code: 'S1-A', text: 'Widen the side and two things change at once. The side gains Δx. The area gains Δy. Thompson notes that the bit added to y will not, except by a miracle, be the same size as the bit added to x.' },
+        { code: 'S1-A', text: 'Widen the side and two things change at once. The side gains Δx. The area gains Δy. There is no reason for the two to come out the same size, and they almost never do.' },
         { code: 'S1-B', text: 'A single move produces two changes: one in the side, one in the area. They are different sizes. Holding both at once is what this section is for.' }
       ],
       interactions: [

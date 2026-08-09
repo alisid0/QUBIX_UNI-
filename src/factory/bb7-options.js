@@ -79,8 +79,7 @@ export const bb7 = {
       readings: [
         {
           code: 'S3-A',
-          verbatim: 'T9',
-          text: 'We have arrived at the following rule: To differentiate xⁿ, multiply by the power and reduce the power by one, so giving us nxⁿ⁻¹ as the result.'
+          text: 'Here is the rule those three cases were pointing at. To differentiate xⁿ, multiply by the power and reduce the power by one. The result is nxⁿ⁻¹.'
         },
         { code: 'S3-B', text: 'The rule for any power: multiply by the power, then reduce the power by one. xⁿ becomes nxⁿ⁻¹. Everything derived so far is a case of it.' }
       ],
@@ -114,7 +113,7 @@ export const bb7 = {
       name: 'A case you have not derived',
       sources: ['T9'],
       readings: [
-        { code: 'S4-A', text: 'The test of a rule is a case you did not build it from. Thompson applies it to negative and fractional powers too: x⁻² gives −2x⁻³, and √x, written x^½, gives ½x^−½. The rule does not care that the power is not a whole number.' },
+        { code: 'S4-A', text: 'The test of a rule is a case you did not build it from. It applies to negative and fractional powers too: x⁻² gives −2x⁻³, and √x, written x^½, gives ½x^−½. The rule does not care that the power is not a whole number.' },
         { code: 'S4-B', text: 'The rule holds for powers that are negative or fractional, not only for counting numbers. That is what makes it worth having.' }
       ],
       interactions: [

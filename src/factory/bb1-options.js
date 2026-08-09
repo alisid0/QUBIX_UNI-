@@ -89,7 +89,7 @@ export const bb1 = {
         },
         {
           code: 'S2-C',
-          text: 'Wentworth calls a letter a general symbol of number. It is general because no particular value belongs to it until one is assigned. Assign 2 to x and write x = 2.'
+          text: 'A letter is a general symbol for a number. It is general because no particular value belongs to it until one is assigned. Assign 2 to x and write x = 2.'
         }
       ],
       interactions: [

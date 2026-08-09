@@ -24,8 +24,7 @@ export const bb6 = {
       readings: [
         {
           code: 'S1-A',
-          verbatim: 'T4',
-          text: 'd which merely means "a little bit of." Thus dx means a little bit of x; or du means a little bit of u.'
+          text: 'The letter d placed in front of a variable means a little bit of it. dx is a little bit of x. du is a little bit of u.'
         },
         { code: 'S1-B', text: 'The letter d in front of a variable means a little bit of that variable. dx is a little bit of x. It is not d multiplied by x, in the same way that Δx was never Δ multiplied by x.' }
       ],
@@ -86,8 +85,7 @@ export const bb6 = {
       readings: [
         {
           code: 'S3-A',
-          verbatim: 'T6',
-          text: 'Now right through the differential calculus we are hunting for a curious thing, a mere ratio, namely, the proportion which dy bears to dx when both of them are indefinitely small.'
+          text: 'The whole of the differential calculus is hunting one thing, and it is a ratio. Not dy, and not dx, but the proportion between them as both are made indefinitely small.'
         },
         { code: 'S3-B', text: 'What the calculus wants is not dy and not dx but the proportion between them, written dy/dx, as both are made indefinitely small. That proportion is the thing BB5 measured as 4.' }
       ],
@@ -121,7 +119,7 @@ export const bb6 = {
       name: 'The same derivation, in d',
       sources: ['T7', 'T8'],
       readings: [
-        { code: 'S4-A', text: 'y + dy = (x + dx)² = x² + 2x·dx + (dx)². Thompson discards (dx)² as a bit of a bit, too small to count. Subtracting y = x² leaves dy = 2x·dx, and dividing by dx gives dy/dx = 2x. At x = 2 that is 4, which is the number BB5 arrived at by dragging.' },
+        { code: 'S4-A', text: 'y + dy = (x + dx)² = x² + 2x·dx + (dx)². Discard (dx)² as a bit of a bit, too small to count. Subtracting y = x² leaves dy = 2x·dx, and dividing by dx gives dy/dx = 2x. At x = 2 that is 4, which is the number the last board arrived at by dragging.' },
         { code: 'S4-B', text: 'The working is the one already done with Δ. Square x + dx, throw away the corner term, subtract the original square, divide by the bit. What is left is dy/dx = 2x.' }
       ],
       interactions: [

@@ -72,7 +72,7 @@ export const bb5 = {
       name: 'Why it drifts by exactly that much',
       sources: ['T4'],
       readings: [
-        { code: 'S3-A', text: 'Thompson works out the square of x + dx as x² + 2x·dx + (dx)². Subtract the original x² and divide by dx, and the average rate is 2x + dx. At x = 2 that is 4 + the interval. The drift is not roughly the interval, it is the interval.' },
+        { code: 'S3-A', text: 'Square x + Δx and you get x² + 2x·Δx + (Δx)². Take away the original x², then divide by Δx. What is left is 2x + Δx. At x = 2 that is 4 plus the interval, so the drift is not roughly the interval. It is exactly the interval.' },
         { code: 'S3-B', text: 'The average rate here is 2x + dx. The first part depends only on where you are. The second part is the gap itself, which is why every widening pushes the rate up by the same amount you widened it.' }
       ],
       interactions: [
@@ -106,7 +106,7 @@ export const bb5 = {
       sources: ['T4'],
       readings: [
         { code: 'S4-A', text: 'Take the interval to nothing and only 2x survives. At x = 2 that is 4. This is the rate right at that point rather than across a stretch, and calculus calls it the derivative.' },
-        { code: 'S4-B', text: 'What is left when the interval goes is 2x. It depends on where you stand and on nothing else. That number is the derivative, and Thompson writes it dy/dx.' }
+        { code: 'S4-B', text: 'What is left when the interval goes is 2x. It depends on where you stand and on nothing else. That number is the derivative, and the next board gives it its usual notation.' }
       ],
       interactions: [
         { code: 'S4-I1', kind: 'curve-secant', note: 'Back at the smallest interval, with the line lying along the curve. The picture the section is about.' },

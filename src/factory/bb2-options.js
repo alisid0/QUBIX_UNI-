@@ -22,8 +22,7 @@ export const bb2 = {
       readings: [
         {
           code: 'S1-A',
-          verbatim: 'T1',
-          text: 'We classify all quantities into two classes: constants and variables. Those which we regard as of fixed value, and call constants … while those which we consider as capable of growing, or (as mathematicians say) of "varying," we denote by letters from the end of the alphabet.'
+          text: 'Quantities come in two kinds. Some hold a fixed value and are called constants. Others are able to grow or shrink, and those are called variables. x is a variable. Here it sits at 2. Move it and x takes a new value, while the symbol stays x.'
         },
         { code: 'S1-B', text: 'This is the same x you have just met. It starts at 2. Move it and x takes a new value, while the symbol stays x.' }
       ],
@@ -49,7 +48,7 @@ export const bb2 = {
       name: 'The change is its own quantity',
       sources: ['T3'],
       readings: [
-        { code: 'S2-A', text: 'Thompson describes the move as adding a bit to x. That bit is a quantity in its own right, and you find its size by subtracting: new − old. From 2 to 2.5 the bit is 0.5.' },
+        { code: 'S2-A', text: 'Think of the move as a bit added to x. That bit is a quantity in its own right, and you find its size by subtracting: new − old. From 2 to 2.5 the bit is 0.5.' },
         { code: 'S2-B', text: 'Between the old value and the new one there is a gap, and that gap has a size of its own: new − old. From 2 to 2.5, the gap is 0.5.' }
       ],
       interactions: [
@@ -74,7 +73,7 @@ export const bb2 = {
       name: 'Δ on its own',
       sources: [],
       readings: [
-        { code: 'S3-A', text: 'Thompson defuses a symbol by saying plainly what it means: d, he writes, "merely means a little bit of". Do the same for Δ. The Greek capital letter Δ, read "delta", is shorthand for the words "the change in". It is not a number, and it does not multiply.' },
+        { code: 'S3-A', text: 'A frightening symbol stops being frightening the moment someone says plainly what it means. So: the Greek capital letter Δ, read "delta", is shorthand for the words "the change in". It is not a number, and it does not multiply.' },
         { code: 'S3-B', text: 'That gap needs a name. Mathematicians write "the change in" using the Greek capital letter Δ, read "delta". On its own Δ is not a number, and it does not multiply. It is waiting for a variable to attach to.' }
       ],
       interactions: [
@@ -107,7 +106,7 @@ export const bb2 = {
       name: 'Δx',
       sources: ['T3'],
       readings: [
-        { code: 'S4-A', text: 'Attach Δ to x. Δx means the change in x, and you find it by subtracting: Δx = new − old. Thompson writes the same relation the other way round, causing x to become x + dx: the new value is the old value plus the change.' },
+        { code: 'S4-A', text: 'Attach Δ to x. Δx means the change in x, and you find it by subtracting: Δx = new − old. The same relation reads the other way round too: the new value is the old value plus the change, x + Δx.' },
         { code: 'S4-B', text: 'Now attach Δ to x. Δx is read "delta x" and means the change in x: Δx = new − old. Moving from 2 to 2.5 gives Δx = 0.5.' }
       ],
       interactions: [
@@ -140,7 +139,7 @@ export const bb2 = {
       name: 'A change has direction',
       sources: ['T3'],
       readings: [
-        { code: 'S5-A', text: 'Thompson notes that the bit may be in some cases positive, in others negative. Move the new value below 2 and the subtraction turns the other way. The sign records the direction of the move, not only its size.' },
+        { code: 'S5-A', text: 'The bit added to x can be positive in one case and negative in another. Move the new value below 2 and the subtraction turns the other way. The sign records the direction of the move, not only its size.' },
         { code: 'S5-B', text: 'Δx can also be negative. Move the new value below 2 and the subtraction turns the other way. The sign records the direction of the move, not only its size.' }
       ],
       interactions: [

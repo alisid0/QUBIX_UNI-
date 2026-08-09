@@ -201,7 +201,7 @@ export const boards = [
       marker: 'Rate of change',
       floors: [
         {
-          text: 'Widen the side and two things change at once. The side gains Δx. The area gains Δy. Thompson notes that the bit added to y will not, except by a miracle, be the same size as the bit added to x.',
+          text: 'Widen the side and two things change at once. The side gains Δx. The area gains Δy. There is no reason for the two to come out the same size, and they almost never do.',
           exercise: {
             kind: 'set-control',
             prompt: 'Widen the side until the area gain passes 3 cm².',
@@ -270,7 +270,7 @@ export const boards = [
           }
         },
         {
-          text: 'Thompson works out the square of x + dx as x² + 2x·dx + (dx)². Subtract the original x² and divide by dx, and the average rate is 2x + dx. At x = 2 that is 4 + the interval. The drift is not roughly the interval, it is the interval.',
+          text: 'Square x + Δx and you get x² + 2x·Δx + (Δx)². Take away the original x², then divide by Δx. What is left is 2x + Δx. At x = 2 that is 4 plus the interval, so the drift is not roughly the interval. It is exactly the interval.',
           exercise: {
             kind: 'choice',
             prompt: 'The average rate is 2x + Δx. At x = 2 with an interval of 0.1, what is it?',
