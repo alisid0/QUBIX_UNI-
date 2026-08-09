@@ -9,6 +9,17 @@
   // Interaction kinds that carry their own controls or are deliberately fixed.
   const NO_CONTROL = ['line-fails', 'axes-build', 'find-place', 'quadrants', 'diagonal-bench-stage', 'unit-square', 'unit-square-fixed', 'unit-scale', 'count-grid', 'sorter', 'glyph-card', 'delta-facts', 'delta-token', 'statement-match'];
 
+  // The kept sheet: the board as chosen, with everything unselected and rejected
+  // hidden. A last read before approval is asked for.
+  let keptOnly = new URLSearchParams(window.location.search).get('kept') === '1';
+  function setKept(on) {
+    keptOnly = on;
+    const url = new URL(window.location.href);
+    if (on) url.searchParams.set('kept', '1');
+    else url.searchParams.delete('kept');
+    history.replaceState({}, '', url);
+  }
+
   let active = new URLSearchParams(window.location.search).get('bb') || '1';
   $: entry = entryFor(active);
   $: bb1 = entry.bb;
@@ -286,6 +297,15 @@
   </header>
 
   <main class="factory-body">
+    <nav class="mode-switch" aria-label="Choose a view">
+      <button class:on={!keptOnly} on:click={() => setKept(false)}>
+        All variants<em>everything drafted, chosen or not</em>
+      </button>
+      <button class:on={keptOnly} on:click={() => setKept(true)}>
+        Kept sheet<em>the board as chosen, for a last read</em>
+      </button>
+    </nav>
+
     <nav class="bb-switch" aria-label="Choose a bite-sized board">
       {#each registry as item}
         <button class:on={item.key === active} on:click={() => show(item.key)}>
@@ -298,9 +318,15 @@
       <span class="micro">{bb1.id}</span>
       <h1>{bb1.title}</h1>
       <p class="lede">
-        Every variant below is a candidate. Touch the interactions, play the
-        exercises, then send me the codes you want kept. Nothing here is live in
-        the Viewer.
+        {#if keptOnly}
+          This is the board as chosen. Everything rejected or still undecided is
+          hidden. Read it through and touch the interactions as a learner would;
+          nothing here is live in the Viewer.
+        {:else}
+          Every variant below is a candidate. Touch the interactions, play the
+          exercises, then send me the codes you want kept. Nothing here is live in
+          the Viewer.
+        {/if}
       </p>
       {#if entry.gated}
         <p class="gate">Gated · {entry.gated} These are drafts for later selection. They must not reach a learner while the gate stands.</p>
@@ -330,7 +356,7 @@
 
         <h3>Reading</h3>
         <div class="variant-grid">
-          {#each section.readings as reading}
+          {#each (keptOnly ? section.readings.filter(r => selections[r.code] || finalised[r.code]) : section.readings) as reading}
             <article class="variant" class:selected={selections[reading.code]} class:finalised={finalised[reading.code]} class:rejected={rejected[reading.code]}>
               <span class="code">{reading.code}{#if selections[reading.code]} · SELECTED{:else if finalised[reading.code]} · FINALISED{:else if rejected[reading.code]} · REJECTED{/if}</span>
               <p class="reading-text" class:verbatim={reading.verbatim}>{reading.text}</p>
@@ -344,7 +370,7 @@
 
         <h3>Interaction <em>— drag the sliders, these are live</em></h3>
         <div class="variant-grid">
-          {#each section.interactions as interaction}
+          {#each (keptOnly ? section.interactions.filter(i => selections[i.code] || finalised[i.code]) : section.interactions) as interaction}
             <article class="variant" class:selected={selections[interaction.code]} class:finalised={finalised[interaction.code]} class:rejected={rejected[interaction.code]}>
               <span class="code">{interaction.code}{#if selections[interaction.code]} · SELECTED{:else if finalised[interaction.code]} · FINALISED{:else if rejected[interaction.code]} · REJECTED{/if}</span>
               <div class="stage">
@@ -798,7 +824,7 @@
 
         <h3>Exercise <em>— clickable, answers reveal</em></h3>
         <div class="variant-grid">
-          {#each section.exercises as ex}
+          {#each (keptOnly ? section.exercises.filter(e => selections[e.code] || finalised[e.code]) : section.exercises) as ex}
             <article class="variant" class:selected={selections[ex.code]} class:finalised={finalised[ex.code]}>
               <span class="code">{ex.code}{#if selections[ex.code]} · SELECTED{:else if finalised[ex.code]} · FINALISED{/if}</span>
               <p class="prompt">{ex.prompt}</p>
@@ -942,7 +968,7 @@
           <h2>Workshops <em>— larger than a check: several objects, a few goals</em></h2>
         </div>
         <div class="variant-grid">
-          {#each bb1.workshops as w}
+          {#each (keptOnly ? bb1.workshops.filter(w => selections[w.code] || finalised[w.code]) : bb1.workshops) as w}
             <article class="variant" class:selected={selections[w.code]} class:finalised={finalised[w.code]} class:rejected={rejected[w.code]}>
               <span class="code">{w.code}{#if selections[w.code]} · SELECTED{:else if finalised[w.code]} · FINALISED{:else if rejected[w.code]} · REJECTED{/if}</span>
               <p class="prompt">{w.name}</p>
@@ -1224,24 +1250,52 @@
     {/if}
 
     <section class="closing">
-      <h2>Still open</h2>
-      {#if outstanding.length}
-        <ul class="outstanding">
-          {#each outstanding as row}
-            <li><b>{row.code}</b> {row.name}<span>{row.missing.join(', ')}</span></li>
-          {/each}
-        </ul>
+      {#if keptOnly}
+        <h2>Ready to approve?</h2>
+        {#if outstanding.length}
+          <p class="warn">
+            Not yet. {outstanding.length} section{outstanding.length === 1 ? '' : 's'} still
+            {outstanding.length === 1 ? 'has' : 'have'} an empty slot, so this sheet is showing an
+            incomplete board. Switch back to all variants and fill them.
+          </p>
+          <ul class="outstanding">
+            {#each outstanding as row}
+              <li><b>{row.code}</b> {row.name}<span>{row.missing.join(', ')}</span></li>
+            {/each}
+          </ul>
+        {:else}
+          <p>
+            Every slot is filled. This is {bb1.title} as chosen, with nothing
+            rejected or undecided on screen. Read it through, and if it stands, say
+            so and I will write the approval into the record and the status page
+            with your name and today's date.
+          </p>
+          <p class="note">
+            Approval is a sentence to me, not a button here. This page cannot write
+            to the repository, which is deliberate: nothing should be able to change
+            curriculum status without passing through a person.
+          </p>
+        {/if}
       {:else}
-        <p>Every slot is filled. {bb1.title} is ready to be written into its record.</p>
-      {/if}
+        <h2>Still open</h2>
+        {#if outstanding.length}
+          <ul class="outstanding">
+            {#each outstanding as row}
+              <li><b>{row.code}</b> {row.name}<span>{row.missing.join(', ')}</span></li>
+            {/each}
+          </ul>
+        {:else}
+          <p>Every slot is filled. Switch to the kept sheet for a last read before approval.</p>
+        {/if}
 
-      <h2>Sending your selection</h2>
-      <p>
-        Reply with one reading, one interaction and one exercise per section, for
-        example <code>S1-A, S1-I1, S1-X2, S2-B, S2-I1, S2-X1 …</code>. Anything you
-        leave out I will choose and record as a finalised conclusion. Anything you
-        want reworded stays here rather than graduating to the record.
-      </p>
+        <h2>Sending your selection</h2>
+        <p>
+          Reply with one reading, one interaction and one exercise per section, for
+          example <code>S1-A, S1-I1, S1-X2, S2-B, S2-I1, S2-X1 …</code>. Anything you
+          leave out I will choose and record as a finalised conclusion. Anything you
+          want reworded stays here rather than graduating to the record.
+        </p>
+      {/if}
     </section>
   </main>
 </div>
@@ -1400,6 +1454,11 @@
 
   .gate { border: 1px dashed var(--qx-danger); border-radius: 11px; padding: 11px 13px; background: var(--qx-danger-soft); color: var(--qx-danger-text); font-size: 12.5px; line-height: 1.5; font-weight: 700; margin-top: 14px; }
   .mini-svg .train { fill: var(--qx-accent); }
+  .mode-switch { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .mode-switch button { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text-dim); border-radius: 12px; padding: 10px 15px; cursor: pointer; font-weight: 900; font-size: 13px; }
+  .mode-switch button em { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
+  .mode-switch button.on { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .warn { color: var(--qx-danger-text); background: var(--qx-danger-soft); border: 1px solid var(--qx-danger); border-radius: 11px; padding: 11px 13px; font-size: 13px; line-height: 1.55; font-weight: 700; margin-bottom: 12px; }
   .bb-switch { display: flex; gap: 8px; flex-wrap: wrap; }
   .bb-switch button { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); border-radius: 12px; padding: 9px 14px; cursor: pointer; font-weight: 900; font-size: 12px; }
   .bb-switch button em { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
