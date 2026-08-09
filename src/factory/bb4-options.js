@@ -15,6 +15,22 @@ export const finalised = {};
 export const bb4 = {
   id: 'CME-CHANGE-004',
   title: 'Average Rate of Change',
+
+  workshops: [
+    {
+      code: 'W1',
+      name: 'The span explorer',
+      kind: 'span-explorer',
+      blurb: 'Choose both ends of the move, not just one. The average rate over a span from a to b works out to a + b, which is worth discovering rather than being told.',
+      goals: [
+        { id: 'p1', text: 'Make the average rate exactly 5' },
+        { id: 'p2', text: 'Reach a rate of 5 again from a different pair' },
+        { id: 'p3', text: 'Bring both ends together and see what the division does' }
+      ],
+      note: 'The second goal is the discovery: many different spans share one rate, so a rate does not identify where you are. The third divides by zero on purpose, which is the question BB5 exists to answer.'
+    }
+  ],
+
   fork: 'Pieces separately: two changes, then the comparison, then the units.',
   structure: 'Three sections.',
   sections: [
@@ -40,7 +56,13 @@ export const bb4 = {
             { label: 'The area gain should equal 0.5 squared', feedback: '0.25 is only the small corner. Most of the gain is the two strips along the sides.' }
           ]
         },
-        { code: 'S1-X2', kind: 'set-control', prompt: 'Widen the side until the area gain passes 3 cm².', above: 2.7, from: 2.1 }
+        { code: 'S1-X2', kind: 'set-control', prompt: 'Widen the side until the area gain passes 3 cm².', above: 2.7, from: 2.1 },
+        {
+          code: 'S1-X3', kind: 'stepper',
+          prompt: 'Step the side until the area has gained more than 3 cm².',
+          target: 2.7, min: 2, max: 4, step: 0.1, start: 2.1, unit: 'cm', derive: 'delta-pair',
+          successNote: 'The side has gained well under 1 cm and the area more than 3 cm². Two changes from one move, and not the same size.'
+        }
       ]
     },
     {
@@ -64,6 +86,17 @@ export const bb4 = {
             { label: '1.125', feedback: 'That multiplies instead of dividing.' },
             { label: '2.75', feedback: 'That adds the two changes. The comparison is a division.' }
           ]
+        },
+        {
+          code: 'S2-X3', kind: 'order',
+          prompt: 'Put the steps of finding an average rate in order.',
+          items: [
+            'Choose two values of x',
+            'Work out Δx, the change in the side',
+            'Work out Δy, the change in the area',
+            'Divide Δy by Δx'
+          ],
+          successNote: 'The division comes last. Both changes have to exist before there is anything to compare.'
         },
         {
           code: 'S2-X2', kind: 'choice',
@@ -102,6 +135,18 @@ export const bb4 = {
           code: 'S3-X2', kind: 'set-control',
           prompt: 'Narrow the interval until the rate drops below 4.3.',
           below: 2.3, from: 2.9
+        },
+        {
+          code: 'S3-X3', kind: 'match',
+          prompt: 'Sort each of these into what it is.',
+          bins: ['A quantity', 'A rate'],
+          items: [
+            { label: '6.25 cm²', bin: 'A quantity' },
+            { label: '0.5 cm', bin: 'A quantity' },
+            { label: '4.5 cm² per cm', bin: 'A rate' },
+            { label: '2 metres per second', bin: 'A rate' }
+          ],
+          successNote: 'The word "per" is the tell. A rate always compares two things; a quantity is just itself.'
         }
       ]
     }

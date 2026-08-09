@@ -14,6 +14,22 @@ export const finalised = {};
 export const bb5 = {
   id: 'CME-CHANGE-005',
   title: 'Instantaneous Rate of Change',
+
+  workshops: [
+    {
+      code: 'W1',
+      name: 'The derivative dial',
+      kind: 'derivative-dial',
+      blurb: 'Move x and watch three numbers at once: where you are, the area there, and the rate right at that point.',
+      goals: [
+        { id: 'r1', text: 'Find where the rate is 6' },
+        { id: 'r2', text: 'Find where the rate is 1' },
+        { id: 'r3', text: 'Find where the rate and the area are the same number' }
+      ],
+      note: 'The third goal is the one to keep. At x = 2 the area and the rate are both 4, which looks like a rule and is a coincidence. Meeting it once stops a learner assuming the two are connected.'
+    }
+  ],
+
   fork: 'Together first, then driven apart. Founder reversal of 2026-08-09.',
   structure: 'Four sections.',
   sections: [
@@ -39,7 +55,18 @@ export const bb5 = {
             { label: 'Undefined', feedback: 'It would be undefined at a gap of exactly zero. Here the gap is small, not nothing.' }
           ]
         },
-        { code: 'S1-X2', kind: 'set-control', prompt: 'Bring the two points to the smallest interval available.', target: 0, tolerance: 0.4, from: 4 }
+        { code: 'S1-X2', kind: 'set-control', prompt: 'Bring the two points to the smallest interval available.', target: 0, tolerance: 0.4, from: 4 },
+        {
+          code: 'S1-X3', kind: 'match',
+          prompt: 'Put each interval with the average rate it produces.',
+          bins: ['4.001', '4.1', '5'],
+          items: [
+            { label: 'Δx = 0.001', bin: '4.001' },
+            { label: 'Δx = 0.1', bin: '4.1' },
+            { label: 'Δx = 1', bin: '5' }
+          ],
+          successNote: 'The rate is always 4 plus the interval. Once seen here, section 3 only has to explain why.'
+        }
       ]
     },
     {
@@ -64,7 +91,13 @@ export const bb5 = {
             { label: 'Stay at 4', feedback: 'Only the smallest interval is near 4. The rate changes as the gap opens.' }
           ]
         },
-        { code: 'S2-X2', kind: 'set-control', prompt: 'Open the interval until the average rate reaches 5.', above: 3.5, from: 0 }
+        { code: 'S2-X2', kind: 'set-control', prompt: 'Open the interval until the average rate reaches 5.', above: 3.5, from: 0 },
+        {
+          code: 'S2-X3', kind: 'stepper',
+          prompt: 'Step out through the intervals until the rate reaches 4.5.',
+          target: 3, min: 0, max: 4, step: 1, start: 0, unit: '', derive: 'interval-rate',
+          successNote: 'Each step out adds the width of the interval to the rate, and nothing else.'
+        }
       ]
     },
     {
@@ -88,6 +121,17 @@ export const bb5 = {
             { label: '4.0', feedback: 'That drops the interval term. It is only correct when the interval is nothing.' },
             { label: '2.1', feedback: '2x is 4 at x = 2, not 2.' }
           ]
+        },
+        {
+          code: 'S3-X3', kind: 'order',
+          prompt: 'Put the working in the order it is done.',
+          items: [
+            'Square x + Δx',
+            'Subtract the original x²',
+            'Divide what is left by Δx',
+            'Read off 2x + Δx'
+          ],
+          successNote: 'Four steps, and the interval only disappears at the end. Until then it is carried along.'
         },
         {
           code: 'S3-X2', kind: 'choice',
@@ -121,6 +165,18 @@ export const bb5 = {
             { label: '9', feedback: 'That is the area, x². The rate is 2x.' },
             { label: '4', feedback: '4 is the rate at x = 2. The rate depends on where you stand.' }
           ]
+        },
+        {
+          code: 'S4-X3', kind: 'match',
+          prompt: 'Put each position with the rate right at that point.',
+          bins: ['2', '4', '6', '10'],
+          items: [
+            { label: 'x = 1', bin: '2' },
+            { label: 'x = 2', bin: '4' },
+            { label: 'x = 3', bin: '6' },
+            { label: 'x = 5', bin: '10' }
+          ],
+          successNote: 'The rate is 2x, so it changes as you move. 4 was never the answer, only the answer at x = 2.'
         },
         {
           code: 'S4-X2', kind: 'choice',

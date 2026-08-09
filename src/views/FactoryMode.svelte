@@ -102,7 +102,7 @@
   // The three states are passed in rather than read from scope: Svelte tracks
   // dependencies at the call site, so reading them inside the body would leave
   // the goal list frozen.
-  function goalMet(kind, id, bench, cb, db, sb, dt) {
+  function goalMet(kind, id, bench, cb, db, sb, dt, sp, dd) {
     if (kind === 'assignment-bench') {
       const a = bench.assigned;
       if (id === 'g1') return a.x === 7;
@@ -129,7 +129,38 @@
       if (id === 't1') return Math.abs(dt.x - 4) < 0.001;
       if (id === 't2') return dt.refused;
     }
+    if (kind === 'span-explorer') {
+      if (id === 'p1') return sp.a !== sp.b && Math.abs(sp.a + sp.b - 5) < 0.001;
+      if (id === 'p2') return sp.hits.length > 1;
+      if (id === 'p3') return sp.a === sp.b;
+    }
+    if (kind === 'derivative-dial') {
+      const r = 2 * dd.x;
+      if (id === 'r1') return Math.abs(r - 6) < 0.001;
+      if (id === 'r2') return Math.abs(r - 1) < 0.001;
+      if (id === 'r3') return Math.abs(r - dd.x ** 2) < 0.001 && dd.x > 0;
+    }
     return false;
+  }
+
+  // Span explorer: the average rate from a to b works out to a + b, so many
+  // different spans share one rate. hits records which pairs reached 5, which
+  // is how the second goal knows a *different* pair was used.
+  let sp = { a: 1, b: 2, hits: [] };
+  function spStep(which, delta) {
+    const next = Number(Math.min(5, Math.max(0.5, sp[which] + delta * 0.5)).toFixed(1));
+    const s = { ...sp, [which]: next };
+    if (s.a !== s.b && Math.abs(s.a + s.b - 5) < 0.001) {
+      const key = [s.a, s.b].sort((m, n) => m - n).join('/');
+      if (!s.hits.includes(key)) s.hits = [...s.hits, key];
+    }
+    sp = s;
+  }
+  const spRate = s => (s.a === s.b ? null : Number((s.a + s.b).toFixed(2)));
+
+  let dd = { x: 1 };
+  function ddStep(delta) {
+    dd = { x: Number(Math.min(5, Math.max(0.5, dd.x + delta * 0.5)).toFixed(1)) };
   }
 
   // Square builder: a deliberately wider range than the lesson uses, so the
@@ -486,6 +517,10 @@
                     x = {stepValue(ex, stepped).toFixed(ex.step < 1 ? 1 : 0)}{ex.unit ? ' ' + ex.unit : ''}
                     {#if ex.derive === 'square'}
                       <em>y = {(stepValue(ex, stepped) ** 2).toFixed(2)}</em>
+                    {:else if ex.derive === 'delta-pair'}
+                      <em>Δx = {(stepValue(ex, stepped) - 2).toFixed(2)} · Δy = {(stepValue(ex, stepped) ** 2 - 4).toFixed(2)}</em>
+                    {:else if ex.derive === 'interval-rate'}
+                      <em>Δx = {[0.001, 0.01, 0.1, 0.5, 1][stepValue(ex, stepped)]} · rate {(4 + [0.001, 0.01, 0.1, 0.5, 1][stepValue(ex, stepped)]).toFixed(3)}</em>
                     {/if}
                   </span>
                   <button aria-label="Increase" on:click={() => stepBy(ex, 1)}>+</button>
@@ -589,8 +624,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -617,8 +652,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -644,8 +679,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -667,8 +702,8 @@
                     </div>
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -693,8 +728,67 @@
                     {/if}
                     <ul class="goals">
                       {#each w.goals as g}
-                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt)}>
-                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt) ? '✓' : '○'}</i>{g.text}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'span-explorer'}
+                  <div class="rows">
+                    <div class="bench-row">
+                      <small>FROM a</small>
+                      <button on:click={() => spStep('a', -1)} aria-label="Decrease a">−</button>
+                      <b>{sp.a.toFixed(1)}</b>
+                      <button on:click={() => spStep('a', 1)} aria-label="Increase a">+</button>
+                    </div>
+                    <div class="bench-row">
+                      <small>TO b</small>
+                      <button on:click={() => spStep('b', -1)} aria-label="Decrease b">−</button>
+                      <b>{sp.b.toFixed(1)}</b>
+                      <button on:click={() => spStep('b', 1)} aria-label="Increase b">+</button>
+                    </div>
+                    <div class="ratio">
+                      <div class="frac">
+                        <span><small>Δy</small><b>{sp.a === sp.b ? '0' : (sp.b ** 2 - sp.a ** 2).toFixed(2)}</b></span>
+                        <i></i>
+                        <span><small>Δx</small><b>{(sp.b - sp.a).toFixed(2)}</b></span>
+                      </div>
+                      <span class="eq">=</span>
+                      <div class="ratio-out">
+                        <b>{spRate(sp) === null ? 'undefined' : spRate(sp).toFixed(2)}</b>
+                        <small>{sp.a === sp.b ? 'both ends are the same point' : 'cm² per cm'}</small>
+                      </div>
+                    </div>
+                    {#if sp.hits.length}
+                      <p class="stage-note">Pairs reaching 5 so far: {sp.hits.join(', ')}</p>
+                    {/if}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'derivative-dial'}
+                  <div class="rows">
+                    <div class="bench-row">
+                      <small>x</small>
+                      <button on:click={() => ddStep(-1)} aria-label="Decrease x">−</button>
+                      <b>{dd.x.toFixed(1)}</b>
+                      <button on:click={() => ddStep(1)} aria-label="Increase x">+</button>
+                    </div>
+                    <div class="dial-out">
+                      <span><small>AREA x²</small><b>{(dd.x ** 2).toFixed(2)}</b></span>
+                      <span><small>RATE 2x</small><b class="accent">{(2 * dd.x).toFixed(2)}</b></span>
+                    </div>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd)}>
+                          <i>{goalMet(w.kind, g.id, bench, cb, db, sb, dt, sp, dd) ? '✓' : '○'}</i>{g.text}
                         </li>
                       {/each}
                     </ul>
@@ -862,6 +956,11 @@
   .bench-row b { flex: 1; text-align: center; font-size: 19px; }
   .bench-row.locked button { border-style: dashed; color: var(--qx-text-faint); }
   .bench-row.locked b { color: var(--qx-text-dim); }
+  .dial-out { display: flex; gap: 10px; }
+  .dial-out span { flex: 1; display: flex; flex-direction: column; gap: 3px; border: 1px solid var(--qx-border-2); border-radius: 11px; padding: 9px 12px; background: var(--qx-surface); }
+  .dial-out small { font-size: 8.5px; letter-spacing: .1em; font-weight: 900; color: var(--qx-text-faint); }
+  .dial-out b { font-size: 20px; }
+  .dial-out b.accent { color: var(--qx-accent-text); }
   .refusal { font-size: 12px; line-height: 1.5; color: var(--qx-danger-text); background: var(--qx-danger-soft); border-radius: 9px; padding: 9px 11px; font-weight: 700; }
   .stepper-value em { display: block; font-style: normal; font-size: 12px; font-weight: 800; color: var(--qx-text-dim); margin-top: 2px; }
   .build-line { display: flex; align-items: center; gap: 4px; }
