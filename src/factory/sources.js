@@ -159,6 +159,22 @@ export const sources = {
     ref: 'De Morgan, Elements of Arithmetic, Book I §I art. 3',
     quote: 'In this way a savage could keep an account of any numbers in which he was interested. He could thus register his children, his cattle, or the number of summers and winters which he had seen, by means of pebbles, or any other small objects which could be got in large numbers.'
   },
+  // Square root, and the discovery that some numbers have none. Art. 158 is the
+  // most dramatic passage in the book and it closes a loop the Area board opened
+  // on purpose: its tiling bench sets a goal that cannot be met because 24 has
+  // no whole square root.
+  SR1: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VII art. 156',
+    quote: 'We have already remarked, that a number multiplied by itself produces what is called the square of that number. Thus, 169, or 13 × 13, is the square of 13. Conversely, 13 is called the square root of 169, and 5 is the square root of 25; and any number is the square root of another, which when multiplied by itself will produce that other.'
+  },
+  SR2: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VII art. 158',
+    quote: 'It does not follow that a number has a square root because it has a square; thus, though 5 can be multiplied by itself, there is no number which multiplied by itself will produce 5. It is proved in algebra, that no fraction multiplied by itself can produce a whole number … therefore 5 has neither a whole nor a fractional square root; that is, it has no square root at all.'
+  },
+  SR3: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VII art. 158',
+    quote: 'Nevertheless, there are methods of finding fractions whose squares shall be as near to 5 as we please, though not exactly equal to it.'
+  },
   // Multiplication as a shortcut for addition, which is the honest way to meet
   // it and is what P-09 needs.
   M1: {

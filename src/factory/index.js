@@ -19,6 +19,7 @@ import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gate
 import { decimal, selections as selDec, finalised as finDec, rejected as rejDec, gated as gateDec } from './decimal-options.js';
 import { number, selections as selNum, finalised as finNum, rejected as rejNum, gated as gateNum } from './number-options.js';
 import { numberLine, selections as selLine, finalised as finLine, rejected as rejLine, gated as gateLine } from './line-options.js';
+import { root, selections as selRoot, finalised as finRoot, rejected as rejRoot, gated as gateRoot } from './root-options.js';
 
 export { sources };
 
@@ -47,6 +48,7 @@ export const registry = [
   { key: 'number', unit: 'foundations', label: 'Number', bb: number, selections: selNum, finalised: finNum, rejected: rejNum, gated: gateNum },
   { key: 'line', unit: 'foundations', label: 'Number Line', bb: numberLine, selections: selLine, finalised: finLine, rejected: rejLine, gated: gateLine },
   { key: 'decimal', unit: 'foundations', label: 'Decimals', bb: decimal, selections: selDec, finalised: finDec, rejected: rejDec, gated: gateDec },
+  { key: 'root', unit: 'foundations', label: 'Roots', bb: root, selections: selRoot, finalised: finRoot, rejected: rejRoot, gated: gateRoot },
   { key: 'letter', unit: 'variables', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1, rejected: rej1 },
   { key: 'gap', unit: 'variables', label: 'Gap', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
   { key: 'second', unit: 'variables', label: 'Second Letter', bb: bb3, selections: sel3, finalised: fin3, rejected: rej3 },

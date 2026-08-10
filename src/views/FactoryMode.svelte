@@ -39,6 +39,7 @@
     'zoom-line', 'jug-fill', 'split-bar', 'place-columns', 'compare-two',
     'pair-up', 'pair-mismatch', 'tally-basket', 'same-count', 'pebble-to-figure', 'figure-row',
     'lay-units', 'unit-line', 'walk-line', 'line-runs-out', 'extend-left', 'both-ways',
+    'root-both-ways', 'square-grid', 'root-search', 'root-approx', 'root-on-line', 'diagonal-square',
     'table-plot-step', 'table-plot-predict', 'table-plot-sprint', 'table-rule-switch',
     'table-points', 'table-points-order', 'point-target-drill', 'point-target-shuffle',
     'curve-from-points', 'curve-rule-compare', 'curve-plot-drill', 'curve-point-check',
@@ -107,6 +108,29 @@
   let sub = { b: 4 };                       // substitute-strip
   let plate = 0;                            // rule-swap: which plate is loaded
   let mach = { x: 3 };                      // machine-single, two-machines
+  // Foundations: roots.
+  let rootN = 3;                            // root-both-ways, square-grid
+  let searchTo = 2;                         // root-search
+  let places = 2;                           // root-approx
+  // Root bench. Goal k4 is unreachable on purpose; 5 has no exact root.
+  let rootBench = { target: 36, guess: 6, hits: [] };
+  function rootTry() {
+    const sq = Number((rootBench.guess * rootBench.guess).toFixed(6));
+    rootBench = { ...rootBench, hits: [...rootBench.hits, { t: rootBench.target, g: rootBench.guess, sq, off: Math.abs(sq - rootBench.target) }] };
+  }
+  function rootGoal(id, s) {
+    const exact = s.hits.filter(h => h.off === 0);
+    if (id === 'k1') return exact.some(h => h.t === 36);
+    // Was "a target between 30 and 40", which is impossible: 36 is the only
+    // perfect square in that range and the goal excluded it. Third accidental
+    // unreachable goal caught by driving a bench rather than reading it.
+    if (id === 'k2') return exact.some(h => h.t !== 36);
+    if (id === 'k3') return s.hits.some(h => h.t === 5 && h.off <= 0.01);
+    // k4 asks for an exact root of 5. There is none.
+    if (id === 'k4') return false;
+    return false;
+  }
+
   // Foundations: the number line.
   let laid = 0;                             // lay-units
   let walkAt = 2;                           // walk-line, line-runs-out, extend-left, unit-line
@@ -1135,6 +1159,90 @@
                       <div class="square" style={`width:${squareSize(values[si])}px;height:${squareSize(values[si])}px`}></div>
                       <span class="edge-label" style={`width:${squareSize(values[si])}px`}>x</span>
                     </div>
+                  </div>
+
+                {:else if interaction.kind === 'root-both-ways'}
+                  <div class="rows centre">
+                    <div class="both-arrows">
+                      <span class="node"><small>number</small><b>{rootN}</b></span>
+                      <span class="arrows"><em>squared →</em><em>← root of</em></span>
+                      <span class="node"><small>its square</small><b>{rootN * rootN}</b></span>
+                    </div>
+                    <div class="pm">
+                      <button on:click={() => (rootN = Math.max(1, rootN - 1))} aria-label="Smaller">−</button>
+                      <button on:click={() => (rootN = Math.min(15, rootN + 1))} aria-label="Larger">+</button>
+                    </div>
+                    <p class="stage-note">{rootN} × {rootN} = {rootN * rootN}, so the square root of {rootN * rootN} is {rootN}.</p>
+                  </div>
+
+                {:else if interaction.kind === 'square-grid'}
+                  <div class="rows">
+                    <div class="grid" style={`--w:${rootN}`}>{#each Array(rootN * rootN) as _}<i></i>{/each}</div>
+                    <div class="row"><small>SIDE</small>
+                      <button on:click={() => (rootN = Math.max(1, rootN - 1))} aria-label="Shorter side">−</button>
+                      <b>{rootN}</b>
+                      <button on:click={() => (rootN = Math.min(8, rootN + 1))} aria-label="Longer side">+</button>
+                    </div>
+                    <div class="big"><b>{rootN * rootN}</b><small>counters in the square</small></div>
+                  </div>
+
+                {:else if interaction.kind === 'root-search'}
+                  <div class="rows">
+                    <table class="io-table">
+                      <thead><tr><th>guess</th><th>squared</th><th>against 5</th></tr></thead>
+                      <tbody>
+                        {#each Array(searchTo) as _, i}
+                          {@const g = i + 1}
+                          <tr><td>{g}</td><td><b>{g * g}</b></td>
+                            <td>{g * g < 5 ? 'under' : g * g > 5 ? 'over' : 'exact'}</td></tr>
+                        {/each}
+                      </tbody>
+                    </table>
+                    <button class="chip" on:click={() => (searchTo = Math.min(6, searchTo + 1))} disabled={searchTo >= 6}>try the next whole number</button>
+                    <p class="stage-note">
+                      {searchTo < 3 ? 'Keep going.' : 'Two is under and three is over, and there is no whole number between them. The whole numbers step straight over 5.'}
+                    </p>
+                  </div>
+
+                {:else if interaction.kind === 'root-approx'}
+                  {@const guesses = [2.2, 2.23, 2.236, 2.2360, 2.23606].slice(0, places)}
+                  <div class="rows">
+                    <table class="io-table">
+                      <thead><tr><th>guess</th><th>squared</th><th>short of 5 by</th></tr></thead>
+                      <tbody>
+                        {#each guesses as g}
+                          <tr><td>{g}</td><td>{(g * g).toFixed(6)}</td><td><b>{(5 - g * g).toFixed(6)}</b></td></tr>
+                        {/each}
+                      </tbody>
+                    </table>
+                    <button class="chip" on:click={() => (places = Math.min(5, places + 1))} disabled={places >= 5}>add another decimal place</button>
+                    <p class="stage-note">The last column shrinks every time and never reaches nought.</p>
+                  </div>
+
+                {:else if interaction.kind === 'root-on-line' || interaction.kind === 'diagonal-square'}
+                  {@const target = interaction.kind === 'diagonal-square' ? Math.SQRT2 : Math.sqrt(5)}
+                  {@const lo = interaction.kind === 'diagonal-square' ? 1 : 2}
+                  <div class="rows">
+                    {#if interaction.kind === 'diagonal-square'}
+                      <svg class="ladder" viewBox="0 0 210 120" role="img" aria-label="A unit square with its diagonal swung down onto the line">
+                        <rect class="wall" x="20" y="20" width="50" height="50"/>
+                        <line class="rung" x1="20" y1="70" x2="70" y2="20"/>
+                        <path class="hmark" d="M70 20 A 70.7 70.7 0 0 1 90.7 70" fill="none"/>
+                        <line class="floor" x1="10" y1="70" x2="200" y2="70"/>
+                        <circle class="foot" cx="90.7" cy="70" r="3.5"/>
+                        <text class="htext" x="86" y="86">√2</text>
+                      </svg>
+                    {/if}
+                    <div class="numline walk">
+                      {#each Array(11) as _, i}
+                        {@const v = lo + i / 10}
+                        <span class="tick" class:whole={i % 5 === 0}><i></i><small>{i % 5 === 0 ? v.toFixed(1) : ''}</small></span>
+                      {/each}
+                      <em class="mk a" style={`left:${(target - lo) * 100}%`}>here</em>
+                    </div>
+                    <p class="stage-note">
+                      Between {target.toFixed(3).slice(0, 5)} and {(Math.floor(target * 1000 + 1) / 1000).toFixed(3)}, at one position, and no fraction names it.
+                    </p>
                   </div>
 
                 {:else if interaction.kind === 'lay-units' || interaction.kind === 'unit-line'
@@ -2238,6 +2346,37 @@
                     </ul>
                   </div>
 
+                {:else if w.kind === 'root-bench'}
+                  <div class="rows">
+                    <div class="row"><small>TARGET</small>
+                      <button on:click={() => rootBench = { ...rootBench, target: Math.max(1, rootBench.target - 1) }} aria-label="Lower target">−</button>
+                      <b>{rootBench.target}</b>
+                      <button on:click={() => rootBench = { ...rootBench, target: rootBench.target + 1 }} aria-label="Raise target">+</button>
+                    </div>
+                    <div class="row"><small>GUESS</small>
+                      <button on:click={() => rootBench = { ...rootBench, guess: Number(Math.max(0, rootBench.guess - 0.001).toFixed(3)) }} aria-label="Lower guess">−</button>
+                      <b>{rootBench.guess}</b>
+                      <button on:click={() => rootBench = { ...rootBench, guess: Number((rootBench.guess + 0.001).toFixed(3)) }} aria-label="Raise guess">+</button>
+                    </div>
+                    <label class="range-row"><span>0</span>
+                      <input type="range" min="0" max="10" step="0.001" value={rootBench.guess}
+                        on:input={e => rootBench = { ...rootBench, guess: Number(e.target.value) }} aria-label="Guess"/>
+                      <span>10</span></label>
+                    <button class="chip" on:click={rootTry}>square it and compare</button>
+                    {#if rootBench.hits.length}
+                      <p class="stage-note">
+                        {rootBench.hits.slice(-3).map(h => `${h.g}² = ${h.sq}, off ${h.t} by ${h.off.toFixed(6)}`).join('   ')}
+                      </p>
+                    {/if}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={rootGoal(g.id, rootBench)}>
+                          <i>{rootGoal(g.id, rootBench) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
                 {:else if w.kind === 'walk-bench'}
                   <div class="rows">
                     <div class="numline walk">
@@ -2722,6 +2861,14 @@
   .accept-strip b { color: var(--qx-text-faint); }
   .accept-strip.ok { border-style: solid; border-color: var(--qx-green); }
   .accept-strip.ok b { color: var(--qx-green-text); }
+
+  /* Foundations: roots. */
+  .both-arrows { display: flex; align-items: center; gap: 13px; }
+  .both-arrows .node { display: flex; flex-direction: column; align-items: center; gap: 3px; border: 1px solid var(--qx-border-2); border-radius: 11px; padding: 9px 15px; }
+  .both-arrows .node small { font-size: 9px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
+  .both-arrows .node b { font-size: 25px; color: var(--qx-accent-text); }
+  .both-arrows .arrows { display: flex; flex-direction: column; gap: 3px; }
+  .both-arrows .arrows em { font-style: normal; font-size: 10px; font-weight: 800; color: var(--qx-text-faint); }
 
   /* Foundations: the number line. */
   .numline.walk { padding-top: 26px; }
