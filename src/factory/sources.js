@@ -102,6 +102,31 @@ export const sources = {
     ref: 'Wentworth, Plane Geometry, Book IV, Scholium, scan 196',
     quote: 'When the base and altitude each contain the linear unit an integral number of times, this proposition is rendered evident by dividing the figure into squares, each equal to the unit of surface. Thus, if the base contains seven linear units, and the altitude four, the figure may be divided into twenty-eight squares, each equal to the unit of surface.'
   },
+  // De Morgan, Elements of Arithmetic, 1858, Gutenberg 68662. The shelf has
+  // always listed this book with the role "prerequisite repair BBs" and nobody
+  // had opened it. Citations give the article number, which is how the book
+  // numbers itself; Book I section VI, Decimal Fractions, begins at printed
+  // page 65.
+  //
+  // Note on notation. De Morgan writes a decimal with a leading point and no
+  // zero, ·7 rather than 0.7, which was ordinary in 1858 and is not now. Boards
+  // built from him must write 0.7 and record the change as a modernisation.
+  D1: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 135, printed page 65',
+    quote: 'Decimal fractions are not usually written at full length. It is more convenient to write the numerator only, and to cut off from the numerator as many figures as there are ciphers in the denominator, when that is possible, by a point. … Thus, ·7 will be used in future to denote 7/10, ·07 for 7/100, and so on.'
+  },
+  D2: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 133, printed page 65',
+    quote: 'The figures on the left of the point by themselves make the whole number which the fraction contains.'
+  },
+  D3: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 136, printed page 66',
+    quote: 'The ciphers on the right hand of the decimal point serve the same purpose as the ciphers in (10). They are not counted as any thing themselves, but serve to shew the place in which the accompanying numbers stand. … Thus, ·0003747 is a decimal of seven places with four significant figures, ·346 is a decimal of three places with three significant figures.'
+  },
+  D4: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 137, printed page 66',
+    quote: 'The value of a decimal is not altered by putting any number of ciphers at the right hand of it.'
+  },
   // Functions. Three sources at three levels: Wentworth for the procedure,
   // Thompson for the name and the notation, Hardy for the precise property.
   // Added 2026-08-09, all read in the transcriptions rather than recalled.

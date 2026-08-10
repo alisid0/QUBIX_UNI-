@@ -16,6 +16,7 @@ import { lineSlope, selections as selLineSlope, finalised as finLineSlope, rejec
 import { func0, selections as selF0, finalised as finF0, rejected as rejF0, gated as gateF0 } from './func0-options.js';
 import { func1, selections as selF1, finalised as finF1, rejected as rejF1, gated as gateF1 } from './func1-options.js';
 import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gated as gateF2 } from './func2-options.js';
+import { decimal, selections as selDec, finalised as finDec, rejected as rejDec, gated as gateDec } from './decimal-options.js';
 
 export { sources };
 
@@ -39,6 +40,9 @@ export { sources };
 // and approved on its own. What the unit says is that they may not be reordered
 // or split up, and that a learner meets them in this order or not at all.
 export const registry = [
+  // Foundations. Repairs of prerequisites the course has assumed since its first
+  // board and has never taught. Not a new topic; a hole the map already records.
+  { key: 'decimal', unit: 'foundations', label: 'Decimals', bb: decimal, selections: selDec, finalised: finDec, rejected: rejDec, gated: gateDec },
   { key: 'letter', unit: 'variables', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1, rejected: rej1 },
   { key: 'gap', unit: 'variables', label: 'Gap', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },
   { key: 'second', unit: 'variables', label: 'Second Letter', bb: bb3, selections: sel3, finalised: fin3, rejected: rej3 },
@@ -64,6 +68,7 @@ export const registry = [
 ];
 
 export const UNITS = [
+  { key: 'foundations', name: 'Foundations', blurb: 'Prerequisites the course assumes and has never taught.' },
   { key: 'variables', name: 'Variables', blurb: 'What a letter is, and what changing one means.' },
   { key: 'functions', name: 'Functions', blurb: 'One sequence. The switch earns the machine, and the machine earns the rule.' },
   { key: 'geometry', name: 'Coordinate geometry', blurb: 'Counting a surface, then finding a place on one.' },

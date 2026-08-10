@@ -35,6 +35,8 @@
     'relation-guess',
     'notation-builder', 'notation-card', 'two-answers', 'square-back', 'function-or-not', 'verdict-strip',
     'accepted-line', 'accepted-list',
+    // Foundations. Each carries its own line, bar or columns.
+    'zoom-line', 'jug-fill', 'split-bar', 'place-columns', 'compare-two',
     'table-plot-step', 'table-plot-predict', 'table-plot-sprint', 'table-rule-switch',
     'table-points', 'table-points-order', 'point-target-drill', 'point-target-shuffle',
     'curve-from-points', 'curve-rule-compare', 'curve-plot-drill', 'curve-point-check',
@@ -103,6 +105,29 @@
   let sub = { b: 4 };                       // substitute-strip
   let plate = 0;                            // rule-swap: which plate is loaded
   let mach = { x: 3 };                      // machine-single, two-machines
+  // Foundations: decimals.
+  let zoomed = false;                       // zoom-line
+  let jug = 2.4;                            // jug-fill
+  let shaded = 3;                           // split-bar
+  let digitCol = 1;                         // place-columns
+  let cmpA = 0.35, cmpB = 0.5;              // compare-two
+  // `marks`, not `placed`: that name already belongs to the match exercises.
+  let mark = 0.4, marks = [];               // measure-bench
+  function placeMark(v) {
+    mark = v;
+    if (!marks.some(p => Math.abs(p - v) < 0.001)) marks = [...marks, v];
+  }
+  // State passed in, not read from scope, for the reason in the note above.
+  function measureGoal(id, list) {
+    const near = t => list.some(v => Math.abs(v - t) < 0.005);
+    if (id === 'd1') return near(0.4);
+    if (id === 'd2') return list.some(v => v > 0.4005 && v < 0.4995);
+    // Two ways to write one half: any two distinct placements that are both 0.5.
+    if (id === 'd3') return near(0.5);
+    if (id === 'd4') return list.some(v => v > 0.3505 && v < 0.3995);
+    return false;
+  }
+
   let lad = { d: 3 };                       // relation-test: foot of the ladder
   let guessed = {};                         // relation-guess: which readouts are revealed
   let nota = 0;                             // notation-builder: F, f or phi
@@ -1050,6 +1075,83 @@
                     </div>
                   </div>
 
+                {:else if interaction.kind === 'zoom-line'}
+                  <div class="rows">
+                    <div class="numline" class:open={zoomed}>
+                      {#each (zoomed ? Array.from({ length: 11 }, (_, i) => 2 + i / 10) : [0, 1, 2, 3, 4]) as v}
+                        <span class="tick" class:whole={Number.isInteger(v)}>
+                          <i></i><small>{zoomed ? v.toFixed(1) : v}</small>
+                        </span>
+                      {/each}
+                    </div>
+                    <button class="chip" on:click={() => (zoomed = !zoomed)}>
+                      {zoomed ? 'zoom back out' : 'look between 2 and 3'}
+                    </button>
+                    <p class="stage-note">
+                      {zoomed
+                        ? 'Ten marks, and none of them was added. The first drawing was too coarse to show them.'
+                        : 'Whole marks only. Nothing appears to lie between them.'}
+                    </p>
+                  </div>
+
+                {:else if interaction.kind === 'jug-fill'}
+                  <div class="rows centre">
+                    <div class="jug"><i style={`height:${(jug / 3) * 100}%`}></i>
+                      {#each [1, 2, 3] as m}<span class="jug-mark" style={`bottom:${(m / 3) * 100}%`}><small>{m}</small></span>{/each}
+                    </div>
+                    <label class="range-row">
+                      <span>empty</span>
+                      <input type="range" min="0" max="3" step="0.1" bind:value={jug} aria-label="Litres in the jug"/>
+                      <span>3 L</span>
+                    </label>
+                    <p class="stage-note">{jug.toFixed(1)} litres{Number.isInteger(jug) ? '' : ', which is not a whole number of litres'}</p>
+                  </div>
+
+                {:else if interaction.kind === 'split-bar'}
+                  <div class="rows">
+                    <div class="unit-bar">
+                      {#each Array(10) as _, i}
+                        <button class="seg" class:on={i < shaded} on:click={() => (shaded = i + 1 === shaded ? i : i + 1)}
+                          aria-label={`Shade ${i + 1} tenths`}></button>
+                      {/each}
+                    </div>
+                    <div class="big"><b>{(shaded / 10).toFixed(1)}</b><small>= {shaded}/10, {shaded === 1 ? 'one tenth' : shaded + ' tenths'}</small></div>
+                    <p class="stage-note">One whole, cut into ten. Tap to shade.</p>
+                  </div>
+
+                {:else if interaction.kind === 'place-columns'}
+                  <div class="rows">
+                    <div class="cols">
+                      {#each ['wholes', 'tenths', 'hundredths'] as name, i}
+                        <button class="col" class:here={digitCol === i} on:click={() => (digitCol = i)}>
+                          <small>{name}</small>
+                          <b>{digitCol === i ? '7' : '0'}</b>
+                        </button>
+                      {/each}
+                    </div>
+                    <div class="big">
+                      <b>{['7', '0.7', '0.07'][digitCol]}</b>
+                      <small>seven {['wholes', 'tenths', 'hundredths'][digitCol]}</small>
+                    </div>
+                    <p class="stage-note">The digit never changes. Only where it stands.</p>
+                  </div>
+
+                {:else if interaction.kind === 'compare-two'}
+                  <div class="rows">
+                    <div class="numline compare">
+                      {#each [0, 0.25, 0.5, 0.75, 1] as v}<span class="tick whole"><i></i><small>{v}</small></span>{/each}
+                      <em class="mk a" style={`left:${cmpA * 100}%`}>{cmpA.toFixed(2)}</em>
+                      <em class="mk b" style={`left:${cmpB * 100}%`}>{cmpB.toFixed(2)}</em>
+                    </div>
+                    <label class="range-row"><span>A</span>
+                      <input type="range" min="0" max="1" step="0.01" bind:value={cmpA} aria-label="First number"/></label>
+                    <label class="range-row"><span>B</span>
+                      <input type="range" min="0" max="1" step="0.01" bind:value={cmpB} aria-label="Second number"/></label>
+                    <p class="stage-note">
+                      {cmpA === cmpB ? 'Both in the same place.' : `${(cmpA > cmpB ? cmpA : cmpB).toFixed(2)} is further along, so it is the larger.`}
+                    </p>
+                  </div>
+
                 {:else if interaction.kind === 'switch-toggle' || interaction.kind === 'switch-plain'}
                   <div class="rows centre">
                     <div class="lamp" class:lit={sw.up}>{sw.up ? 'ON' : 'OFF'}</div>
@@ -1938,6 +2040,30 @@
                     </ul>
                   </div>
 
+                {:else if w.kind === 'measure-bench'}
+                  <div class="rows">
+                    <div class="numline compare">
+                      {#each [0, 0.25, 0.5, 0.75, 1] as v}<span class="tick whole"><i></i><small>{v}</small></span>{/each}
+                      <em class="mk a" style={`left:${mark * 100}%`}>{mark.toFixed(2)}</em>
+                    </div>
+                    <label class="range-row">
+                      <span>0</span>
+                      <input type="range" min="0" max="1" step="0.01" value={mark}
+                        on:input={e => placeMark(Number(e.target.value))} aria-label="Place the marker"/>
+                      <span>1</span>
+                    </label>
+                    {#if marks.length}
+                      <p class="stage-note">Placed: {marks.map(v => v.toFixed(2)).join('  ')}</p>
+                    {/if}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={measureGoal(g.id, marks)}>
+                          <i>{measureGoal(g.id, marks) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
                 {:else if w.kind === 'repair-bench'}
                   <div class="rows">
                     {#each w.machines as m, mi}
@@ -2349,6 +2475,32 @@
   .accept-strip b { color: var(--qx-text-faint); }
   .accept-strip.ok { border-style: solid; border-color: var(--qx-green); }
   .accept-strip.ok b { color: var(--qx-green-text); }
+
+  /* Foundations: decimals. */
+  .numline { position: relative; display: flex; justify-content: space-between; align-items: flex-end; padding: 18px 6px 4px; border-bottom: 2px solid var(--qx-text-dim); }
+  .numline .tick { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .numline .tick i { width: 1px; height: 8px; background: var(--qx-border-2); }
+  .numline .tick.whole i { width: 2px; height: 14px; background: var(--qx-text-dim); }
+  .numline .tick small { font-size: 9.5px; color: var(--qx-text-faint); font-weight: 700; }
+  .numline .tick.whole small { color: var(--qx-text-2); font-weight: 800; }
+  .numline.compare { padding-top: 34px; }
+  .numline .mk { position: absolute; top: 4px; transform: translateX(-50%); font-style: normal; font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 5px; }
+  .numline .mk.a { background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .numline .mk.b { background: var(--qx-green-soft); color: var(--qx-green-text); top: 20px; }
+  .jug { position: relative; width: 78px; height: 130px; border: 2px solid var(--qx-text-dim); border-top: 0; border-radius: 0 0 12px 12px; display: flex; align-items: flex-end; }
+  .jug i { display: block; width: 100%; background: var(--qx-accent-soft); border-top: 2px solid var(--qx-accent); }
+  .jug-mark { position: absolute; left: 100%; transform: translateY(50%); padding-left: 5px; }
+  .jug-mark small { font-size: 9.5px; color: var(--qx-text-faint); font-weight: 800; }
+  .unit-bar { display: flex; border: 2px solid var(--qx-accent); border-radius: 8px; overflow: hidden; }
+  .unit-bar .seg { flex: 1; height: 40px; border: 0; border-right: 1px solid var(--qx-accent); background: transparent; cursor: pointer; padding: 0; }
+  .unit-bar .seg:last-child { border-right: 0; }
+  .unit-bar .seg.on { background: var(--qx-accent); }
+  .cols { display: flex; gap: 7px; }
+  .cols .col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 9px 6px; background: transparent; cursor: pointer; }
+  .cols .col small { font-size: 9px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
+  .cols .col b { font-size: 24px; color: var(--qx-text-faint); }
+  .cols .col.here { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .cols .col.here b { color: var(--qx-accent-text); }
 
   /* What a Button Does. */
   .lamp { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 900; letter-spacing: .08em; border: 2px solid var(--qx-border-2); color: var(--qx-text-faint); transition: background .12s, color .12s, border-color .12s; }
