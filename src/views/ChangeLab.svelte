@@ -172,6 +172,15 @@
     }
   }
 
+  function chooseBoard(event) {
+    const next = Number(event.currentTarget.value);
+    if (!Number.isInteger(next) || next < 0 || next >= boards.length) return;
+    boardIndex = next;
+    floorIndex = 0;
+    exerciseOpen = false;
+    finished = false;
+  }
+
   function chooseOption(option) {
     if (stepCleared) return;
     picked = option.label;
@@ -310,7 +319,7 @@
 
 <div class="qx-shell lab-view" on:pointerdown={handlePointerDown} on:pointerup={handlePointerUp}>
   <header class="lab-header">
-    <button class="course-mark" aria-label="Back to the home page" on:click={() => view.set('home')}>01</button>
+    <button class="topics-button" aria-label="Back to topic selection" on:click={() => view.set('home')}><span aria-hidden="true">←</span> Topics</button>
     <div class="brand-lockup">
       <span class="brand">QUBIX UNIVERSITY</span>
       <span class="lab-name">Variables and rates of change</span>
@@ -336,9 +345,15 @@
       <button class="primary wide" on:click={restart}>Begin again</button>
     </main>
   {:else}
-    <section class="progress-wrap" aria-label={`Section ${boardIndex + 1} of ${boards.length}`}>
+    <section class="progress-wrap" aria-label={`Topic ${boardIndex + 1} of ${boards.length}`}>
+      <label class="topic-selector">
+        <span>SELECT TOPIC</span>
+        <select aria-label="Select a topic" value={boardIndex} on:change={chooseBoard}>
+          {#each boards as topic, index}<option value={index}>{index + 1}. {topic.title}</option>{/each}
+        </select>
+      </label>
       <div class="progress-copy">
-        <span>Section {boardIndex + 1} of {boards.length}</span>
+        <span>Topic {boardIndex + 1} of {boards.length} · section {floorIndex + 1} of {board.floors.length}</span>
         <span>{Math.round(((boardIndex + floorIndex / board.floors.length) / boards.length) * 100)}%</span>
       </div>
       <div class="segments">
@@ -656,7 +671,8 @@
 
         <div class="board-actions">
           <button class="secondary" on:click={retreat} disabled={boardIndex === 0 && floorIndex === 0 && !exerciseOpen} aria-label="Previous step">
-            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            <span>Back</span>
           </button>
           <button class="primary" on:click={advance} disabled={exerciseOpen && !stepCleared}>
             {#if exerciseOpen}
@@ -668,7 +684,7 @@
             {:else if boardIndex === boards.length - 1}
               Finish
             {:else}
-              Next section
+              Next topic
             {/if}
             <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
           </button>
@@ -686,14 +702,17 @@
   }
   button, input { font: inherit; }
   button { -webkit-tap-highlight-color: transparent; }
-  .lab-header { display: grid; grid-template-columns: 42px 1fr 42px; align-items: center; min-height: 46px; }
+  .lab-header { display: grid; grid-template-columns: auto 1fr 42px; gap: 10px; align-items: center; min-height: 46px; }
   .brand-lockup { display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .brand { color: var(--qx-accent); font-size: 11px; font-weight: 900; letter-spacing: .17em; }
   .lab-name { color: var(--qx-text-dim); font-size: 12px; font-weight: 700; }
-  .course-mark { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-accent-text); display: grid; place-items: center; font-size: 11px; font-weight: 900; letter-spacing: .04em; }
+  .topics-button { min-height: 40px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-accent-text); display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 900; cursor: pointer; }
   .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-text); display: grid; place-items: center; cursor: pointer; }
   .icon-btn svg, .board-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
   .progress-wrap { padding: 2px 4px; }
+  .topic-selector { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; margin-bottom: 10px; }
+  .topic-selector span { color: var(--qx-accent-text); font-size: 9px; letter-spacing: .12em; font-weight: 900; }
+  .topic-selector select { width: 100%; min-height: 40px; border: 1px solid var(--qx-border-2); border-radius: 11px; background: var(--qx-surface); color: var(--qx-text); padding: 0 34px 0 11px; font-size: 12px; font-weight: 800; cursor: pointer; }
   .progress-copy { display: flex; justify-content: space-between; color: var(--qx-text-dim); font-size: 11px; font-weight: 800; margin-bottom: 7px; }
   .segments { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
   .segments span { height: 4px; border-radius: 9px; background: var(--qx-surface-3); transition: background .2s, transform .2s; }
@@ -809,11 +828,11 @@
   .floor-dots span.active { background: var(--qx-accent); transform: scale(1.22); }
   .floor-copy p { color: var(--qx-text-2); font-size: 17px; line-height: 1.53; font-weight: 550; }
   .floor-copy p.recessed { font-size: 14px; line-height: 1.5; color: var(--qx-text-dim); padding-bottom: 3px; border-bottom: 1px solid var(--qx-border); margin-bottom: 3px; }
-  .board-actions { margin-top: auto; display: grid; grid-template-columns: 48px 1fr; gap: 9px; }
+  .board-actions { margin-top: auto; display: grid; grid-template-columns: minmax(104px, .42fr) 1fr; gap: 9px; }
   .primary, .secondary { border: 0; cursor: pointer; font-weight: 900; }
   .primary { min-height: 48px; border-radius: 14px; background: var(--qx-accent); color: #fffaf2; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 18px; }
   .primary svg { width: 18px; }
-  .secondary { border-radius: 14px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); display: grid; place-items: center; }
+  .secondary { min-height: 48px; border-radius: 14px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); display: flex; align-items: center; justify-content: center; gap: 6px; }
   .secondary:disabled { opacity: .32; cursor: default; }
   .wide { width: 100%; }
   .swipe-note { text-align: center; color: var(--qx-text-faint); font-size: 10px; font-weight: 700; padding-bottom: 2px; }

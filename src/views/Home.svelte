@@ -18,6 +18,11 @@
     progress.reset();
     view.set('lesson');
   }
+
+  function openBoard(index) {
+    progress.setPosition(index, 0);
+    view.set('lesson');
+  }
 </script>
 
 <div class="home-shell">
@@ -64,9 +69,13 @@
       {/if}
     </section>
 
-    <section class="board-list" aria-label="Boards">
+    <div class="board-list-head">
+      <span>CHOOSE A TOPIC</span>
+      <small>Open any topic directly</small>
+    </div>
+    <section class="board-list" aria-label="Choose a topic">
       {#each $summary.perBoard as b, i}
-        <div class="board-row" class:current={i === $summary.boardIndex} class:done={b.complete}>
+        <button class="board-row" class:current={i === $summary.boardIndex} class:done={b.complete} on:click={() => openBoard(i)} aria-label={`Open topic ${i + 1}: ${b.title}`}>
           <span class="num">{String(i + 1).padStart(2, '0')}</span>
           <span class="names">
             <b>{b.title}</b>
@@ -77,7 +86,8 @@
               <i class:on={f < b.done}></i>
             {/each}
           </span>
-        </div>
+          <span class="open-arrow" aria-hidden="true">→</span>
+        </button>
       {/each}
     </section>
 
@@ -112,7 +122,11 @@
   .quiet { border: 0; background: none; color: var(--qx-text-faint); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px; }
 
   .board-list { display: flex; flex-direction: column; gap: 7px; }
-  .board-row { display: flex; align-items: center; gap: 12px; border: 1px solid var(--qx-border); border-radius: 13px; padding: 11px 13px; background: var(--qx-surface); }
+  .board-list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: -12px; }
+  .board-list-head span { color: var(--qx-accent-text); font-size: 10px; letter-spacing: .14em; font-weight: 900; }
+  .board-list-head small { color: var(--qx-text-faint); font-size: 10px; }
+  .board-row { width: 100%; display: flex; align-items: center; gap: 12px; border: 1px solid var(--qx-border); border-radius: 13px; padding: 11px 13px; background: var(--qx-surface); color: var(--qx-text); text-align: left; cursor: pointer; font: inherit; }
+  .board-row:hover, .board-row:focus-visible { border-color: var(--qx-accent); background: var(--qx-accent-soft); outline: none; }
   .board-row.current { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
   .board-row.done .num { color: var(--qx-green-text); }
   .num { font-size: 11px; font-weight: 900; letter-spacing: .06em; color: var(--qx-text-faint); }
@@ -122,6 +136,7 @@
   .dots { display: flex; gap: 4px; }
   .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--qx-surface-3); display: block; }
   .dots i.on { background: var(--qx-green); }
+  .open-arrow { color: var(--qx-accent-text); font-size: 18px; font-weight: 900; }
 
   .draft-note { color: var(--qx-text-faint); font-size: 11.5px; line-height: 1.55; border-top: 1px solid var(--qx-border); padding-top: 14px; }
 </style>
