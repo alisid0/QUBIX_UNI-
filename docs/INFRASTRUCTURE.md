@@ -19,10 +19,29 @@ bundle, and refuses to deploy if the checkout is linked to another Vercel projec
 ### Earlier Vercel incident
 
 On 2026-08-10 the Vercel project stopped completing deployments. Eight in a row
-hung at status `UNKNOWN` with no logs and no error. That included prebuilt
-deployments, which have no build step that could fail, and a deployment to a
-newly created project, which had no configuration that could be wrong. The cause
-was never established from the CLI.
+hung at status `UNKNOWN` with no logs. That included prebuilt deployments, which
+have no build step that could fail, and a deployment to a newly created project,
+which had no configuration that could be wrong.
+
+**The cause was probably this machine's network path to Vercel, not Vercel.** One
+CLI invocation eventually returned, long after it had been abandoned, carrying
+the only concrete error of the evening:
+
+```
+"status": "error", "reason": "deploy_failed", "message": "fetch failed"
+```
+
+`fetch failed` is a connection-level failure in Node: the CLI could create a
+deployment through the API but could not complete the upload or build handshake.
+Every other symptom fits that, including the 180-byte upload on the first
+attempt. GitHub Pages published from the same machine without trouble, so the
+network is not broadly broken, and the likeliest explanation is egress
+restriction on the specific endpoint the Vercel CLI uploads to.
+
+This matters for anyone deciding where to host later: **Vercel was not shown to
+be at fault, and would very likely deploy normally from a different machine or
+network.** The move to GitHub Pages was the right call under the constraint of
+the evening; it is not a verdict on the platform.
 
 Two real faults were found and fixed along the way, and both are worth knowing
 because they were invisible from the command line:
