@@ -11,6 +11,8 @@ import { bb9, bb10, selections as sel9, finalised as fin9, gated as gate9 } from
 import { bb11, bb12, selections as sel11, finalised as fin11, gated as gate11 } from './bb11-options.js';
 import { area, selections as selA, finalised as finA, rejected as rejA, gated as gateA } from './area-options.js';
 import { plane, selections as selP, finalised as finP, rejected as rejP, gated as gateP } from './plane-options.js';
+import { plot, selections as selPlot, finalised as finPlot, rejected as rejPlot, gated as gatePlot } from './plot-options.js';
+import { lineSlope, selections as selLineSlope, finalised as finLineSlope, rejected as rejLineSlope, gated as gateLineSlope } from './line-slope-options.js';
 import { func0, selections as selF0, finalised as finF0, rejected as rejF0, gated as gateF0 } from './func0-options.js';
 import { func1, selections as selF1, finalised as finF1, rejected as rejF1, gated as gateF1 } from './func1-options.js';
 import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gated as gateF2 } from './func2-options.js';
@@ -46,6 +48,8 @@ export const registry = [
   { key: 'oneanswer', unit: 'functions', label: 'One Answer', bb: func2, selections: selF2, finalised: finF2, rejected: rejF2, gated: gateF2 },
   { key: 'area', unit: 'geometry', label: 'Area', bb: area, selections: selA, finalised: finA, rejected: rejA, gated: gateA },
   { key: 'plane', unit: 'geometry', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP },
+  { key: 'plot', unit: 'geometry', label: 'Plot', bb: plot, selections: selPlot, finalised: finPlot, rejected: rejPlot, gated: gatePlot },
+  { key: 'line-slope', unit: 'geometry', label: 'Line slope', bb: lineSlope, selections: selLineSlope, finalised: finLineSlope, rejected: rejLineSlope, gated: gateLineSlope },
   // The differential calculus. The pilot proposal moves these out of the first
   // course and makes them the opening of the next one.
   { key: 'rate', unit: 'rates', label: 'Rate', bb: bb4, selections: sel4, finalised: fin4 },

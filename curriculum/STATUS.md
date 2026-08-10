@@ -30,6 +30,19 @@ Named, not numbered, since 2026-08-09. `key` is the Factory URL.
 | Where a Curve Turns | `turning` | none | AI_DRAFT, gated | Curriculum gate |
 | Area on the Grid | `area` | written | AI_DRAFT, gated | Pilot proposal |
 | The Coordinate Plane | `plane` | none | AI_DRAFT, gated | Pilot proposal |
+| Plotting a Rule as a Curve | `plot` | source matrix in Factory | AI_DRAFT, gated | Founder selection |
+| The Slope of a Line | `line-slope` | source matrix in Factory | AI_DRAFT, gated | Founder selection |
+
+**Draft addition, 2026-08-10.** On founder instruction, the two missing graphing
+bridges were added to the Factory so variants can be tested and selected. Their
+selection maps are empty, their kept sheets therefore remain incomplete, and the
+build generator excludes them from the learner course. This records drafting
+authority only; neither board is `APPROVED` or `RELEASED`.
+
+**Plot practice expansion, 2026-08-10.** The `plot` Factory board now carries
+four interaction and four exercise candidates in every section. S2 and S3 add
+direct point-placement rounds so coordinate plotting can be rehearsed repeatedly.
+All additions remain unselected `AI_DRAFT` material behind the same gate.
 
 **Correction, 2026-08-09.** This file previously said the second to fifth boards
 were "locked until" the board before them was decided. That had not been true for

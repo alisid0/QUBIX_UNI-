@@ -35,6 +35,11 @@
     'relation-guess',
     'notation-builder', 'notation-card', 'two-answers', 'square-back', 'function-or-not', 'verdict-strip',
     'accepted-line', 'accepted-list',
+    'table-plot-step', 'table-plot-predict', 'table-plot-sprint', 'table-rule-switch',
+    'table-points', 'table-points-order', 'point-target-drill', 'point-target-shuffle',
+    'curve-from-points', 'curve-rule-compare', 'curve-plot-drill', 'curve-point-check',
+    'rise-run-line', 'rise-run-ghost',
+    'slope-ratio', 'slope-triangles', 'slope-sign', 'slope-target',
     'switch-toggle', 'switch-plain', 'tap-valve', 'tap-piston', 'machine-panel', 'machine-labels',
     'forked-button', 'flaky-button'];
 
@@ -105,6 +110,48 @@
   let verdicts = {};                        // function-or-not, verdict-strip
   let testedRules = {};                     // which rules have been run
   let accept = { x: 4 };                    // accepted-line
+
+  // ---- Plotting and straight-line slope --------------------------------
+  // These states power the two bridge boards added for founder selection on
+  // 2026-08-10. Their controls are intentionally shared across variants so the
+  // founder can compare representations at the same mathematical state.
+  const GRAPH_X = [-3, -2, -1, 0, 1, 2, 3];
+  const GRAPH_RULES = {
+    'square it': v => v * v,
+    'double it': v => v * 2,
+    'add three': v => v + 3
+  };
+  let graph = { count: 1, rule: 'square it', guess: null };
+  const graphY = (x, state = graph) => GRAPH_RULES[state.rule](x);
+  const graphOrder = kind => kind === 'table-points-order' ? [2, -1, 3, 0, -2, 1, -3] : GRAPH_X;
+  const graphPoint = (x, y) => ({ x: 150 + x * 32, y: 124 - y * 13 });
+  const PLOT_DRILLS = {
+    'point-target-drill': [[-2, 4], [1, 1], [0, 0], [2, 4], [-1, 1]],
+    'point-target-shuffle': [[3, 2], [-1, 5], [2, 7], [-3, 1], [0, 6]],
+    'curve-plot-drill': [[-2, 4], [0, 0], [2, 4], [-1, 1], [1, 1]],
+    'curve-point-check': [[2, 5], [-2, 1], [3, 6], [-3, 0], [0, 3]]
+  };
+  let plotDrill = { kind: '', step: 0, hits: [], misses: 0 };
+  const drillState = (kind, state) => state.kind === kind ? state : { kind, step: 0, hits: [], misses: 0 };
+  function tryPlot(kind, x, y) {
+    const state = drillState(kind, plotDrill);
+    const target = PLOT_DRILLS[kind][state.step];
+    if (!target) return;
+    plotDrill = target[0] === x && target[1] === y
+      ? { ...state, step: state.step + 1, hits: [...state.hits, target] }
+      : { ...state, misses: state.misses + 1 };
+  }
+
+  let line = { run: 3, rise: 2, previousRise: 2, target: 1 };
+  const slopeValue = state => state.run === 0 ? null : state.rise / state.run;
+  function changeLine(which, delta) {
+    const limits = which === 'run' ? [1, 5] : [-4, 4];
+    line = {
+      ...line,
+      previousRise: line.rise,
+      [which]: Math.max(limits[0], Math.min(limits[1], line[which] + delta))
+    };
+  }
 
   const NOTATION = ['F', 'f', 'φ'];
   // The ladder is 5 units long, so the height it reaches falls as the foot goes
@@ -517,6 +564,21 @@
         <div><b>Fork</b><span>{bb1.fork}</span></div>
         <div><b>Structure</b><span>{bb1.structure}</span></div>
       </div>
+      {#if !keptOnly && bb1.sourceMatrix?.length}
+        <section class="source-matrix" aria-label="Source remix matrix">
+          <h2>Source remix</h2>
+          <p>No source controls the wording, example, diagram and interaction together.</p>
+          <div class="source-matrix-grid">
+            {#each bb1.sourceMatrix as row}
+              <article>
+                <b>{row.work}</b>
+                <span>{row.role}</span>
+                <em>{row.treatment}</em>
+              </article>
+            {/each}
+          </div>
+        </section>
+      {/if}
     </section>
 
     {#each bb1.sections as section, si}
@@ -1311,6 +1373,139 @@
                       </tbody>
                     </table>
                   </div>
+
+                {:else if interaction.kind === 'table-plot-step' || interaction.kind === 'table-plot-predict' || interaction.kind === 'table-plot-sprint' || interaction.kind === 'table-rule-switch'}
+                  {@const rows = GRAPH_X.slice(0, graph.count)}
+                  <div class="rows">
+                    {#if interaction.kind === 'table-rule-switch'}
+                      <div class="plates">
+                        {#each Object.keys(GRAPH_RULES) as rule}
+                          <button class="chip" class:on={graph.rule === rule} on:click={() => (graph = { ...graph, rule, count: 1, guess: null })}>{rule}</button>
+                        {/each}
+                      </div>
+                    {/if}
+                    <table class="io-table graph-table">
+                      <thead><tr><th>x</th><th>rule</th><th>y</th><th>pair</th></tr></thead>
+                      <tbody>
+                        {#each rows as x, i}
+                          {@const hideLast = interaction.kind === 'table-plot-predict' && i === rows.length - 1 && graph.guess === null}
+                          <tr>
+                            <td>{x}</td><td>{graph.rule}</td><td><b>{hideLast ? '?' : graphY(x)}</b></td>
+                            <td>{hideLast ? '( ?, ? )' : `( ${x}, ${graphY(x)} )`}</td>
+                          </tr>
+                        {/each}
+                      </tbody>
+                    </table>
+                    {#if interaction.kind === 'table-plot-predict' && graph.count < GRAPH_X.length && graph.guess === null}
+                      <div class="predict-row">
+                        <span>For x = {GRAPH_X[graph.count - 1]}, predict y:</span>
+                        {#each [1, 4, 9] as answer}<button on:click={() => (graph = { ...graph, guess: answer })}>{answer}</button>{/each}
+                      </div>
+                    {/if}
+                    <button class="reveal-btn" disabled={graph.count >= GRAPH_X.length}
+                      on:click={() => (graph = { ...graph, count: Math.min(GRAPH_X.length, graph.count + (interaction.kind === 'table-plot-sprint' ? 3 : 1)), guess: null })}>
+                      {interaction.kind === 'table-plot-sprint' ? 'Add three rows' : 'Add the next row'}
+                    </button>
+                    <p class="stage-note">The rule stays fixed while the input and output form each new pair.</p>
+                  </div>
+
+                {:else if interaction.kind === 'table-points' || interaction.kind === 'table-points-order' || interaction.kind === 'curve-from-points' || interaction.kind === 'curve-rule-compare'}
+                  {@const xs = graphOrder(interaction.kind).slice(0, graph.count)}
+                  {@const curveReady = graph.count >= 5}
+                  <div class="rows centre">
+                    {#if interaction.kind === 'curve-rule-compare'}
+                      <div class="plates">
+                        {#each Object.keys(GRAPH_RULES) as rule}
+                          <button class="chip" class:on={graph.rule === rule} on:click={() => (graph = { ...graph, rule, count: Math.max(graph.count, 5) })}>{rule}</button>
+                        {/each}
+                      </div>
+                    {/if}
+                    <div class="graph-layout">
+                      <table class="io-table graph-table compact">
+                        <thead><tr><th>x</th><th>y</th></tr></thead>
+                        <tbody>{#each xs as x}<tr><td>{x}</td><td><b>{graphY(x)}</b></td></tr>{/each}</tbody>
+                      </table>
+                      <svg class="plot-svg" viewBox="0 0 300 170" role="img" aria-label="Coordinate plane with points generated by a rule">
+                        <path class="plot-axis" d="M22 124H282M150 12V158"/>
+                        {#each [-3, -2, -1, 0, 1, 2, 3] as x}<line class="plot-grid" x1={150 + x * 32} y1="16" x2={150 + x * 32} y2="154"/>{/each}
+                        {#each [0, 2, 4, 6, 8] as y}<line class="plot-grid" x1="24" y1={124 - y * 13} x2="280" y2={124 - y * 13}/>{/each}
+                        {#if (interaction.kind === 'curve-from-points' || interaction.kind === 'curve-rule-compare') && curveReady}
+                          <polyline class="plot-curve" points={Array.from({ length: 49 }, (_, i) => { const x = -3 + i / 8; const p = graphPoint(x, graphY(x)); return `${p.x},${p.y}`; }).join(' ')}/>
+                        {/if}
+                        {#each xs as x}
+                          {@const p = graphPoint(x, graphY(x))}
+                          <circle class="plot-dot" cx={p.x} cy={p.y} r="5"/>
+                        {/each}
+                      </svg>
+                    </div>
+                    <button class="reveal-btn" disabled={graph.count >= GRAPH_X.length}
+                      on:click={() => (graph = { ...graph, count: Math.min(GRAPH_X.length, graph.count + 1) })}>
+                      Plot another pair
+                    </button>
+                    <p class="stage-note">{curveReady ? 'Enough points are present to expose the shape.' : 'The curve is withheld until the points begin to establish it.'}</p>
+                  </div>
+
+                {:else if interaction.kind === 'point-target-drill' || interaction.kind === 'point-target-shuffle' || interaction.kind === 'curve-plot-drill' || interaction.kind === 'curve-point-check'}
+                  {@const drill = drillState(interaction.kind, plotDrill)}
+                  {@const pairs = PLOT_DRILLS[interaction.kind]}
+                  {@const target = pairs[drill.step]}
+                  <div class="rows centre">
+                    <div class="drill-status">
+                      {#if target}<span>Plot <b>( {target[0]}, {target[1]} )</b></span>{:else}<strong>Round complete · {pairs.length}/{pairs.length}</strong>{/if}
+                      <small>{drill.misses === 0 ? 'No misplaced points' : `${drill.misses} misplaced ${drill.misses === 1 ? 'point' : 'points'} — keep going`}</small>
+                    </div>
+                    <div class="coordinate-grid" role="group" aria-label="Plot a coordinate on the grid">
+                      {#each [8, 7, 6, 5, 4, 3, 2, 1, 0] as y}
+                        {#each [-3, -2, -1, 0, 1, 2, 3] as x}
+                          <button class:hit={drill.hits.some(pair => pair[0] === x && pair[1] === y)} class:x-axis={y === 0} class:y-axis={x === 0}
+                            aria-label={`Plot ${x}, ${y}`} on:click={() => tryPlot(interaction.kind, x, y)}>
+                            {drill.hits.some(pair => pair[0] === x && pair[1] === y) ? '●' : ''}
+                            {#if x === -3}<small>{y}</small>{/if}
+                          </button>
+                        {/each}
+                      {/each}
+                      <div class="coordinate-labels" aria-hidden="true">{#each [-3, -2, -1, 0, 1, 2, 3] as x}<span>{x}</span>{/each}</div>
+                    </div>
+                    {#if drill.step >= pairs.length && (interaction.kind === 'curve-plot-drill' || interaction.kind === 'curve-point-check')}
+                      {@const rule = interaction.kind === 'curve-plot-drill' ? 'square it' : 'add three'}
+                      <svg class="plot-svg drill-result" viewBox="0 0 300 170" role="img" aria-label="Curve revealed by the completed plotting round">
+                        <path class="plot-axis" d="M22 124H282M150 8V158"/>
+                        <polyline class="plot-curve" points={Array.from({ length: 49 }, (_, i) => { const x = -3 + i / 8; const p = graphPoint(x, GRAPH_RULES[rule](x)); return `${p.x},${p.y}`; }).join(' ')}/>
+                        {#each drill.hits as pair}{@const hit = graphPoint(pair[0], pair[1])}<circle class="plot-dot" cx={hit.x} cy={hit.y} r="5"/>{/each}
+                      </svg>
+                    {/if}
+                    <p class="stage-note">{drill.step} of {pairs.length} points placed correctly.</p>
+                  </div>
+
+                {:else if interaction.kind === 'rise-run-line' || interaction.kind === 'rise-run-ghost' || interaction.kind === 'slope-ratio' || interaction.kind === 'slope-triangles' || interaction.kind === 'slope-sign' || interaction.kind === 'slope-target'}
+                  {@const slope = slopeValue(line)}
+                  {@const pts = { x0: 54, y0: 124, x1: 54 + line.run * 38, y1: 124 - line.rise * 22 }}
+                  <div class="rows centre">
+                    {#if interaction.kind === 'slope-target'}
+                      <div class="slope-target">TARGET SLOPE <b>{line.target}</b></div>
+                    {/if}
+                    <svg class="slope-svg" viewBox="0 0 300 170" role="img" aria-label={`Line with run ${line.run}, rise ${line.rise}, slope ${slope}`}>
+                      <path class="plot-axis" d="M20 146H282M36 12V158"/>
+                      {#each [0, 1, 2, 3, 4, 5, 6] as n}<line class="plot-grid" x1={36 + n * 38} y1="14" x2={36 + n * 38} y2="154"/>{/each}
+                      {#each [24, 46, 68, 90, 112, 134] as y}<line class="plot-grid" x1="24" y1={y} x2="280" y2={y}/>{/each}
+                      {#if interaction.kind === 'rise-run-ghost'}
+                        <line class="slope-ghost" x1={pts.x0} y1={pts.y0} x2={pts.x1} y2={pts.y0 - line.previousRise * 22}/>
+                      {/if}
+                      <line class="slope-line" x1={pts.x0} y1={pts.y0} x2={pts.x1} y2={pts.y1}/>
+                      <line class="slope-run" x1={pts.x0} y1={pts.y0} x2={pts.x1} y2={pts.y0}/>
+                      <line class="slope-rise" x1={pts.x1} y1={pts.y0} x2={pts.x1} y2={pts.y1}/>
+                      {#if interaction.kind === 'slope-triangles'}
+                        <path class="slope-small" d={`M${pts.x0} ${pts.y0} H${pts.x0 + (pts.x1-pts.x0)/2} V${pts.y0 - line.rise * 11}`}/>
+                      {/if}
+                      <circle class="plot-dot" cx={pts.x0} cy={pts.y0} r="5"/><circle class="plot-dot" cx={pts.x1} cy={pts.y1} r="5"/>
+                    </svg>
+                    <div class="slope-controls">
+                      <span><small>RUN Δx</small><button aria-label="Decrease run" on:click={() => changeLine('run', -1)}>−</button><b>{line.run}</b><button aria-label="Increase run" on:click={() => changeLine('run', 1)}>+</button></span>
+                      <span><small>RISE Δy</small><button aria-label="Decrease rise" on:click={() => changeLine('rise', -1)}>−</button><b>{line.rise}</b><button aria-label="Increase rise" on:click={() => changeLine('rise', 1)}>+</button></span>
+                    </div>
+                    <div class="slope-read"><span>{line.rise}</span><i>÷</i><span>{line.run}</span><i>=</i><b class:hit={interaction.kind === 'slope-target' && slope === line.target}>{slope === null ? 'undefined' : Number(slope.toFixed(2))}</b></div>
+                    {#if interaction.kind === 'slope-sign'}<p class="stage-note">{line.rise > 0 ? 'Rises left to right · positive' : line.rise < 0 ? 'Falls left to right · negative' : 'Level · zero'}</p>{/if}
+                  </div>
                 {/if}
 
                 <!-- Only the kinds that actually read the section value get a
@@ -1932,6 +2127,52 @@
   .fork-note div { flex: 1 1 260px; border: 1px solid var(--qx-border); border-radius: 12px; padding: 11px 13px; background: var(--qx-surface-2); display: flex; flex-direction: column; gap: 3px; }
   .fork-note b { font-size: 9px; letter-spacing: .13em; color: var(--qx-accent-text); }
   .fork-note span { font-size: 13px; color: var(--qx-text-2); }
+  .source-matrix { margin-top: 14px; border-top: 1px solid var(--qx-border); padding-top: 14px; }
+  .source-matrix h2 { margin: 0 0 4px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  .source-matrix > p { margin: 0 0 10px; color: var(--qx-text-faint); font-size: 11.5px; }
+  .source-matrix-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; }
+  .source-matrix article { display: flex; flex-direction: column; gap: 5px; border: 1px solid var(--qx-border); border-radius: 11px; padding: 10px 11px; background: var(--qx-surface); }
+  .source-matrix article b { font-size: 11.5px; line-height: 1.4; color: var(--qx-text); }
+  .source-matrix article span { font-size: 11px; line-height: 1.45; color: var(--qx-text-2); }
+  .source-matrix article em { font-style: normal; font-size: 10px; line-height: 1.4; color: var(--qx-accent-text); border-top: 1px dashed var(--qx-border-2); padding-top: 5px; }
+
+  .graph-layout { display: flex; align-items: flex-start; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
+  .graph-table.compact { min-width: 72px; }
+  .plot-svg, .slope-svg { width: min(100%, 390px); height: auto; }
+  .plot-axis { fill: none; stroke: var(--qx-text-dim); stroke-width: 1.7; }
+  .plot-grid { stroke: var(--qx-border); stroke-width: .7; }
+  .plot-dot { fill: var(--qx-accent); }
+  .coordinate-grid { display: grid; grid-template-columns: repeat(7, 1fr); position: relative; width: min(100%, 390px); margin-bottom: 18px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); }
+  .coordinate-grid button { position: relative; min-width: 0; height: 30px; padding: 0; border: 0; border-right: 1px solid var(--qx-border); border-bottom: 1px solid var(--qx-border); border-radius: 0; background: transparent; color: var(--qx-accent-text); cursor: crosshair; font-size: 15px; }
+  .coordinate-grid button:hover, .coordinate-grid button:focus { background: var(--qx-accent-soft); outline: 2px solid var(--qx-accent); outline-offset: -2px; }
+  .coordinate-grid button.x-axis { border-bottom: 2px solid var(--qx-text); }
+  .coordinate-grid button.y-axis { border-right: 2px solid var(--qx-text); }
+  .coordinate-grid button.hit { background: var(--qx-accent-soft); font-weight: 900; }
+  .coordinate-grid button small { position: absolute; left: 3px; top: 3px; color: var(--qx-text-faint); font-size: 8px; }
+  .coordinate-labels { position: absolute; left: 0; right: 0; bottom: -16px; display: grid; grid-template-columns: repeat(7, 1fr); color: var(--qx-text-faint); font-size: 8px; text-align: center; }
+  .drill-result { margin-top: 16px; }
+  .drill-status { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; width: min(100%, 390px); }
+  .drill-status span, .drill-status strong { color: var(--qx-text); font-size: 13px; }
+  .drill-status small { color: var(--qx-text-faint); font-size: 10px; }
+  .plot-curve { fill: none; stroke: var(--qx-green); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .predict-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--qx-text-2); }
+  .predict-row button { min-width: 34px; height: 30px; border: 1px solid var(--qx-border-2); border-radius: 8px; background: var(--qx-surface); color: var(--qx-text); font-weight: 800; cursor: pointer; }
+  .slope-line { stroke: var(--qx-accent); stroke-width: 3; stroke-linecap: round; }
+  .slope-ghost { stroke: var(--qx-text-faint); stroke-width: 2; stroke-dasharray: 5 4; }
+  .slope-run { stroke: var(--qx-green); stroke-width: 2; }
+  .slope-rise { stroke: var(--qx-danger); stroke-width: 2; }
+  .slope-small { fill: none; stroke: var(--qx-text-faint); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .slope-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .slope-controls span { display: flex; align-items: center; gap: 6px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 6px 8px; }
+  .slope-controls small { font-size: 8.5px; letter-spacing: .08em; color: var(--qx-text-faint); font-weight: 900; }
+  .slope-controls button { width: 28px; height: 28px; border: 1px solid var(--qx-border-2); border-radius: 7px; background: transparent; color: var(--qx-text); cursor: pointer; }
+  .slope-controls b { min-width: 18px; text-align: center; color: var(--qx-accent-text); }
+  .slope-read { display: flex; align-items: center; gap: 8px; font-size: 18px; }
+  .slope-read i { font-style: normal; color: var(--qx-text-faint); }
+  .slope-read b { color: var(--qx-accent-text); font-size: 24px; }
+  .slope-read b.hit { color: var(--qx-green-text); }
+  .slope-target { font-size: 9px; letter-spacing: .1em; color: var(--qx-text-faint); font-weight: 900; }
+  .slope-target b { color: var(--qx-accent-text); font-size: 18px; margin-left: 6px; }
 
   .section-block { border-top: 1px solid var(--qx-border); padding-top: 22px; display: flex; flex-direction: column; gap: 14px; }
   .section-head { display: flex; align-items: baseline; gap: 11px; }

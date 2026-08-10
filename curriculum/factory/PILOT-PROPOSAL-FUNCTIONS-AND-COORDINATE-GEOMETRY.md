@@ -222,3 +222,21 @@ so it should be a single deliberate change rather than a side effect.
 - [ ] `ORIGINAL` is admitted as a source status.
 - [ ] Current BB4 and BB5 move to the gated set.
 - [ ] Strata is reference only, reimplemented with sources recorded.
+
+## 9. Factory implementation note — 2026-08-10
+
+On founder instruction, two bridge boards now exist as selectable Factory
+drafts:
+
+- `plot` — *Plotting a Rule as a Curve* (`FCG-GRAPH-001`)
+- `line-slope` — *The Slope of a Line* (`FCG-SLOPE-001`)
+
+Both carry an authoring-only source-remix matrix. Each matrix separates the
+historical mathematical move, an alternative classical structure, a modern
+terminology check and the Qubix-original interaction. No one source controls the
+wording, example, diagram and interaction together.
+
+Both selection maps are empty. They appear under **All variants**, their kept
+sheets show the unfilled slots, and `scripts/build-pilot.mjs` will include them
+only after selections or recorded finalisations exist. This implementation does
+not change the proposal's approval state.

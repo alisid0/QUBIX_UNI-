@@ -22,6 +22,8 @@ The books below are candidates. The six books in [Foundational Mathematics Books
 | Equations | Leonard E. Dickson, *First Course in the Theory of Equations* | Extends algebra toward roots, polynomials and structure | Root–coefficient explorer and moving polynomial graphs | `EDITION_REVIEW` |
 | Euclidean geometry | Euclid, John Casey edition, *The First Six Books of the Elements of Euclid* | Gives a durable definition–proposition–proof architecture | Construction canvas and proof-step reconstruction | `ANCHOR` |
 | Plane geometry | G. A. Wentworth, *Plane Geometry* | Gives an alternative classroom progression and exercise bank | Drag-to-test conjectures followed by proof challenges | `EDITION_REVIEW` |
+| Coordinate geometry | S. L. Loney, *The Elements of Coordinate Geometry* (1895) | Supplies a sustained account of coordinates, loci, straight lines and conics | Table-to-point plotting, locus construction and rise/run comparison | `REFERENCE_ONLY_EDITION_REVIEW` |
+| Practical mathematics | John Perry, *Elementary Practical Mathematics* (1913) | Connects measurement, graphs and formulae to physical work | Measure-first graphing and instrument-style investigations | `REFERENCE_ONLY_EDITION_REVIEW` |
 | Trigonometry | Hugh Blackburn, *Elements of Plane Trigonometry* | Connects triangle measurement with identities and calculation | Live triangle, unit-circle and identity-morphing labs | `EDITION_REVIEW` |
 | Non-Euclidean geometry | Julian L. Coolidge, *The Elements of Non-Euclidean Geometry* | Reveals which geometric truths depend on assumptions | Curvature slider, alternative parallel worlds and model comparison | `EDITION_REVIEW` |
 | Introductory calculus | Silvanus P. Thompson, *Calculus Made Easy* | Supplies the main approachable change narrative | Secant-to-tangent, accumulation and parameter-change laboratories | `ANCHOR` |
@@ -51,6 +53,27 @@ These Project Gutenberg records are discovery points for historical editions tha
 - [Venn — *The Logic of Chance*](https://www.gutenberg.org/ebooks/57359)
 - [Cajori — *A History of Mathematics*](https://www.gutenberg.org/ebooks/31061)
 - [Dudeney — *Amusements in Mathematics*](https://www.gutenberg.org/ebooks/16713)
+
+Additional scan records used only for comparison in the new Factory source
+matrices:
+
+- [Loney — *The Elements of Coordinate Geometry* (1895)](https://archive.org/details/elementsofcoordi00lone)
+- [Perry — *Elementary Practical Mathematics* (1913)](https://archive.org/details/elementarypracti00perrrich)
+
+## Modern cross-check shelf
+
+Modern texts may check terminology, sequencing and common misconceptions without
+supplying learner wording, examples, diagrams or interaction designs.
+
+| Work | Use | Restriction |
+|---|---|---|
+| OpenStax, *Prealgebra 2e* | Basic-number and prerequisite cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
+| OpenStax, *Algebra and Trigonometry 2e* | Functions, graphing and line-slope cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
+| OpenStax, *Calculus Volume 1* | Limits and derivatives cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
+
+The OpenStax licence is non-commercial and share-alike. Unless the final Qubix
+product deliberately accepts those conditions, these works remain references
+only and no adapted expression, example or diagram enters the product.
 
 ## What “classical meets modern” means
 

@@ -24,12 +24,16 @@ import { func0, selections as selButton, finalised as finButton } from '../src/f
 import { func1, selections as selMachine, finalised as finMachine } from '../src/factory/func1-options.js';
 import { area, selections as selArea, finalised as finArea } from '../src/factory/area-options.js';
 import { plane, selections as selPlane, finalised as finPlane } from '../src/factory/plane-options.js';
+import { plot, selections as selPlot, finalised as finPlot } from '../src/factory/plot-options.js';
+import { lineSlope, selections as selLineSlope, finalised as finLineSlope } from '../src/factory/line-slope-options.js';
 
 const PILOT = [
   { bb: func0, sel: selButton, fin: finButton, marker: 'Machines' },
   { bb: func1, sel: selMachine, fin: finMachine, marker: 'Rules' },
   { bb: area, sel: selArea, fin: finArea, marker: 'Surface' },
-  { bb: plane, sel: selPlane, fin: finPlane, marker: 'Position' }
+  { bb: plane, sel: selPlane, fin: finPlane, marker: 'Position' },
+  { bb: plot, sel: selPlot, fin: finPlot, marker: 'Graph' },
+  { bb: lineSlope, sel: selLineSlope, fin: finLineSlope, marker: 'Slope' }
 ];
 
 const chosen = (list, sel, fin) => (list || []).filter(v => sel[v.code] || fin[v.code]);
