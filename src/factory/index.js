@@ -18,6 +18,7 @@ import { func1, selections as selF1, finalised as finF1, rejected as rejF1, gate
 import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gated as gateF2 } from './func2-options.js';
 import { decimal, selections as selDec, finalised as finDec, rejected as rejDec, gated as gateDec } from './decimal-options.js';
 import { number, selections as selNum, finalised as finNum, rejected as rejNum, gated as gateNum } from './number-options.js';
+import { numberLine, selections as selLine, finalised as finLine, rejected as rejLine, gated as gateLine } from './line-options.js';
 
 export { sources };
 
@@ -44,6 +45,7 @@ export const registry = [
   // Foundations. Repairs of prerequisites the course has assumed since its first
   // board and has never taught. Not a new topic; a hole the map already records.
   { key: 'number', unit: 'foundations', label: 'Number', bb: number, selections: selNum, finalised: finNum, rejected: rejNum, gated: gateNum },
+  { key: 'line', unit: 'foundations', label: 'Number Line', bb: numberLine, selections: selLine, finalised: finLine, rejected: rejLine, gated: gateLine },
   { key: 'decimal', unit: 'foundations', label: 'Decimals', bb: decimal, selections: selDec, finalised: finDec, rejected: rejDec, gated: gateDec },
   { key: 'letter', unit: 'variables', label: 'Letter', bb: bb1, selections: sel1, finalised: fin1, rejected: rej1 },
   { key: 'gap', unit: 'variables', label: 'Gap', bb: bb2, selections: sel2, finalised: fin2, rejected: rej2 },

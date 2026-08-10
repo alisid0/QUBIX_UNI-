@@ -17,6 +17,32 @@ export const sources = {
     ref: 'Wentworth, The First Steps in Algebra, ch. I art. 6, printed folio 2',
     quote: 'Algebra employs the letters of the alphabet in addition to the figures of Arithmetic to represent numbers. Letters are used as general symbols of numbers to which any particular values may be assigned.'
   },
+  // Wentworth, The First Steps in Algebra, ch. III, Positive and Negative
+  // Numbers. This chapter draws the number line, works addition and subtraction
+  // along it, drives it into the ground by asking for 2 − 5, and only then
+  // extends it leftward. That is the make-it-fail-first shape the Coordinate
+  // Plane and the functions boards use, and here it is the source's own.
+  //
+  // It also settles P-02, which was recorded on 2026-08-10 as unbuildable for
+  // want of a source after De Morgan turned out to treat negatives only as a
+  // computing device. The source was on the shelf the whole time, in a book
+  // already being quoted for two other boards.
+  WN1: {
+    ref: 'Wentworth, The First Steps in Algebra, ch. III §56, printed folio 33',
+    quote: 'If a person is engaged in trade, his capital will be increased by his gains, and diminished by his losses. Increase in temperature is measured by the number of degrees the mercury rises in a thermometer, and decrease in temperature by the number of degrees the mercury falls. In considering any quantity whatever, a quantity that increases the quantity considered is called a positive quantity; and a quantity that decreases the quantity considered is called a negative quantity.'
+  },
+  WN2: {
+    ref: 'Wentworth, The First Steps in Algebra, ch. III §57, printed folio 33',
+    quote: 'If from a given point, marked 0, we draw a straight line to the right, and beginning from the zero point lay off units of length on this line, the successive repetitions of the unit will be expressed by the natural series of numbers, 1, 2, 3, 4, etc.'
+  },
+  WN3: {
+    ref: 'Wentworth, The First Steps in Algebra, ch. III §57, printed folio 33',
+    quote: 'If we wish to add 2 to 5, we begin at 5, count 2 units forwards, and arrive at 7, the sum required. If we wish to subtract 2 from 5, we begin at 5, count 2 units backwards, and arrive at 3, the difference required. … If we wish to subtract 5 from 2, we cannot do it, because when we have counted backwards from 2 as far as 0, the natural series of numbers comes to an end.'
+  },
+  WN4: {
+    ref: 'Wentworth, The First Steps in Algebra, ch. III §57, printed folio 34',
+    quote: 'In order to subtract a greater number from a smaller, it is necessary to assume a new series of numbers, beginning at zero and extending to the left of zero. … This opposition is indicated by calling every number in the right-hand series a positive number, and prefixing to it, when written, the sign +; and by calling every number in the left-hand series a negative number, and prefixing to it the sign −.'
+  },
   T1: {
     ref: 'Thompson, Calculus Made Easy, ch. III, printed page 9',
     quote: 'We classify all quantities into two classes: constants and variables. Those which we regard as of fixed value, and call constants … while those which we consider as capable of growing, or (as mathematicians say) of "varying," we denote by letters from the end of the alphabet.'

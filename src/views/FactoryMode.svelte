@@ -38,6 +38,7 @@
     // Foundations. Each carries its own line, bar or columns.
     'zoom-line', 'jug-fill', 'split-bar', 'place-columns', 'compare-two',
     'pair-up', 'pair-mismatch', 'tally-basket', 'same-count', 'pebble-to-figure', 'figure-row',
+    'lay-units', 'unit-line', 'walk-line', 'line-runs-out', 'extend-left', 'both-ways',
     'table-plot-step', 'table-plot-predict', 'table-plot-sprint', 'table-rule-switch',
     'table-points', 'table-points-order', 'point-target-drill', 'point-target-shuffle',
     'curve-from-points', 'curve-rule-compare', 'curve-plot-drill', 'curve-point-check',
@@ -106,6 +107,36 @@
   let sub = { b: 4 };                       // substitute-strip
   let plate = 0;                            // rule-swap: which plate is loaded
   let mach = { x: 3 };                      // machine-single, two-machines
+  // Foundations: the number line.
+  let laid = 0;                             // lay-units
+  let walkAt = 2;                           // walk-line, line-runs-out, extend-left, unit-line
+  let leftUnits = 0;                        // extend-left: how much line exists below 0
+  let bothAt = 0;                           // both-ways
+
+  // Walking bench. Goals stick, and goal 3 needs evidence of having been left of
+  // 0 before returning, which a snapshot of the present position cannot show.
+  let benchAt = 0, walkFrom = 0;
+  let walkSeen = { at4: false, atMinus2: false, wasLeft: false, backTo0: false, returned: false, started: 0 };
+  function stepBench(d) {
+    const next = Math.max(-5, Math.min(5, benchAt + d));
+    const seen = { ...walkSeen };
+    if (next === 4) seen.at4 = true;
+    if (next === -2) seen.atMinus2 = true;
+    if (next < 0) seen.wasLeft = true;
+    if (next === 0 && seen.wasLeft) seen.backTo0 = true;
+    // A walk that ends where it began: moved away and came back.
+    if (next === walkFrom && benchAt !== walkFrom) seen.returned = true;
+    benchAt = next;
+    walkSeen = seen;
+  }
+  function walkGoal(id, s) {
+    if (id === 'w1') return s.at4;
+    if (id === 'w2') return s.atMinus2;
+    if (id === 'w3') return s.backTo0;
+    if (id === 'w4') return s.returned;
+    return false;
+  }
+
   // Foundations: number.
   let pairs = 0;                            // pair-up, pair-mismatch
   let tallied = 0;                          // tally-basket
@@ -1104,6 +1135,71 @@
                       <div class="square" style={`width:${squareSize(values[si])}px;height:${squareSize(values[si])}px`}></div>
                       <span class="edge-label" style={`width:${squareSize(values[si])}px`}>x</span>
                     </div>
+                  </div>
+
+                {:else if interaction.kind === 'lay-units' || interaction.kind === 'unit-line'
+                        || interaction.kind === 'walk-line' || interaction.kind === 'line-runs-out'
+                        || interaction.kind === 'extend-left' || interaction.kind === 'both-ways'}
+                  {@const k = interaction.kind}
+                  {@const lo = k === 'both-ways' ? -5 : (k === 'extend-left' ? -leftUnits : 0)}
+                  {@const hi = k === 'lay-units' ? laid : (k === 'both-ways' ? 5 : 10)}
+                  {@const owed = k === 'line-runs-out' ? Math.max(0, 5 - (2 - walkAt))
+                               : (k === 'extend-left' ? Math.max(0, 5 - (2 - walkAt)) : 0)}
+                  <div class="rows">
+                    <div class="numline walk">
+                      {#each Array(hi - lo + 1) as _, i}
+                        {@const v = lo + i}
+                        <span class="tick" class:whole={true} class:neg={v < 0} class:zero={v === 0}>
+                          <i></i><small>{v < 0 ? '−' + Math.abs(v) : v}</small>
+                          {#if (k === 'walk-line' || k === 'line-runs-out' || k === 'extend-left') && v === walkAt}
+                            <em class="walker">▲</em>
+                          {/if}
+                          {#if k === 'both-ways' && v === bothAt}<em class="walker">▲</em>{/if}
+                          {#if k === 'unit-line' && v === walkAt}<em class="walker">▲</em>{/if}
+                        </span>
+                      {/each}
+                    </div>
+
+                    {#if k === 'lay-units'}
+                      <button class="chip" on:click={() => (laid = Math.min(10, laid + 1))} disabled={laid >= 10}>lay the next unit</button>
+                      <p class="stage-note">{laid === 0 ? 'Only 0 so far. Every step is the same width.' : `${laid} unit${laid === 1 ? '' : 's'} laid, each the same length as the last.`}</p>
+
+                    {:else if k === 'unit-line' || k === 'both-ways'}
+                      <label class="range-row"><span>{k === 'both-ways' ? '−5' : '0'}</span>
+                        <input type="range" min={lo} max={hi} step="1"
+                          value={k === 'both-ways' ? bothAt : walkAt}
+                          on:input={e => k === 'both-ways' ? (bothAt = Number(e.target.value)) : (walkAt = Number(e.target.value))}
+                          aria-label="Move along the line"/>
+                        <span>{hi}</span></label>
+                      <div class="big"><b>{(k === 'both-ways' ? bothAt : walkAt) < 0 ? '−' + Math.abs(k === 'both-ways' ? bothAt : walkAt) : (k === 'both-ways' ? bothAt : walkAt)}</b>
+                        {#if k === 'both-ways'}<small>{bothAt > 0 ? 'right of 0, positive' : bothAt < 0 ? 'left of 0, negative' : 'at 0, neither'}</small>{/if}</div>
+
+                    {:else}
+                      <div class="row">
+                        <button on:click={() => walkAt = Math.max(lo, walkAt - 1)} aria-label="One step left">←</button>
+                        <b>{walkAt < 0 ? '−' + Math.abs(walkAt) : walkAt}</b>
+                        <button on:click={() => walkAt = Math.min(hi, walkAt + 1)} aria-label="One step right">→</button>
+                        <button class="chip" on:click={() => { walkAt = 2; leftUnits = 0; }}>back to 2</button>
+                      </div>
+                      {#if k === 'extend-left'}
+                        <button class="chip" on:click={() => (leftUnits = Math.min(5, leftUnits + 1))} disabled={leftUnits >= 5}>lay a unit left of 0</button>
+                      {/if}
+                      <p class="stage-note">
+                        {#if k === 'line-runs-out'}
+                          {walkAt === 0 && owed > 0
+                            ? `Nowhere left to stand, and ${owed} step${owed === 1 ? '' : 's'} still owed. The walking was right; the line is too short.`
+                            : `Taking 5 from 2. ${owed} step${owed === 1 ? '' : 's'} still to take.`}
+                        {:else if k === 'extend-left'}
+                          {walkAt === -3
+                            ? 'Finished. 2 − 5 = −3, walked exactly as before.'
+                            : leftUnits === 0
+                              ? 'The line still stops at 0. Lay some more of it.'
+                              : `Ground now reaches −${leftUnits}. ${owed} step${owed === 1 ? '' : 's'} still owed.`}
+                        {:else}
+                          Standing on {walkAt}. Right adds, left subtracts.
+                        {/if}
+                      </p>
+                    {/if}
                   </div>
 
                 {:else if interaction.kind === 'pair-up' || interaction.kind === 'pair-mismatch'}
@@ -2142,6 +2238,32 @@
                     </ul>
                   </div>
 
+                {:else if w.kind === 'walk-bench'}
+                  <div class="rows">
+                    <div class="numline walk">
+                      {#each Array(11) as _, i}
+                        {@const v = i - 5}
+                        <span class="tick whole" class:neg={v < 0} class:zero={v === 0}>
+                          <i></i><small>{v < 0 ? '−' + Math.abs(v) : v}</small>
+                          {#if v === benchAt}<em class="walker">▲</em>{/if}
+                        </span>
+                      {/each}
+                    </div>
+                    <div class="row">
+                      <button on:click={() => stepBench(-1)} aria-label="One step left">←</button>
+                      <b>{benchAt < 0 ? '−' + Math.abs(benchAt) : benchAt}</b>
+                      <button on:click={() => stepBench(1)} aria-label="One step right">→</button>
+                      <button class="chip" on:click={() => { benchAt = 0; walkFrom = 0; walkSeen = { ...walkSeen, started: 0 }; }}>reset to 0</button>
+                    </div>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={walkGoal(g.id, walkSeen)}>
+                          <i>{walkGoal(g.id, walkSeen) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
                 {:else if w.kind === 'tally-bench'}
                   <div class="rows">
                     {#each [['riders', '🧍'], ['pebbles', '⬤'], ['coins', '🪙']] as [name, glyph], ci}
@@ -2600,6 +2722,14 @@
   .accept-strip b { color: var(--qx-text-faint); }
   .accept-strip.ok { border-style: solid; border-color: var(--qx-green); }
   .accept-strip.ok b { color: var(--qx-green-text); }
+
+  /* Foundations: the number line. */
+  .numline.walk { padding-top: 26px; }
+  .numline .tick.neg small { color: var(--qx-accent-text); }
+  .numline .tick.zero i { height: 20px; background: var(--qx-accent); width: 2px; }
+  .numline .tick.zero small { color: var(--qx-accent-text); font-weight: 900; }
+  .numline .walker { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 13px; color: var(--qx-accent); }
+  .numline .tick { position: relative; }
 
   /* Foundations: number. */
   .pair-rows { display: flex; flex-direction: column; gap: 14px; }
