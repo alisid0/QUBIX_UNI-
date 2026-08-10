@@ -63,7 +63,10 @@ if (!email.includes(account)) {
 
 // 3. Build.
 console.log('  building…');
-sh('npm run build', { stdio: 'inherit' });
+const packageRunner = process.env.npm_execpath
+  ? `${JSON.stringify(process.execPath)} ${JSON.stringify(process.env.npm_execpath)} run build`
+  : 'npm run build';
+sh(packageRunner, { stdio: 'inherit' });
 
 // 4. Nothing that belongs to authoring may reach a public repository. This is
 //    the check that matters most: the site repo is public, so anything in the
