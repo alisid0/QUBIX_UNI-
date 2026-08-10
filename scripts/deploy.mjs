@@ -1,74 +1,122 @@
-// Production deploy. package.json has referenced this file since the project
-// started and it has never existed, so `npm run deploy` has always failed.
+// Production deploy: build here, publish to the public site repository, which
+// GitHub Pages serves at qubix.university.
 //
-// Deploying is not a thing to do casually here. A push is not a release, the
-// Factory is authoring material rather than curriculum, and gated drafts must
-// not reach a learner. So this refuses to run rather than trusting whoever typed
-// the command to have checked.
+// Why not Vercel. On 2026-08-10 the Vercel project stopped completing
+// deployments. Eight in a row hung at status UNKNOWN with no logs and no error,
+// including prebuilt deploys, which have no build step to fail, and a deploy to
+// a brand-new project, which has no configuration to be wrong. The cause was
+// never identified from the CLI. The project, its history and vercel.json are
+// left in place; nothing was deleted.
 //
-// It also checks the commit author. Vercel blocks a deployment whose commit
-// email it cannot match to a GitHub account on the team, and the failure is
-// invisible from the CLI: the deployment sits at status UNKNOWN with no logs and
-// no error, and the previous release keeps serving. Three deploys were lost to
-// that before the dashboard said why. Catch it here, before the upload, where
-// the message can say what to do.
+// Why two repositories. GitHub Pages will not serve a private repository on a
+// free account, and the source must stay private: it carries the Factory, the
+// gated draft boards and the records. So the built output is pushed to
+// alisid0/qubix-university-site, which is public and holds nothing else.
+//
+// Deploying is not casual here. A push is not a release, the Factory is
+// authoring material rather than curriculum, and gated drafts must not reach a
+// learner. This refuses to run rather than trusting whoever typed the command.
 
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, cpSync, writeFileSync, readdirSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-const sh = cmd => execSync(cmd, { encoding: 'utf8' }).trim();
+const SITE_REPO = 'https://github.com/alisid0/qubix-university-site.git';
+const DOMAIN = 'qubix.university';
+
+const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', ...opts }).trim();
 const die = (msg, fix) => {
   console.error(`\n  Refusing to deploy: ${msg}`);
   if (fix) console.error(`  ${fix}`);
   process.exit(1);
 };
 
-// 1. The working tree must be clean, so that what is deployed is what is on the
-//    branch and can be found again later.
+// 1. The working tree must be clean, so the release matches a commit.
 if (sh('git status --porcelain')) {
   die('the working tree has uncommitted changes.',
       'Commit or stash them, so the release matches a commit you can return to.');
 }
+const sourceCommit = sh('git rev-parse --short HEAD');
+const sourceBranch = sh('git rev-parse --abbrev-ref HEAD');
 
-// 2. The commit author must be a GitHub account Vercel can see.
-const email = sh('git log -1 --format=%ae');
-let account = null;
+// 2. The commit author must be an account GitHub knows. Vercel used to block on
+//    this silently; the site repo will simply reject an unknown pusher. Either
+//    way it is cheaper to catch here.
+let account;
 try {
   account = JSON.parse(sh('gh api user')).login;
 } catch {
-  die('cannot reach GitHub to check who the commit belongs to.', 'Run `gh auth login`.');
+  die('cannot reach GitHub.', 'Run `gh auth login`.');
 }
+const email = sh('git log -1 --format=%ae');
 if (!email.includes(account)) {
   die(`the last commit is authored by ${email}, which is not ${account}.`,
-      `Vercel will block this silently. Fix with:\n` +
+      'Fix with:\n' +
       `    git config --global user.email "$(gh api user --jq '"\\(.id)+\\(.login)@users.noreply.github.com"')"\n` +
-      `  then make a commit and try again.`);
+      '  then make a commit and try again.');
 }
 
-// 3. The build must pass, and the bundle must not carry authoring material.
+// 3. Build.
 console.log('  building…');
-sh('npm run build');
+sh('npm run build', { stdio: 'inherit' });
 
-const bundle = sh('node -e "const fs=require(\'fs\');const d=\'dist/assets\';const f=fs.readdirSync(d).find(n=>/^index-.*\\.js$/.test(n));process.stdout.write(fs.readFileSync(d+\'/\'+f,\'utf8\'))"');
+// 4. Nothing that belongs to authoring may reach a public repository. This is
+//    the check that matters most: the site repo is public, so anything in the
+//    bundle is readable by anyone.
+const assets = join('dist', 'assets');
+const js = readdirSync(assets).filter(n => n.endsWith('.js'))
+  .map(n => readFileSync(join(assets, n), 'utf8')).join('\n');
 const mustNotShip = [
   ['a gated draft board', 'One Answer, Not Two'],
   ['a gated draft board', 'The Pattern in the Powers'],
+  ['a gated draft board', 'Where a Curve Turns'],
   ['an authoring note', 'Founder direction'],
+  ['an authoring note', 'Rebuilt 2026'],
   ['a rejection reason', 'Not selected;'],
   ['the Factory chrome', 'authoring options']
 ];
-const leaked = mustNotShip.filter(([, s]) => bundle.includes(s));
+const leaked = mustNotShip.filter(([, s]) => js.includes(s));
 if (leaked.length) {
-  die(`the bundle carries ${leaked.map(([w]) => w).join(', ')}.`,
+  die(`the bundle carries ${[...new Set(leaked.map(([w]) => w))].join(', ')}.`,
       `Found: ${leaked.map(([, s]) => JSON.stringify(s)).join(', ')}\n` +
       '  Learner content is generated by scripts/build-pilot.mjs. Anything else\n' +
       '  reaching the bundle means something imported the Factory directly.');
 }
-console.log(`  bundle clean, ${(bundle.length / 1024).toFixed(0)} kB`);
+console.log(`  bundle clean, ${(js.length / 1024).toFixed(0)} kB of JavaScript checked`);
 
-// 4. Deploy.
-if (!existsSync('.vercel/project.json')) die('this checkout is not linked to a Vercel project.', 'Run `vercel link`.');
-const project = JSON.parse(readFileSync('.vercel/project.json', 'utf8')).projectName;
-console.log(`  deploying ${project} to production…`);
-console.log(execSync('vercel deploy --prod --yes --prebuilt=false', { encoding: 'utf8', stdio: 'pipe' }));
-console.log('  done. Check that the production URL serves the new bundle before moving any domain.');
+// 5. Publish. The site repo is replaced wholesale rather than merged, so a file
+//    deleted here disappears there instead of lingering.
+const work = mkdtempSync(join(tmpdir(), 'qu-site-'));
+console.log('  publishing…');
+sh(`git clone --depth 1 -q ${SITE_REPO} "${work}"`);
+for (const entry of readdirSync(work)) {
+  if (entry !== '.git') sh(`git -C "${work}" rm -rq --ignore-unmatch "${entry}"`);
+}
+cpSync('dist', work, { recursive: true });
+writeFileSync(join(work, 'CNAME'), `${DOMAIN}\n`);
+writeFileSync(join(work, '.nojekyll'), '');
+writeFileSync(join(work, 'README.md'),
+`# Qubix University — compiled site
+
+Built output only. Source lives in the private QUBIX_UNI- repository and is
+published from there by \`npm run deploy\`. Do not edit anything here by hand.
+
+Served by GitHub Pages at https://${DOMAIN}/
+
+The Factory, the gated draft boards, the rejected variants and the authoring
+notes are deliberately absent, and that is asserted at build time rather than
+left to trust.
+`);
+
+sh(`git -C "${work}" add -A`);
+if (!sh(`git -C "${work}" status --porcelain`)) {
+  console.log('  nothing changed; the live site already matches this build.');
+  process.exit(0);
+}
+sh(`git -C "${work}" commit -q -m "Publish ${sourceCommit} from ${sourceBranch}"`);
+sh(`git -C "${work}" push -q origin HEAD:main`);
+
+console.log(`  published ${sourceCommit}.`);
+console.log(`  GitHub Pages usually serves it within a minute. Check https://${DOMAIN}/`);
+console.log('  If the bundle name has not changed there, the build was identical.');

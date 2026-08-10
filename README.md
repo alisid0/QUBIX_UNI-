@@ -20,9 +20,23 @@ Boards are named rather than numbered, because the running order is not settled.
 
 No additional curriculum should be generated until these gates are reviewed.
 
-## Production staging mode
+## What production serves
 
-The production root is a curriculum-review questionnaire, not a released course. It stores draft answers only in the reviewer's browser and does not update Supabase or curriculum status. The learner-facing *Variables and Rates of Change* lesson is available through `?prototype=variables-and-rates`. The former `?prototype=change-lab` address remains as a compatibility alias. During local development, use `?mode=review` to open the staging workspace.
+The live site at `https://qubix.university/` is **the course**. Until 2026-08-10
+the production root was a curriculum-review questionnaire and the lesson was
+hidden behind `?prototype=variables-and-rates`; anyone opening the site got a
+review form. That was right while the deployed site existed to be reviewed rather
+than used, and wrong once it did not.
+
+| Address | What it opens |
+|---|---|
+| `/` | the course: Home, then the boards |
+| `?mode=review` | the Approver, a review questionnaire, answers kept in the browser only |
+| `?mode=factory` | the Factory, **local development only**, never built into production |
+
+Nine boards are live: three on variables, four built from Factory selections
+(*What a Button Does*, *A Number In, A Number Out*, *Area on the Grid*,
+*The Coordinate Plane*), and two on rates. Nothing here is approved curriculum.
 
 ## Local development
 
@@ -31,9 +45,28 @@ npm install
 npm run dev
 ```
 
+`predev` and `prebuild` run `scripts/build-pilot.mjs`, which writes the learner's
+copy of the Factory-built boards from the founder's selections. It cannot fall
+behind, and its output is committed so a fresh checkout builds without it.
+
+## Deployment
+
+```bash
+npm run deploy
+```
+
+Builds here, then pushes the compiled output to the public
+[`qubix-university-site`](https://github.com/alisid0/qubix-university-site)
+repository, which GitHub Pages serves at `qubix.university`. It refuses to run if
+the working tree is dirty, if the commit author is not a GitHub account, or if
+the bundle carries a gated draft board, an authoring note or a rejection reason.
+
+A push to this repository is **not** a release. Only `npm run deploy` is.
+
 ## Infrastructure
 
-See [Infrastructure Inheritance](./docs/INFRASTRUCTURE.md) before linking Vercel or applying Supabase migrations.
+See [Infrastructure Inheritance](./docs/INFRASTRUCTURE.md) for hosting, DNS, why
+the site is not on Vercel, and the Supabase boundaries.
 
 ## Private collaboration
 

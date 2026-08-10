@@ -37,4 +37,20 @@ some time: all five are built and playable in the Viewer, and the Factory holds
 selections for all fourteen. The lock now recorded is the real one, which is the
 curriculum gate on everything from *The Notation dy/dx* onward.
 
-No curriculum item is currently approved or released.
+## What is live
+
+Since 2026-08-10 the site at `https://qubix.university/` serves nine boards: the
+three variable boards, the four built from Factory selections, and the two rate
+boards. *One Answer, Not Two* is absent because it has no selections yet, so the
+functions unit ships two boards of three.
+
+**Live is not approved.** Nothing below has been marked `APPROVED` by the
+founder, and putting the pilot in front of people was a decision to test it, not
+a change of status. The gates in each record still stand, and the site says so on
+its own front page.
+
+Three of the four live Factory boards are also `gated` in their option files,
+belonging to a pilot proposal that has not been approved, and two of them use an
+`ORIGINAL` source status the declaration does not yet carry. That contradiction
+is recorded here rather than resolved quietly: the founder chose to publish
+ahead of the gate, and the gate has not moved.

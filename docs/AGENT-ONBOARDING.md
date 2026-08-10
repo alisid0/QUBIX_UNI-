@@ -38,7 +38,7 @@ Read these documents before changing curriculum or product behaviour:
 | `curriculum/03-FOUNDATIONAL-BOOKS.md` | Present anchor shelf |
 | `curriculum/04-EXTENDED-CLASSICAL-LIBRARY.md` | Candidate sources and legal gates |
 | `docs/REVIEW-PROTOCOL.md` | Founder review procedure |
-| `docs/INFRASTRUCTURE.md` | Vercel and Supabase safety boundaries |
+| `docs/INFRASTRUCTURE.md` | Hosting, DNS, and Supabase safety boundaries |
 
 If documents conflict, stop and flag the conflict. Never infer approval from an implemented screen, a merged pull request or a successful deployment.
 
@@ -74,7 +74,7 @@ Questionnaire responses currently live in browser storage only. They do not writ
 - Review workspace: `src/views/ReviewMode.svelte`.
 - Shared design system: `src/lib/styles/`.
 - Static/PWA assets: `public/`.
-- Deployment configuration: `vercel.json`.
+- Deployment: `scripts/deploy.mjs`, publishing to GitHub Pages. `vercel.json` is retained but no longer serves the site.
 - Reference-only data infrastructure: `supabase/`.
 
 The five-colour Qubix UI system in `src/lib/styles/qubix-tokens.css` is locked. New interface states should use the existing semantic tokens rather than introducing additional UI hues.
@@ -128,9 +128,13 @@ Use plain language, accessible controls, keyboard-operable actions, generous tou
 
 ## 9. Infrastructure boundaries
 
-### Vercel
+### Hosting
 
-This repository must have its own Vercel project. Never copy or restore Strata's `.vercel/project.json`, and never deploy Qubix University over the Strata project. Adding a custom domain is a separate founder decision.
+The site is served by GitHub Pages from `alisid0/qubix-university-site`, which is **public**. This repository is private and must stay so: it carries the Factory, the gated draft boards and the records.
+
+Publish only with `npm run deploy`. Never push source to the public repository, never make this one public to avoid the two-repository split, and never assume a push here deployed anything. See `docs/INFRASTRUCTURE.md` for the DNS and for why the site is no longer on Vercel.
+
+The Vercel project still exists and is untouched. Never copy or restore Strata's `.vercel/project.json`, and never deploy Qubix University over the Strata project.
 
 ### Supabase
 
