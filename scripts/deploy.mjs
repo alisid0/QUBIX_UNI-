@@ -25,7 +25,8 @@ import { join } from 'node:path';
 const SITE_REPO = 'https://github.com/alisid0/qubix-university-site.git';
 const DOMAIN = 'qubix.university';
 
-const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', ...opts }).trim();
+// execSync returns null when stdio is inherited, so there is nothing to trim.
+const sh = (cmd, opts = {}) => (execSync(cmd, { encoding: 'utf8', ...opts }) || '').trim();
 const die = (msg, fix) => {
   console.error(`\n  Refusing to deploy: ${msg}`);
   if (fix) console.error(`  ${fix}`);
