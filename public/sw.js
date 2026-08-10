@@ -1,4 +1,4 @@
-const CACHE = 'qubix-university-v1';
+const CACHE = 'qubix-university-v2';
 
 const CORE = [
   './',

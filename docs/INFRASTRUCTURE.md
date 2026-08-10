@@ -2,22 +2,21 @@
 
 ## Hosting
 
-The site is served by **GitHub Pages**, not Vercel. Changed 2026-08-10.
+The site is served by the dedicated **Vercel** project `qubix-university`.
+Changed back from GitHub Pages on 2026-08-10 by founder instruction.
 
 - Live at `https://qubix.university/`
 - Source: `alisid0/QUBIX_UNI-`, private, this repository
-- Published output: `alisid0/qubix-university-site`, **public**, built files only
-- Publish with `npm run deploy`, which builds here and pushes to that repository
+- Vercel team: `ali-s-projectz`
+- Custom domain: `qubix.university`
+- Publish with `npm run deploy`, which verifies the bundle and deploys to Vercel
 
-There are two repositories because GitHub Pages will not serve a private
-repository on a free account, and the source must stay private: it carries the
-Factory, the gated draft boards and the records. The public repository holds the
-compiled bundle and nothing else, and `scripts/deploy.mjs` asserts before every
-push that no gated board, authoring note or rejection reason is in it. Never
-commit source to the public repository, and never make this one public to avoid
-the split.
+The source repository remains private because it carries the Factory, gated
+drafts and authoring records. `scripts/deploy.mjs` asserts before every release
+that no gated board, authoring note or rejection reason enters the learner
+bundle, and refuses to deploy if the checkout is linked to another Vercel project.
 
-### Why not Vercel
+### Earlier Vercel incident
 
 On 2026-08-10 the Vercel project stopped completing deployments. Eight in a row
 hung at status `UNKNOWN` with no logs and no error. That included prebuilt
@@ -36,29 +35,30 @@ because they were invisible from the command line:
   to `vercel.com/sso-api`. This is also why the CLI could not read deployment
   status. Since disabled.
 
-Nothing was deleted. The Vercel project, its history and `vercel.json` are all
-still there, so returning is a matter of removing four DNS records.
+The original eight stuck deployments remain in project history. A later
+deployment reached `READY`, the commit-author mismatch and team-wide deployment
+protection had been corrected, and the founder instructed the project to return
+to Vercel. Do not treat an `UNKNOWN` deployment as successful; verify both the
+deployment status and the live domain after every release.
 
 ### DNS
 
 `qubix.university` is registered with Vercel and uses Vercel's nameservers, so
 its records are managed with `vercel dns`.
 
-- Four `A` records at the apex point to GitHub Pages: `185.199.108-111.153`
-- The project's default `ALIAS` records still exist and are overridden by those
-- The `CAA` records already permit `letsencrypt.org`, which is what GitHub Pages
-  uses to issue its certificate
+- The four temporary GitHub Pages `A` records must remain absent.
+- The apex uses Vercel's default `ALIAS` record.
+- The domain must be assigned to `qubix-university`, never `strata`.
 
-The domain was **not** removed from the Vercel team. `vercel domains remove`
-gives up ownership of a domain Vercel is the registrar for, which is not a thing
-to run to change where a site is hosted. Strata's project and deployments are
-untouched; it simply no longer answers on this domain.
+The domain stays registered to the Vercel team. `vercel domains remove` gives up
+ownership and must not be used to move it between projects; project assignment
+uses `vercel domains add --force` with the exact destination project.
 
 ### Inherited from Strata
 
-- `vercel.json`, retained
+- `vercel.json`, active security and cache headers
 - Vite production build
-- Vercel Analytics integration, which now 404s since the site is not on Vercel
+- Vercel Analytics integration
 - PWA assets and service worker
 
 `.vercel/project.json` was deliberately not inherited. The Strata copy pointed at

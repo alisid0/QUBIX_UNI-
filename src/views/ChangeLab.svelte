@@ -336,27 +336,27 @@
   {#if finished}
     <main class="complete-screen">
       <div class="complete-mark" aria-hidden="true">✓</div>
-      <span class="micro-label">INTRODUCTION COMPLETE</span>
-      <h1>You calculated an<br/>instantaneous rate of change.</h1>
-      <p>Five small moves. Variable, change, dependence, average rate, local rate.</p>
+      <span class="micro-label">COURSE COMPLETE</span>
+      <h1>You connected variables,<br/>functions, geometry and rates.</h1>
+      <p>{boards.length} subtopics, from assigning a value to approaching a rate at one point.</p>
       <div class="summary-chain" aria-label="Concept sequence">
-        <span>x</span><i>→</i><span>Δx</span><i>→</i><span>Δy</span><i>→</i><span>Δy/Δx</span><i>→</i><span>4</span>
+        <span>x</span><i>→</i><span>f(x)</span><i>→</i><span>(x, y)</span><i>→</i><span>Δy/Δx</span><i>→</i><span>local rate</span>
       </div>
       <button class="primary wide" on:click={restart}>Begin again</button>
     </main>
   {:else}
-    <section class="progress-wrap" aria-label={`Topic ${boardIndex + 1} of ${boards.length}`}>
+    <section class="progress-wrap" aria-label={`Subtopic ${boardIndex + 1} of ${boards.length}`}>
       <label class="topic-selector">
-        <span>SELECT TOPIC</span>
-        <select aria-label="Select a topic" value={boardIndex} on:change={chooseBoard}>
-          {#each boards as topic, index}<option value={index}>{index + 1}. {topic.title}</option>{/each}
+        <span>SELECT SUBTOPIC</span>
+        <select aria-label="Select a subtopic" value={boardIndex} on:change={chooseBoard}>
+          {#each boards as subtopic, index}<option value={index}>{index + 1}. {subtopic.title}</option>{/each}
         </select>
       </label>
       <div class="progress-copy">
-        <span>Topic {boardIndex + 1} of {boards.length} · section {floorIndex + 1} of {board.floors.length}</span>
+        <span>Subtopic {boardIndex + 1} of {boards.length} · section {floorIndex + 1} of {board.floors.length}</span>
         <span>{Math.round(((boardIndex + floorIndex / board.floors.length) / boards.length) * 100)}%</span>
       </div>
-      <div class="segments">
+      <div class="segments" style={`grid-template-columns: repeat(${boards.length}, minmax(0, 1fr))`}>
         {#each boards as _, index}
           <span class:complete={index < boardIndex} class:active={index === boardIndex}></span>
         {/each}
@@ -684,7 +684,7 @@
             {:else if boardIndex === boards.length - 1}
               Finish
             {:else}
-              Next topic
+              Next subtopic
             {/if}
             <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
           </button>
@@ -714,7 +714,7 @@
   .topic-selector span { color: var(--qx-accent-text); font-size: 9px; letter-spacing: .12em; font-weight: 900; }
   .topic-selector select { width: 100%; min-height: 40px; border: 1px solid var(--qx-border-2); border-radius: 11px; background: var(--qx-surface); color: var(--qx-text); padding: 0 34px 0 11px; font-size: 12px; font-weight: 800; cursor: pointer; }
   .progress-copy { display: flex; justify-content: space-between; color: var(--qx-text-dim); font-size: 11px; font-weight: 800; margin-bottom: 7px; }
-  .segments { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .segments { display: grid; gap: 5px; }
   .segments span { height: 4px; border-radius: 9px; background: var(--qx-surface-3); transition: background .2s, transform .2s; }
   .segments span.complete { background: var(--qx-green); }
   .segments span.active { background: var(--qx-accent); transform: scaleY(1.35); }

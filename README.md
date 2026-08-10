@@ -55,11 +55,12 @@ behind, and its output is committed so a fresh checkout builds without it.
 npm run deploy
 ```
 
-Builds here, then pushes the compiled output to the public
-[`qubix-university-site`](https://github.com/alisid0/qubix-university-site)
-repository, which GitHub Pages serves at `qubix.university`. It refuses to run if
-the working tree is dirty, if the commit author is not a GitHub account, or if
-the bundle carries a gated draft board, an authoring note or a rejection reason.
+Builds here, verifies that the learner bundle contains no Factory or gated-draft
+material, then publishes to the dedicated `qubix-university` Vercel project.
+The custom domain is `qubix.university`. The release refuses to run if the
+working tree is dirty, the checkout is linked to another Vercel project, the
+commit author is not the source-repository owner, or protected authoring material
+is present in the bundle.
 
 A push to this repository is **not** a release. Only `npm run deploy` is.
 

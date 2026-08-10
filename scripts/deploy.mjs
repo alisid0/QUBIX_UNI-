@@ -1,28 +1,13 @@
-// Production deploy: build here, publish to the public site repository, which
-// GitHub Pages serves at qubix.university.
-//
-// Why not Vercel. On 2026-08-10 the Vercel project stopped completing
-// deployments. Eight in a row hung at status UNKNOWN with no logs and no error,
-// including prebuilt deploys, which have no build step to fail, and a deploy to
-// a brand-new project, which has no configuration to be wrong. The cause was
-// never identified from the CLI. The project, its history and vercel.json are
-// left in place; nothing was deleted.
-//
-// Why two repositories. GitHub Pages will not serve a private repository on a
-// free account, and the source must stay private: it carries the Factory, the
-// gated draft boards and the records. So the built output is pushed to
-// alisid0/qubix-university-site, which is public and holds nothing else.
-//
-// Deploying is not casual here. A push is not a release, the Factory is
-// authoring material rather than curriculum, and gated drafts must not reach a
-// learner. This refuses to run rather than trusting whoever typed the command.
+// Production deploy to the dedicated Qubix University Vercel project.
+// The Factory is authoring material rather than curriculum, and gated drafts
+// must not reach a learner. This refuses to run unless the working tree, linked
+// project and public bundle are all verified.
 
 import { execSync } from 'node:child_process';
-import { existsSync, mkdtempSync, cpSync, writeFileSync, readdirSync, readFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const SITE_REPO = 'https://github.com/alisid0/qubix-university-site.git';
+const PROJECT = 'qubix-university';
 const DOMAIN = 'qubix.university';
 
 // execSync returns null when stdio is inherited, so there is nothing to trim.
@@ -41,11 +26,21 @@ if (sh('git status --porcelain')) {
 const sourceCommit = sh('git rev-parse --short HEAD');
 const sourceBranch = sh('git rev-parse --abbrev-ref HEAD');
 
-// 2. The commit author must match the owner of the configured private source
-//    remote. This used to call `gh api user`, which made deployment depend on a
-//    separately installed and authenticated GitHub CLI even when Git itself was
-//    already authenticated. The remote is the release authority here; the push
-//    below remains the final authentication check.
+// 2. Refuse to deploy through an inherited or accidentally linked project. The
+// Strata project once used this domain and must remain separate.
+const projectFile = join('.vercel', 'project.json');
+if (!existsSync(projectFile)) {
+  die('this checkout is not linked to a Vercel project.',
+      `Run "vercel link --project ${PROJECT}" and verify the account first.`);
+}
+const linkedProject = JSON.parse(readFileSync(projectFile, 'utf8'));
+if (linkedProject.projectName !== PROJECT) {
+  die(`this checkout is linked to ${linkedProject.projectName || 'an unknown project'}, not ${PROJECT}.`,
+      'Relink the checkout to the dedicated Qubix University project.');
+}
+
+// 3. The commit author must match the owner of the configured private source
+// remote. The remote and the release push are the authentication checks.
 const sourceRemote = sh('git remote get-url origin');
 const ownerMatch = sourceRemote.match(/github\.com[/:]([^/]+)\//i);
 if (!ownerMatch) {
@@ -61,16 +56,15 @@ if (!email.includes(account)) {
       '  then make a commit and try again.');
 }
 
-// 3. Build.
+// 4. Build.
 console.log('  building…');
 const packageRunner = process.env.npm_execpath
   ? `${JSON.stringify(process.execPath)} ${JSON.stringify(process.env.npm_execpath)} run build`
   : 'npm run build';
 sh(packageRunner, { stdio: 'inherit' });
 
-// 4. Nothing that belongs to authoring may reach a public repository. This is
-//    the check that matters most: the site repo is public, so anything in the
-//    bundle is readable by anyone.
+// 5. Nothing that belongs to authoring may reach a public deployment. The
+// project source stays private, but browser bundles are public by definition.
 const assets = join('dist', 'assets');
 const js = readdirSync(assets).filter(n => n.endsWith('.js'))
   .map(n => readFileSync(join(assets, n), 'utf8')).join('\n');
@@ -83,47 +77,24 @@ const mustNotShip = [
   ['a rejection reason', 'Not selected;'],
   ['the Factory chrome', 'authoring options']
 ];
-const leaked = mustNotShip.filter(([, s]) => js.includes(s));
+const leaked = mustNotShip.filter(([, text]) => js.includes(text));
 if (leaked.length) {
-  die(`the bundle carries ${[...new Set(leaked.map(([w]) => w))].join(', ')}.`,
-      `Found: ${leaked.map(([, s]) => JSON.stringify(s)).join(', ')}\n` +
+  die(`the bundle carries ${[...new Set(leaked.map(([what]) => what))].join(', ')}.`,
+      `Found: ${leaked.map(([, text]) => JSON.stringify(text)).join(', ')}\n` +
       '  Learner content is generated by scripts/build-pilot.mjs. Anything else\n' +
       '  reaching the bundle means something imported the Factory directly.');
 }
 console.log(`  bundle clean, ${(js.length / 1024).toFixed(0)} kB of JavaScript checked`);
 
-// 5. Publish. The site repo is replaced wholesale rather than merged, so a file
-//    deleted here disappears there instead of lingering.
-const work = mkdtempSync(join(tmpdir(), 'qu-site-'));
-console.log('  publishing…');
-sh(`git clone --depth 1 -q ${SITE_REPO} "${work}"`);
-for (const entry of readdirSync(work)) {
-  if (entry !== '.git') sh(`git -C "${work}" rm -rq --ignore-unmatch "${entry}"`);
-}
-cpSync('dist', work, { recursive: true });
-writeFileSync(join(work, 'CNAME'), `${DOMAIN}\n`);
-writeFileSync(join(work, '.nojekyll'), '');
-writeFileSync(join(work, 'README.md'),
-`# Qubix University — compiled site
+// 6. Publish. Use the active package manager so the command works from npm and
+// pnpm without requiring a globally installed Vercel CLI.
+console.log('  publishing to Vercel…');
+const execPath = JSON.stringify(process.execPath);
+const packagePath = process.env.npm_execpath && JSON.stringify(process.env.npm_execpath);
+const vercel = packagePath && /pnpm/i.test(process.env.npm_execpath)
+  ? `${execPath} ${packagePath} dlx vercel@latest`
+  : 'npx --yes vercel@latest';
+sh(`${vercel} deploy --prod --yes`, { stdio: 'inherit' });
 
-Built output only. Source lives in the private QUBIX_UNI- repository and is
-published from there by \`npm run deploy\`. Do not edit anything here by hand.
-
-Served by GitHub Pages at https://${DOMAIN}/
-
-The Factory, the gated draft boards, the rejected variants and the authoring
-notes are deliberately absent, and that is asserted at build time rather than
-left to trust.
-`);
-
-sh(`git -C "${work}" add -A`);
-if (!sh(`git -C "${work}" status --porcelain`)) {
-  console.log('  nothing changed; the live site already matches this build.');
-  process.exit(0);
-}
-sh(`git -C "${work}" commit -q -m "Publish ${sourceCommit} from ${sourceBranch}"`);
-sh(`git -C "${work}" push -q origin HEAD:main`);
-
-console.log(`  published ${sourceCommit}.`);
-console.log(`  GitHub Pages usually serves it within a minute. Check https://${DOMAIN}/`);
-console.log('  If the bundle name has not changed there, the build was identical.');
+console.log(`  deployed ${sourceCommit} from ${sourceBranch}.`);
+console.log(`  verify https://${DOMAIN}/ and its response security headers.`);
