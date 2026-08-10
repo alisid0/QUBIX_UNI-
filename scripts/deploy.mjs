@@ -41,20 +41,23 @@ if (sh('git status --porcelain')) {
 const sourceCommit = sh('git rev-parse --short HEAD');
 const sourceBranch = sh('git rev-parse --abbrev-ref HEAD');
 
-// 2. The commit author must be an account GitHub knows. Vercel used to block on
-//    this silently; the site repo will simply reject an unknown pusher. Either
-//    way it is cheaper to catch here.
-let account;
-try {
-  account = JSON.parse(sh('gh api user')).login;
-} catch {
-  die('cannot reach GitHub.', 'Run `gh auth login`.');
+// 2. The commit author must match the owner of the configured private source
+//    remote. This used to call `gh api user`, which made deployment depend on a
+//    separately installed and authenticated GitHub CLI even when Git itself was
+//    already authenticated. The remote is the release authority here; the push
+//    below remains the final authentication check.
+const sourceRemote = sh('git remote get-url origin');
+const ownerMatch = sourceRemote.match(/github\.com[/:]([^/]+)\//i);
+if (!ownerMatch) {
+  die('the source remote is not a recognised GitHub repository.',
+      `Configured origin: ${sourceRemote || '(none)'}`);
 }
+const account = ownerMatch[1];
 const email = sh('git log -1 --format=%ae');
 if (!email.includes(account)) {
   die(`the last commit is authored by ${email}, which is not ${account}.`,
       'Fix with:\n' +
-      `    git config --global user.email "$(gh api user --jq '"\\(.id)+\\(.login)@users.noreply.github.com"')"\n` +
+      `    git config user.email "<id>+${account}@users.noreply.github.com"\n` +
       '  then make a commit and try again.');
 }
 
