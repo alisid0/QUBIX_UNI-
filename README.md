@@ -66,8 +66,8 @@ A push to this repository is **not** a release. Only `npm run deploy` is.
 
 ## Infrastructure
 
-See [Infrastructure Inheritance](./docs/INFRASTRUCTURE.md) for hosting, DNS, why
-the site is not on Vercel, and the Supabase boundaries.
+See [Infrastructure Inheritance](./docs/INFRASTRUCTURE.md) for hosting, DNS, the
+deployment incident of 2026-08-10, and the Supabase boundaries.
 
 ## Private collaboration
 
