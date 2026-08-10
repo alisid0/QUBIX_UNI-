@@ -1,9 +1,10 @@
 import { writable, derived, get } from 'svelte/store';
 import { boards } from '../content/course.js';
 
-// Quiet tracking, per the founder decision of 2026-08-09: record everything,
-// display no score. There is deliberately no streak, no points and no league
-// here. What is recorded is factual — what was cleared, when, and whether it
+// The founder introduced XPs on 2026-08-10. Rewards are derived from factual
+// progress so refreshing, replaying or migrating cannot duplicate them. There
+// is still no streak or league: XPs signify learning progress, not social rank.
+// The underlying record stays factual — what was cleared, when, and whether it
 // took more than one attempt — so a recall view can be built later without
 // having to invent history that was never captured.
 //
@@ -17,6 +18,11 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 export const RECALL_INTERVALS_DAYS = [1, 7, 21];
 
 export const TOTAL_SECTIONS = boards.reduce((n, b) => n + b.floors.length, 0);
+export const XP_RULES = Object.freeze({ section: 10, firstTry: 5, subtopic: 20, course: 50 });
+
+const TOTAL_CHECKS = boards.reduce((boardTotal, board) =>
+  boardTotal + board.floors.reduce((floorTotal, floor) =>
+    floorTotal + (floor.exercises?.length || (floor.exercise ? 1 : 0)), 0), 0);
 
 function empty() {
   return { boardIndex: 0, floorIndex: 0, completed: {}, attempts: {}, startedAt: null };
@@ -87,7 +93,7 @@ function createIfBrowser() {
   return create();
 }
 
-// Facts about where the learner is. No judgement, no score.
+// Facts about where the learner is, kept separate from the XP reward summary.
 export const summary = derived(progress, s => {
   const doneCount = Object.keys(s.completed).filter(k => s.completed[k]).length;
   const perBoard = boards.map((b, i) => {
@@ -111,6 +117,43 @@ export const summary = derived(progress, s => {
     totalSections: TOTAL_SECTIONS,
     percent: Math.round((doneCount / TOTAL_SECTIONS) * 100),
     perBoard
+  };
+});
+
+// One stable score computed from completion facts. Attempt keys are
+// board:section:check; a first-try bonus counts only after its section is also
+// complete, so backing out of a solved check cannot award partial XP.
+export const xpSummary = derived(progress, s => {
+  const completedSections = Object.keys(s.completed).filter(key => s.completed[key]);
+  const completedSet = new Set(completedSections);
+  const firstTryChecks = Object.entries(s.attempts).filter(([key, attempt]) => {
+    const [boardIndex, floorIndex] = key.split(':');
+    return attempt?.firstTime && completedSet.has(`${boardIndex}:${floorIndex}`);
+  }).length;
+  const completedSubtopics = boards.filter((board, boardIndex) =>
+    board.floors.every((_, floorIndex) => s.completed[`${boardIndex}:${floorIndex}`])).length;
+  const courseComplete = completedSections.length === TOTAL_SECTIONS;
+
+  const sectionXP = completedSections.length * XP_RULES.section;
+  const masteryXP = firstTryChecks * XP_RULES.firstTry;
+  const milestoneXP = completedSubtopics * XP_RULES.subtopic;
+  const courseXP = courseComplete ? XP_RULES.course : 0;
+  const total = sectionXP + masteryXP + milestoneXP + courseXP;
+  const maximum = TOTAL_SECTIONS * XP_RULES.section
+    + TOTAL_CHECKS * XP_RULES.firstTry
+    + boards.length * XP_RULES.subtopic
+    + XP_RULES.course;
+
+  return {
+    total,
+    maximum,
+    sectionXP,
+    masteryXP,
+    milestoneXP,
+    courseXP,
+    firstTryChecks,
+    completedSubtopics,
+    nextReward: courseComplete ? null : XP_RULES.section
   };
 });
 

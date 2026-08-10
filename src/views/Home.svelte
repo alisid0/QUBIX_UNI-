@@ -1,6 +1,6 @@
 <script>
   import { theme } from '../lib/stores/theme.js';
-  import { progress, summary } from '../lib/stores/progress.js';
+  import { progress, summary, xpSummary, XP_RULES } from '../lib/stores/progress.js';
   import { view } from '../lib/stores/view.js';
   import { boards, TOTAL_SECTIONS } from '../lib/content/course.js';
   import AuthButton from '../lib/components/AuthButton.svelte';
@@ -73,6 +73,7 @@
       </span>
     </div>
     <div class="header-actions">
+      <span class="xp-pill" aria-label={`${$xpSummary.total} experience points`}><b>{$xpSummary.total}</b> XP</span>
       <AuthButton />
       <button class="icon-btn" aria-label="Toggle colour theme" on:click={() => theme.toggle()}>
         {#if $theme === 'dark'}◑{:else}◐{/if}
@@ -99,6 +100,16 @@
         <span style={`width:${($summary.doneCount / $summary.totalSections) * 100}%`}></span>
       </div>
       <p class="count">{$summary.doneCount} of {$summary.totalSections} sections</p>
+
+      <div class="xp-card" aria-label={`${$xpSummary.total} of ${$xpSummary.maximum} possible experience points`}>
+        <span class="xp-total"><small>YOUR PROGRESS</small><strong>{$xpSummary.total} XP</strong></span>
+        <span class="xp-track"><i style={`width:${($xpSummary.total / $xpSummary.maximum) * 100}%`}></i></span>
+        <span class="xp-rules">
+          <small>+{XP_RULES.section} section</small>
+          <small>+{XP_RULES.firstTry} first try</small>
+          <small>+{XP_RULES.subtopic} subtopic</small>
+        </span>
+      </div>
 
       <button class="primary" on:click={resume}>
         {$summary.started ? 'Resume' : 'Start'}
@@ -175,6 +186,8 @@
   .home-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px clamp(16px, 4vw, 40px); border-bottom: 1px solid var(--qx-border); }
   .identity { display: flex; align-items: center; gap: 11px; }
   .header-actions { display: flex; align-items: center; gap: 8px; }
+  .xp-pill { min-height: 36px; padding: 0 11px; border: 1px solid var(--qx-border-2); border-radius: 999px; background: var(--qx-accent-soft); color: var(--qx-accent-text); display: flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 900; letter-spacing: .08em; white-space: nowrap; }
+  .xp-pill b { font-size: 12px; }
   .mark { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--qx-accent); display: grid; place-items: center; color: var(--qx-accent-text); font: 800 19px/1 Georgia, serif; }
   .stack { display: flex; flex-direction: column; gap: 2px; }
   .stack b { font-size: 10px; letter-spacing: .17em; }
@@ -190,6 +203,14 @@
   .track { height: 6px; border-radius: 9px; background: var(--qx-surface-3); overflow: hidden; margin-top: 4px; }
   .track span { display: block; height: 100%; background: var(--qx-accent); transition: width .25s; }
   .count { color: var(--qx-text-faint); font-size: 11px; font-weight: 800; letter-spacing: .05em; }
+  .xp-card { margin-top: 2px; padding: 12px; border: 1px solid var(--qx-border); border-radius: 14px; background: var(--qx-surface-2); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 8px 14px; }
+  .xp-total { display: flex; flex-direction: column; gap: 2px; }
+  .xp-total small { color: var(--qx-text-faint); font-size: 8px; letter-spacing: .12em; font-weight: 900; }
+  .xp-total strong { color: var(--qx-accent-text); font-size: 17px; }
+  .xp-track { height: 7px; border-radius: 9px; overflow: hidden; background: var(--qx-surface-3); }
+  .xp-track i { display: block; height: 100%; border-radius: inherit; background: var(--qx-accent); transition: width .25s; }
+  .xp-rules { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+  .xp-rules small { padding: 4px 7px; border-radius: 999px; background: var(--qx-surface); color: var(--qx-text-dim); font-size: 8px; font-weight: 800; }
   .primary { margin-top: 6px; min-height: 50px; border: 0; border-radius: 14px; background: var(--qx-accent); color: #fffaf2; font-weight: 900; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
   .primary svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
   .quiet { border: 0; background: none; color: var(--qx-text-faint); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px; }
@@ -242,6 +263,11 @@
     .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .topic-card { min-height: 164px; padding: 13px; }
     .modal-card { padding: 16px; border-radius: 18px; }
+  }
+  @media (max-width: 460px) {
+    .home-header { padding-left: 12px; padding-right: 12px; }
+    .identity .stack { display: none; }
+    .xp-pill { padding: 0 8px; }
   }
   @media (max-width: 350px) { .topic-grid { grid-template-columns: 1fr; } }
 </style>

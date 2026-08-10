@@ -1,10 +1,10 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
   import { theme } from '../lib/stores/theme.js';
   import { boards, declaredBoards } from '../lib/content/course.js';
   import Stage from '../lib/components/Stage.svelte';
-  import { progress } from '../lib/stores/progress.js';
+  import { progress, xpSummary } from '../lib/stores/progress.js';
   import { view } from '../lib/stores/view.js';
 
   // Closest first. The slider then reads the natural way round: dragging right
@@ -36,6 +36,9 @@
   let finished = false;
   let hydrated = false;
   let pointerStart = null;
+  let previousXP = null;
+  let xpGain = 0;
+  let xpTimer = null;
 
   $: board = boards[boardIndex];
   $: floorData = board?.floors[floorIndex] || { text: '' };
@@ -123,6 +126,17 @@
 
   $: if (hydrated) progress.setPosition(boardIndex, floorIndex);
   $: if (hydrated) progress.setCompleted(completed);
+  $: if (hydrated) {
+    const totalXP = $xpSummary.total;
+    if (previousXP !== null && totalXP > previousXP) {
+      xpGain = totalXP - previousXP;
+      clearTimeout(xpTimer);
+      xpTimer = setTimeout(() => { xpGain = 0; }, 2200);
+    }
+    previousXP = totalXP;
+  }
+
+  onDestroy(() => clearTimeout(xpTimer));
 
   function advance() {
     // A floor with unanswered checks opens them instead of moving on, and works
@@ -324,14 +338,19 @@
       <span class="brand">QUBIX UNIVERSITY</span>
       <span class="lab-name">Variables and rates of change</span>
     </div>
-    <button class="icon-btn" aria-label="Toggle colour theme" on:click={() => theme.toggle()}>
-      {#if $theme === 'dark'}
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
-      {:else}
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-      {/if}
-    </button>
+    <div class="lab-tools">
+      <span class="xp-badge" aria-label={`${$xpSummary.total} experience points`}><b>{$xpSummary.total}</b> XP</span>
+      <button class="icon-btn" aria-label="Toggle colour theme" on:click={() => theme.toggle()}>
+        {#if $theme === 'dark'}
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+        {:else}
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        {/if}
+      </button>
+    </div>
   </header>
+
+  {#if xpGain}<div class="xp-toast" role="status">+{xpGain} XP</div>{/if}
 
   {#if finished}
     <main class="complete-screen">
@@ -339,6 +358,7 @@
       <span class="micro-label">COURSE COMPLETE</span>
       <h1>You connected variables,<br/>functions, geometry and rates.</h1>
       <p>{boards.length} subtopics, from assigning a value to approaching a rate at one point.</p>
+      <strong class="complete-xp">{$xpSummary.total} XP earned</strong>
       <div class="summary-chain" aria-label="Concept sequence">
         <span>x</span><i>→</i><span>f(x)</span><i>→</i><span>(x, y)</span><i>→</i><span>Δy/Δx</span><i>→</i><span>local rate</span>
       </div>
@@ -702,12 +722,18 @@
   }
   button, input { font: inherit; }
   button { -webkit-tap-highlight-color: transparent; }
-  .lab-header { display: grid; grid-template-columns: auto 1fr 42px; gap: 10px; align-items: center; min-height: 46px; }
+  .lab-header { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; min-height: 46px; }
   .brand-lockup { display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .brand { color: var(--qx-accent); font-size: 11px; font-weight: 900; letter-spacing: .17em; }
   .lab-name { color: var(--qx-text-dim); font-size: 12px; font-weight: 700; }
   .topics-button { min-height: 40px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-accent-text); display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 900; cursor: pointer; }
   .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-text); display: grid; place-items: center; cursor: pointer; }
+  .lab-tools { display: flex; align-items: center; gap: 7px; }
+  .xp-badge { min-height: 38px; padding: 0 10px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-accent-soft); color: var(--qx-accent-text); display: flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 900; letter-spacing: .07em; white-space: nowrap; }
+  .xp-badge b { font-size: 12px; }
+  .xp-toast { position: fixed; z-index: 80; top: max(70px, calc(env(safe-area-inset-top) + 58px)); left: 50%; transform: translateX(-50%); padding: 9px 15px; border-radius: 999px; background: var(--qx-green); color: #fff; box-shadow: var(--qx-shadow-card); font-size: 13px; font-weight: 900; animation: xp-pop .24s ease-out; }
+  .complete-xp { display: inline-flex; margin-top: 14px; padding: 8px 12px; border-radius: 999px; background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 13px; }
+  @keyframes xp-pop { from { opacity: 0; transform: translate(-50%, -8px) scale(.92); } }
   .icon-btn svg, .board-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
   .progress-wrap { padding: 2px 4px; }
   .topic-selector { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; margin-bottom: 10px; }
