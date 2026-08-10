@@ -1,5 +1,6 @@
 import { writable, derived, get } from 'svelte/store';
 import { boards } from '../content/course.js';
+import { supabase } from '../supabase.js';
 
 // The founder introduced XPs on 2026-08-10. Rewards are derived from factual
 // progress so refreshing, replaying or migrating cannot duplicate them. There
@@ -17,6 +18,13 @@ const LEGACY_KEY = 'qubix-university-variables-rates-v3';
 const DAY_MS = 24 * 60 * 60 * 1000;
 export const RECALL_INTERVALS_DAYS = [1, 7, 21];
 
+export const cloudProgressStatus = writable({ state: supabase ? 'connecting' : 'local', message: '' });
+
+let replaceFromCloud = () => {};
+let cloudUser = null;
+let cloudReady = false;
+let cloudSaveTimer = null;
+
 export const TOTAL_SECTIONS = boards.reduce((n, b) => n + b.floors.length, 0);
 export const XP_RULES = Object.freeze({ section: 10, firstTry: 5, subtopic: 20, course: 50 });
 
@@ -25,24 +33,38 @@ const TOTAL_CHECKS = boards.reduce((boardTotal, board) =>
     floorTotal + (floor.exercises?.length || (floor.exercise ? 1 : 0)), 0), 0);
 
 function empty() {
-  return { boardIndex: 0, floorIndex: 0, completed: {}, attempts: {}, startedAt: null };
+  return { boardIndex: 0, floorIndex: 0, completed: {}, attempts: {}, startedAt: null, updatedAt: 0 };
+}
+
+function normalize(state) {
+  const base = empty();
+  const value = state && typeof state === 'object' ? state : {};
+  return {
+    ...base,
+    ...value,
+    boardIndex: Number.isInteger(value.boardIndex) ? value.boardIndex : 0,
+    floorIndex: Number.isInteger(value.floorIndex) ? value.floorIndex : 0,
+    completed: value.completed && typeof value.completed === 'object' ? value.completed : {},
+    attempts: value.attempts && typeof value.attempts === 'object' ? value.attempts : {},
+    updatedAt: Number.isFinite(value.updatedAt) ? value.updatedAt : 0
+  };
 }
 
 function load() {
   const base = empty();
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...base, ...JSON.parse(raw) };
+    if (raw) return normalize(JSON.parse(raw));
     // One-time migration from the lesson's own key, so nobody loses their place.
     const legacy = localStorage.getItem(LEGACY_KEY);
     if (legacy) {
       const l = JSON.parse(legacy) || {};
-      return {
+      return normalize({
         ...base,
         boardIndex: Number.isInteger(l.boardIndex) ? l.boardIndex : 0,
         floorIndex: Number.isInteger(l.floorIndex) ? l.floorIndex : 0,
         completed: l.completed && typeof l.completed === 'object' ? l.completed : {}
-      };
+      });
     }
   } catch (_) {}
   return base;
@@ -56,26 +78,32 @@ function save(state) {
 
 function create() {
   const { subscribe, update, set } = writable(load());
-  subscribe(save);
+  subscribe(state => {
+    save(state);
+    queueCloudSave(state);
+  });
+
+  replaceFromCloud = state => set(normalize(state));
 
   return {
     subscribe,
     setPosition(boardIndex, floorIndex) {
-      update(s => ({ ...s, boardIndex, floorIndex, startedAt: s.startedAt ?? Date.now() }));
+      update(s => ({ ...s, boardIndex, floorIndex, startedAt: s.startedAt ?? Date.now(), updatedAt: Date.now() }));
     },
     setCompleted(completed) {
-      update(s => ({ ...s, completed: { ...completed } }));
+      update(s => ({ ...s, completed: { ...completed }, updatedAt: Date.now() }));
     },
     // Called once per answered check. firstTime records whether it was cleared
     // without a wrong attempt, which is the only quality signal being kept.
     recordAttempt(key, { tries, firstTime }) {
       update(s => ({
         ...s,
-        attempts: { ...s.attempts, [key]: { tries, firstTime, at: Date.now() } }
+        attempts: { ...s.attempts, [key]: { tries, firstTime, at: Date.now() } },
+        updatedAt: Date.now()
       }));
     },
     reset() {
-      set(empty());
+      set({ ...empty(), updatedAt: Date.now() });
       try {
         localStorage.removeItem(LEGACY_KEY);
       } catch (_) {}
@@ -84,6 +112,75 @@ function create() {
 }
 
 export const progress = createIfBrowser();
+
+function chooseNewest(localState, remoteState) {
+  const local = normalize(localState);
+  const remote = normalize(remoteState);
+  if (remote.updatedAt > local.updatedAt) return remote;
+  if (local.updatedAt > remote.updatedAt) return local;
+
+  const localDone = Object.values(local.completed).filter(Boolean).length;
+  const remoteDone = Object.values(remote.completed).filter(Boolean).length;
+  return remoteDone > localDone ? remote : local;
+}
+
+async function writeCloud(state) {
+  if (!supabase || !cloudUser) return false;
+  const { error } = await supabase
+    .from('learner_progress')
+    .upsert({ user_id: cloudUser.id, state: normalize(state) }, { onConflict: 'user_id' });
+
+  if (error) {
+    cloudProgressStatus.set({ state: 'error', message: 'Progress is safe on this device, but cloud sync is unavailable.' });
+    return false;
+  }
+
+  cloudProgressStatus.set({ state: 'synced', message: 'Progress synced.' });
+  return true;
+}
+
+function queueCloudSave(state) {
+  if (!cloudReady || !cloudUser || !supabase) return;
+  clearTimeout(cloudSaveTimer);
+  cloudProgressStatus.set({ state: 'syncing', message: 'Syncing progress…' });
+  cloudSaveTimer = setTimeout(() => writeCloud(state), 350);
+}
+
+async function syncSession(session) {
+  clearTimeout(cloudSaveTimer);
+  cloudReady = false;
+  cloudUser = session?.user || null;
+
+  if (!supabase || !cloudUser) {
+    cloudProgressStatus.set({ state: 'local', message: '' });
+    return;
+  }
+
+  cloudProgressStatus.set({ state: 'syncing', message: 'Loading cloud progress…' });
+  const localState = get(progress);
+  const { data, error } = await supabase
+    .from('learner_progress')
+    .select('state')
+    .eq('user_id', cloudUser.id)
+    .maybeSingle();
+
+  if (error) {
+    cloudProgressStatus.set({ state: 'error', message: 'Progress is safe on this device, but cloud sync is unavailable.' });
+    return;
+  }
+
+  const chosen = data?.state ? chooseNewest(localState, data.state) : normalize(localState);
+  replaceFromCloud(chosen);
+  cloudReady = true;
+  await writeCloud(chosen);
+}
+
+if (typeof window !== 'undefined' && supabase) {
+  supabase.auth.getSession().then(({ data }) => syncSession(data?.session));
+  supabase.auth.onAuthStateChange((_event, session) => {
+    setTimeout(() => syncSession(session), 0);
+  });
+}
 
 function createIfBrowser() {
   if (typeof localStorage === 'undefined') {
