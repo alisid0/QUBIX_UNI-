@@ -37,6 +37,7 @@
     'accepted-line', 'accepted-list',
     // Foundations. Each carries its own line, bar or columns.
     'zoom-line', 'jug-fill', 'split-bar', 'place-columns', 'compare-two',
+    'pair-up', 'pair-mismatch', 'tally-basket', 'same-count', 'pebble-to-figure', 'figure-row',
     'table-plot-step', 'table-plot-predict', 'table-plot-sprint', 'table-rule-switch',
     'table-points', 'table-points-order', 'point-target-drill', 'point-target-shuffle',
     'curve-from-points', 'curve-rule-compare', 'curve-plot-drill', 'curve-point-check',
@@ -105,6 +106,36 @@
   let sub = { b: 4 };                       // substitute-strip
   let plate = 0;                            // rule-swap: which plate is loaded
   let mach = { x: 3 };                      // machine-single, two-machines
+  // Foundations: number.
+  let pairs = 0;                            // pair-up, pair-mismatch
+  let tallied = 0;                          // tally-basket
+  let counts = [5, 3, 4];                   // same-count
+  let pebbles = 5;                          // pebble-to-figure
+  // Tally bench. benchSeen records that the collections were once uneven, so
+  // goal 4 asks for a repair rather than being satisfied by never breaking them.
+  // Goals here stick once reached. Goal 2 wants all three level and goal 3 wants
+  // one of them larger, which cannot both be true at the same instant, so
+  // checking the present state alone made "all four" unreachable. The tiling
+  // bench had the same problem and solved it the same way.
+  let bench3 = [5, 3, 4];
+  let benchSeen = { matched: false, levelled: false, oneLarger: false, relevelled: false };
+  $: {
+    const level = bench3[0] === bench3[1] && bench3[1] === bench3[2];
+    const top = Math.max(...bench3);
+    const next = { ...benchSeen };
+    if (bench3[0] === bench3[1]) next.matched = true;
+    if (level) { next.levelled = true; if (benchSeen.oneLarger) next.relevelled = true; }
+    if (!level && bench3.filter(v => v === top).length === 1) next.oneLarger = true;
+    if (JSON.stringify(next) !== JSON.stringify(benchSeen)) benchSeen = next;
+  }
+  function tallyGoal(id, b, seen) {
+    if (id === 't1') return seen.matched;
+    if (id === 't2') return seen.levelled;
+    if (id === 't3') return seen.oneLarger;
+    if (id === 't4') return seen.relevelled;
+    return false;
+  }
+
   // Foundations: decimals.
   let zoomed = false;                       // zoom-line
   let jug = 2.4;                            // jug-fill
@@ -1075,6 +1106,77 @@
                     </div>
                   </div>
 
+                {:else if interaction.kind === 'pair-up' || interaction.kind === 'pair-mismatch'}
+                  {@const horses = interaction.kind === 'pair-mismatch' ? 4 : 5}
+                  <div class="rows">
+                    <div class="pair-rows">
+                      <div class="prow">{#each Array(5) as _, i}
+                        <button class="tok rider" class:linked={i < pairs} on:click={() => (pairs = Math.min(Math.min(5, horses), pairs + 1))} aria-label={`Rider ${i + 1}`}>🧍</button>
+                      {/each}</div>
+                      <div class="prow">{#each Array(horses) as _, i}
+                        <span class="tok horse" class:linked={i < pairs}>🐴</span>
+                      {/each}</div>
+                    </div>
+                    <p class="stage-note">
+                      {pairs === 0 ? 'Tap a rider to pair it with a horse.'
+                        : pairs < 5 && pairs === horses ? 'The horses have run out. One rider is left standing, so they do not match.'
+                        : pairs === 5 ? 'Every rider has a horse and every horse has a rider. The same amount, and nothing counted.'
+                        : `${pairs} paired so far.`}
+                    </p>
+                  </div>
+
+                {:else if interaction.kind === 'tally-basket'}
+                  <div class="rows">
+                    <div class="prow">{#each Array(7) as _, i}<span class="tok" class:faded={i < tallied}>🧍</span>{/each}</div>
+                    <button class="chip" on:click={() => (tallied = Math.min(7, tallied + 1))} disabled={tallied >= 7}>a rider passes · drop a pebble</button>
+                    <div class="basket">{#each Array(tallied) as _}<i></i>{/each}</div>
+                    <p class="stage-note">
+                      {tallied < 7 ? `${tallied} in the basket, ${7 - tallied} still to pass.`
+                        : 'The company has gone. The basket holds what it held.'}
+                      {#if tallied === 7}<b> {tallied}</b>{/if}
+                    </p>
+                  </div>
+
+                {:else if interaction.kind === 'same-count'}
+                  <div class="rows">
+                    {#each [['sheep', '🐑'], ['coins', '🪙'], ['pebbles', '⬤']] as [name, glyph], ci}
+                      <div class="coll">
+                        <small>{name}</small>
+                        <div class="prow">{#each Array(counts[ci]) as _}<span class="tok sm">{glyph}</span>{/each}</div>
+                        <span class="pm">
+                          <button on:click={() => counts = counts.map((v, i) => i === ci ? Math.max(0, v - 1) : v)} aria-label={`Fewer ${name}`}>−</button>
+                          <button on:click={() => counts = counts.map((v, i) => i === ci ? Math.min(8, v + 1) : v)} aria-label={`More ${name}`}>+</button>
+                        </span>
+                      </div>
+                    {/each}
+                    <div class="shared" class:agreed={counts[0] === counts[1] && counts[1] === counts[2]}>
+                      {counts[0] === counts[1] && counts[1] === counts[2]
+                        ? `All three match. The amount they share is ${counts[0]}.`
+                        : 'They do not match, so there is no one amount to name.'}
+                    </div>
+                  </div>
+
+                {:else if interaction.kind === 'pebble-to-figure'}
+                  <div class="rows centre">
+                    <div class="basket">{#each Array(pebbles) as _}<i></i>{/each}</div>
+                    <div class="pm">
+                      <button on:click={() => (pebbles = Math.max(0, pebbles - 1))} aria-label="Remove a pebble">−</button>
+                      <button on:click={() => (pebbles = Math.min(9, pebbles + 1))} aria-label="Add a pebble">+</button>
+                    </div>
+                    <div class="figure-big">{pebbles}</div>
+                    <p class="stage-note">The pebbles are still there. The figure only records them.</p>
+                  </div>
+
+                {:else if interaction.kind === 'figure-row'}
+                  <div class="rows">
+                    <div class="fig-row">
+                      {#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as f}
+                        <span class="fig"><b>{f}</b><em>{'•'.repeat(f)}</em></span>
+                      {/each}
+                    </div>
+                    <p class="stage-note">Ten marks, and every number ever written is made from them.</p>
+                  </div>
+
                 {:else if interaction.kind === 'zoom-line'}
                   <div class="rows">
                     <div class="numline" class:open={zoomed}>
@@ -2040,6 +2142,29 @@
                     </ul>
                   </div>
 
+                {:else if w.kind === 'tally-bench'}
+                  <div class="rows">
+                    {#each [['riders', '🧍'], ['pebbles', '⬤'], ['coins', '🪙']] as [name, glyph], ci}
+                      <div class="coll">
+                        <small>{name}{ci === 1 ? ' · covered' : ''}</small>
+                        <div class="prow">
+                          {#each Array(bench3[ci]) as _}<span class="tok sm">{ci === 1 ? '▪' : glyph}</span>{/each}
+                        </div>
+                        <span class="pm">
+                          <button on:click={() => bench3 = bench3.map((v, i) => i === ci ? Math.max(0, v - 1) : v)} aria-label={`Fewer ${name}`}>−</button>
+                          <button on:click={() => bench3 = bench3.map((v, i) => i === ci ? Math.min(8, v + 1) : v)} aria-label={`More ${name}`}>+</button>
+                        </span>
+                      </div>
+                    {/each}
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={tallyGoal(g.id, bench3, benchSeen)}>
+                          <i>{tallyGoal(g.id, bench3, benchSeen) ? '✓' : '○'}</i>{g.text}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+
                 {:else if w.kind === 'measure-bench'}
                   <div class="rows">
                     <div class="numline compare">
@@ -2475,6 +2600,28 @@
   .accept-strip b { color: var(--qx-text-faint); }
   .accept-strip.ok { border-style: solid; border-color: var(--qx-green); }
   .accept-strip.ok b { color: var(--qx-green-text); }
+
+  /* Foundations: number. */
+  .pair-rows { display: flex; flex-direction: column; gap: 14px; }
+  .prow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .tok { font-size: 24px; line-height: 1; border: 0; background: transparent; padding: 2px; cursor: default; opacity: .45; transition: opacity .12s; }
+  .tok.rider { cursor: pointer; }
+  .tok.linked { opacity: 1; }
+  .tok.faded { opacity: .3; }
+  .tok.sm { font-size: 17px; opacity: 1; }
+  .basket { display: flex; gap: 5px; flex-wrap: wrap; min-height: 26px; border: 1px dashed var(--qx-border-2); border-radius: 10px; padding: 7px 9px; }
+  .basket i { width: 13px; height: 13px; border-radius: 50%; background: var(--qx-accent); }
+  .coll { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .coll small { font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; min-width: 58px; }
+  .pm { display: flex; gap: 5px; }
+  .pm button { width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--qx-border-2); background: transparent; color: var(--qx-text); cursor: pointer; }
+  .shared { font-size: 12.5px; font-weight: 700; color: var(--qx-text-faint); border-top: 1px dashed var(--qx-border-2); padding-top: 9px; }
+  .shared.agreed { color: var(--qx-green-text); }
+  .figure-big { font-size: 54px; font-weight: 900; color: var(--qx-accent-text); line-height: 1; }
+  .fig-row { display: flex; gap: 7px; flex-wrap: wrap; }
+  .fig { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 1px solid var(--qx-border-2); border-radius: 8px; padding: 6px 8px; min-width: 30px; }
+  .fig b { font-size: 17px; color: var(--qx-accent-text); }
+  .fig em { font-style: normal; font-size: 7px; color: var(--qx-text-faint); letter-spacing: -1px; max-width: 26px; text-align: center; line-height: 1; }
 
   /* Foundations: decimals. */
   .numline { position: relative; display: flex; justify-content: space-between; align-items: flex-end; padding: 18px 6px 4px; border-bottom: 2px solid var(--qx-text-dim); }

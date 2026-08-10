@@ -104,27 +104,65 @@ export const sources = {
   },
   // De Morgan, Elements of Arithmetic, 1858, Gutenberg 68662. The shelf has
   // always listed this book with the role "prerequisite repair BBs" and nobody
-  // had opened it. Citations give the article number, which is how the book
-  // numbers itself; Book I section VI, Decimal Fractions, begins at printed
-  // page 65.
+  // had opened it.
+  //
+  // CITATION CONVENTION, and a correction. This transcription carries no page
+  // markers of any kind. D1 to D4 first cited "printed page 65" and "printed
+  // page 66", inferred from the contents table rather than read, which is the
+  // same fault corrected in T6 on 2026-08-09. Corrected 2026-08-10 to cite the
+  // article number alone, which is how the book numbers itself and is what the
+  // transcription actually carries. The contents table gives section start pages
+  // and those may be quoted as such, but no individual passage may claim one.
   //
   // Note on notation. De Morgan writes a decimal with a leading point and no
   // zero, ·7 rather than 0.7, which was ordinary in 1858 and is not now. Boards
   // built from him must write 0.7 and record the change as a modernisation.
+  //
+  // Numeration. The opening of the book builds number out of matching rather
+  // than counting: one horseman to every horse, then a pebble for each. That is
+  // a better first idea than reciting names in order, and it is his.
+  N1: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §I art. 1',
+    quote: 'Imagine a multitude of objects of the same kind assembled together; for example, a company of horsemen. One of the first things that must strike a spectator, although unused to counting, is, that to each man there is a horse. Now, though men and horses are things perfectly unlike, yet, because there is one of the first kind to every one of the second, one man to every horse, a new notion will be formed in the mind.'
+  },
+  N2: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §I art. 2',
+    quote: 'Suppose that while the first company passes by, he drops a pebble into a basket for each man whom he sees. There is no connexion between the pebbles and the horsemen but this, that for every horseman there is a pebble; that is, in common language, the number of pebbles and of horsemen is the same.'
+  },
+  N3: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §I art. 3',
+    quote: 'In this way a savage could keep an account of any numbers in which he was interested. He could thus register his children, his cattle, or the number of summers and winters which he had seen, by means of pebbles, or any other small objects which could be got in large numbers.'
+  },
+  // Multiplication as a shortcut for addition, which is the honest way to meet
+  // it and is what P-09 needs.
+  M1: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §III art. 47',
+    quote: 'I have said that all questions in arithmetic require nothing but addition and subtraction. I do not mean by this that no rule should ever be used except those given in the last section, but that all other rules only shew shorter ways of finding what might be found, if we pleased, by the methods there deduced.'
+  },
+  M2: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §III art. 48',
+    quote: 'I want to know the sum of five seventeens, or I ask the following question: There are five heaps of pebbles, and seventeen pebbles in each heap; how many are there in all?'
+  },
+  // Proportion, for P-07. De Morgan compares two numbers first by difference and
+  // only then by ratio, which is the distinction the rate boards depend on.
+  R1: {
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VIII art. 170',
+    quote: 'When two numbers are named in any problem, it is usually necessary, in some way or other, to compare the two; that is, by considering the two together, to establish some connexion between them, which may be useful in future operations. The first method which suggests itself, and the most simple, is to observe which is the greater, and by how much it differs from the other.'
+  },
   D1: {
-    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 135, printed page 65',
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 135',
     quote: 'Decimal fractions are not usually written at full length. It is more convenient to write the numerator only, and to cut off from the numerator as many figures as there are ciphers in the denominator, when that is possible, by a point. … Thus, ·7 will be used in future to denote 7/10, ·07 for 7/100, and so on.'
   },
   D2: {
-    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 133, printed page 65',
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 133',
     quote: 'The figures on the left of the point by themselves make the whole number which the fraction contains.'
   },
   D3: {
-    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 136, printed page 66',
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 136',
     quote: 'The ciphers on the right hand of the decimal point serve the same purpose as the ciphers in (10). They are not counted as any thing themselves, but serve to shew the place in which the accompanying numbers stand. … Thus, ·0003747 is a decimal of seven places with four significant figures, ·346 is a decimal of three places with three significant figures.'
   },
   D4: {
-    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 137, printed page 66',
+    ref: 'De Morgan, Elements of Arithmetic, Book I §VI art. 137',
     quote: 'The value of a decimal is not altered by putting any number of ciphers at the right hand of it.'
   },
   // Functions. Three sources at three levels: Wentworth for the procedure,
