@@ -13,6 +13,7 @@ import { area, selections as selA, finalised as finA, rejected as rejA, gated as
 import { plane, selections as selP, finalised as finP, rejected as rejP, gated as gateP } from './plane-options.js';
 import { plot, selections as selPlot, finalised as finPlot, rejected as rejPlot, gated as gatePlot } from './plot-options.js';
 import { lineSlope, selections as selLineSlope, finalised as finLineSlope, rejected as rejLineSlope, gated as gateLineSlope } from './line-slope-options.js';
+import { force, selections as selForce, finalised as finForce, rejected as rejForce, gated as gateForce } from './force-options.js';
 import { func0, selections as selF0, finalised as finF0, rejected as rejF0, gated as gateF0 } from './func0-options.js';
 import { func1, selections as selF1, finalised as finF1, rejected as rejF1, gated as gateF1 } from './func1-options.js';
 import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gated as gateF2 } from './func2-options.js';
@@ -70,7 +71,8 @@ export const registry = [
   { key: 'constants', unit: 'rates', label: 'Constants', bb: bb9, selections: sel9, finalised: fin9, gated: gate9 },
   { key: 'sum', unit: 'rates', label: 'Sum', bb: bb10, selections: sel9, finalised: fin9, gated: gate9 },
   { key: 'slope', unit: 'rates', label: 'Slope', bb: bb11, selections: sel11, finalised: fin11, gated: gate11 },
-  { key: 'turning', unit: 'rates', label: 'Turning', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 }
+  { key: 'turning', unit: 'rates', label: 'Turning', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 },
+  { key: 'force', unit: 'physics', label: 'Force', bb: force, selections: selForce, finalised: finForce, rejected: rejForce, gated: gateForce }
 ];
 
 export const UNITS = [
@@ -78,7 +80,8 @@ export const UNITS = [
   { key: 'variables', name: 'Variables', blurb: 'What a letter is, and what changing one means.' },
   { key: 'functions', name: 'Functions', blurb: 'One sequence. The switch earns the machine, and the machine earns the rule.' },
   { key: 'geometry', name: 'Coordinate geometry', blurb: 'Counting a surface, then finding a place on one.' },
-  { key: 'rates', name: 'Rates and derivatives', blurb: 'Proposed to leave this course and open the next.' }
+  { key: 'rates', name: 'Rates and derivatives', blurb: 'Proposed to leave this course and open the next.' },
+  { key: 'physics', name: 'Introductory physics', blurb: 'Proposed strand. One force-and-mass experiment, not yet placed.' }
 ];
 
 // The strip is drawn from this, so a board with no unit cannot silently vanish.

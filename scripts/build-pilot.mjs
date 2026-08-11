@@ -26,6 +26,7 @@ import { area, selections as selArea, finalised as finArea } from '../src/factor
 import { plane, selections as selPlane, finalised as finPlane } from '../src/factory/plane-options.js';
 import { plot, selections as selPlot, finalised as finPlot } from '../src/factory/plot-options.js';
 import { lineSlope, selections as selLineSlope, finalised as finLineSlope } from '../src/factory/line-slope-options.js';
+import { force, selections as selForce, finalised as finForce } from '../src/factory/force-options.js';
 
 const PILOT = [
   { bb: func0, sel: selButton, fin: finButton, marker: 'Machines' },
@@ -33,7 +34,8 @@ const PILOT = [
   { bb: area, sel: selArea, fin: finArea, marker: 'Surface' },
   { bb: plane, sel: selPlane, fin: finPlane, marker: 'Position' },
   { bb: plot, sel: selPlot, fin: finPlot, marker: 'Graph' },
-  { bb: lineSlope, sel: selLineSlope, fin: finLineSlope, marker: 'Slope' }
+  { bb: lineSlope, sel: selLineSlope, fin: finLineSlope, marker: 'Slope' },
+  { bb: force, sel: selForce, fin: finForce, marker: 'Physics' }
 ];
 
 const chosen = (list, sel, fin) => (list || []).filter(v => sel[v.code] || fin[v.code]);

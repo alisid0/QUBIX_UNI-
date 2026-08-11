@@ -70,10 +70,16 @@ supplying learner wording, examples, diagrams or interaction designs.
 | OpenStax, *Prealgebra 2e* | Basic-number and prerequisite cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
 | OpenStax, *Algebra and Trigonometry 2e* | Functions, graphing and line-slope cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
 | OpenStax, *Calculus Volume 1* | Limits and derivatives cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
+| Urone and Hinrichs, OpenStax *Physics* (2020), §4.3 | Newton's second law and the fixed-mass force/acceleration relationship | `ATTRIBUTED_CC_BY_4` |
 
 The OpenStax licence is non-commercial and share-alike. Unless the final Qubix
 product deliberately accepts those conditions, these works remain references
 only and no adapted expression, example or diagram enters the product.
+
+OpenStax *Physics* uses CC BY 4.0 rather than the non-commercial/share-alike
+licence above. `PHY-FORCE-001` paraphrases the force/acceleration relationship
+from §4.3 with attribution. Its examples, artwork and interaction are original:
+https://openstax.org/books/physics/pages/4-3-newtons-second-law-of-motion
 
 ## What “classical meets modern” means
 
@@ -96,6 +102,7 @@ A BB may compare two authors when their explanations genuinely illuminate differ
 - `EDITION_REVIEW`: promising candidate; exact text, illustrations and territory status must be logged before use.
 - `TRANSLATION_REVIEW`: original may be old, but this translation and its editorial material require separate review.
 - `HOLD_UK_REVIEW`: do not adapt for release until UK status is resolved. In particular, L. C. Karpinski died in 1956, so ordinary UK life-plus-70 analysis requires care even where a US edition is public domain.
+- `ATTRIBUTED_CC_BY_4`: openly licensed under CC BY 4.0; attribution is required and adapted material must be recorded.
 
 ## Admission test for a candidate book
 

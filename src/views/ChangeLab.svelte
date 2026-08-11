@@ -336,7 +336,7 @@
     <button class="topics-button" aria-label="Back to topic selection" on:click={() => view.set('home')}><span aria-hidden="true">←</span> Topics</button>
     <div class="brand-lockup">
       <span class="brand">QUBIX UNIVERSITY</span>
-      <span class="lab-name">Variables and rates of change</span>
+      <span class="lab-name">Mathematics and introductory physics</span>
     </div>
     <div class="lab-tools">
       <span class="xp-badge" aria-label={`${$xpSummary.total} experience points`}><b>{$xpSummary.total}</b> XP</span>
@@ -356,11 +356,11 @@
     <main class="complete-screen">
       <div class="complete-mark" aria-hidden="true">✓</div>
       <span class="micro-label">COURSE COMPLETE</span>
-      <h1>You connected variables,<br/>functions, geometry and rates.</h1>
-      <p>{boards.length} subtopics, from assigning a value to approaching a rate at one point.</p>
+      <h1>You explored variables, functions,<br/>geometry, rates and force.</h1>
+      <p>{boards.length} subtopics, from assigning a value to comparing force, mass and acceleration.</p>
       <strong class="complete-xp">{$xpSummary.total} XP earned</strong>
       <div class="summary-chain" aria-label="Concept sequence">
-        <span>x</span><i>→</i><span>f(x)</span><i>→</i><span>(x, y)</span><i>→</i><span>Δy/Δx</span><i>→</i><span>local rate</span>
+        <span>x</span><i>→</i><span>f(x)</span><i>→</i><span>(x, y)</span><i>→</i><span>Δy/Δx</span><i>→</i><span>F = ma</span>
       </div>
       <button class="primary wide" on:click={restart}>Begin again</button>
     </main>

@@ -18,7 +18,7 @@ export const plot = {
   id: 'FCG-GRAPH-001',
   title: 'Plotting a Rule as a Curve',
   fork: 'A table is made one ordered pair at a time; the curve is withheld until the plotted points have earned it.',
-  structure: 'Three sections. Two reading and interaction variants per section.',
+  structure: 'Three sections. Two readings, four interactions and four exercises per section.',
   sourceMatrix: [
     {
       work: 'Wentworth, The First Steps in Algebra, ch. I art. 40, printed folio 12',
@@ -110,6 +110,7 @@ export const plot = {
           code: 'S1-X4', kind: 'order',
           prompt: 'Put one table row in the order in which it is made.',
           items: ['Choose an x-value', 'Apply the rule', 'Record y', 'Write the ordered pair'],
+          startOrder: [2, 0, 3, 1],
           successNote: 'Reliable plotting begins with a reliable table row.'
         }
       ]
@@ -181,6 +182,7 @@ export const plot = {
           code: 'S2-X4', kind: 'order',
           prompt: 'Put the actions for plotting a supplied pair in order.',
           items: ['Read the x-coordinate', 'Move horizontally from the origin', 'Read the y-coordinate', 'Move vertically and mark the point'],
+          startOrder: [2, 0, 3, 1],
           successNote: 'Across for x, then up or down for y.'
         }
       ]
@@ -232,6 +234,7 @@ export const plot = {
           code: 'S3-X2', kind: 'order',
           prompt: 'Put the graphing process in order.',
           items: ['Choose x', 'Use the rule to find y', 'Write the ordered pair', 'Plot the point'],
+          startOrder: [2, 0, 3, 1],
           successNote: 'The graph is built from calculations, one point at a time.'
         },
         {
@@ -249,7 +252,7 @@ export const plot = {
           prompt: 'Match each rule to a point that must lie on its graph.',
           bins: ['y = x²', 'y = 2x', 'y = x + 3'],
           items: [
-            { label: '(2, 4)', bin: 'y = x²' },
+            { label: '(−2, 4)', bin: 'y = x²' },
             { label: '(3, 6)', bin: 'y = 2x' },
             { label: '(−1, 2)', bin: 'y = x + 3' }
           ],

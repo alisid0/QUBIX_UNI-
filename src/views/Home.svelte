@@ -10,12 +10,14 @@
   // boards were added.
   const words = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
   const count = n => words[n] || String(n);
+  const boardIndices = ids => ids.map(id => boards.findIndex(board => board.id === id)).filter(index => index >= 0);
   const topics = [
-    { title: 'Variables', description: 'Letters, values and quantities that change.', boardIndices: [0, 1, 2] },
-    { title: 'Functions', description: 'Inputs, outputs and rules that give one answer.', boardIndices: [3, 4] },
-    { title: 'Coordinate Geometry', description: 'Area, position and the coordinate plane.', boardIndices: [5, 6] },
-    { title: 'Rates and Derivatives', description: 'Comparing changes and approaching a local rate.', boardIndices: [7, 8] }
-  ];
+    { title: 'Variables', description: 'Letters, values and quantities that change.', boardIndices: boardIndices(['CME-CHANGE-001', 'CME-CHANGE-002', 'CME-CHANGE-003']) },
+    { title: 'Functions', description: 'Inputs, outputs and rules that give one answer.', boardIndices: boardIndices(['FCG-FUNC-000', 'FCG-FUNC-001']) },
+    { title: 'Coordinate Geometry', description: 'Area, position and the coordinate plane.', boardIndices: boardIndices(['FCG-AREA-001', 'FCG-PLANE-001']) },
+    { title: 'Rates and Derivatives', description: 'Comparing changes and approaching a local rate.', boardIndices: boardIndices(['CME-CHANGE-004', 'CME-CHANGE-005']) },
+    { title: 'Introductory Physics', description: 'How force and mass affect acceleration.', boardIndices: boardIndices(['PHY-FORCE-001']) }
+  ].filter(topic => topic.boardIndices.length);
   let selectedTopic = null;
 
   const topicProgress = (topic, completed) => {
@@ -69,7 +71,7 @@
       <span class="mark">Q</span>
       <span class="stack">
         <b>QUBIX UNIVERSITY</b>
-        <small>Variables and rates of change</small>
+        <small>Mathematics and introductory physics</small>
       </span>
     </div>
     <div class="header-actions">
@@ -92,8 +94,8 @@
           section {$summary.sectionNumber} of {$summary.sectionCount}
         </p>
       {:else}
-        <h1>Variables and Rates of Change</h1>
-        <p class="where">{count(boards.length).replace(/^\w/, c => c.toUpperCase())} subtopics, {TOTAL_SECTIONS} sections, from a letter standing for a number to the rate at a single point.</p>
+        <h1>Qubix University Pilot</h1>
+        <p class="where">{count(boards.length).replace(/^\w/, c => c.toUpperCase())} subtopics, {TOTAL_SECTIONS} sections, from letters and functions to rates, force and acceleration.</p>
       {/if}
 
       <div class="track" aria-label={`${$summary.doneCount} of ${$summary.totalSections} sections done`}>
@@ -144,7 +146,7 @@
 
     <p class="draft-note">
       Curriculum in draft. Nothing here is approved, and every subtopic is
-      adapted from public-domain sources with its provenance on record.
+      based on a recorded public-domain or openly licensed source.
     </p>
   </main>
 

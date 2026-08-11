@@ -34,13 +34,22 @@ still need mapping.
 
 ## Proposed, not placed
 
-Two boards exist in the Factory with no position in the order above, because the
-proposal that places them is unapproved.
+These boards exist in the Factory with no position in the order above, because
+the proposals that place them are unapproved.
 
 | Board | Key | Identifier | State |
 |---|---|---|---|
 | Area on the Grid | `area` | `FCG-AREA-001` | `AI_DRAFT`, gated |
 | The Coordinate Plane | `plane` | `FCG-PLANE-001` | `AI_DRAFT`, gated |
+| Force and Acceleration | `force` | `PHY-FORCE-001` | `AI_DRAFT`, gated; live pilot |
+
+*Force and Acceleration* opens a proposed physics strand. It is not permission
+to place physics inside the present mathematics pathway. Its provisional
+prerequisites still need mapping before any learner release.
+
+On 2026-08-11 the founder instructed that the selected board be included in the
+live pilot. Publication records testing authority only: it does not place the
+board in this map or change its curriculum status.
 
 ## Review sequence for the current pilot
 

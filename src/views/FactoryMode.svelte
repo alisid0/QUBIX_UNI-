@@ -1,4 +1,5 @@
 <script>
+  import { onDestroy } from 'svelte';
   import { theme } from '../lib/stores/theme.js';
   import { registry, byUnit, UNITS, entryFor, sources } from '../factory/index.js';
   import SquareScene from '../lib/components/SquareScene.svelte';
@@ -45,6 +46,7 @@
     'curve-from-points', 'curve-rule-compare', 'curve-plot-drill', 'curve-point-check',
     'rise-run-line', 'rise-run-ghost',
     'slope-ratio', 'slope-triangles', 'slope-sign', 'slope-target',
+    'force-push', 'force-vector', 'force-compare', 'force-bars', 'mass-push', 'mass-race',
     'switch-toggle', 'switch-plain', 'tap-valve', 'tap-piston', 'machine-panel', 'machine-labels',
     'forked-button', 'flaky-button'];
 
@@ -234,6 +236,17 @@
   };
   let graph = { count: 1, rule: 'square it', guess: null };
   const graphY = (x, state = graph) => GRAPH_RULES[state.rule](x);
+  const predictionChoices = (x, state = graph) => {
+    const correct = graphY(x, state);
+    const distractors = [
+      ...Object.values(GRAPH_RULES).map(rule => rule(x)),
+      x,
+      Math.abs(x),
+      correct - 1,
+      correct + 1
+    ].filter((value, index, values) => value !== correct && values.indexOf(value) === index);
+    return [...distractors.slice(0, 2), correct];
+  };
   const graphOrder = kind => kind === 'table-points-order' ? [2, -1, 3, 0, -2, 1, -3] : GRAPH_X;
   const graphPoint = (x, y) => ({ x: 150 + x * 32, y: 124 - y * 13 });
   const PLOT_DRILLS = {
@@ -263,6 +276,77 @@
       [which]: Math.max(limits[0], Math.min(limits[1], line[which] + delta))
     };
   }
+
+  // ---- Force and acceleration -----------------------------------------
+  // S1 and S2 keep a 2 kg mass fixed while force changes. S3 keeps a 6 N
+  // force fixed while mass changes. Every push lasts one second, so each
+  // experiment changes one cause only. Friction belongs to a later board.
+  const FORCE_VALUES = [2, 4, 6];
+  const MASS_VALUES = [2, 4, 6];
+  const FORCE_MASS = 2;
+  const MASS_FORCE = 6;
+  const FORCE_TIME = 1;
+  const forceAcceleration = (force, mass = FORCE_MASS) => Number((force / mass).toFixed(2));
+  const forceDistance = (force, mass = FORCE_MASS) => Number((0.5 * forceAcceleration(force, mass) * FORCE_TIME * FORCE_TIME).toFixed(2));
+  let physics = {};
+  const physicsTimers = {};
+  const physicsFrames = {};
+
+  const initialPhysics = kind => ({
+    force: kind === 'mass-push' || kind === 'mass-race' ? MASS_FORCE : 2,
+    mass: FORCE_MASS,
+    running: false,
+    travel: 0,
+    trials: [],
+    result: null
+  });
+  const physicsState = (kind, state = physics) => state[kind] || initialPhysics(kind);
+  function updatePhysics(kind, patch) {
+    physics = { ...physics, [kind]: { ...physicsState(kind, physics), ...patch } };
+  }
+  function chooseForce(kind, force) {
+    const state = physicsState(kind, physics);
+    if (state.running) return;
+    updatePhysics(kind, { force, result: null, travel: 0 });
+  }
+  function chooseMass(kind, mass) {
+    const state = physicsState(kind, physics);
+    if (state.running) return;
+    updatePhysics(kind, { mass, result: null, travel: 0 });
+  }
+  function runForce(kind) {
+    const state = physicsState(kind, physics);
+    if (state.running) return;
+    window.clearTimeout(physicsTimers[kind]);
+    window.cancelAnimationFrame(physicsFrames[kind]);
+    updatePhysics(kind, { running: false, travel: 0, result: null });
+    physicsFrames[kind] = window.requestAnimationFrame(() => {
+      const current = physicsState(kind, physics);
+      const force = current.force;
+      const mass = current.mass;
+      const acceleration = forceAcceleration(force, mass);
+      const distance = forceDistance(force, mass);
+      updatePhysics(kind, { running: true, travel: kind === 'mass-race' ? 1 : distance });
+      physicsTimers[kind] = window.setTimeout(() => {
+        const current = physicsState(kind, physics);
+        const result = kind === 'mass-race'
+          ? { force, race: true }
+          : { force, mass, acceleration, distance };
+        const trialKey = kind === 'mass-push' ? 'mass' : 'force';
+        const trials = [...current.trials.filter(t => t[trialKey] !== result[trialKey]), result]
+          .sort((a, b) => a[trialKey] - b[trialKey]);
+        updatePhysics(kind, {
+          running: false,
+          trials,
+          result
+        });
+      }, 950);
+    });
+  }
+  onDestroy(() => {
+    Object.values(physicsTimers).forEach(window.clearTimeout);
+    Object.values(physicsFrames).forEach(window.cancelAnimationFrame);
+  });
 
   const NOTATION = ['F', 'f', 'φ'];
   // The ladder is 5 units long, so the height it reaches falls as the foot goes
@@ -396,17 +480,17 @@
   }
   const matchDone = (ex, p) => ex.items.every(i => (p[ex.code] || {})[i.label] === i.bin);
 
-  function orderList(ex) {
-    return ordered[ex.code] || ex.items.map((_, i) => i);
+  function orderList(ex, state = ordered) {
+    return state[ex.code] || ex.startOrder || ex.items.map((_, i) => i);
   }
   function moveItem(ex, from, dir) {
-    const list = [...orderList(ex)];
+    const list = [...orderList(ex, ordered)];
     const to = from + dir;
     if (to < 0 || to >= list.length) return;
     [list[from], list[to]] = [list[to], list[from]];
     ordered = { ...ordered, [ex.code]: list };
   }
-  const orderDone = (ex, o) => (o[ex.code] || ex.items.map((_, i) => i)).every((v, i) => v === i);
+  const orderDone = (ex, o) => !!o[ex.code] && o[ex.code].every((v, i) => v === i);
 
   function benchTake(v) {
     bench = { ...bench, held: bench.held === v ? null : v };
@@ -672,6 +756,9 @@
       <!-- Authoring metadata. Nothing here reaches a learner, so the kept sheet
            hides it: that sheet shows what goes into the app and nothing else. -->
       <div class="fork-note" class:hidden={keptOnly}>
+        {#if bb1.objective}<div><b>Learning objective</b><span>{bb1.objective}</span></div>{/if}
+        {#if bb1.prerequisites}<div><b>Prerequisites</b><span>{bb1.prerequisites}</span></div>{/if}
+        {#if bb1.misconception}<div><b>Misconception to watch</b><span>{bb1.misconception}</span></div>{/if}
         <div><b>Fork</b><span>{bb1.fork}</span></div>
         <div><b>Structure</b><span>{bb1.structure}</span></div>
       </div>
@@ -685,6 +772,7 @@
                 <b>{row.work}</b>
                 <span>{row.role}</span>
                 <em>{row.treatment}</em>
+                {#if row.url}<a href={row.url} target="_blank" rel="noreferrer">Source record ↗</a>{/if}
               </article>
             {/each}
           </div>
@@ -1807,7 +1895,7 @@
                     {#if interaction.kind === 'table-plot-predict' && graph.count < GRAPH_X.length && graph.guess === null}
                       <div class="predict-row">
                         <span>For x = {GRAPH_X[graph.count - 1]}, predict y:</span>
-                        {#each [1, 4, 9] as answer}<button on:click={() => (graph = { ...graph, guess: answer })}>{answer}</button>{/each}
+                        {#each predictionChoices(GRAPH_X[graph.count - 1]) as answer}<button on:click={() => (graph = { ...graph, guess: answer })}>{answer}</button>{/each}
                       </div>
                     {/if}
                     <button class="reveal-btn" disabled={graph.count >= GRAPH_X.length}
@@ -1883,6 +1971,87 @@
                       </svg>
                     {/if}
                     <p class="stage-note">{drill.step} of {pairs.length} points placed correctly.</p>
+                  </div>
+
+                {:else if interaction.kind === 'mass-race'}
+                  {@const p = physicsState(interaction.kind, physics)}
+                  <div class="rows centre force-experiment mass-race-experiment">
+                    <div class="force-target-card">
+                      <small>CONSTANT FORCE</small><b>6 N</b><em>same one-second push</em>
+                    </div>
+                    <div class="mass-race-track">
+                      {#each MASS_VALUES as mass}
+                        {@const acceleration = forceAcceleration(MASS_FORCE, mass)}
+                        {@const distance = forceDistance(MASS_FORCE, mass)}
+                        <div class="mass-race-lane" role="img" aria-label={`${mass} kilogram block accelerating at ${acceleration} metres per second squared under a 6 newton force`}>
+                          <span class="mass-race-label">{mass} kg</span>
+                          <div class="mass-race-line"><i class="mass-race-arrow">6 N →</i></div>
+                          <div class:moved={p.running || p.result} class="mass-race-block" style={`--race-travel:${distance * 34}%;--mass-width:${38 + mass * 4}px`}><b>{mass} kg</b></div>
+                          <span class="mass-race-acceleration">{acceleration} m/s²</span>
+                        </div>
+                      {/each}
+                    </div>
+                    <button class="force-push-button" disabled={p.running} on:click={() => runForce(interaction.kind)}>{p.running ? 'APPLYING 6 N FOR 1 SECOND…' : 'APPLY 6 N TO ALL THREE'}</button>
+                    {#if p.result}
+                      <p class="force-result hit">Same force, different result: the 2 kg block accelerates most and travels farthest.</p>
+                    {/if}
+                    <p class="stage-note">Each block receives the same 6 N force for exactly one second. Only the mass changes. Friction is off.</p>
+                  </div>
+
+                {:else if interaction.kind === 'force-push' || interaction.kind === 'force-vector' || interaction.kind === 'force-compare' || interaction.kind === 'force-bars' || interaction.kind === 'mass-push'}
+                  {@const p = physicsState(interaction.kind, physics)}
+                  {@const isMassExperiment = interaction.kind === 'mass-push'}
+                  <div class="rows centre force-experiment">
+                    {#if isMassExperiment}
+                      <div class="force-target-card"><small>CONSTANT FORCE</small><b>6 N</b><em>choose the mass</em></div>
+                    {/if}
+                    <div class="force-track" role="img" aria-label={`A stick figure applying ${p.force} newtons to a ${p.mass} kilogram block`} style={`--travel:${p.travel * 36}%`}>
+                      <div class="force-ground"></div>
+                      <div class:push-pose={p.running} class="force-person" aria-hidden="true">
+                        <i class="force-head"></i><i class="force-body"></i><i class="force-arm"></i><i class="force-leg one"></i><i class="force-leg two"></i>
+                      </div>
+                      <div class="force-arrow" class:strong={interaction.kind === 'force-vector'} style={`--arrow:${34 + p.force * 7}px`}><span>F = {p.force} N</span></div>
+                      <div class:running={p.running} class="force-block"><b>{p.mass} kg</b></div>
+                      <div class="force-start">START</div>
+                    </div>
+                    {#if isMassExperiment}
+                      <div class="force-picks" aria-label="Choose the block mass">
+                        {#each MASS_VALUES as mass}
+                          <button class:on={p.mass === mass} disabled={p.running} on:click={() => chooseMass(interaction.kind, mass)}>{mass} kg</button>
+                        {/each}
+                      </div>
+                    {:else}
+                      <div class="force-picks" aria-label="Choose the applied force">
+                        {#each FORCE_VALUES as force}
+                          <button class:on={p.force === force} disabled={p.running} on:click={() => chooseForce(interaction.kind, force)}>{force} N</button>
+                        {/each}
+                      </div>
+                    {/if}
+                    <button class="force-push-button" disabled={p.running} on:click={() => runForce(interaction.kind)}>{p.running ? 'PUSHING FOR 1 SECOND…' : 'PUSH FOR 1 SECOND'}</button>
+                    <div class="force-readouts">
+                      <span><small>FORCE</small><b>{p.force} N</b></span>
+                      <span><small>MASS</small><b>{p.mass} kg</b></span>
+                      <span><small>ACCELERATION</small><b>{forceAcceleration(p.force, p.mass)} m/s²</b></span>
+                    </div>
+                    {#if interaction.kind === 'force-bars'}
+                      <div class="force-proportion">
+                        <span><small>force</small><i style={`width:${p.force * 13}%`}></i><b>{p.force} N</b></span>
+                        <span><small>acceleration</small><i style={`width:${forceAcceleration(p.force) * 26}%`}></i><b>{forceAcceleration(p.force)} m/s²</b></span>
+                      </div>
+                    {/if}
+                    {#if p.result}
+                      <p class="force-result">
+                        {isMassExperiment ? `The same ${p.result.force} N force accelerated the ${p.result.mass} kg block at ${p.result.acceleration} m/s², covering ${p.result.distance} m during the push.` : `${p.result.force} N produced ${p.result.acceleration} m/s² and ${p.result.distance} m of travel during the push.`}
+                      </p>
+                    {/if}
+                    {#if (interaction.kind === 'force-compare' || interaction.kind === 'force-bars' || interaction.kind === 'mass-push') && p.trials.length}
+                      <div class="force-trials">
+                        {#each p.trials as trial}
+                          <span><b>{isMassExperiment ? `${trial.mass} kg` : `${trial.force} N`}</b><i>{trial.acceleration} m/s²</i><small>{trial.distance} m</small></span>
+                        {/each}
+                      </div>
+                    {/if}
+                    <p class="stage-note">{isMassExperiment ? 'The force is 6 N. Every push lasts exactly one second. Only the mass changes. Friction is off.' : 'The mass is 2 kg. Every force acts for exactly one second. Friction is off.'}</p>
                   </div>
 
                 {:else if interaction.kind === 'rise-run-line' || interaction.kind === 'rise-run-ghost' || interaction.kind === 'slope-ratio' || interaction.kind === 'slope-triangles' || interaction.kind === 'slope-sign' || interaction.kind === 'slope-target'}
@@ -2045,12 +2214,12 @@
 
               {:else if ex.kind === 'order'}
                 <div class="order-list">
-                  {#each orderList(ex) as idx, pos}
+                  {#each orderList(ex, ordered) as idx, pos}
                     <div class="order-row">
                       <span>{ex.items[idx]}</span>
                       <span class="order-btns">
                         <button aria-label="Move up" disabled={pos === 0} on:click={() => moveItem(ex, pos, -1)}>↑</button>
-                        <button aria-label="Move down" disabled={pos === orderList(ex).length - 1} on:click={() => moveItem(ex, pos, 1)}>↓</button>
+                        <button aria-label="Move down" disabled={pos === orderList(ex, ordered).length - 1} on:click={() => moveItem(ex, pos, 1)}>↓</button>
                       </span>
                     </div>
                   {/each}
@@ -2647,6 +2816,65 @@
   .source-matrix article b { font-size: 11.5px; line-height: 1.4; color: var(--qx-text); }
   .source-matrix article span { font-size: 11px; line-height: 1.45; color: var(--qx-text-2); }
   .source-matrix article em { font-style: normal; font-size: 10px; line-height: 1.4; color: var(--qx-accent-text); border-top: 1px dashed var(--qx-border-2); padding-top: 5px; }
+  .source-matrix article a { color: var(--qx-accent-text); font-size: 10px; font-weight: 800; text-decoration: none; }
+  .source-matrix article a:hover, .source-matrix article a:focus { text-decoration: underline; }
+
+  .force-experiment { width: 100%; }
+  .force-track { position: relative; width: min(100%, 560px); height: 170px; overflow: hidden; border: 1px solid var(--qx-border-2); border-radius: 14px; background: linear-gradient(to bottom, var(--qx-surface-2) 0 71%, var(--qx-surface-3) 71% 100%); }
+  .force-ground { position: absolute; left: 0; right: 0; top: 121px; height: 2px; background: var(--qx-text-faint); }
+  .force-start { position: absolute; left: 18%; top: 129px; color: var(--qx-text-faint); font-size: 8px; letter-spacing: .1em; font-weight: 900; transform: translateX(-50%); }
+  .force-person { position: absolute; left: 4%; top: 51px; width: 54px; height: 72px; transition: transform .15s ease; }
+  .force-person i { position: absolute; display: block; background: var(--qx-accent); transform-origin: left center; }
+  .force-person .force-head { left: 16px; top: 0; width: 19px; height: 19px; border: 3px solid var(--qx-accent); border-radius: 50%; background: transparent; }
+  .force-person .force-body { left: 26px; top: 22px; width: 3px; height: 31px; }
+  .force-person .force-arm { left: 27px; top: 29px; width: 33px; height: 3px; transform: rotate(8deg); }
+  .force-person .force-leg { left: 27px; top: 51px; width: 29px; height: 3px; }
+  .force-person .force-leg.one { transform: rotate(55deg); }
+  .force-person .force-leg.two { transform: rotate(125deg); }
+  .force-person.push-pose { transform: translateX(4px) rotate(3deg); }
+  .force-person.push-pose .force-arm { animation: force-arm-pulse .3s ease-in-out infinite alternate; }
+  @keyframes force-arm-pulse { from { transform: rotate(4deg); } to { transform: rotate(12deg); } }
+  .force-arrow { position: absolute; left: 11%; top: 40px; height: 3px; width: var(--arrow); background: var(--qx-accent); transition: width .15s ease; }
+  .force-arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border-left: 8px solid var(--qx-accent); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .force-arrow span { position: absolute; left: 50%; bottom: 7px; white-space: nowrap; transform: translateX(-50%); color: var(--qx-accent-text); font-size: 10px; font-weight: 900; }
+  .force-arrow.strong { height: 5px; }
+  .force-block { position: absolute; left: calc(18% + var(--travel)); top: 76px; width: 48px; height: 46px; display: grid; place-items: center; border: 2px solid var(--qx-accent); border-radius: 5px; background: var(--qx-accent-soft); color: var(--qx-accent-text); transition: left .9s cubic-bezier(.55,.05,.92,.45); }
+  .force-block b { font-size: 12px; }
+  .force-picks { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+  .force-picks button { min-width: 64px; min-height: 44px; border: 1px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text); font-weight: 900; cursor: pointer; }
+  .force-picks button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .force-push-button { min-height: 44px; border: 0; border-radius: 11px; padding: 9px 17px; background: var(--qx-accent); color: #fff; font-size: 11px; letter-spacing: .06em; font-weight: 900; cursor: pointer; }
+  .force-push-button:disabled { opacity: .65; cursor: default; }
+  .force-readouts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .force-readouts span { min-width: 82px; border: 1px solid var(--qx-border); border-radius: 9px; padding: 7px 9px; display: flex; flex-direction: column; gap: 2px; background: var(--qx-surface-2); }
+  .force-readouts small { color: var(--qx-text-faint); font-size: 7.5px; letter-spacing: .08em; font-weight: 900; }
+  .force-readouts b { color: var(--qx-text); font-size: 13px; }
+  .force-target-card { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; border: 1px solid var(--qx-green); border-radius: 11px; padding: 8px 11px; background: var(--qx-green-soft); }
+  .force-target-card small { color: var(--qx-green-text); font-size: 8px; letter-spacing: .09em; font-weight: 900; }
+  .force-target-card b { color: var(--qx-green-text); font-size: 19px; }
+  .force-target-card em { font-style: normal; color: var(--qx-text-dim); font-size: 10px; }
+  .mass-race-track { width: min(100%, 560px); display: grid; gap: 8px; border: 1px solid var(--qx-border-2); border-radius: 14px; padding: 10px; background: var(--qx-surface-2); }
+  .mass-race-lane { position: relative; min-height: 88px; overflow: hidden; border-radius: 9px; background: var(--qx-surface); }
+  .mass-race-line { position: absolute; left: 64px; right: 12px; top: 59px; height: 2px; background: var(--qx-text-faint); }
+  .mass-race-label { position: absolute; left: 10px; top: 35px; color: var(--qx-accent-text); font-size: 12px; font-weight: 900; }
+  .mass-race-arrow { position: absolute; left: 7px; bottom: 7px; color: var(--qx-accent-text); font-size: 9px; font-style: normal; font-weight: 900; }
+  .mass-race-block { position: absolute; left: 64px; top: 28px; width: var(--mass-width); height: 32px; display: grid; place-items: center; border: 2px solid var(--qx-accent); border-radius: 5px; background: var(--qx-accent-soft); color: var(--qx-accent-text); transition: left .9s cubic-bezier(.55,.05,.92,.45); }
+  .mass-race-block.moved { left: calc(64px + var(--race-travel)); }
+  .mass-race-block b { font-size: 10px; }
+  .mass-race-acceleration { position: absolute; right: 9px; top: 7px; color: var(--qx-text-dim); font-size: 10px; font-weight: 900; }
+  .force-result { margin: 0; border-radius: 9px; padding: 7px 10px; background: var(--qx-surface-2); color: var(--qx-text-2); font-size: 12px; font-weight: 800; }
+  .force-result.hit { background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .force-trials { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+  .force-trials span { display: grid; grid-template-columns: auto auto; gap: 2px 7px; border: 1px solid var(--qx-border-2); border-radius: 9px; padding: 6px 9px; }
+  .force-trials b { color: var(--qx-accent-text); font-size: 12px; }
+  .force-trials i { color: var(--qx-text); font-size: 11px; font-style: normal; }
+  .force-trials small { grid-column: 1 / -1; color: var(--qx-text-faint); font-size: 9px; }
+  .force-proportion { width: min(100%, 390px); display: flex; flex-direction: column; gap: 6px; }
+  .force-proportion span { display: grid; grid-template-columns: 76px 1fr 58px; align-items: center; gap: 7px; }
+  .force-proportion small { color: var(--qx-text-faint); font-size: 9px; font-weight: 800; }
+  .force-proportion i { display: block; height: 10px; max-width: 100%; border-radius: 5px; background: var(--qx-accent); }
+  .force-proportion span + span i { background: var(--qx-green); }
+  .force-proportion b { color: var(--qx-text); font-size: 10px; }
 
   .graph-layout { display: flex; align-items: flex-start; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
   .graph-table.compact { min-width: 72px; }
@@ -2655,7 +2883,7 @@
   .plot-grid { stroke: var(--qx-border); stroke-width: .7; }
   .plot-dot { fill: var(--qx-accent); }
   .coordinate-grid { display: grid; grid-template-columns: repeat(7, 1fr); position: relative; width: min(100%, 390px); margin-bottom: 18px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); }
-  .coordinate-grid button { position: relative; min-width: 0; height: 30px; padding: 0; border: 0; border-right: 1px solid var(--qx-border); border-bottom: 1px solid var(--qx-border); border-radius: 0; background: transparent; color: var(--qx-accent-text); cursor: crosshair; font-size: 15px; }
+  .coordinate-grid button { position: relative; min-width: 0; height: 44px; padding: 0; border: 0; border-right: 1px solid var(--qx-border); border-bottom: 1px solid var(--qx-border); border-radius: 0; background: transparent; color: var(--qx-accent-text); cursor: crosshair; font-size: 15px; }
   .coordinate-grid button:hover, .coordinate-grid button:focus { background: var(--qx-accent-soft); outline: 2px solid var(--qx-accent); outline-offset: -2px; }
   .coordinate-grid button.x-axis { border-bottom: 2px solid var(--qx-text); }
   .coordinate-grid button.y-axis { border-right: 2px solid var(--qx-text); }

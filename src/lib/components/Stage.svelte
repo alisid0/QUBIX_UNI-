@@ -1,4 +1,5 @@
 <script>
+  import { onDestroy } from 'svelte';
   // The learner-facing renderer for a Factory interaction. One component per
   // section, so each board keeps its own state instead of sharing a module-level
   // variable with every other preview of the same kind, which is what the
@@ -88,6 +89,63 @@
     if (which === 'run') lineRun = Math.max(1, Math.min(5, lineRun + delta));
     else lineRise = Math.max(-4, Math.min(4, lineRise + delta));
   }
+
+  // Force and acceleration. The selected board runs two controlled
+  // experiments: S1/S2 change force at a fixed 2 kg, then S3 changes mass at a
+  // fixed 6 N. Every animation represents the same one-second force interval.
+  const PHYSICS_VALUES = [2, 4, 6];
+  const isMassStage = stage.kind === 'mass-push' || stage.kind === 'mass-race';
+  let physForce = isMassStage ? 6 : 2;
+  let physMass = 2;
+  let physRunning = false;
+  let physTravel = 0;
+  let physResult = null;
+  let physTrials = [];
+  let physTimer;
+  let physFrame;
+  const physAcceleration = (force, mass) => Number((force / mass).toFixed(2));
+  const physDistance = (force, mass) => Number((0.5 * physAcceleration(force, mass)).toFixed(2));
+  function choosePhysicsForce(force) {
+    if (physRunning) return;
+    physForce = force;
+    physTravel = 0;
+    physResult = null;
+  }
+  function choosePhysicsMass(mass) {
+    if (physRunning) return;
+    physMass = mass;
+    physTravel = 0;
+    physResult = null;
+  }
+  function runPhysics() {
+    if (physRunning) return;
+    window.clearTimeout(physTimer);
+    window.cancelAnimationFrame(physFrame);
+    physRunning = false;
+    physTravel = 0;
+    physResult = null;
+    physFrame = window.requestAnimationFrame(() => {
+      const force = physForce;
+      const mass = physMass;
+      const acceleration = physAcceleration(force, mass);
+      const distance = physDistance(force, mass);
+      physRunning = true;
+      physTravel = stage.kind === 'mass-race' ? 1 : distance;
+      physTimer = window.setTimeout(() => {
+        physRunning = false;
+        physResult = stage.kind === 'mass-race' ? { race: true } : { force, mass, acceleration, distance };
+        if (stage.kind !== 'mass-race') {
+          const key = stage.kind === 'mass-push' ? 'mass' : 'force';
+          physTrials = [...physTrials.filter(trial => trial[key] !== physResult[key]), physResult]
+            .sort((a, b) => a[key] - b[key]);
+        }
+      }, 950);
+    });
+  }
+  onDestroy(() => {
+    window.clearTimeout(physTimer);
+    window.cancelAnimationFrame(physFrame);
+  });
 </script>
 
 {#if stage.kind === 'switch-toggle' || stage.kind === 'switch-plain'}
@@ -325,6 +383,70 @@
     <p class="hint">{drill.step} of {pairs.length} points placed correctly.</p>
   </div>
 
+{:else if stage.kind === 'mass-race'}
+  <div class="st centre physics-stage">
+    <div class="physics-constant"><small>CONSTANT FORCE</small><b>6 N</b><span>same one-second push</span></div>
+    <div class="mass-race">
+      {#each PHYSICS_VALUES as mass}
+        {@const acceleration = physAcceleration(6, mass)}
+        {@const distance = physDistance(6, mass)}
+        <div class="mass-lane" role="img" aria-label={`${mass} kilogram block accelerating at ${acceleration} metres per second squared under a 6 newton force`}>
+          <strong>{mass} kg</strong>
+          <div class="mass-ground"><i>6 N →</i></div>
+          <div class:moved={physRunning || physResult} class="mass-block" style={`--race-travel:${distance * 34}%;--mass-width:${38 + mass * 4}px`}><b>{mass} kg</b></div>
+          <span>{acceleration} m/s²</span>
+        </div>
+      {/each}
+    </div>
+    <button class="physics-run" disabled={physRunning} on:click={runPhysics}>{physRunning ? 'APPLYING 6 N FOR 1 SECOND…' : 'APPLY 6 N TO ALL THREE'}</button>
+    {#if physResult}<p class="physics-result success">Same force, different result: the 2 kg block accelerates most and travels farthest.</p>{/if}
+    <p class="hint">Only the mass changes. Friction is off.</p>
+  </div>
+
+{:else if stage.kind === 'force-push' || stage.kind === 'force-bars' || stage.kind === 'mass-push'}
+  <div class="st centre physics-stage">
+    {#if stage.kind === 'mass-push'}
+      <div class="physics-constant"><small>CONSTANT FORCE</small><b>6 N</b><span>choose the mass</span></div>
+    {/if}
+    <div class="physics-track" role="img" aria-label={`A person applying ${physForce} newtons to a ${physMass} kilogram block`} style={`--travel:${physTravel * 36}%`}>
+      <div class="physics-ground"></div>
+      <div class:push={physRunning} class="physics-person" aria-hidden="true"><i></i><b></b><em></em><span></span><span></span></div>
+      <div class="physics-arrow" style={`--arrow:${34 + physForce * 7}px`}><span>F = {physForce} N</span></div>
+      <div class="physics-block"><b>{physMass} kg</b></div>
+      <small>START</small>
+    </div>
+    <div class="physics-picks" aria-label={stage.kind === 'mass-push' ? 'Choose the block mass' : 'Choose the applied force'}>
+      {#each PHYSICS_VALUES as value}
+        {#if stage.kind === 'mass-push'}
+          <button class:on={physMass === value} disabled={physRunning} on:click={() => choosePhysicsMass(value)}>{value} kg</button>
+        {:else}
+          <button class:on={physForce === value} disabled={physRunning} on:click={() => choosePhysicsForce(value)}>{value} N</button>
+        {/if}
+      {/each}
+    </div>
+    <button class="physics-run" disabled={physRunning} on:click={runPhysics}>{physRunning ? 'PUSHING FOR 1 SECOND…' : 'PUSH FOR 1 SECOND'}</button>
+    <div class="physics-readouts">
+      <span><small>FORCE</small><b>{physForce} N</b></span>
+      <span><small>MASS</small><b>{physMass} kg</b></span>
+      <span><small>ACCELERATION</small><b>{physAcceleration(physForce, physMass)} m/s²</b></span>
+    </div>
+    {#if stage.kind === 'force-bars'}
+      <div class="physics-bars">
+        <span><small>force</small><i style={`width:${physForce * 13}%`}></i><b>{physForce} N</b></span>
+        <span><small>acceleration</small><i style={`width:${physAcceleration(physForce, physMass) * 26}%`}></i><b>{physAcceleration(physForce, physMass)} m/s²</b></span>
+      </div>
+    {/if}
+    {#if physResult}
+      <p class="physics-result">{stage.kind === 'mass-push' ? `The same ${physResult.force} N force accelerated the ${physResult.mass} kg block at ${physResult.acceleration} m/s², covering ${physResult.distance} m during the push.` : `${physResult.force} N produced ${physResult.acceleration} m/s² and ${physResult.distance} m of travel during the push.`}</p>
+    {/if}
+    {#if physTrials.length}
+      <div class="physics-trials">
+        {#each physTrials as trial}<span><b>{stage.kind === 'mass-push' ? `${trial.mass} kg` : `${trial.force} N`}</b><i>{trial.acceleration} m/s²</i><small>{trial.distance} m</small></span>{/each}
+      </div>
+    {/if}
+    <p class="hint">{stage.kind === 'mass-push' ? 'The force is 6 N. Only the mass changes.' : 'The mass is 2 kg. Only the force changes.'} Every push lasts one second. Friction is off.</p>
+  </div>
+
 {:else if stage.kind === 'rise-run-line' || stage.kind === 'rise-run-ghost' || stage.kind === 'slope-ratio' || stage.kind === 'slope-triangles' || stage.kind === 'slope-sign' || stage.kind === 'slope-target'}
   {@const pts = { x0: 54, y0: 124, x1: 54 + lineRun * 38, y1: 124 - lineRise * 22 }}
   <div class="st centre">
@@ -455,4 +577,56 @@
   .ratio-read b.hit { color: var(--qx-green-text); }
   .target { margin: 0; font-size: 9px; letter-spacing: .1em; color: var(--qx-text-faint); font-weight: 900; }
   .target b { color: var(--qx-accent-text); font-size: 18px; margin-left: 5px; }
+
+  .physics-stage { width: 100%; }
+  .physics-constant { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; border: 1px solid var(--qx-green); border-radius: 11px; padding: 8px 11px; background: var(--qx-green-soft); }
+  .physics-constant small { color: var(--qx-green-text); font-size: 8px; letter-spacing: .09em; font-weight: 900; }
+  .physics-constant b { color: var(--qx-green-text); font-size: 19px; }
+  .physics-constant span { color: var(--qx-text-dim); font-size: 10px; }
+  .physics-track { position: relative; width: min(100%, 560px); height: 170px; overflow: hidden; border: 1px solid var(--qx-border-2); border-radius: 14px; background: linear-gradient(to bottom, var(--qx-surface-2) 0 71%, var(--qx-surface-3) 71% 100%); }
+  .physics-ground { position: absolute; left: 0; right: 0; top: 121px; height: 2px; background: var(--qx-text-faint); }
+  .physics-track > small { position: absolute; left: 18%; top: 129px; color: var(--qx-text-faint); font-size: 8px; letter-spacing: .1em; font-weight: 900; transform: translateX(-50%); }
+  .physics-person { position: absolute; left: 4%; top: 51px; width: 54px; height: 72px; transition: transform .15s ease; }
+  .physics-person i { position: absolute; left: 16px; top: 0; width: 19px; height: 19px; border: 3px solid var(--qx-accent); border-radius: 50%; }
+  .physics-person b { position: absolute; left: 26px; top: 22px; width: 3px; height: 31px; background: var(--qx-accent); }
+  .physics-person em { position: absolute; left: 27px; top: 29px; width: 33px; height: 3px; background: var(--qx-accent); transform: rotate(8deg); transform-origin: left center; }
+  .physics-person span { position: absolute; left: 27px; top: 51px; width: 29px; height: 3px; background: var(--qx-accent); transform: rotate(55deg); transform-origin: left center; }
+  .physics-person span + span { transform: rotate(125deg); }
+  .physics-person.push { transform: translateX(4px) rotate(3deg); }
+  .physics-arrow { position: absolute; left: 11%; top: 40px; height: 3px; width: var(--arrow); background: var(--qx-accent); }
+  .physics-arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border-left: 8px solid var(--qx-accent); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .physics-arrow span { position: absolute; left: 50%; bottom: 7px; white-space: nowrap; transform: translateX(-50%); color: var(--qx-accent-text); font-size: 10px; font-weight: 900; }
+  .physics-block { position: absolute; left: calc(18% + var(--travel)); top: 76px; width: 48px; height: 46px; display: grid; place-items: center; border: 2px solid var(--qx-accent); border-radius: 5px; background: var(--qx-accent-soft); color: var(--qx-accent-text); transition: left .9s cubic-bezier(.55,.05,.92,.45); }
+  .physics-block b { font-size: 12px; }
+  .physics-picks { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+  .physics-picks button { min-width: 64px; min-height: 44px; border: 1px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text); font-weight: 900; cursor: pointer; }
+  .physics-picks button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .physics-run { min-height: 44px; border: 0; border-radius: 11px; padding: 9px 17px; background: var(--qx-accent); color: #fff; font-size: 11px; letter-spacing: .06em; font-weight: 900; cursor: pointer; }
+  .physics-run:disabled { opacity: .65; cursor: default; }
+  .physics-readouts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .physics-readouts span { min-width: 82px; border: 1px solid var(--qx-border); border-radius: 9px; padding: 7px 9px; display: flex; flex-direction: column; gap: 2px; background: var(--qx-surface-2); }
+  .physics-readouts small { color: var(--qx-text-faint); font-size: 7.5px; letter-spacing: .08em; font-weight: 900; }
+  .physics-readouts b { color: var(--qx-text); font-size: 13px; }
+  .physics-bars { width: min(100%, 390px); display: flex; flex-direction: column; gap: 6px; }
+  .physics-bars span { display: grid; grid-template-columns: 76px 1fr 58px; align-items: center; gap: 7px; }
+  .physics-bars small { color: var(--qx-text-faint); font-size: 9px; font-weight: 800; }
+  .physics-bars i { display: block; height: 10px; max-width: 100%; border-radius: 5px; background: var(--qx-accent); }
+  .physics-bars span + span i { background: var(--qx-green); }
+  .physics-bars b { color: var(--qx-text); font-size: 10px; }
+  .physics-result { margin: 0; border-radius: 9px; padding: 7px 10px; background: var(--qx-surface-2); color: var(--qx-text-2); font-size: 12px; font-weight: 800; }
+  .physics-result.success { background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .physics-trials { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+  .physics-trials span { display: grid; grid-template-columns: auto auto; gap: 2px 7px; border: 1px solid var(--qx-border-2); border-radius: 9px; padding: 6px 9px; }
+  .physics-trials b { color: var(--qx-accent-text); font-size: 12px; }
+  .physics-trials i { color: var(--qx-text); font-size: 11px; font-style: normal; }
+  .physics-trials small { grid-column: 1 / -1; color: var(--qx-text-faint); font-size: 9px; }
+  .mass-race { width: min(100%, 560px); display: grid; gap: 8px; border: 1px solid var(--qx-border-2); border-radius: 14px; padding: 10px; background: var(--qx-surface-2); }
+  .mass-lane { position: relative; min-height: 88px; overflow: hidden; border-radius: 9px; background: var(--qx-surface); }
+  .mass-lane > strong { position: absolute; left: 10px; top: 35px; color: var(--qx-accent-text); font-size: 12px; }
+  .mass-lane > span { position: absolute; right: 9px; top: 7px; color: var(--qx-text-dim); font-size: 10px; font-weight: 900; }
+  .mass-ground { position: absolute; left: 64px; right: 12px; top: 59px; height: 2px; background: var(--qx-text-faint); }
+  .mass-ground i { position: absolute; left: 7px; bottom: 7px; color: var(--qx-accent-text); font-size: 9px; font-style: normal; font-weight: 900; }
+  .mass-block { position: absolute; left: 64px; top: 28px; width: var(--mass-width); height: 32px; display: grid; place-items: center; border: 2px solid var(--qx-accent); border-radius: 5px; background: var(--qx-accent-soft); color: var(--qx-accent-text); transition: left .9s cubic-bezier(.55,.05,.92,.45); }
+  .mass-block.moved { left: calc(64px + var(--race-travel)); }
+  .mass-block b { font-size: 10px; }
 </style>

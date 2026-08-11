@@ -1270,5 +1270,174 @@ export const pilotBoards = [
         ]
       }
     ]
+  },
+  {
+    "id": "PHY-FORCE-001",
+    "title": "Force and Acceleration",
+    "marker": "Physics",
+    "fromFactory": true,
+    "floors": [
+      {
+        "text": "The block has a mass of 2 kg. Every push lasts exactly one second. Choose a force, predict what will happen, then watch how quickly the block gains speed while the force acts.",
+        "name": "One fixed-time push",
+        "stages": [
+          {
+            "code": "S1-I1",
+            "kind": "force-push"
+          }
+        ],
+        "exercises": [
+          {
+            "code": "S1-X1",
+            "kind": "choice",
+            "prompt": "The same 2 kg block receives each push for one second. Which force gives it the greatest acceleration?",
+            "options": [
+              {
+                "label": "6 N",
+                "correct": true
+              },
+              {
+                "label": "4 N",
+                "feedback": "That accelerates the block, but a greater force is available."
+              },
+              {
+                "label": "2 N",
+                "feedback": "With the same mass, the smallest force gives the smallest acceleration."
+              }
+            ],
+            "successNote": "With mass fixed, greater force gives greater acceleration."
+          },
+          {
+            "code": "S1-X2",
+            "kind": "choice",
+            "prompt": "Why do these trials make a fair comparison of force?",
+            "options": [
+              {
+                "label": "Mass and push time stay fixed",
+                "correct": true
+              },
+              {
+                "label": "Every block travels the same distance",
+                "feedback": "Distance is an outcome here, not something held fixed."
+              },
+              {
+                "label": "The force stays fixed",
+                "feedback": "Force is the quantity deliberately changed."
+              }
+            ],
+            "successNote": "Only the force changes between trials."
+          }
+        ]
+      },
+      {
+        "text": "For a 2 kg block, a 2 N force produces 1 m/s² of acceleration. Doubling the force to 4 N doubles the acceleration to 2 m/s². The mass has not changed.",
+        "name": "Greater force, greater acceleration",
+        "stages": [
+          {
+            "code": "S2-I2",
+            "kind": "force-bars"
+          }
+        ],
+        "exercises": [
+          {
+            "code": "S2-X1",
+            "kind": "choice",
+            "prompt": "A 2 N force gives this block an acceleration of 1 m/s². What acceleration should a 4 N force give the same block?",
+            "options": [
+              {
+                "label": "2 m/s²",
+                "correct": true
+              },
+              {
+                "label": "4 m/s²",
+                "feedback": "That copies the force value instead of comparing it with the fixed 2 kg mass."
+              },
+              {
+                "label": "1 m/s²",
+                "feedback": "The mass stayed fixed, but the force doubled."
+              }
+            ],
+            "successNote": "Double the force on the same mass and the acceleration doubles."
+          },
+          {
+            "code": "S2-X2",
+            "kind": "choice",
+            "prompt": "During the same one-second push, which trial should travel farthest from rest?",
+            "options": [
+              {
+                "label": "The 6 N trial",
+                "correct": true
+              },
+              {
+                "label": "The 2 N trial",
+                "feedback": "That trial gains speed most slowly."
+              },
+              {
+                "label": "They all travel equally far",
+                "feedback": "The push time matches, but their accelerations do not."
+              }
+            ],
+            "successNote": "The greatest acceleration produces the greatest change of velocity during the fixed time."
+          }
+        ]
+      },
+      {
+        "text": "The same force has less effect on a greater mass. With 6 N applied, the 2 kg block accelerates at 3 m/s², the 4 kg block at 1.5 m/s² and the 6 kg block at 1 m/s².",
+        "name": "Same force, different masses",
+        "stages": [
+          {
+            "code": "S3-I1",
+            "kind": "mass-push"
+          },
+          {
+            "code": "S3-I2",
+            "kind": "mass-race"
+          }
+        ],
+        "exercises": [
+          {
+            "code": "S3-X1",
+            "kind": "choice",
+            "prompt": "The same 6 N force is applied to all three blocks. Which mass has the greatest acceleration?",
+            "options": [
+              {
+                "label": "2 kg",
+                "correct": true
+              },
+              {
+                "label": "4 kg",
+                "feedback": "The 4 kg block accelerates, but less than the lighter block."
+              },
+              {
+                "label": "6 kg",
+                "feedback": "The greatest mass has the smallest acceleration under the same force."
+              }
+            ],
+            "successNote": "With force fixed, the smallest mass has the greatest acceleration."
+          },
+          {
+            "code": "S3-X2",
+            "kind": "choice",
+            "prompt": "A 6 N force acts on the 6 kg block. What acceleration does it produce?",
+            "options": [
+              {
+                "label": "1 m/s²",
+                "correct": true
+              },
+              {
+                "label": "6 m/s²",
+                "feedback": "That copies the force value and ignores the mass."
+              },
+              {
+                "label": "3 m/s²",
+                "feedback": "That is the acceleration of the lighter 2 kg block."
+              }
+            ],
+            "successNote": "a = F ÷ m = 6 N ÷ 6 kg = 1 m/s²."
+          }
+        ]
+      }
+    ],
+    "workshops": []
   }
 ];
