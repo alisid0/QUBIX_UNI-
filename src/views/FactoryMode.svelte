@@ -46,6 +46,11 @@
     'curve-from-points', 'curve-rule-compare', 'curve-plot-drill', 'curve-point-check',
     'rise-run-line', 'rise-run-ghost',
     'slope-ratio', 'slope-triangles', 'slope-sign', 'slope-target',
+    'angle-turn', 'angle-benchmarks', 'angle-length', 'angle-length-compare', 'angle-right-compare', 'angle-sort',
+    'triangle-shape', 'triangle-presets', 'triangle-corners', 'triangle-sum-strip', 'triangle-corners-sum', 'triangle-missing', 'triangle-target',
+    'motion-rate', 'motion-race', 'velocity-direction', 'velocity-twins', 'motion-round-trip', 'motion-trip-builder',
+    'circle-displacement', 'circle-journey', 'compass-direction', 'direction-angle', 'vector-builder', 'vector-compare',
+    'vector-translate', 'vector-copy-test', 'vector-head-tail', 'vector-route-order', 'vector-resultant', 'vector-cancel',
     'force-push', 'force-vector', 'force-compare', 'force-bars', 'mass-push', 'mass-race',
     'switch-toggle', 'switch-plain', 'tap-valve', 'tap-piston', 'machine-panel', 'machine-labels',
     'forked-button', 'flaky-button'];
@@ -277,6 +282,96 @@
     };
   }
 
+  // ---- Plane geometry: angles -----------------------------------------
+  // A single state lets the founder compare candidates at the same turn.
+  // The arm-length candidate changes only `arm`, making the invariant explicit.
+  const ANGLE_BENCHMARKS = [30, 60, 90, 120, 180];
+  const ANGLE_SORT = [35, 90, 125, 70, 150, 45];
+  let angle = { s1: 60, s3: 60, arm: 92, sortIndex: 0, guess: '', revealed: false };
+  const angleName = degrees => degrees < 90 ? 'acute' : degrees === 90 ? 'right' : degrees < 180 ? 'obtuse' : 'straight';
+  const anglePoint = (degrees, length = angle.arm, ox = 140, oy = 126) => ({
+    x: ox + Math.cos(degrees * Math.PI / 180) * length,
+    y: oy - Math.sin(degrees * Math.PI / 180) * length
+  });
+  const angleArc = (degrees, radius = 34, ox = 140, oy = 126) => {
+    const end = anglePoint(degrees, radius, ox, oy);
+    return `M ${ox + radius} ${oy} A ${radius} ${radius} 0 0 0 ${end.x} ${end.y}`;
+  };
+  const sectionAngle = kind => kind === 'angle-length' ? 60 : kind === 'angle-right-compare' ? angle.s3 : angle.s1;
+  function setAngle(kind, degrees) {
+    const key = kind === 'angle-right-compare' ? 's3' : 's1';
+    angle = { ...angle, [key]: degrees, revealed: false };
+  }
+  function stepAngle(kind, delta) { setAngle(kind, Math.max(15, Math.min(180, sectionAngle(kind) + delta))); }
+  function nextSort() { angle = { ...angle, sortIndex: (angle.sortIndex + 1) % ANGLE_SORT.length, guess: '', revealed: false }; }
+  function guessAngle(name) { angle = { ...angle, guess: name, revealed: true }; }
+
+  // ---- Plane geometry: triangle angle sum ------------------------------
+  // The apex moves inside a fixed base. The angle labels are calculated from
+  // that geometry, then the final rounded angle absorbs rounding so the shown
+  // total is always exactly 180 rather than occasionally displaying 179/181.
+  const TRI_PRESETS = [
+    { name: 'wide', x: 140, h: 50 },
+    { name: 'tall', x: 140, h: 106 },
+    { name: 'leaning', x: 94, h: 78 },
+    { name: 'right', x: 50, h: 92 }
+  ];
+  let triangle = {
+    shape: { x: 140, h: 78 },
+    torn: { simple: false, combined: false },
+    missing: { a: 50, b: 60, revealed: false },
+    target: { a: 50, b: 60, goal: 70 }
+  };
+  const triangleMeasures = (x, h) => {
+    const a = Math.round(Math.atan2(h, Math.max(0, x - 50)) * 180 / Math.PI);
+    const b = Math.round(Math.atan2(h, Math.max(0, 230 - x)) * 180 / Math.PI);
+    return { a, b, c: 180 - a - b };
+  };
+  const triangleFromAngles = (a, b) => {
+    const ar = a * Math.PI / 180, br = b * Math.PI / 180;
+    const h = 180 / (1 / Math.tan(ar) + 1 / Math.tan(br));
+    return { x: 50 + h / Math.tan(ar), h };
+  };
+  function setTriangleShape(patch) { triangle = { ...triangle, shape: { ...triangle.shape, ...patch } }; }
+  function setTrianglePreset(preset) { triangle = { ...triangle, shape: { x: preset.x, h: preset.h } }; }
+  function toggleCorners(kind) {
+    const key = kind === 'triangle-corners-sum' ? 'combined' : 'simple';
+    triangle = { ...triangle, torn: { ...triangle.torn, [key]: !triangle.torn[key] } };
+  }
+  function changeKnown(mode, which, delta) {
+    const current = triangle[mode];
+    const next = Math.max(20, Math.min(130, current[which] + delta));
+    if (next + current[which === 'a' ? 'b' : 'a'] > 160) return;
+    triangle = { ...triangle, [mode]: { ...current, [which]: next, ...(mode === 'missing' ? { revealed: false } : {}) } };
+  }
+
+  // ---- Introductory motion --------------------------------------------
+  let movement = { distance: 40, time: 10, raceTime: 5, direction: 1, roundDone: false, roundRunning: false, rateRun: 0, raceRun: 0, directionRun: 0, twinsRun: 0, steps: [] };
+  const motionTimers = {};
+  const movementSpeed = state => Number((state.distance / state.time).toFixed(1));
+  const tripDistance = steps => steps.length * 10;
+  const tripDisplacement = steps => steps.reduce((sum, step) => sum + step * 10, 0);
+  function addTripStep(direction) { movement = { ...movement, steps: [...movement.steps, direction] }; }
+  function runRoundTrip() {
+    if (movement.roundRunning) return;
+    window.clearTimeout(motionTimers.round);
+    movement = { ...movement, roundRunning: true, roundDone: false };
+    motionTimers.round = window.setTimeout(() => (movement = { ...movement, roundRunning: false, roundDone: true }), 1550);
+  }
+
+  // ---- Vectors and displacement ---------------------------------------
+  const VECTOR_DIRS = ['E', 'NE', 'N', 'NW', 'W', 'SW', 'S', 'SE'];
+  let vectorState = { turn: 90, orbitRun: 0, direction: 0, magnitude: 5, direction2: 90, magnitude2: 5 };
+  const vectorPoint = (degrees, length = 78, ox = 150, oy = 110) => ({ x: ox + Math.cos(degrees * Math.PI / 180) * length, y: oy - Math.sin(degrees * Math.PI / 180) * length });
+  const circleDistance = degrees => Number((2 * Math.PI * 10 * degrees / 360).toFixed(1));
+  const circleDisplacement = degrees => Number((20 * Math.sin(degrees * Math.PI / 360)).toFixed(1));
+  const compassName = degrees => VECTOR_DIRS[(Math.round(degrees / 45) % 8 + 8) % 8];
+
+  // ---- Vector addition -------------------------------------------------
+  let vectorAdd = { east: 4, north: 3, shift: 0, copy: 'same', order: 'east-first', west: 4 };
+  const vectorGridPoint = (x, y) => ({ x: 55 + x * 30, y: 180 - y * 30 });
+  const resultantMagnitude = (east, north) => Number(Math.hypot(east, north).toFixed(1));
+
   // ---- Force and acceleration -----------------------------------------
   // S1 and S2 keep a 2 kg mass fixed while force changes. S3 keeps a 6 N
   // force fixed while mass changes. Every push lasts one second, so each
@@ -344,6 +439,7 @@
     });
   }
   onDestroy(() => {
+    Object.values(motionTimers).forEach(window.clearTimeout);
     Object.values(physicsTimers).forEach(window.clearTimeout);
     Object.values(physicsFrames).forEach(window.cancelAnimationFrame);
   });
@@ -1973,6 +2069,233 @@
                     <p class="stage-note">{drill.step} of {pairs.length} points placed correctly.</p>
                   </div>
 
+                {:else if interaction.kind === 'circle-displacement' || interaction.kind === 'circle-journey' || interaction.kind === 'compass-direction' || interaction.kind === 'direction-angle' || interaction.kind === 'vector-builder' || interaction.kind === 'vector-compare'}
+                  {@const circleEnd = vectorPoint(vectorState.turn)}
+                  {@const vectorEnd = vectorPoint(vectorState.direction, vectorState.magnitude * 10)}
+                  <div class="rows centre vector-experiment">
+                    {#if interaction.kind === 'circle-displacement' || interaction.kind === 'circle-journey'}
+                      <svg class="vector-circle" viewBox="0 0 300 225" role="img" aria-label={`${vectorState.turn} degree journey: distance ${circleDistance(vectorState.turn)} metres and displacement ${circleDisplacement(vectorState.turn)} metres`}>
+                        <circle class="orbit" cx="150" cy="110" r="78"/><path class="travel-arc" pathLength="360" stroke-dasharray={`${vectorState.turn} 360`} d="M228 110A78 78 0 1 0 72 110A78 78 0 1 0 228 110"/>
+                        <line class="displacement-vector" x1="228" y1="110" x2={circleEnd.x} y2={circleEnd.y}/><polygon class="vector-head" points={`${circleEnd.x},${circleEnd.y} ${circleEnd.x+8},${circleEnd.y+3} ${circleEnd.x+3},${circleEnd.y+9}`}/>
+                        <circle class="start-dot" cx="228" cy="110" r="5"/>
+                        {#if interaction.kind === 'circle-journey'}{#key vectorState.orbitRun}<circle class:running={vectorState.orbitRun>0} class="orbit-marker" style={`--turn:${vectorState.turn}deg`} cx="228" cy="110" r="7"/>{/key}{:else}<circle class="orbit-marker" cx={circleEnd.x} cy={circleEnd.y} r="7"/>{/if}
+                        <text x="239" y="105">start</text>
+                      </svg>
+                      <div class="vector-picks">{#each [90,180,270,360] as turn}<button class:on={vectorState.turn===turn} on:click={()=>vectorState={...vectorState,turn}}>{turn/360} lap</button>{/each}</div>
+                      {#if interaction.kind === 'circle-journey'}<button class="vector-action" on:click={()=>vectorState={...vectorState,orbitRun:vectorState.orbitRun+1}}>TRAVEL THE ARC</button>{/if}
+                      <div class="vector-readouts"><span><small>PATH DISTANCE</small><b>{circleDistance(vectorState.turn)} m</b></span><span><small>DISPLACEMENT</small><b>{circleDisplacement(vectorState.turn)} m</b></span></div>
+                    {:else if interaction.kind === 'compass-direction' || interaction.kind === 'direction-angle'}
+                      <svg class="vector-compass" viewBox="0 0 300 220" role="img" aria-label={`Five metre vector ${compassName(vectorState.direction)}, ${vectorState.direction} degrees from east`}><circle cx="150" cy="110" r="82"/><path d="M150 18V202M58 110H242"/><line class="vector-line" x1="150" y1="110" x2={vectorEnd.x} y2={vectorEnd.y}/><circle class="vector-tip" cx={vectorEnd.x} cy={vectorEnd.y} r="7"/><text x="150" y="15">N</text><text x="250" y="114">E</text><text x="150" y="215">S</text><text x="50" y="114">W</text></svg>
+                      <div class="vector-picks">{#each [0,45,90,135,180,225,270,315] as direction}<button class:on={vectorState.direction===direction} on:click={()=>vectorState={...vectorState,direction}}>{interaction.kind==='compass-direction'?compassName(direction):`${direction}°`}</button>{/each}</div>
+                      <p class="vector-result">5 m {compassName(vectorState.direction)} · {vectorState.direction}° from east</p>
+                    {:else}
+                      <svg class="vector-builder" viewBox="0 0 300 220" role="img" aria-label={`Vector magnitude ${vectorState.magnitude}, direction ${vectorState.direction} degrees`}><circle cx="150" cy="110" r="4"/><line class="vector-line" x1="150" y1="110" x2={vectorEnd.x} y2={vectorEnd.y}/><circle class="vector-tip" cx={vectorEnd.x} cy={vectorEnd.y} r="7"/>{#if interaction.kind==='vector-compare'}{@const end2=vectorPoint(vectorState.direction2,vectorState.magnitude2*10)}<line class="vector-line second" x1="150" y1="110" x2={end2.x} y2={end2.y}/><circle class="vector-tip second" cx={end2.x} cy={end2.y} r="6"/>{/if}</svg>
+                      <div class="vector-controls"><label>MAGNITUDE <input type="range" min="1" max="8" step="1" value={vectorState.magnitude} on:input={e=>vectorState={...vectorState,magnitude:+e.currentTarget.value}}/><b>{vectorState.magnitude}</b></label><label>DIRECTION <input type="range" min="0" max="315" step="45" value={vectorState.direction} on:input={e=>vectorState={...vectorState,direction:+e.currentTarget.value}}/><b>{vectorState.direction}°</b></label></div>
+                      {#if interaction.kind==='vector-compare'}<div class="vector-picks"><button on:click={()=>vectorState={...vectorState,magnitude2:vectorState.magnitude}}>MATCH LENGTH</button><button on:click={()=>vectorState={...vectorState,direction2:vectorState.direction}}>MATCH DIRECTION</button></div><p class="vector-result">{vectorState.magnitude===vectorState.magnitude2&&vectorState.direction===vectorState.direction2?'Equal vectors':'Not equal yet: both parts must match.'}</p>{:else}<p class="vector-result">magnitude {vectorState.magnitude} · direction {compassName(vectorState.direction)}</p>{/if}
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'vector-translate' || interaction.kind === 'vector-copy-test' || interaction.kind === 'vector-head-tail' || interaction.kind === 'vector-route-order' || interaction.kind === 'vector-resultant' || interaction.kind === 'vector-cancel'}
+                  {@const start = vectorGridPoint(0, 0)}
+                  {@const eastEnd = vectorGridPoint(vectorAdd.east, 0)}
+                  {@const northEnd = vectorGridPoint(0, vectorAdd.north)}
+                  {@const finalEnd = vectorGridPoint(vectorAdd.east, vectorAdd.north)}
+                  <div class="rows centre vector-experiment vector-addition-experiment">
+                    {#if interaction.kind === 'vector-translate'}
+                      {@const translatedStart = { x: 40 + vectorAdd.shift, y: 165 - vectorAdd.shift * .35 }}
+                      {@const translatedEnd = { x: translatedStart.x + 120, y: translatedStart.y - 75 }}
+                      <svg class="vector-add-stage" viewBox="0 0 300 220" role="img" aria-label="The same vector translated to a different starting position">
+                        <path class="vector-grid" d="M20 180H280M40 20V205"/>
+                        <line class="vector-line" x1={translatedStart.x} y1={translatedStart.y} x2={translatedEnd.x} y2={translatedEnd.y}/><circle class="vector-tip" cx={translatedEnd.x} cy={translatedEnd.y} r="7"/>
+                      </svg>
+                      <div class="vector-picks">{#each [0,55,105] as shift, i}<button class:on={vectorAdd.shift===shift} on:click={()=>vectorAdd={...vectorAdd,shift}}>{['LEFT','CENTRE','RIGHT'][i]}</button>{/each}</div>
+                      <p class="vector-result">magnitude 5 · direction NE — unchanged</p>
+                    {:else if interaction.kind === 'vector-copy-test'}
+                      {@const copyEnd = vectorAdd.copy==='same' ? {x:250,y:80} : vectorAdd.copy==='turned' ? {x:150,y:45} : {x:212,y:107}}
+                      <svg class="vector-add-stage" viewBox="0 0 300 220" role="img" aria-label={`Vector copy comparison: ${vectorAdd.copy}`}>
+                        <line class="vector-line muted" x1="35" y1="180" x2="135" y2="110"/><circle class="vector-tip muted" cx="135" cy="110" r="7"/>
+                        <line class="vector-line second" x1="150" y1="150" x2={copyEnd.x} y2={copyEnd.y}/><circle class="vector-tip second" cx={copyEnd.x} cy={copyEnd.y} r="7"/>
+                      </svg>
+                      <div class="vector-picks"><button class:on={vectorAdd.copy==='same'} on:click={()=>vectorAdd={...vectorAdd,copy:'same'}}>TRANSLATED</button><button class:on={vectorAdd.copy==='turned'} on:click={()=>vectorAdd={...vectorAdd,copy:'turned'}}>ROTATED</button><button class:on={vectorAdd.copy==='short'} on:click={()=>vectorAdd={...vectorAdd,copy:'short'}}>SHORTENED</button></div>
+                      <p class="vector-result">{vectorAdd.copy==='same'?'Same vector':'Different vector'}</p>
+                    {:else if interaction.kind === 'vector-cancel'}
+                      {@const cancelStart = 70}
+                      {@const cancelMiddle = cancelStart + vectorAdd.east * 24}
+                      {@const cancelEnd = cancelMiddle - vectorAdd.west * 24}
+                      {@const net = vectorAdd.east-vectorAdd.west}
+                      <svg class="vector-add-stage" viewBox="0 0 300 220" role="img" aria-label={`${vectorAdd.east} units east plus ${vectorAdd.west} units west gives ${Math.abs(net)} units ${net===0?'resultant':net>0?'east':'west'}`}>
+                        <path class="vector-grid" d="M25 120H275"/><line class="vector-line" x1={cancelStart} y1="105" x2={cancelMiddle} y2="105"/><circle class="vector-tip" cx={cancelMiddle} cy="105" r="7"/><line class="vector-line second" x1={cancelMiddle} y1="135" x2={cancelEnd} y2="135"/><circle class="vector-tip second" cx={cancelEnd} cy="135" r="7"/>
+                        {#if net!==0}<line class="resultant-line" x1={cancelStart} y1="175" x2={cancelEnd} y2="175"/><circle class="resultant-tip" cx={cancelEnd} cy="175" r="7"/>{:else}<circle class="zero-result" cx={cancelStart} cy="175" r="9"/> {/if}
+                        <text x="150" y="205">resultant</text>
+                      </svg>
+                      <div class="vector-controls"><label>EAST <input aria-label="East magnitude" type="range" min="1" max="6" step="1" value={vectorAdd.east} on:input={e=>vectorAdd={...vectorAdd,east:+e.currentTarget.value}}/><b>{vectorAdd.east}</b></label><label>WEST <input aria-label="West magnitude" type="range" min="1" max="6" step="1" value={vectorAdd.west} on:input={e=>vectorAdd={...vectorAdd,west:+e.currentTarget.value}}/><b>{vectorAdd.west}</b></label></div>
+                      <p class="vector-result">resultant: {Math.abs(net)}{net===0?'':` units ${net>0?'east':'west'}`}</p>
+                    {:else}
+                      {@const eastFirst = interaction.kind==='vector-head-tail' || interaction.kind==='vector-resultant' || vectorAdd.order==='east-first'}
+                      {@const middle = eastFirst ? eastEnd : northEnd}
+                      <svg class="vector-add-stage" viewBox="0 0 300 220" role="img" aria-label={`${vectorAdd.east} units east plus ${vectorAdd.north} units north; resultant ${resultantMagnitude(vectorAdd.east,vectorAdd.north)} units`}>
+                        <path class="vector-grid" d="M25 180H275M55 20V205"/>
+                        {#if eastFirst}<line class="vector-line" x1={start.x} y1={start.y} x2={middle.x} y2={middle.y}/><circle class="vector-tip" cx={middle.x} cy={middle.y} r="7"/><line class="vector-line second" x1={middle.x} y1={middle.y} x2={finalEnd.x} y2={finalEnd.y}/>{:else}<line class="vector-line second" x1={start.x} y1={start.y} x2={middle.x} y2={middle.y}/><circle class="vector-tip second" cx={middle.x} cy={middle.y} r="7"/><line class="vector-line" x1={middle.x} y1={middle.y} x2={finalEnd.x} y2={finalEnd.y}/>{/if}<circle class="vector-tip second" cx={finalEnd.x} cy={finalEnd.y} r="7"/>
+                        {#if interaction.kind==='vector-resultant' || interaction.kind==='vector-route-order'}<line class="resultant-line" x1={start.x} y1={start.y} x2={finalEnd.x} y2={finalEnd.y}/><circle class="resultant-tip" cx={finalEnd.x} cy={finalEnd.y} r="6"/>{/if}
+                        <text x="165" y="211">east</text><text x="25" y="95">north</text>
+                      </svg>
+                      <div class="vector-controls"><label>EAST <input aria-label="East magnitude" type="range" min="1" max="6" step="1" value={vectorAdd.east} on:input={e=>vectorAdd={...vectorAdd,east:+e.currentTarget.value}}/><b>{vectorAdd.east}</b></label><label>NORTH <input aria-label="North magnitude" type="range" min="1" max="5" step="1" value={vectorAdd.north} on:input={e=>vectorAdd={...vectorAdd,north:+e.currentTarget.value}}/><b>{vectorAdd.north}</b></label></div>
+                      {#if interaction.kind==='vector-route-order'}<div class="vector-picks"><button class:on={vectorAdd.order==='east-first'} on:click={()=>vectorAdd={...vectorAdd,order:'east-first'}}>EAST THEN NORTH</button><button class:on={vectorAdd.order==='north-first'} on:click={()=>vectorAdd={...vectorAdd,order:'north-first'}}>NORTH THEN EAST</button></div><p class="vector-result">same finish · same resultant</p>{:else if interaction.kind==='vector-resultant'}<p class="vector-result">resultant: {resultantMagnitude(vectorAdd.east,vectorAdd.north)} units</p>{:else}<p class="vector-result">head A meets tail B</p>{/if}
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'motion-rate' || interaction.kind === 'motion-race' || interaction.kind === 'velocity-direction' || interaction.kind === 'velocity-twins' || interaction.kind === 'motion-round-trip' || interaction.kind === 'motion-trip-builder'}
+                  {@const speedNow = movementSpeed(movement)}
+                  {@const travelled = tripDistance(movement.steps)}
+                  {@const displaced = tripDisplacement(movement.steps)}
+                  <div class="rows centre motion-experiment">
+                    {#if interaction.kind === 'motion-rate'}
+                      <div class="motion-track" style={`--motion:${Math.min(96, movement.distance)}%;--motion-duration:${Math.max(.6, Math.min(2.4, movement.time * .12))}s`}><span class="motion-distance"></span>{#key movement.rateRun}<i class:running={movement.rateRun > 0}></i>{/key}<b>{movement.distance} m</b></div>
+                      <div class="motion-sliders">
+                        <label><span>DISTANCE</span><input type="range" min="10" max="100" step="10" value={movement.distance} on:input={e => (movement = { ...movement, distance: +e.currentTarget.value })}/><b>{movement.distance} m</b></label>
+                        <label><span>TIME</span><input type="range" min="2" max="20" step="1" value={movement.time} on:input={e => (movement = { ...movement, time: +e.currentTarget.value })}/><b>{movement.time} s</b></label>
+                      </div>
+                      <div class="motion-equation"><span>{movement.distance} m</span><i>÷</i><span>{movement.time} s</span><i>=</i><b>{speedNow} m/s</b></div>
+                      <button class="motion-action" on:click={() => (movement = { ...movement, rateRun: movement.rateRun + 1 })}>WATCH THE JOURNEY</button>
+                    {:else if interaction.kind === 'motion-race'}
+                      <div class="motion-race" style={`--race-duration:${Math.max(.7, Math.min(2.2, movement.raceTime * .22))}s`}>{#each [2, 4, 6] as speed}<div><span>{speed} m/s</span><i>{#key movement.raceRun}<b class:running={movement.raceRun > 0} style={`--race:${speed / 6 * 92}%`}></b>{/key}</i><em>{speed * movement.raceTime} m</em></div>{/each}</div>
+                      <div class="motion-picks"><span>SAME TIME</span>{#each [3, 5, 8] as seconds}<button class:on={movement.raceTime === seconds} on:click={() => (movement = { ...movement, raceTime: seconds })}>{seconds} s</button>{/each}</div>
+                      <button class="motion-action" on:click={() => (movement = { ...movement, raceRun: movement.raceRun + 1 })}>START ALL THREE TOGETHER</button>
+                    {:else if interaction.kind === 'velocity-direction'}
+                      {#key movement.directionRun}<div class="velocity-stage" class:running={movement.directionRun > 0} class:left={movement.direction < 0}><div class="velocity-arrow">{movement.direction > 0 ? '→' : '←'}</div><div class="velocity-block">4 m/s</div></div>{/key}
+                      <div class="motion-picks"><button class:on={movement.direction < 0} on:click={() => (movement = { ...movement, direction: -1 })}>LEFT</button><button class:on={movement.direction > 0} on:click={() => (movement = { ...movement, direction: 1 })}>RIGHT</button></div>
+                      <button class="motion-action" on:click={() => (movement = { ...movement, directionRun: movement.directionRun + 1 })}>MOVE AT 4 m/s</button>
+                      <div class="motion-readouts"><span><small>SPEED</small><b>4 m/s</b></span><span><small>VELOCITY</small><b>4 m/s {movement.direction > 0 ? 'right' : 'left'}</b></span></div>
+                    {:else if interaction.kind === 'velocity-twins'}
+                      <div class="velocity-twins">{#each [-1, 1] as direction}<div><i>{direction < 0 ? '←' : '→'}</i><b>5 m/s</b><span>velocity {direction < 0 ? 'left' : 'right'}</span>{#key movement.twinsRun}<em class:running={movement.twinsRun > 0} class:left={direction < 0}></em>{/key}</div>{/each}</div>
+                      <button class="motion-action" on:click={() => (movement = { ...movement, twinsRun: movement.twinsRun + 1 })}>MOVE TOGETHER</button>
+                      <p class="motion-note">Equal speed · opposite velocity</p>
+                    {:else if interaction.kind === 'motion-round-trip'}
+                      <div class="round-track"><span>START</span><i class:running={movement.roundRunning}></i><b>20 m OUT + 20 m BACK</b></div>
+                      <button class="motion-action" disabled={movement.roundRunning} on:click={() => movement.roundDone ? (movement = { ...movement, roundDone: false }) : runRoundTrip()}>{movement.roundRunning ? 'TRAVELLING…' : movement.roundDone ? 'RESET TRIP' : 'RUN THE ROUND TRIP'}</button>
+                      <div class="motion-readouts"><span><small>DISTANCE</small><b>{movement.roundDone ? 40 : 0} m</b></span><span><small>DISPLACEMENT</small><b>0 m</b></span><span><small>AVERAGE VELOCITY</small><b>0 m/s</b></span></div>
+                    {:else}
+                      <div class="trip-line"><i></i><b style={`--position:${Math.max(0, Math.min(100, 50 + displaced))}%`}></b><span>start</span></div>
+                      <div class="motion-picks"><button on:click={() => addTripStep(-1)}>← 10 m · 1 s</button><button on:click={() => addTripStep(1)}>10 m · 1 s →</button><button on:click={() => (movement = { ...movement, steps: [] })}>RESET</button></div>
+                      <div class="motion-readouts four"><span><small>DISTANCE</small><b>{travelled} m</b></span><span><small>DISPLACEMENT</small><b>{displaced} m</b></span><span><small>AVG SPEED</small><b>{movement.steps.length ? 10 : 0} m/s</b></span><span><small>AVG VELOCITY</small><b>{movement.steps.length ? Number((displaced / movement.steps.length).toFixed(1)) : 0} m/s</b></span></div>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'triangle-shape' || interaction.kind === 'triangle-presets' || interaction.kind === 'triangle-corners' || interaction.kind === 'triangle-sum-strip' || interaction.kind === 'triangle-corners-sum' || interaction.kind === 'triangle-missing' || interaction.kind === 'triangle-target'}
+                  {@const shapeM = triangleMeasures(triangle.shape.x, triangle.shape.h)}
+                  <div class="rows centre triangle-experiment">
+                    {#if interaction.kind === 'triangle-shape' || interaction.kind === 'triangle-presets'}
+                      <svg class="triangle-svg" viewBox="0 0 280 155" role="img" aria-label={`Triangle with interior angles ${shapeM.a}, ${shapeM.b} and ${shapeM.c} degrees`}>
+                        <path class="triangle-face" d={`M50 126L230 126L${triangle.shape.x} ${126 - triangle.shape.h}Z`}/>
+                        {#if shapeM.a === 90}<path class="triangle-right" d="M50 108H68V126"/>{/if}
+                        <circle class="triangle-corner a" cx="50" cy="126" r="5"/><circle class="triangle-corner b" cx="230" cy="126" r="5"/><circle class="triangle-corner c" cx={triangle.shape.x} cy={126 - triangle.shape.h} r="5"/>
+                        <text x="71" y="118">A {shapeM.a}°</text><text x="208" y="118">B {shapeM.b}°</text><text x={triangle.shape.x} y={Math.max(18, 116 - triangle.shape.h)}>C {shapeM.c}°</text>
+                      </svg>
+                      {#if interaction.kind === 'triangle-shape'}
+                        <div class="triangle-sliders">
+                          <label><span>lean</span><input type="range" min="50" max="210" step="2" value={triangle.shape.x} on:input={e => setTriangleShape({ x: +e.currentTarget.value })} aria-label="Move the top vertex sideways"/></label>
+                          <label><span>height</span><input type="range" min="45" max="108" step="1" value={triangle.shape.h} on:input={e => setTriangleShape({ h: +e.currentTarget.value })} aria-label="Move the top vertex up or down"/></label>
+                        </div>
+                      {:else}
+                        <div class="triangle-controls">{#each TRI_PRESETS as preset}<button class:on={triangle.shape.x === preset.x && triangle.shape.h === preset.h} on:click={() => setTrianglePreset(preset)}>{preset.name}</button>{/each}</div>
+                      {/if}
+                      <div class="triangle-total"><span>{shapeM.a}°</span><i>+</i><span>{shapeM.b}°</span><i>+</i><span>{shapeM.c}°</span><i>=</i><b>180°</b></div>
+
+                    {:else if interaction.kind === 'triangle-corners' || interaction.kind === 'triangle-sum-strip' || interaction.kind === 'triangle-corners-sum'}
+                      {@const lined = interaction.kind === 'triangle-corners-sum' ? triangle.torn.combined : triangle.torn.simple}
+                      {#if (interaction.kind === 'triangle-corners' || interaction.kind === 'triangle-corners-sum') && !lined}
+                        <svg class="triangle-svg" viewBox="0 0 280 155" role="img" aria-label={`Assembled triangle with angles ${shapeM.a}, ${shapeM.b} and ${shapeM.c} degrees`}>
+                          <path class="triangle-face" d={`M50 126L230 126L${triangle.shape.x} ${126 - triangle.shape.h}Z`}/>
+                          <circle class="triangle-corner a" cx="50" cy="126" r="8"/><circle class="triangle-corner b" cx="230" cy="126" r="8"/><circle class="triangle-corner c" cx={triangle.shape.x} cy={126 - triangle.shape.h} r="8"/>
+                          <text x="72" y="117">A</text><text x="208" y="117">B</text><text x={triangle.shape.x} y={Math.max(18, 113 - triangle.shape.h)}>C</text>
+                        </svg>
+                      {:else}
+                        <div class="triangle-lineup" role="img" aria-label={`A straight angle partitioned into ${shapeM.a}, ${shapeM.b} and ${shapeM.c} degrees`}>
+                          <div class="triangle-sum-bar"><span class="a" style={`--part:${shapeM.a}`}><b>A</b><em>{shapeM.a}°</em></span><span class="b" style={`--part:${shapeM.b}`}><b>B</b><em>{shapeM.b}°</em></span><span class="c" style={`--part:${shapeM.c}`}><b>C</b><em>{shapeM.c}°</em></span></div>
+                          <div class="triangle-straight"><i></i><b>180° · one straight angle</b><i></i></div>
+                        </div>
+                      {/if}
+                      {#if interaction.kind === 'triangle-corners'}
+                        <button class="triangle-action" on:click={() => toggleCorners(interaction.kind)}>{lined ? 'PUT CORNERS BACK' : 'LINE UP THE THREE CORNERS'}</button>
+                      {:else if interaction.kind === 'triangle-corners-sum'}
+                        <button class="triangle-action" on:click={() => toggleCorners(interaction.kind)}>{lined ? 'PUT CORNERS BACK' : 'LINE UP THE THREE CORNERS'}</button>
+                        {#if lined}
+                          <div class="triangle-controls">{#each TRI_PRESETS as preset}<button class:on={triangle.shape.x === preset.x && triangle.shape.h === preset.h} on:click={() => setTrianglePreset(preset)}>{preset.name}</button>{/each}</div>
+                          <p class="triangle-proof">Now change the triangle. A, B and C redistribute, but the straight angle remains complete.</p>
+                        {/if}
+                      {:else}
+                        <div class="triangle-controls">{#each TRI_PRESETS as preset}<button class:on={triangle.shape.x === preset.x && triangle.shape.h === preset.h} on:click={() => setTrianglePreset(preset)}>{preset.name}</button>{/each}</div>
+                        <p class="triangle-proof">The parts change width. The bar never gains a gap or exceeds 180°.</p>
+                      {/if}
+
+                    {:else if interaction.kind === 'triangle-missing' || interaction.kind === 'triangle-target'}
+                      {@const known = interaction.kind === 'triangle-missing' ? triangle.missing : triangle.target}
+                      {@const missingC = 180 - known.a - known.b}
+                      {@const knownShape = triangleFromAngles(known.a, known.b)}
+                      {@const showC = interaction.kind === 'triangle-target' || known.revealed}
+                      <svg class="triangle-svg missing" viewBox="0 0 280 155" role="img" aria-label={`Triangle with angles ${known.a}, ${known.b} and ${showC ? missingC : 'unknown'} degrees`}>
+                        <path class="triangle-face" d={`M50 126L230 126L${knownShape.x} ${126 - knownShape.h}Z`}/>
+                        {#if known.a === 90}<path class="triangle-right" d="M50 108H68V126"/>{/if}
+                        {#if known.b === 90}<path class="triangle-right" d="M230 108H212V126"/>{/if}
+                        <text x="72" y="118">A {known.a}°</text><text x="207" y="118">B {known.b}°</text><text class:unknown={!showC} x={knownShape.x} y={Math.max(18, 115 - knownShape.h)}>C {showC ? `${missingC}°` : '?'}</text>
+                      </svg>
+                      <div class="triangle-known-controls">
+                        {#each ['a', 'b'] as which}<span><small>ANGLE {which.toUpperCase()}</small><button aria-label={`Decrease angle ${which.toUpperCase()}`} on:click={() => changeKnown(interaction.kind === 'triangle-missing' ? 'missing' : 'target', which, -5)}>−</button><b>{known[which]}°</b><button aria-label={`Increase angle ${which.toUpperCase()}`} on:click={() => changeKnown(interaction.kind === 'triangle-missing' ? 'missing' : 'target', which, 5)}>+</button></span>{/each}
+                      </div>
+                      {#if interaction.kind === 'triangle-missing'}
+                        <button class="triangle-action" on:click={() => (triangle = { ...triangle, missing: { ...triangle.missing, revealed: !triangle.missing.revealed } })}>{triangle.missing.revealed ? 'HIDE THE REMAINDER' : 'REVEAL THE REMAINDER'}</button>
+                        {#if triangle.missing.revealed}<div class="triangle-total"><b>180°</b><i>−</i><span>{known.a}°</span><i>−</i><span>{known.b}°</span><i>=</i><b>{missingC}°</b></div>{/if}
+                      {:else}
+                        <div class="triangle-targets"><span>TARGET C</span>{#each [40, 60, 70, 90] as goal}<button class:on={known.goal === goal} on:click={() => (triangle = { ...triangle, target: { ...triangle.target, goal } })}>{goal}°</button>{/each}</div>
+                        <p class="triangle-proof" class:hit={missingC === known.goal}>{missingC === known.goal ? `Target reached: C is ${known.goal}°.` : `Adjust A and B until C is ${known.goal}°.`}</p>
+                      {/if}
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'angle-turn' || interaction.kind === 'angle-benchmarks' || interaction.kind === 'angle-length' || interaction.kind === 'angle-right-compare' || interaction.kind === 'angle-sort' || interaction.kind === 'angle-length-compare'}
+                  {@const sortDegrees = ANGLE_SORT[angle.sortIndex]}
+                  {@const shownDegrees = interaction.kind === 'angle-sort' ? sortDegrees : sectionAngle(interaction.kind)}
+                  {@const endpoint = anglePoint(shownDegrees, interaction.kind === 'angle-length' ? angle.arm : 104)}
+                  <div class="rows centre angle-experiment">
+                    {#if interaction.kind === 'angle-length-compare'}
+                      <div class="angle-pair">
+                        <div><svg viewBox="0 0 180 145" role="img" aria-label="Long armed 50 degree angle"><path class="angle-ray" d="M20 120H165"/><path class="angle-ray moving" d={`M20 120L${20 + Math.cos(50 * Math.PI / 180) * 135} ${120 - Math.sin(50 * Math.PI / 180) * 135}`}/><text x="25" y="110">50°</text></svg><b>long arms · 50°</b></div>
+                        <div><svg viewBox="0 0 180 145" role="img" aria-label="Short armed 100 degree angle"><path class="angle-ray" d="M80 120H145"/><path class="angle-ray moving" d={`M80 120L${80 + Math.cos(100 * Math.PI / 180) * 62} ${120 - Math.sin(100 * Math.PI / 180) * 62}`}/><text x="84" y="110">100°</text></svg><b>short arms · 100°</b></div>
+                      </div>
+                      <button class="angle-reveal" on:click={() => (angle = { ...angle, revealed: !angle.revealed })}>{angle.revealed ? 'HIDE COMPARISON' : 'WHICH IS LARGER?'}</button>
+                      {#if angle.revealed}<p class="angle-result hit">100° is larger. Its arms are shorter, but its turn is twice as great.</p>{/if}
+                    {:else}
+                      <svg class="angle-svg" viewBox="0 0 280 155" role="img" aria-label={`${shownDegrees} degree ${angleName(shownDegrees)} angle`}>
+                        {#if interaction.kind === 'angle-right-compare'}
+                          <path class="angle-reference" d="M140 126H230M140 126V36"/>
+                          <path class="right-box" d="M162 126V104H140"/>
+                        {/if}
+                        <path class="angle-ray" d={`M140 126H${140 + (interaction.kind === 'angle-length' ? angle.arm : 104)}`}/>
+                        <path class="angle-ray moving" d={`M140 126L${endpoint.x} ${endpoint.y}`}/>
+                        {#if shownDegrees === 90}
+                          {#if interaction.kind !== 'angle-right-compare'}<path class="right-box current" d="M162 126V104H140"/>{/if}
+                        {:else}
+                          <path class="angle-arc" d={angleArc(shownDegrees)}/>
+                        {/if}
+                        <circle class="angle-vertex" cx="140" cy="126" r="4"/>
+                        <text class="angle-degree" x="140" y="21">{shownDegrees}°</text>
+                      </svg>
+
+                      {#if interaction.kind === 'angle-turn' || interaction.kind === 'angle-right-compare'}
+                        <div class="angle-controls"><button aria-label="Decrease angle by 15 degrees" on:click={() => stepAngle(interaction.kind, -15)}>−15°</button><b>{shownDegrees}°</b><button aria-label="Increase angle by 15 degrees" on:click={() => stepAngle(interaction.kind, 15)}>+15°</button></div>
+                        <p class="angle-result">{angleName(shownDegrees)}</p>
+                      {:else if interaction.kind === 'angle-benchmarks'}
+                        <div class="angle-controls benchmarks">{#each ANGLE_BENCHMARKS as degrees}<button class:on={angle.s1 === degrees} on:click={() => setAngle(interaction.kind, degrees)}>{degrees}°</button>{/each}</div>
+                      {:else if interaction.kind === 'angle-length'}
+                        <label class="angle-length-control"><span>arm length</span><input type="range" min="55" max="112" step="1" bind:value={angle.arm} aria-label="Change both arm lengths"/><b>60° stays fixed</b></label>
+                      {:else if interaction.kind === 'angle-sort'}
+                        <div class="angle-controls benchmarks">{#each ['acute', 'right', 'obtuse'] as name}<button class:on={angle.guess === name} on:click={() => guessAngle(name)}>{name}</button>{/each}</div>
+                        {#if angle.revealed}<p class="angle-result" class:hit={angle.guess === angleName(sortDegrees)}>{angle.guess === angleName(sortDegrees) ? 'Correct' : `Not yet — ${sortDegrees}° is ${angleName(sortDegrees)}.`}</p>{/if}
+                        <button class="angle-reveal" on:click={nextSort}>NEXT ANGLE</button>
+                      {/if}
+                    {/if}
+                  </div>
+
                 {:else if interaction.kind === 'mass-race'}
                   {@const p = physicsState(interaction.kind, physics)}
                   <div class="rows centre force-experiment mass-race-experiment">
@@ -2820,6 +3143,159 @@
   .source-matrix article a:hover, .source-matrix article a:focus { text-decoration: underline; }
 
   .force-experiment { width: 100%; }
+  .vector-experiment { width:100%; min-height:290px; }
+  .vector-circle,.vector-compass,.vector-builder { width:min(100%,360px); height:220px; overflow:visible; }
+  .vector-circle .orbit,.vector-compass circle,.vector-builder circle { fill:none; stroke:var(--qx-border-2); stroke-width:2; }
+  .vector-circle .travel-arc { fill:none; stroke:var(--qx-accent); stroke-width:5; stroke-linecap:round; }
+  .displacement-vector,.vector-line { stroke:var(--qx-green); stroke-width:4; stroke-linecap:round; }
+  .vector-line.second { stroke:var(--qx-danger); stroke-dasharray:6 4; }
+  .vector-head,.vector-tip { fill:var(--qx-green); }
+  .vector-tip.second { fill:var(--qx-danger); }
+  .start-dot { fill:var(--qx-text); }
+  .orbit-marker { fill:var(--qx-accent); transform-origin:150px 110px; }
+  .orbit-marker.running { animation:vector-orbit 1.5s linear forwards; }
+  @keyframes vector-orbit { to { transform:rotate(calc(-1 * var(--turn))); } }
+  .vector-circle text,.vector-compass text { fill:var(--qx-text-faint); font-size:11px; font-weight:900; text-anchor:middle; }
+  .vector-compass>circle { fill:var(--qx-surface-2); }
+  .vector-compass path { stroke:var(--qx-border-2); stroke-width:1; stroke-dasharray:4 5; }
+  .vector-picks { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; }
+  .vector-picks button,.vector-action { min-height:42px; border:1px solid var(--qx-border-2); border-radius:10px; background:var(--qx-surface); color:var(--qx-text); padding:8px 11px; font-weight:900; cursor:pointer; }
+  .vector-picks button.on { border-color:var(--qx-accent); background:var(--qx-accent-soft); color:var(--qx-accent-text); }
+  .vector-readouts { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:min(100%,370px); }
+  .vector-readouts span { display:flex; flex-direction:column; align-items:center; border:1px solid var(--qx-border); border-radius:10px; padding:9px; }
+  .vector-readouts small { color:var(--qx-text-faint); font-size:8px; font-weight:900; }
+  .vector-readouts b,.vector-result { color:var(--qx-accent-text); font-weight:900; }
+  .vector-result { margin:0; text-align:center; }
+  .vector-controls { width:min(100%,390px); display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .vector-controls label { display:grid; grid-template-columns:1fr auto; gap:5px; color:var(--qx-text-faint); font-size:9px; font-weight:900; }
+  .vector-controls input { grid-column:1/-1; }
+  .vector-controls b { color:var(--qx-accent-text); }
+  .vector-add-stage { width:min(100%,390px); height:220px; overflow:visible; }
+  .vector-add-stage .vector-grid { fill:none; stroke:var(--qx-border-2); stroke-width:1.5; stroke-dasharray:4 5; }
+  .vector-add-stage text { fill:var(--qx-text-faint); font-size:10px; font-weight:900; text-anchor:middle; }
+  .vector-line.muted { stroke:var(--qx-text-dim); }
+  .vector-tip.muted { fill:var(--qx-text-dim); }
+  .resultant-line { stroke:var(--qx-accent); stroke-width:5; stroke-linecap:round; }
+  .resultant-tip { fill:var(--qx-accent); }
+  .zero-result { fill:none; stroke:var(--qx-accent); stroke-width:5; }
+  .motion-experiment { width: 100%; min-height: 260px; }
+  .motion-track { position: relative; width: min(100%, 390px); height: 42px; border-bottom: 3px solid var(--qx-text-dim); }
+  .motion-distance { position: absolute; left: 0; bottom: 0; width: var(--motion); height: 8px; background: var(--qx-accent-soft); border-top: 1px dashed var(--qx-accent); }
+  .motion-track i { position: absolute; left: 0; bottom: 7px; width: 19px; height: 19px; background: var(--qx-accent); border-radius: 6px; }
+  .motion-track i.running { animation: motion-journey var(--motion-duration) linear forwards; }
+  @keyframes motion-journey { to { left: calc(var(--motion) - 19px); } }
+  .motion-track b { position: absolute; right: 0; top: 0; color: var(--qx-accent-text); }
+  .motion-sliders { width: min(100%, 390px); display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .motion-sliders label { display: grid; grid-template-columns: 1fr auto; gap: 5px; color: var(--qx-text-faint); font-size: 9px; font-weight: 900; }
+  .motion-sliders input { grid-column: 1 / -1; }
+  .motion-sliders b { color: var(--qx-text); font-size: 12px; }
+  .motion-equation { display: flex; align-items: center; gap: 8px; font-weight: 900; flex-wrap: wrap; justify-content: center; }
+  .motion-equation i { font-style: normal; color: var(--qx-text-faint); }
+  .motion-equation b { color: var(--qx-accent-text); font-size: 20px; }
+  .motion-race { width: min(100%, 430px); display: grid; gap: 10px; }
+  .motion-race div { display: grid; grid-template-columns: 58px 1fr 45px; align-items: center; gap: 8px; font-size: 11px; font-weight: 900; }
+  .motion-race i { position: relative; height: 22px; background: var(--qx-surface-2); border-radius: 5px; overflow: hidden; border-bottom: 2px solid var(--qx-border-2); }
+  .motion-race i b { position: absolute; left: 0; bottom: 2px; width: 17px; height: 17px; background: var(--qx-accent); border-radius: 5px; }
+  .motion-race i b.running { animation: motion-race var(--race-duration) linear forwards; }
+  @keyframes motion-race { to { left: calc(var(--race) - 17px); } }
+  .motion-race em { font-style: normal; color: var(--qx-accent-text); }
+  .motion-picks { display: flex; gap: 7px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  .motion-picks span { color: var(--qx-text-faint); font-size: 9px; font-weight: 900; letter-spacing: .08em; }
+  .motion-picks button, .motion-action { min-height: 42px; border: 1px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text); padding: 8px 12px; font-weight: 900; cursor: pointer; }
+  .motion-picks button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .velocity-stage { display: flex; align-items: center; justify-content: center; gap: 12px; width: min(100%, 370px); min-height: 72px; }
+  .velocity-stage.running { animation: velocity-right 1.2s linear forwards; }
+  .velocity-stage.running.left { animation-name: velocity-left; }
+  @keyframes velocity-right { from { transform: translateX(-28%); } to { transform: translateX(28%); } }
+  @keyframes velocity-left { from { transform: translateX(28%); } to { transform: translateX(-28%); } }
+  .velocity-arrow { color: var(--qx-accent-text); font-size: 64px; line-height: 1; }
+  .velocity-block { border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); border-radius: 12px; padding: 19px 25px; font-weight: 900; }
+  .motion-readouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; width: min(100%, 430px); }
+  .motion-readouts.four { grid-template-columns: repeat(4, 1fr); }
+  .motion-readouts span { display: flex; flex-direction: column; align-items: center; gap: 3px; border: 1px solid var(--qx-border); border-radius: 9px; padding: 8px 5px; text-align: center; }
+  .motion-readouts small { color: var(--qx-text-faint); font-size: 8px; font-weight: 900; letter-spacing: .06em; }
+  .motion-readouts b { color: var(--qx-accent-text); font-size: 13px; }
+  .velocity-twins { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: min(100%, 410px); }
+  .velocity-twins div { position: relative; display: grid; place-items: center; gap: 5px; border: 1px solid var(--qx-border); border-radius: 12px; padding: 15px 15px 39px; overflow: hidden; }
+  .velocity-twins i { font-style: normal; color: var(--qx-accent-text); font-size: 44px; line-height: 1; }
+  .velocity-twins span { color: var(--qx-text-faint); font-size: 10px; font-weight: 800; }
+  .velocity-twins em { position: absolute; left: calc(50% - 9px); bottom: 8px; width: 18px; height: 18px; border-radius: 5px; background: var(--qx-accent); }
+  .velocity-twins em.running { animation: twin-right 1.2s linear forwards; }
+  .velocity-twins em.running.left { animation-name: twin-left; }
+  @keyframes twin-right { to { left: calc(100% - 27px); } }
+  @keyframes twin-left { to { left: 9px; } }
+  .motion-note { margin: 0; color: var(--qx-green-text); font-weight: 900; }
+  .round-track, .trip-line { position: relative; width: min(100%, 420px); height: 80px; border-bottom: 3px solid var(--qx-text-dim); }
+  .round-track span { position: absolute; left: 0; bottom: 7px; font-size: 9px; font-weight: 900; }
+  .round-track b { position: absolute; right: 0; top: 0; color: var(--qx-text-faint); font-size: 10px; }
+  .round-track i { position: absolute; left: 4px; bottom: 12px; width: 22px; height: 22px; border-radius: 6px; background: var(--qx-accent); }
+  .round-track i.running { animation: round-home 1.5s ease-in-out forwards; }
+  @keyframes round-home { 0% { left: 4px; } 50% { left: calc(100% - 26px); } 100% { left: 4px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .motion-track i.running, .motion-race i b.running, .velocity-stage.running, .velocity-twins em.running, .round-track i.running { animation-duration: .01s; }
+  }
+  .trip-line i { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--qx-border-2); }
+  .trip-line b { position: absolute; left: var(--position); bottom: 8px; width: 20px; height: 20px; border-radius: 6px; background: var(--qx-accent); transform: translateX(-50%); transition: left .2s; }
+  .trip-line span { position: absolute; left: 50%; bottom: -19px; transform: translateX(-50%); color: var(--qx-text-faint); font-size: 9px; }
+  .triangle-experiment { width: 100%; min-height: 270px; }
+  .triangle-svg { width: min(100%, 390px); height: 185px; overflow: visible; }
+  .triangle-face { fill: var(--qx-accent-soft); stroke: var(--qx-text-dim); stroke-width: 3; stroke-linejoin: round; }
+  .triangle-svg text { fill: var(--qx-text); font-size: 13px; font-weight: 900; text-anchor: middle; }
+  .triangle-svg text.unknown { fill: var(--qx-danger-text); font-size: 20px; }
+  .triangle-corner { stroke: var(--qx-surface); stroke-width: 2; }
+  .triangle-corner.a { fill: var(--qx-accent); }
+  .triangle-corner.b { fill: var(--qx-green); }
+  .triangle-corner.c { fill: var(--qx-danger); }
+  .triangle-right { fill: none; stroke: var(--qx-green); stroke-width: 2.5; }
+  .triangle-sliders { width: min(100%, 390px); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .triangle-sliders label { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 8px; color: var(--qx-text-faint); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
+  .triangle-controls, .triangle-targets { display: flex; justify-content: center; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .triangle-controls button, .triangle-targets button, .triangle-action, .triangle-known-controls button { min-height: 42px; border: 1px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text); padding: 8px 12px; font-weight: 900; cursor: pointer; }
+  .triangle-controls button.on, .triangle-targets button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .triangle-action { border-color: var(--qx-accent); color: var(--qx-accent-text); }
+  .triangle-total { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 15px; font-weight: 900; }
+  .triangle-total i { font-style: normal; color: var(--qx-text-faint); }
+  .triangle-total b { color: var(--qx-accent-text); font-size: 19px; }
+  .triangle-lineup { width: min(100%, 430px); display: flex; flex-direction: column; gap: 12px; }
+  .triangle-sum-bar { display: flex; width: 100%; min-height: 76px; align-items: stretch; border-bottom: 3px solid var(--qx-text-dim); }
+  .triangle-sum-bar span { flex: var(--part); min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 1px solid var(--qx-border-2); border-bottom: 0; }
+  .triangle-sum-bar span.a { background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .triangle-sum-bar span.b { background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .triangle-sum-bar span.c { background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .triangle-sum-bar b { font-size: 12px; }
+  .triangle-sum-bar em { font-style: normal; font-size: 11px; font-weight: 900; }
+  .triangle-straight { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; color: var(--qx-text-dim); font-size: 11px; }
+  .triangle-straight i { height: 2px; background: var(--qx-text-dim); }
+  .triangle-proof { margin: 0; color: var(--qx-text-dim); font-size: 12px; font-weight: 800; text-align: center; }
+  .triangle-proof.hit { color: var(--qx-green-text); }
+  .triangle-known-controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .triangle-known-controls span { display: grid; grid-template-columns: auto auto auto; grid-template-rows: auto auto; align-items: center; gap: 4px 8px; border: 1px solid var(--qx-border); border-radius: 11px; padding: 8px 10px; }
+  .triangle-known-controls small { grid-column: 1 / -1; text-align: center; color: var(--qx-text-faint); font-size: 9px; font-weight: 900; letter-spacing: .08em; }
+  .triangle-known-controls button { min-width: 42px; padding: 5px 9px; }
+  .triangle-known-controls b { min-width: 42px; text-align: center; color: var(--qx-accent-text); font-size: 17px; }
+  .triangle-targets > span { color: var(--qx-text-faint); font-size: 9px; font-weight: 900; letter-spacing: .09em; }
+  .angle-experiment { width: 100%; min-height: 260px; }
+  .angle-svg { width: min(100%, 340px); height: 178px; overflow: visible; }
+  .angle-ray { fill: none; stroke: var(--qx-text-dim); stroke-width: 4; stroke-linecap: round; }
+  .angle-ray.moving { stroke: var(--qx-accent); }
+  .angle-arc { fill: none; stroke: var(--qx-green); stroke-width: 3; stroke-linecap: round; }
+  .angle-vertex { fill: var(--qx-text); }
+  .angle-degree { fill: var(--qx-accent-text); font-size: 19px; font-weight: 900; text-anchor: middle; }
+  .angle-reference { fill: none; stroke: var(--qx-border-2); stroke-width: 2; stroke-dasharray: 5 5; }
+  .right-box { fill: none; stroke: var(--qx-green); stroke-width: 2; }
+  .angle-controls { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .angle-controls button, .angle-reveal { min-height: 42px; border: 1px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text); padding: 8px 13px; font-weight: 900; cursor: pointer; }
+  .angle-controls button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .angle-controls b { min-width: 62px; text-align: center; color: var(--qx-accent-text); font-size: 19px; }
+  .angle-result { margin: 0; font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: var(--qx-text-dim); }
+  .angle-result.hit { color: var(--qx-green-text); }
+  .angle-length-control { width: min(100%, 310px); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; font-size: 11px; font-weight: 900; color: var(--qx-text-faint); }
+  .angle-length-control b { color: var(--qx-green-text); }
+  .angle-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+  .angle-pair > div { display: flex; flex-direction: column; align-items: center; border: 1px solid var(--qx-border); border-radius: 12px; padding: 8px; }
+  .angle-pair svg { width: 100%; max-width: 180px; }
+  .angle-pair text { fill: var(--qx-accent-text); font-size: 15px; font-weight: 900; }
+  .angle-pair b { font-size: 11px; color: var(--qx-text-dim); }
   .force-track { position: relative; width: min(100%, 560px); height: 170px; overflow: hidden; border: 1px solid var(--qx-border-2); border-radius: 14px; background: linear-gradient(to bottom, var(--qx-surface-2) 0 71%, var(--qx-surface-3) 71% 100%); }
   .force-ground { position: absolute; left: 0; right: 0; top: 121px; height: 2px; background: var(--qx-text-faint); }
   .force-start { position: absolute; left: 18%; top: 129px; color: var(--qx-text-faint); font-size: 8px; letter-spacing: .1em; font-weight: 900; transform: translateX(-50%); }
@@ -3337,5 +3813,8 @@
   @media (max-width: 560px) {
     .factory-body { gap: 26px; }
     .variant-grid { grid-template-columns: 1fr; }
+    .triangle-sliders { grid-template-columns: 1fr; }
+    .motion-sliders, .motion-readouts.four { grid-template-columns: 1fr 1fr; }
+    .vector-controls { grid-template-columns:1fr; }
   }
 </style>

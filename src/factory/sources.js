@@ -128,6 +128,30 @@ export const sources = {
     ref: 'Wentworth, Plane Geometry, Book IV, Scholium, scan 196',
     quote: 'When the base and altitude each contain the linear unit an integral number of times, this proposition is rendered evident by dividing the figure into squares, each equal to the unit of surface. Thus, if the base contains seven linear units, and the altitude four, the figure may be divided into twenty-eight squares, each equal to the unit of surface.'
   },
+  G5: {
+    ref: 'Wentworth, Plane Geometry, The Plane Angle, scan 018',
+    quote: 'The opening between two straight lines drawn from the same point is called a plane angle. The size of an angle depends upon the extent of opening of its sides, and not upon the length of its sides.'
+  },
+  G6: {
+    ref: 'Wentworth, Plane Geometry, Extension of the Meaning of Angles, scan 021',
+    quote: 'The magnitude of the angle AOC depends upon the amount of rotation of the line from the position OA to the position OC.'
+  },
+  G7: {
+    ref: 'Wentworth, Plane Geometry, Unit of Angles, scan 022',
+    quote: 'If we suppose OC to turn about O from coincidence with OA until it makes one three hundred sixtieth of a revolution, it generates an angle at O, which is taken as the unit for measuring angles. This unit is called a degree.'
+  },
+  G8: {
+    ref: 'Wentworth, Plane Geometry, revised ed. (Ginn & Company, 1899), Book I, Definitions, scan 039',
+    quote: 'A triangle is a portion of a plane bounded by three straight lines.'
+  },
+  G9: {
+    ref: 'Wentworth, Plane Geometry, revised ed. (Ginn & Company, 1899), Book I, Proposition I, scan 041',
+    quote: 'The sum of the three angles of a triangle is equal to two right angles.'
+  },
+  G10: {
+    ref: 'Wentworth, Plane Geometry, revised ed. (Ginn & Company, 1899), Book I, Proposition I, Corollary 2, scan 041',
+    quote: 'If the sum of two angles of a triangle is taken from two right angles, the remainder is equal to the third angle.'
+  },
   // De Morgan, Elements of Arithmetic, 1858, Gutenberg 68662. The shelf has
   // always listed this book with the role "prerequisite repair BBs" and nobody
   // had opened it.

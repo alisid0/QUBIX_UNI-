@@ -14,6 +14,11 @@ import { plane, selections as selP, finalised as finP, rejected as rejP, gated a
 import { plot, selections as selPlot, finalised as finPlot, rejected as rejPlot, gated as gatePlot } from './plot-options.js';
 import { lineSlope, selections as selLineSlope, finalised as finLineSlope, rejected as rejLineSlope, gated as gateLineSlope } from './line-slope-options.js';
 import { force, selections as selForce, finalised as finForce, rejected as rejForce, gated as gateForce } from './force-options.js';
+import { angles, selections as selAngles, finalised as finAngles, rejected as rejAngles, gated as gateAngles } from './angle-options.js';
+import { triangleAngles, selections as selTriangleAngles, finalised as finTriangleAngles, rejected as rejTriangleAngles, gated as gateTriangleAngles } from './triangle-options.js';
+import { motion, selections as selMotion, finalised as finMotion, rejected as rejMotion, gated as gateMotion } from './motion-options.js';
+import { vectors, selections as selVectors, finalised as finVectors, rejected as rejVectors, gated as gateVectors } from './vector-options.js';
+import { vectorAddition, selections as selVectorAddition, finalised as finVectorAddition, rejected as rejVectorAddition, gated as gateVectorAddition } from './vector-addition-options.js';
 import { func0, selections as selF0, finalised as finF0, rejected as rejF0, gated as gateF0 } from './func0-options.js';
 import { func1, selections as selF1, finalised as finF1, rejected as rejF1, gated as gateF1 } from './func1-options.js';
 import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gated as gateF2 } from './func2-options.js';
@@ -61,6 +66,8 @@ export const registry = [
   { key: 'plane', unit: 'geometry', label: 'Plane', bb: plane, selections: selP, finalised: finP, rejected: rejP, gated: gateP },
   { key: 'plot', unit: 'geometry', label: 'Plot', bb: plot, selections: selPlot, finalised: finPlot, rejected: rejPlot, gated: gatePlot },
   { key: 'line-slope', unit: 'geometry', label: 'Line slope', bb: lineSlope, selections: selLineSlope, finalised: finLineSlope, rejected: rejLineSlope, gated: gateLineSlope },
+  { key: 'angles', unit: 'plane-geometry', label: 'Angles', bb: angles, selections: selAngles, finalised: finAngles, rejected: rejAngles, gated: gateAngles },
+  { key: 'triangle-angles', unit: 'plane-geometry', label: 'Triangle angles', bb: triangleAngles, selections: selTriangleAngles, finalised: finTriangleAngles, rejected: rejTriangleAngles, gated: gateTriangleAngles },
   // The differential calculus. The pilot proposal moves these out of the first
   // course and makes them the opening of the next one.
   { key: 'rate', unit: 'rates', label: 'Rate', bb: bb4, selections: sel4, finalised: fin4 },
@@ -72,6 +79,9 @@ export const registry = [
   { key: 'sum', unit: 'rates', label: 'Sum', bb: bb10, selections: sel9, finalised: fin9, gated: gate9 },
   { key: 'slope', unit: 'rates', label: 'Slope', bb: bb11, selections: sel11, finalised: fin11, gated: gate11 },
   { key: 'turning', unit: 'rates', label: 'Turning', bb: bb12, selections: sel11, finalised: fin11, gated: gate11 },
+  { key: 'speed-velocity', unit: 'physics', label: 'Speed and velocity', bb: motion, selections: selMotion, finalised: finMotion, rejected: rejMotion, gated: gateMotion },
+  { key: 'vectors', unit: 'physics', label: 'Vectors', bb: vectors, selections: selVectors, finalised: finVectors, rejected: rejVectors, gated: gateVectors },
+  { key: 'vector-addition', unit: 'physics', label: 'Vector addition', bb: vectorAddition, selections: selVectorAddition, finalised: finVectorAddition, rejected: rejVectorAddition, gated: gateVectorAddition },
   { key: 'force', unit: 'physics', label: 'Force', bb: force, selections: selForce, finalised: finForce, rejected: rejForce, gated: gateForce }
 ];
 
@@ -80,8 +90,9 @@ export const UNITS = [
   { key: 'variables', name: 'Variables', blurb: 'What a letter is, and what changing one means.' },
   { key: 'functions', name: 'Functions', blurb: 'One sequence. The switch earns the machine, and the machine earns the rule.' },
   { key: 'geometry', name: 'Coordinate geometry', blurb: 'Counting a surface, then finding a place on one.' },
+  { key: 'plane-geometry', name: 'Plane geometry', blurb: 'Angles first; triangles and circles next, before trigonometry.' },
   { key: 'rates', name: 'Rates and derivatives', blurb: 'Proposed to leave this course and open the next.' },
-  { key: 'physics', name: 'Introductory physics', blurb: 'Proposed strand. One force-and-mass experiment, not yet placed.' }
+  { key: 'physics', name: 'Introductory physics', blurb: 'Motion, direction and vector addition before the forces that change motion.' }
 ];
 
 // The strip is drawn from this, so a board with no unit cannot silently vanish.

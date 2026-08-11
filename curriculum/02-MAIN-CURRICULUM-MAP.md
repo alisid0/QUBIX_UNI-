@@ -41,7 +41,30 @@ the proposals that place them are unapproved.
 |---|---|---|---|
 | Area on the Grid | `area` | `FCG-AREA-001` | `AI_DRAFT`, gated |
 | The Coordinate Plane | `plane` | `FCG-PLANE-001` | `AI_DRAFT`, gated |
+| Speed and Velocity | `speed-velocity` | `PHY-MOTION-001` | `AI_DRAFT`, gated |
+| Vectors and Displacement | `vectors` | `PHY-VECTOR-001` | `AI_DRAFT`, gated |
+| Vector Addition | `vector-addition` | `PHY-VECTOR-002` | `AI_DRAFT`, gated |
 | Force and Acceleration | `force` | `PHY-FORCE-001` | `AI_DRAFT`, gated; publication pending |
+| Angles and Turns | `angles` | `GEO-ANGLE-001` | `AI_DRAFT`, gated |
+| Angle Sum of a Triangle | `triangle-angles` | `GEO-TRIANGLE-001` | `AI_DRAFT`, gated |
+
+*Angles and Turns* is the first draft in a proposed plane-geometry sequence:
+angles, triangles, circles, then trigonometry. That sequence is a planning
+direction, not an approved curriculum placement. The angle board is deliberately
+small: it teaches turn, independence from arm length and comparison with 90°.
+The next board, *Angle Sum of a Triangle*, now exists as an unselected Factory
+draft. It depends provisionally on *Angles and Turns* and teaches one invariant:
+the three interior angles total 180°. Triangle classification, circles and
+trigonometry remain separate future boards.
+
+*Speed and Velocity* is provisionally placed before *Force and Acceleration*
+because the latter already assumes that a learner can recognise changing
+motion. The placement is proposed, not approved.
+
+*Vector Addition* is a proposed extension of *Vectors and Displacement*. It
+stays graphical: arrows are translated, placed head to tail and replaced by a
+resultant. Analytical components remain deferred until trigonometry is taught.
+This placement is proposed, not approved.
 
 *Force and Acceleration* opens a proposed physics strand. It is not permission
 to place physics inside the present mathematics pathway. Its provisional

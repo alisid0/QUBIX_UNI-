@@ -32,7 +32,31 @@ Named, not numbered, since 2026-08-09. `key` is the Factory URL.
 | The Coordinate Plane | `plane` | none | AI_DRAFT, gated | Pilot proposal |
 | Plotting a Rule as a Curve | `plot` | source matrix in Factory | AI_DRAFT, gated | Founder selection |
 | The Slope of a Line | `line-slope` | source matrix in Factory | AI_DRAFT, gated | Founder selection |
+| Speed and Velocity | `speed-velocity` | written | AI_DRAFT, gated | Founder selection, prerequisites and placement |
+| Vectors and Displacement | `vectors` | written | AI_DRAFT, gated | Founder selection, prerequisites and placement |
+| Vector Addition | `vector-addition` | written | AI_DRAFT, gated | Founder selection, prerequisites and placement |
 | Force and Acceleration | `force` | written | AI_DRAFT, gated; publication pending | Vercel recovery, prerequisites, placement and approval |
+| Angles and Turns | `angles` | written | AI_DRAFT, gated | Founder selection, source edition review and placement |
+| Angle Sum of a Triangle | `triangle-angles` | written | AI_DRAFT, gated | Founder selection, prerequisite and edition review, placement |
+
+**Triangle-angle draft, 2026-08-11.** Under the founder's general permission to
+plan and create the next lessons, one narrow board was added after *Angles and
+Turns*. It teaches only that the three interior angles total 180° and uses that
+invariant to find a missing angle. Each section has two readings, two working
+interactions and two checks. The founder selected `S1-A`, both S1 interactions
+and checks, `S2-B`, both S2 checks, `S3-A` and both S3 interactions. On founder
+direction the two S2 interactions were superseded by one selected combined
+`S2-I3`. The requested `S3-X3` does not exist, so S3's exercise slot remains
+open rather than attributing an unseen selection. The learner generator excludes
+the board.
+
+**Plane-geometry prerequisite expansion, 2026-08-11.** On founder instruction,
+`GEO-ANGLE-001` was added to the Factory as the first board before triangles,
+circles and trigonometry. It has three sections with two readings, two working
+interaction candidates and two checks per section. The founder selected `S1-B`,
+both S1 interactions and checks, `S2-B`, `S2-I1`, both S2 checks, `S3-I1` and
+both S3 checks. S3 still has no selected reading. The board is excluded from the
+learner generator and remains gated.
 
 **Proposed physics introduction, amended 2026-08-11.** The founder selected
 `S1-A`, `S1-I1`, both S1 exercises, `S2-A`, `S2-I2` and both S2 exercises.
@@ -45,6 +69,26 @@ pilot for live testing and pushed to GitHub. Source and prebuilt Vercel
 deployments both entered `UNKNOWN` with no logs, so production publication is
 pending. Curriculum position, prerequisite nodes and formal approval remain
 open; publication does not change those gates.
+
+**Motion prerequisite draft, 2026-08-11.** On founder instruction to create
+more physics, *Speed and Velocity* was added as an unselected Factory board,
+provisionally before *Force and Acceleration*. It distinguishes distance/time
+speed from directed velocity and ends with the average-speed/average-velocity
+contrast on a round trip. It remains excluded from the learner generator.
+On founder feedback that the first draft did not capture motion convincingly,
+all animated candidates were revised to show time-ordered travel rather than
+only changing bars or labels.
+
+**Vector prerequisite draft, 2026-08-11.** On founder direction, a circular-path
+comparison now introduces distance and displacement before compass directions
+and vector arrows. The board is unselected, gated and excluded from learners.
+
+**Vector-addition extension, 2026-08-11.** On founder direction, one graphical
+extension was added after *Vectors and Displacement*. It establishes that an
+arrow may be translated without changing the vector, develops the head-to-tail
+method, and ends with resultants and cancellation. It deliberately defers
+analytical components until trigonometry is available. The board is unselected,
+gated and excluded from learners.
 
 **Draft addition, 2026-08-10.** On founder instruction, the two missing graphing
 bridges were added to the Factory so variants can be tested and selected. Their
