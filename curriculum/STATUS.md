@@ -32,7 +32,7 @@ Named, not numbered, since 2026-08-09. `key` is the Factory URL.
 | The Coordinate Plane | `plane` | none | AI_DRAFT, gated | Pilot proposal |
 | Plotting a Rule as a Curve | `plot` | source matrix in Factory | AI_DRAFT, gated | Founder selection |
 | The Slope of a Line | `line-slope` | source matrix in Factory | AI_DRAFT, gated | Founder selection |
-| Force and Acceleration | `force` | written | AI_DRAFT, gated; live pilot | Prerequisites, curriculum placement and approval |
+| Force and Acceleration | `force` | written | AI_DRAFT, gated; publication pending | Vercel recovery, prerequisites, placement and approval |
 
 **Proposed physics introduction, amended 2026-08-11.** The founder selected
 `S1-A`, `S1-I1`, both S1 exercises, `S2-A`, `S2-I2` and both S2 exercises.
@@ -41,8 +41,10 @@ instruction, S3 was rebuilt to keep force at 6 N while mass changes between
 2 kg, 4 kg and 6 kg. The founder then selected `S3-B`, both S3 interactions and
 both S3 exercises. The board now has a complete kept sheet but remains excluded
 from approval. On founder instruction it was added to the generated learner
-pilot for live testing. Curriculum position, prerequisite nodes and formal
-approval remain open; publication does not change those gates.
+pilot for live testing and pushed to GitHub. Source and prebuilt Vercel
+deployments both entered `UNKNOWN` with no logs, so production publication is
+pending. Curriculum position, prerequisite nodes and formal approval remain
+open; publication does not change those gates.
 
 **Draft addition, 2026-08-10.** On founder instruction, the two missing graphing
 bridges were added to the Factory so variants can be tested and selected. Their
@@ -63,12 +65,12 @@ curriculum gate on everything from *The Notation dy/dx* onward.
 
 ## What is live
 
-Since 2026-08-11 the site at `https://qubix.university/` serves ten boards: the
-three variable boards, five built from Factory selections, and the two rate
-boards. The fifth generated board is *Force and Acceleration*, published on
-founder instruction as an unapproved live pilot. *One Answer, Not Two* is absent
-because it has no selections yet, so the functions unit ships two boards of
-three.
+The site at `https://qubix.university/` still serves nine boards: the three
+variable boards, four built from Factory selections, and the two rate boards.
+*Force and Acceleration* is the fifth generated board in GitHub but is not yet
+on the custom domain because its two production deployment attempts remain
+`UNKNOWN`. *One Answer, Not Two* is absent because it has no selections yet, so
+the functions unit ships two boards of three.
 
 **Live is not approved.** Nothing below has been marked `APPROVED` by the
 founder, and putting the pilot in front of people was a decision to test it, not

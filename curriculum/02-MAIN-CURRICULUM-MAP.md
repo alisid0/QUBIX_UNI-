@@ -41,15 +41,17 @@ the proposals that place them are unapproved.
 |---|---|---|---|
 | Area on the Grid | `area` | `FCG-AREA-001` | `AI_DRAFT`, gated |
 | The Coordinate Plane | `plane` | `FCG-PLANE-001` | `AI_DRAFT`, gated |
-| Force and Acceleration | `force` | `PHY-FORCE-001` | `AI_DRAFT`, gated; live pilot |
+| Force and Acceleration | `force` | `PHY-FORCE-001` | `AI_DRAFT`, gated; publication pending |
 
 *Force and Acceleration* opens a proposed physics strand. It is not permission
 to place physics inside the present mathematics pathway. Its provisional
 prerequisites still need mapping before any learner release.
 
 On 2026-08-11 the founder instructed that the selected board be included in the
-live pilot. Publication records testing authority only: it does not place the
-board in this map or change its curriculum status.
+live pilot. The learner bundle and GitHub source were updated, but both source
+and prebuilt Vercel deployments entered `UNKNOWN`; publication remains pending.
+The instruction records testing authority only: it does not place the board in
+this map or change its curriculum status.
 
 ## Review sequence for the current pilot
 

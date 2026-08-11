@@ -1,6 +1,6 @@
 # Force and Acceleration
 
-Status: `AI_DRAFT`, gated; founder-directed live pilot
+Status: `AI_DRAFT`, gated; founder-directed publication pending
 Identifier: `PHY-FORCE-001`
 Factory key: `force`
 Course position: proposed physics strand, not placed
@@ -93,5 +93,6 @@ interval the board stops the trial rather than pretending it continues.
 - [ ] Founder marks the board `APPROVED`.
 
 Until those decisions are explicit, this board remains `AI_DRAFT` and gated. It
-is present in the learner pilot only under the founder's explicit testing
-instruction; it is not `APPROVED` or `RELEASED` curriculum.
+is present in the generated learner pilot only under the founder's explicit
+testing instruction; production publication is pending, and it is not
+`APPROVED` or `RELEASED` curriculum.
