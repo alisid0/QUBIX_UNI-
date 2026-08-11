@@ -36,7 +36,7 @@ Named, not numbered, since 2026-08-09. `key` is the Factory URL.
 | Speed and Velocity | `speed-velocity` | written | AI_DRAFT, gated | Founder selection, prerequisites and placement |
 | Vectors and Displacement | `vectors` | written | AI_DRAFT, gated | Founder selection, prerequisites and placement |
 | Vector Addition | `vector-addition` | written | AI_DRAFT, gated | Founder selection, prerequisites and placement |
-| Force and Acceleration | `force` | written | AI_DRAFT, gated; publication pending | Vercel recovery, prerequisites, placement and approval |
+| Force and Acceleration | `force` | written | AI_DRAFT, gated; live pilot | Prerequisites, placement and formal approval |
 | Angles and Turns | `angles` | written | AI_DRAFT, gated | Founder selection, source edition review and placement |
 | Angle Sum of a Triangle | `triangle-angles` | written | AI_DRAFT, gated | Founder selection, prerequisite and edition review, placement |
 
@@ -71,9 +71,11 @@ instruction, S3 was rebuilt to keep force at 6 N while mass changes between
 both S3 exercises. The board now has a complete kept sheet but remains excluded
 from approval. On founder instruction it was added to the generated learner
 pilot for live testing and pushed to GitHub. Source and prebuilt Vercel
-deployments both entered `UNKNOWN` with no logs, so production publication is
-pending. Curriculum position, prerequisite nodes and formal approval remain
-open; publication does not change those gates.
+deployments both entered `UNKNOWN` with no logs. On 2026-08-11 the Vercel
+installation command was repaired to use the repository's `package-lock.json`,
+and production deployment `dpl_3WEmrdCNzDeqABxXLj22c6gz8G6M` reached `READY`
+and was aliased to `qubix.university`. Curriculum position, prerequisite nodes
+and formal approval remain open; publication does not change those gates.
 
 **Motion prerequisite draft, 2026-08-11.** On founder instruction to create
 more physics, *Speed and Velocity* was added as an unselected Factory board,
@@ -126,12 +128,12 @@ curriculum gate on everything from *The Notation dy/dx* onward.
 
 ## What is live
 
-The site at `https://qubix.university/` still serves nine boards: the three
-variable boards, four built from Factory selections, and the two rate boards.
-*Force and Acceleration* is the fifth generated board in GitHub but is not yet
-on the custom domain because its two production deployment attempts remain
-`UNKNOWN`. *One Answer, Not Two* is absent because it has no selections yet, so
-the functions unit ships two boards of three.
+The site at `https://qubix.university/` serves ten subtopics: the three variable
+boards, five built from Factory selections, and the two rate boards. The fifth
+generated board is the founder-selected *Force and Acceleration*, now published
+under *Introductory Physics* with three sections. *One Answer, Not Two* is absent
+because it has no selections yet, so the functions unit ships two boards of
+three.
 
 **Live is not approved.** Nothing below has been marked `APPROVED` by the
 founder, and putting the pilot in front of people was a decision to test it, not

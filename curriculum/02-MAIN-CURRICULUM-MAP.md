@@ -51,7 +51,7 @@ the proposals that place them are unapproved.
 | Speed and Velocity | `speed-velocity` | `PHY-MOTION-001` | `AI_DRAFT`, gated |
 | Vectors and Displacement | `vectors` | `PHY-VECTOR-001` | `AI_DRAFT`, gated |
 | Vector Addition | `vector-addition` | `PHY-VECTOR-002` | `AI_DRAFT`, gated |
-| Force and Acceleration | `force` | `PHY-FORCE-001` | `AI_DRAFT`, gated; publication pending |
+| Force and Acceleration | `force` | `PHY-FORCE-001` | `AI_DRAFT`, gated; live pilot |
 | Angles and Turns | `angles` | `GEO-ANGLE-001` | `AI_DRAFT`, gated |
 | Angle Sum of a Triangle | `triangle-angles` | `GEO-TRIANGLE-001` | `AI_DRAFT`, gated |
 
@@ -78,10 +78,11 @@ to place physics inside the present mathematics pathway. Its provisional
 prerequisites still need mapping before any learner release.
 
 On 2026-08-11 the founder instructed that the selected board be included in the
-live pilot. The learner bundle and GitHub source were updated, but both source
-and prebuilt Vercel deployments entered `UNKNOWN`; publication remains pending.
-The instruction records testing authority only: it does not place the board in
-this map or change its curriculum status.
+live pilot. The learner bundle and GitHub source were updated. After repairing
+the mismatched Vercel installation command, production deployment
+`dpl_3WEmrdCNzDeqABxXLj22c6gz8G6M` reached `READY` and was aliased to
+`qubix.university`. The instruction records testing authority only: it does not
+place the board in this map or change its curriculum status.
 
 ## Review sequence for the current pilot
 
