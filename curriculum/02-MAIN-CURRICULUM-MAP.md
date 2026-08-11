@@ -4,6 +4,13 @@ Status: **Draft skeleton for founder review**
 
 This is a dependency skeleton, not permission to generate all listed content.
 
+The standalone Strata Migration Factory (`?mode=strata-factory`) is deliberately
+separate from this curriculum map and from the present Factory registry. It
+reviews the complete audited Strata migration inventory (curriculum paths,
+workshop routes, interaction engines, systems and media), but is not a learner
+board or a proposed curriculum position. Its decisions record migration intent;
+they do not approve or place material in this map.
+
 ## First pathway: from change to derivative
 
 Boards are named, not numbered. The order column below is the running order and

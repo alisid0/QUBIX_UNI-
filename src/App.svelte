@@ -7,6 +7,10 @@
   // of authoring options into the production bundle, where the route cannot even
   // be reached, which made the dev-only gate cosmetic rather than real.
   let FactoryMode = null;
+  // A separate, authoring-only surface for reviewing material selected from
+  // the former Strata/Qubix repository. It must not become a board in the
+  // present Factory or enter the learner bundle.
+  let StrataMigrationFactory = null;
   // The Approver is loaded on demand for the same reason. It is reached only by
   // asking for it, and it carries the source citations and the review wording,
   // none of which belongs in the bundle a learner downloads.
@@ -17,6 +21,7 @@
   const explicitReviewMode = params.get('mode') === 'review';
   // Authoring surface. Never reached in production: options are drafts, not curriculum.
   const showFactoryMode = params.get('mode') === 'factory' && !import.meta.env.PROD;
+  const showStrataMigrationFactory = params.get('mode') === 'strata-factory' && !import.meta.env.PROD;
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
@@ -26,6 +31,9 @@
   if (showFactoryMode) {
     import('./views/FactoryMode.svelte').then(m => { FactoryMode = m.default; });
   }
+  if (showStrataMigrationFactory) {
+    import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
+  }
   if (showReviewMode) {
     import('./views/ReviewMode.svelte').then(m => { ReviewMode = m.default; });
   }
@@ -34,6 +42,8 @@
 <main class="qubix-university">
   {#if showFactoryMode}
     <svelte:component this={FactoryMode} />
+  {:else if showStrataMigrationFactory}
+    <svelte:component this={StrataMigrationFactory} />
   {:else if showReviewMode}
     <svelte:component this={ReviewMode} />
   {:else if $view === 'lesson'}

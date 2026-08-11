@@ -9,6 +9,7 @@ Last updated: 2026-08-11
 | Main curriculum map | Draft | Founder |
 | Foundational mathematics shelf | Draft | Founder |
 | Extended classical candidate library | Draft | Founder |
+| Strata migration finalization review | AI_DRAFT, authoring-only | Founder decisions across 100 audited records |
 
 ## Boards
 
@@ -38,6 +39,10 @@ Named, not numbered, since 2026-08-09. `key` is the Factory URL.
 | Force and Acceleration | `force` | written | AI_DRAFT, gated; publication pending | Vercel recovery, prerequisites, placement and approval |
 | Angles and Turns | `angles` | written | AI_DRAFT, gated | Founder selection, source edition review and placement |
 | Angle Sum of a Triangle | `triangle-angles` | written | AI_DRAFT, gated | Founder selection, prerequisite and edition review, placement |
+
+The standalone Strata Migration Factory is available only at
+`?mode=strata-factory` in development. It is not registered in the present
+Factory, is not a learner board and is excluded from the learner generator.
 
 **Triangle-angle draft, 2026-08-11.** Under the founder's general permission to
 plan and create the next lessons, one narrow board was added after *Angles and
@@ -89,6 +94,18 @@ arrow may be translated without changing the vector, develops the head-to-tail
 method, and ends with resultants and cancellation. It deliberately defers
 analytical components until trigonometry is available. The board is unselected,
 gated and excluded from learners.
+
+**Strata migration finalization review, 2026-08-11.** After the founder expanded
+the scope from selected examples to all migration material, the latest Strata
+`origin/main` and live production catalogue were audited using Strata's own
+source-of-truth hierarchy. The standalone Strata Migration Factory now records
+all 40 live curriculum paths, their 99 workshop routes, all 36 rendered
+interaction engines, 19 application/system families and five media groups: 100
+review decisions in total. The source audit covers 429 path boards and 1,957
+floors across physics, mathematics, chemistry and computing. Recommendations
+distinguish current Qubix alignment, later prerequisites, reusable mechanics and
+implementation boundaries that must not migrate. It remains authoring-only and
+creates no learner content, curriculum placement, approval, commit or deploy.
 
 **Draft addition, 2026-08-10.** On founder instruction, the two missing graphing
 bridges were added to the Factory so variants can be tested and selected. Their
