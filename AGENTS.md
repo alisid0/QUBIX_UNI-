@@ -12,6 +12,7 @@ Before changing anything, read in this order:
 4. `curriculum/STATUS.md`
 5. `docs/AGENT-ONBOARDING.md`
 6. `docs/REVIEW-PROTOCOL.md`
+7. `docs/PRODUCT-AND-LAUNCH-PLAN.md`
 
 For source work, also read `curriculum/03-FOUNDATIONAL-BOOKS.md` and `curriculum/04-EXTENDED-CLASSICAL-LIBRARY.md`.
 

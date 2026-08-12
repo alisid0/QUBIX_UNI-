@@ -20,8 +20,8 @@ mark any board `APPROVED` or `RELEASED`.
 ## Mobile foundation
 
 - Capacitor version: `8.5.0`
-- Display name: `Qubix University`
-- Provisional application and bundle identifier: `university.qubix.app`
+- Display name: `Qubix`
+- Confirmed application and bundle identifier: `university.qubix.app`
 - Android target and compile SDK: API 36
 - Web assets directory: `dist/`
 - Native projects: `android/` and `ios/`
@@ -66,8 +66,8 @@ is included in Git.
 
 ## External-account status
 
-- Google Play Console organisation verification has been submitted and is
-  awaiting Google's response.
+- Google Play Console organisation identity verification is complete, both
+  developer phone records are verified, and app creation is unlocked.
 - The Play app record and Android App Bundle have not been created/uploaded.
 - Apple Developer sign-in and verification remain incomplete.
 - The Supabase Google OAuth test reached Google's account chooser; the founder
@@ -95,11 +95,10 @@ is included in Git.
    redeploy `qubix.university`.
 4. Establish an administrative process that fulfils queued account-deletion
    requests by deleting the Auth user and cascaded learner data.
-5. Confirm `university.qubix.app` as permanent.
-6. Replace default native icons/splash assets and build signed test packages.
-7. Complete Apple Developer enrollment and add Sign in with Apple before iOS
+5. Replace/approve native icons and splash assets and build signed test packages.
+6. Complete Apple Developer enrollment and add Sign in with Apple before iOS
    review if Google sign-in remains available.
-8. Review the package audit report: the latest install reported 12 dependency
+7. Review the package audit report: the latest install reported 12 dependency
    findings (9 moderate and 3 high). Do not apply a breaking forced upgrade
    without testing.
 

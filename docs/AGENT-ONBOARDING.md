@@ -39,6 +39,7 @@ Read these documents before changing curriculum or product behaviour:
 | `curriculum/04-EXTENDED-CLASSICAL-LIBRARY.md` | Candidate sources and legal gates |
 | `docs/REVIEW-PROTOCOL.md` | Founder review procedure |
 | `docs/INFRASTRUCTURE.md` | Hosting, DNS, and Supabase safety boundaries |
+| `docs/PRODUCT-AND-LAUNCH-PLAN.md` | Fixed product identity, architecture, legal/security gates and priority checklist |
 
 If documents conflict, stop and flag the conflict. Never infer approval from an implemented screen, a merged pull request or a successful deployment.
 

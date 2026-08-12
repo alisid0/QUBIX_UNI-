@@ -1,6 +1,12 @@
-# Qubix University
+# Qubix
 
-Qubix University is being rebuilt slowly from first principles. Its current product is the five-part *Variables and Rates of Change* lesson, and its curriculum remains under founder review.
+Qubix is a general interactive-learning product for curious people, including
+but not limited to students. It begins with separate Maths and Physics subject
+areas and is not a school, examination board or prescribed syllabus. Its current
+pilot content remains under founder review.
+
+The fixed public identity is **Qubix**, published by **Arcave Technologies** at
+`https://qubix.university/`, with mobile identifier `university.qubix.app`.
 
 ## Read first
 
@@ -13,6 +19,7 @@ Qubix University is being rebuilt slowly from first principles. Its current prod
 7. [Extended Classical Mathematics Library](./curriculum/04-EXTENDED-CLASSICAL-LIBRARY.md)
 8. [Current Status](./curriculum/STATUS.md)
 9. [Founder Review Protocol](./docs/REVIEW-PROTOCOL.md)
+10. [Product and Launch Plan](./docs/PRODUCT-AND-LAUNCH-PLAN.md)
 
 The active curriculum item is [A Letter for a Number](./curriculum/bb/CME-CHANGE-001-A-LETTER-FOR-A-NUMBER.md). The four boards after it remain locked.
 

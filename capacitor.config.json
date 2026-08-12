@@ -1,6 +1,6 @@
 {
   "appId": "university.qubix.app",
-  "appName": "Qubix University",
+  "appName": "Qubix",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

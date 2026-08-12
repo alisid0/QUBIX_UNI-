@@ -4,14 +4,13 @@ Status: native packaging foundation only. No store submission has been made.
 
 ## Application identity
 
-- Display name: `Qubix University`
-- Provisional Android application ID and iOS bundle ID: `university.qubix.app`
+- Display name: `Qubix`
+- Confirmed Android application ID and iOS bundle ID: `university.qubix.app`
 - Web application: `https://qubix.university/`
 - Capacitor web output: `dist/`
 
-The identifier is reversible locally, but should be treated as permanent after
-the first store build is uploaded. The founder must confirm it before that
-upload.
+The founder confirmed this identity on 2026-08-12. Treat the identifier as
+permanent.
 
 ## Local workflow
 
@@ -26,8 +25,8 @@ the existing deployment checks.
 ## Release gates
 
 - Confirm whether the publisher is an individual or organisation.
-- Confirm the permanent application/bundle identifier.
-- Create and verify Apple Developer and Google Play Console accounts.
+- Complete Apple Developer enrolment and App Store Connect setup. The Google
+  Play developer identity and both developer phone records are verified.
 - Audit and authorise a Qubix-specific Supabase schema before applying it.
 - Configure Google OAuth for web and native redirect URLs.
 - Add Sign in with Apple before an iOS submission if social sign-in remains.
