@@ -300,13 +300,22 @@ volumes and email volume need separate forecasting if introduced.
 - [x] Define Qubix as general interactive learning, not a prescribed curriculum.
 - [x] Keep Maths and Physics as separate subjects.
 - [x] Choose no advertising at launch.
-- [ ] Decide minimum account age and treatment of under-18 learners.
+- [x] Decide minimum account age. **13**, founder decision 2026-08-12: Qubix is
+      not for under-13s. This removes COPPA and satisfies UK GDPR. It does not
+      settle the EU, where member states set the age between 13 and 16, nor is
+      the age enforced anywhere in the software yet. See
+      [Data Inventory](./DATA-INVENTORY.md).
 - [ ] Supply legal operator, address, company and contact details.
 - [ ] Approve the final free/Plus boundary and prices.
 
 ### P1 - governance, security and privacy
 
-- [ ] Complete the data inventory, purposes, lawful bases and retention schedule.
+- [x] Complete the data inventory. Written 2026-08-12 from the code and the
+      migrations: [Data Inventory](./DATA-INVENTORY.md). Purposes and lawful
+      bases are drafted there; **retention periods are still unset**, and it
+      records two gaps found while writing it: the account-deletion queue is
+      not processed by anything, and Vercel Analytics is enabled and
+      undeclared.
 - [ ] Draft and legally review Privacy Policy and Terms.
 - [ ] Publish stable privacy, terms and deletion URLs.
 - [ ] Implement working in-app and web account deletion fulfilment.
