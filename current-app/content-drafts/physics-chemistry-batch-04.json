@@ -1,0 +1,184 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The moving baseline",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "relative-velocity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A passenger sits quietly reading a book on a train hurtling forward at 100 kilometers per hour.</p>" },
+        { "content": "<p>Are they moving? The answer depends entirely on what they are measured against.</p>" },
+        { "content": "<p>Compared to the coffee cup on the table in front of them, they are perfectly still. Compared to a person standing on the platform outside, they are tearing past at 100 km/h.</p>" },
+        { "content": "<p>Neither perspective is wrong. To say anything 'moves,' a fixed baseline must first be chosen. This baseline is called a frame of reference.</p>" },
+        { "content": "<p>Every statement about motion is made inside a frame of reference, whether it is stated out loud or not. 'At rest' only ever means 'not moving relative to the chosen frame.' There is no frame in the universe that is absolutely, truly still.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Adding the velocities",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "relative-velocity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>When the frame of reference is also moving, velocities begin to combine.</p>" },
+        { "content": "<p>Imagine a train moving East at 10 meters per second. A passenger stands up and walks toward the front of the train at 2 meters per second.</p>" },
+        { "content": "<p>To the person on the platform outside, the passenger is moving at 12 meters per second. The passenger's walking speed is simply added to the train's speed.</p>" },
+        { "content": "<p>If the passenger turns around and walks toward the back of the train at 2 meters per second, the platform observer sees them moving East at 8 meters per second. They are still moving forward, just slightly slower than the train itself.</p>" },
+        { "content": "<p>This is relative velocity. The velocity of an object over the ground is simply its velocity inside the moving frame, plus the velocity of the frame itself.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The slanted rain",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "relative-velocity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This simple addition of velocities explains phenomena that seem like optical illusions.</p>" },
+        { "content": "<p>Rain falling straight down from a windless sky hits the ground at a perfect vertical angle.</p>" },
+        { "content": "<p>But to a driver in a car moving 60 miles per hour, the rain appears to streak violently across the side window at an aggressive slant.</p>" },
+        { "content": "<p>The rain hasn't changed direction. But from the perspective of the moving car (the frame of reference), the car is standing still, and the entire world — including the rain — is rushing backward at 60 miles per hour.</p>" },
+        { "content": "<p>The vertical falling speed and the horizontal backward speed combine into a single diagonal streak. This is why a person walking in the rain must tilt their umbrella forward to stay dry.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The limit of the instrument",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "measurement-error", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>When tracking these velocities, physicists use highly precise instruments. But no measurement in science is ever exact. Every instrument has a limit, and every reading carries uncertainty.</p>" },
+        { "content": "<p>If a piece of metal is weighed on a sensitive digital scale five times in a row, it might read 12.34, 12.36, 12.33, 12.35, and 12.37 grams.</p>" },
+        { "content": "<p>The numbers cluster together, but they never settle on one exact digit. This scatter is caused by random error: microscopic air currents, faint vibrations, or the electronic noise of the scale itself.</p>" },
+        { "content": "<p>Random error scatters readings equally high and low. Because it is random, averaging the five trials together mathematically cancels the noise out, providing a highly reliable estimate of the true weight.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The baked-in bias",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "measurement-error", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>But averaging only works if the error is truly random.</p>" },
+        { "content": "<p>Imagine the digital scale was poorly zeroed before the metal was placed on it. It reads exactly 0.05 grams too high every single time it is used.</p>" },
+        { "content": "<p>This is a systematic error. It pushes every single reading in the exact same direction.</p>" },
+        { "content": "<p>Averaging a million trials together will do absolutely nothing to fix a systematic error. The final average will simply be exactly 0.05 grams too high.</p>" },
+        { "content": "<p>This creates a critical distinction in science. Accuracy is how close a reading is to the true value. Precision is how tightly the readings cluster together. It is entirely possible to be highly precise, but completely inaccurate, circling tightly around the wrong number.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The law of diminishing returns",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "measurement-error", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Even with random error, averaging has a hard ceiling.</p>" },
+        { "content": "<p>In economics, if a farmer doubles the laborers on a fixed field, the harvest does not double. The ground becomes crowded, and each additional worker adds less and less value. This is the law of diminishing returns.</p>" },
+        { "content": "<p>The exact same law caps how far averaging can sharpen a measurement.</p>" },
+        { "content": "<p>To cut the uncertainty of a measurement in half, a scientist must take four times as many readings. To cut the uncertainty tenfold, they must take a hundred times as many readings.</p>" },
+        { "content": "<p>Past a certain point, taking thousands of more measurements yields almost no improvement in the math. The only way to improve the data is to build a better instrument.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The hierarchy of scale",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "scale", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Reality is built in strict layers, and each layer is roughly a million times bigger or smaller than the last.</p>" },
+        { "content": "<p>Start at the human scale, which is roughly 1 meter. Go down: a grain of sand is a millimeter, a human cell is a hundred times smaller than that, and an atom is ten thousand times smaller than the cell.</p>" },
+        { "content": "<p>Now go up from the human: a city is ten thousand meters, the Earth is ten million meters, and the observable universe is roughly ten billion billion billion meters across.</p>" },
+        { "content": "<p>The same physical laws that bind the invisible atom also steer the massive galaxies. But what actually matters, and what behaviors you notice, changes completely depending on which rung of the ladder you are standing on.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The empty solid",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "scale", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>At the very bottom of the scale sits the subatomic world. And at this scale, the concept of solid matter completely vanishes.</p>" },
+        { "content": "<p>An atom is roughly one ten-billionth of a meter across. But the nucleus (the protons and neutrons) is a hundred thousand times smaller than the atom itself.</p>" },
+        { "content": "<p>If an atom were expanded to the size of a massive football stadium, the heavy nucleus would be a single glass marble sitting on the 50-yard line. The electrons would be gnats flying in the upper deck. Everything between them is pure, dead vacuum.</p>" },
+        { "content": "<p>The solid floor you are standing on is almost entirely empty space. What stops you from falling through it is not physical matter touching physical matter. It is the electric repulsion between the electron clouds in your shoes and the electron clouds in the floorboards. 'Solid' is just a sensation.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The blazing heart",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "scale", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>At the absolute opposite end of the scale are the Quasars.</p>" },
+        { "content": "<p>A quasar is the blazing heart of a distant galaxy. At its center sits a supermassive black hole, often billions of times heavier than our Sun.</p>" },
+        { "content": "<p>As gas and stars spiral inward to be consumed, they pile into a dense disk and are heated to millions of degrees. The light pouring out of this feeding frenzy is so intense it can outshine hundreds of billions of stars put together.</p>" },
+        { "content": "<p>Because they are so incredibly bright, we can spot them from the far edges of the observable universe — over 13 billion light-years away.</p>" },
+        { "content": "<p>Because light takes time to travel, looking at a distant quasar through a telescope is literally looking backward in time. We see the quasar exactly as it was billions of years before the Earth even existed.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "More is different",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "emergence", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>You cannot explain a quasar by looking at a single electron. This exposes a deep rule of reality: emergence.</p>" },
+        { "content": "<p>The universe is hierarchically structured. Particles form atoms, atoms form molecules, molecules form matter, matter forms stars, and stars form galaxies.</p>" },
+        { "content": "<p>At each level, brand new phenomena appear that simply do not exist on the level below it.</p>" },
+        { "content": "<p>Take temperature. A single atom does not have a temperature. Temperature is just the average speed of billions of atoms bouncing off each other. The concept of 'hot' or 'cold' is utterly meaningless for one particle, but it entirely dictates the behavior of a gas.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Why the sciences separate",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "emergence", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This concept of emergence is why science is broken into different subjects.</p>" },
+        { "content": "<p>In 1972, the physicist Philip Anderson summarized it perfectly: 'More is different.'</p>" },
+        { "content": "<p>Knowing the exact rules for a single particle does not, even in principle, let you predict what a trillion of them will do when they interact. New laws switch on at each scale.</p>" },
+        { "content": "<p>You cannot read the concept of 'wetness' off the equations for a single water molecule. You cannot predict the behavior of a living cell by looking at the physics of a carbon atom.</p>" },
+        { "content": "<p>Chemistry and biology are not just footnotes to particle physics. They are distinct sciences because the higher rungs of the ladder carry information and rules that the lower rungs simply do not possess.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The microscopic blueprint",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "chemistry-intro", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Chemistry is the study of matter — what everything is made of, and how it changes. Its defining move is scale. To understand a material, chemistry zooms in far past anything you can see, down to the atoms it is built from.</p>" },
+        { "content": "<p>It takes billions of atoms to make a single speck of dust. Yet the way those atoms are arranged dictates everything you can see, touch, and taste about the material.</p>" },
+        { "content": "<p>This is the central idea of chemistry: the microscopic structure controls the visible world. Change the structure, and you completely change the substance. Move a single atom in a large drug molecule, and a life-saving medicine can instantly turn into a poison.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The rungs of the ladder",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "electron-shells", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To understand how these structures form, we must look at the electrons flying around the nucleus of the atom.</p>" },
+        { "content": "<p>Electrons do not orbit the center randomly like a swarm of bees. They sit in specific layers, or 'shells,' like the rungs of a ladder.</p>" },
+        { "content": "<p>Each shell has a strict capacity. The first shell, closest to the nucleus, only holds 2 electrons. Once it is full, any new electrons are forced into the second shell.</p>" },
+        { "content": "<p>The second shell holds 8 electrons. The third shell holds up to 18 (though it sits comfortably at 8 for the first twenty elements). The atom fills these shells from the inside out.</p>" },
+        { "content": "<p>The outermost occupied shell is called the valence shell. The electrons sitting in this outer layer dictate almost everything about how the atom behaves in the real world.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Octet Rule",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "octet-rule", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Atoms behave as if they have one ultimate desire: they desperately want their outermost shell to be completely full.</p>" },
+        { "content": "<p>For almost all elements, a 'full' outer shell means having exactly 8 electrons. This is the Octet Rule. It is the most useful single rule in all of chemistry.</p>" },
+        { "content": "<p>If an atom has a nearly empty outer shell (like Sodium, which has only 1 electron in its outer layer), it is restless and highly reactive. It is eager to dump that lone electron so the full shell underneath becomes its new outer layer.</p>" },
+        { "content": "<p>If an atom has a nearly full outer shell (like Chlorine, which has 7), it is equally desperate. It wants to violently grab one more electron to reach the magic number 8.</p>" },
+        { "content": "<p>Almost every chemical reaction in the universe is simply atoms chasing a full outer shell.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The map of shells",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "periodic-table", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This drive for 8 electrons explains the strange shape of the Periodic Table. It is not a random grid; it is a map of how the shells fill.</p>" },
+        { "content": "<p>Elements in the exact same vertical column share the exact same number of outer electrons. Because of this, they behave almost identically.</p>" },
+        { "content": "<p>Lithium, Sodium, and Potassium all sit in the far-left column. They all have exactly one electron in their outer shell. Consequently, they are all soft metals that react violently with water.</p>" },
+        { "content": "<p>By simply looking at which column an element sits in, a chemist instantly knows how many outer electrons it has, and can predict exactly how it will react, without ever stepping into a lab.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The already happy",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "noble-gases", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>At the far right of the Periodic Table sits a column of elements that react with almost nothing. They don't bond, they don't burn, and they don't combine.</p>" },
+        { "content": "<p>These are the Noble Gases: Helium, Neon, Argon, Krypton, Xenon, and Radon.</p>" },
+        { "content": "<p>They are completely inert because their outer shells are already perfectly full. Neon has exactly 8 electrons in its outer layer. It has absolutely nothing to gain by stealing an electron, and nothing to give away.</p>" },
+        { "content": "<p>A Sodium atom is desperate to shed an electron so it can look like Neon. A Chlorine atom is desperate to grab one so it can look like Argon.</p>" },
+        { "content": "<p>The Noble Gases are the destination every other atom is trying to reach. Every chemical bond is simply an attempt to reach a Noble Gas configuration.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The imbalance",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "ions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>When an atom successfully sheds or grabs an electron to fill its shell, it pays a price. It loses its electrical neutrality.</p>" },
+        { "content": "<p>A normal Sodium atom has 11 positive protons and 11 negative electrons. The charges balance to zero.</p>" },
+        { "content": "<p>When Sodium sheds its 1 outer electron to empty the shell, it still has 11 protons, but only 10 electrons. The positive charges now outnumber the negative. The atom carries a net charge of +1.</p>" },
+        { "content": "<p>When Chlorine grabs that electron to fill its shell, it gains an extra negative charge. It becomes -1.</p>" },
+        { "content": "<p>An atom that has lost or gained electrons, carrying a net charge, is called an Ion. Lose electrons, you become a positive ion (a cation). Gain electrons, you become a negative ion (an anion).</p>" }
+      ]
+    }
+  ]
+}

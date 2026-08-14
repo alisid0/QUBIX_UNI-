@@ -1,0 +1,113 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "The agreement",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "information", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Three thousand years ago, soldiers stood watch on the Great Wall of China. When they spotted an invading army, they couldn't shout across the mountains. So, they lit a fire.</p>" },
+        { "content": "<p>They burned wet wolf dung to make thick, black smoke. The next watchtower saw it and lit their own fire. Within minutes, a signal jumped from tower to tower, traveling hundreds of miles inland.</p>" },
+        { "content": "<p>To a random traveler, it was just a fire. But the soldiers had agreed in advance what it meant. A column of dirty air became a piece of information.</p>" },
+        { "content": "<p>This is the central rule of all communication: a physical signal can carry a message across space, as long as both sides agree on what it means.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Smoke and empty sky",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "binary", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>How did this primitive code actually work? It was incredibly simple.</p>" },
+        { "content": "<p>The guard at the second tower only had to ask himself one question: Is there smoke in the sky?</p>" },
+        { "content": "<p>If he looks up and the sky is clear, that means everything is fine. Nothing is happening. If he looks up and sees smoke, that means danger. The enemy is here.</p>" },
+        { "content": "<p>Notice that a clear, empty sky is just as much of a message as the smoke itself. The system relies on exactly two states. Smoke. No smoke. Present. Absent.</p>" },
+        { "content": "<p>By using just two states, they created the simplest possible code. Smoke equals 1. An empty sky equals 0.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The atom of information",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "bit", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Modern computers do not use anything more complicated than that watchtower. They just swapped the smoke for electricity.</p>" },
+        { "content": "<p>Instead of looking at the sky, a computer looks at a copper wire. It asks one simple question: Is there electricity in this wire right now?</p>" },
+        { "content": "<p>If a microscopic switch is open, the wire is dead. The sky is clear. That is a 0. If the switch is closed, electricity flows. The smoke is in the air. That is a 1.</p>" },
+        { "content": "<p>This single unit of information — the choice between On and Off, 1 and 0 — is called a <em>bit</em>.</p>" },
+        { "content": "<p>The bit is the atom of the digital age. Every text message you send, every photograph on your phone, and every website you visit is built entirely out of them. A computer is just millions of tiny invisible switches, looking for smoke in the sky.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The math of Yes and No",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "boolean-logic", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>We always hear that computers run on 0s and 1s. This makes people think that computers are constantly doing massive, complicated math problems.</p>" },
+        { "content": "<p>But at the very bottom level, a computer isn't doing math at all. The 0 and the 1 are not numbers. They are just shorthand for a state of being.</p>" },
+        { "content": "<p>1 just means True. 0 means False. 1 means Yes. 0 means No.</p>" },
+        { "content": "<p>In the 1800s — long before computers were invented — a mathematician named George Boole realized something brilliant. He realized that almost any human decision could be boiled down to a series of simple True or False questions.</p>" },
+        { "content": "<p>He invented a new system where instead of adding and subtracting numbers, you combine logic. We call it Boolean Algebra. But don't let the word 'algebra' scare you. It just means using simple rules — like AND, OR, and NOT — to make a final decision.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The AND gate",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "logic-gates", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>So, how does a computer actually do Boolean algebra? How do you turn a math theory from the 1800s into a physical machine? You use the switches we talked about earlier.</p>" },
+        { "content": "<p>Imagine a single wire carrying electricity to a lightbulb. Now, cut the wire and install two switches right next to each other on the same line.</p>" },
+        { "content": "<p>In order to get the electricity all the way to the bulb, what has to happen?</p>" },
+        { "content": "<p>You have to flip the first switch perfectly closed (1). AND you have to flip the second switch perfectly closed (1).</p>" },
+        { "content": "<p>If even one of those switches is open (0), the physical path is broken. The electricity stops. The bulb stays dark.</p>" },
+        { "content": "<p>You have just built an AND gate. It is a physical machine that enforces a strict rule: Both switches must say Yes (1) for the final answer to be Yes (1).</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The OR gate",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "logic-gates", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Now, let's take those exact same two switches and wire them a little differently.</p>" },
+        { "content": "<p>Instead of putting them on one straight line, let's split the wire into a fork with two separate paths. We put a switch on the top path, and a switch on the bottom path. Then, the wires reconnect right before the lightbulb.</p>" },
+        { "content": "<p>Now, the electricity has a choice.</p>" },
+        { "content": "<p>If you flip the top switch closed, the electricity goes across the top and turns on the bulb. If you flip the bottom switch closed, the electricity goes across the bottom and turns on the bulb.</p>" },
+        { "content": "<p>As long as the top switch OR the bottom switch is closed (1), the light turns on. You have just built an OR gate.</p>" },
+        { "content": "<p>This is the big secret of how computers 'think.' They don't have brains. A computer processor is just billions of these tiny AND and OR gates wired together. By routing electricity through different paths, the switches do the thinking for us.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The invisible water",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "logic-gates", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Electricity is invisible. It is hard to picture it moving through wires and making decisions inside a microchip.</p>" },
+        { "content": "<p>So, let's look at something you can see. Let's look at water. In physics, electricity behaves almost exactly like water flowing through a plumbing system.</p>" },
+        { "content": "<p>Instead of copper wires, imagine a system of plastic pipes. Instead of an electrical switch, imagine a physical plumbing valve you can turn with your hand. And instead of a lightbulb turning on, imagine water pouring out of a faucet.</p>" },
+        { "content": "<p>Just like our switches, a plumbing valve only has two states. Open (water flows, which is a 1) or Closed (water stops, which is a 0).</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The AND pipe",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "logic-gates", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Let's build that exact same AND gate, but this time, as a plumber.</p>" },
+        { "content": "<p>You have a single, straight water pipe leading to a faucet. You cut the pipe and install two valves on it, one right after the other.</p>" },
+        { "content": "<p>You turn the main water line on. What happens?</p>" },
+        { "content": "<p>If you only open the first valve (1), the water flows past it, but immediately slams into the second closed valve (0). The water stops completely. The faucet stays dry.</p>" },
+        { "content": "<p>In order to get water to pour out of the faucet, the first valve AND the second valve must both be perfectly open. If even one of them is closed, the entire path is blocked. That is the physical reality of an AND gate.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The OR pipe",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "logic-gates", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Now, let's build the OR gate out of plumbing.</p>" },
+        { "content": "<p>Instead of one straight pipe, you take the main water line and split it into a Y-shape. Now you have a top pipe and a bottom pipe. They both run for a few feet, and then reconnect together right before the faucet.</p>" },
+        { "content": "<p>You install one valve on the top pipe, and one valve on the bottom pipe.</p>" },
+        { "content": "<p>Now, the water has options. If you open just the top valve, the water rushes through the top pipe and pours out the faucet. If you open just the bottom valve, it takes the bottom pipe and pours out the faucet.</p>" },
+        { "content": "<p>As long as the top valve OR the bottom valve is open, you get water.</p>" },
+        { "content": "<p>The only possible way the faucet stays dry is if you shut both valves completely. By simply rearranging the pipes, you have completely changed the logic of the machine.</p>" }
+      ]
+    }
+  ]
+}

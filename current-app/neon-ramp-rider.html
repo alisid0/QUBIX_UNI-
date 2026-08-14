@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Neon Ramp Rider</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a14;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; font-family: 'Courier New', monospace;
+    overflow: hidden; user-select: none; -webkit-user-select: none;
+  }
+  .game-container {
+    position: relative; width: 400px; height: 600px;
+    max-width: 100vw; max-height: 100vh;
+    border: 2px solid #ff00ff; border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 40px #ff00ff44, 0 0 80px #00ffff22, inset 0 0 20px #00000080;
+  }
+  canvas { display: block; width: 100%; height: 100%; }
+  .hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 12px 16px; pointer-events: none;
+    z-index: 10;
+  }
+  .hud-item {
+    background: #0a0a14cc; border: 1px solid #ff00ff66;
+    border-radius: 8px; padding: 6px 10px;
+    color: #00ffff; font-size: 11px; font-weight: bold;
+    text-shadow: 0 0 8px #00ffff;
+    letter-spacing: 1px;
+  }
+  .overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: #0a0a14dd; z-index: 20;
+    padding: 24px; text-align: center;
+    gap: 12px;
+  }
+  .overlay h1 {
+    font-size: 22px; color: #ff00ff;
+    text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff88;
+    letter-spacing: 2px;
+  }
+  .overlay h2 { font-size: 15px; color: #00ffff; text-shadow: 0 0 12px #00ffff; }
+  .overlay p { color: #ccccdd; font-size: 12px; line-height: 1.5; max-width: 300px; }
+  .overlay .angle-display {
+    font-size: 36px; color: #ff00ff;
+    text-shadow: 0 0 24px #ff00ff; font-weight: bold;
+  }
+  .btn {
+    background: transparent; border: 2px solid #ff00ff;
+    color: #ff00ff; font-family: 'Courier New', monospace;
+    font-size: 14px; font-weight: bold; padding: 10px 28px;
+    border-radius: 8px; cursor: pointer;
+    text-shadow: 0 0 8px #ff00ff;
+    box-shadow: 0 0 16px #ff00ff33;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+    pointer-events: auto;
+  }
+  .btn:hover { background: #ff00ff22; box-shadow: 0 0 28px #ff00ff66; }
+  .btn:active { transform: scale(0.95); }
+  .btn.cyan { border-color: #00ffff; color: #00ffff; text-shadow: 0 0 8px #00ffff; box-shadow: 0 0 16px #00ffff33; }
+  .btn.cyan:hover { background: #00ffff22; box-shadow: 0 0 28px #00ffff66; }
+  .slider-container {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .slider-container label { color: #00ffff; font-size: 10px; letter-spacing: 2px; text-shadow: 0 0 6px #00ffff; }
+  input[type=range] {
+    -webkit-appearance: none; width: 200px; height: 6px;
+    background: #ff00ff44; border-radius: 3px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px;
+    border-radius: 50%; background: #ff00ff;
+    box-shadow: 0 0 16px #ff00ff; cursor: pointer;
+  }
+  .hidden { display: none !important; }
+  .glitch { animation: glitch 0.3s ease-in-out 3; }
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-3px, 2px); }
+    40% { transform: translate(3px, -1px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(1px, 3px); }
+  }
+  .scanlines {
+    position: absolute; inset: 0; z-index: 30; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, #00000008 2px, #00000008 4px);
+  }
+</style>
+</head>
+<body>
+<div class="game-container" id="container">
+  <canvas id="c"></canvas>
+  <div class="scanlines"></div>
+  <div class="hud" id="hud">
+    <span class="hud-item" id="levelLabel">MISSION 1</span>
+    <span class="hud-item" id="scoreLabel">★ 0</span>
+  </div>
+  <div class="overlay" id="overlay">
+    <h1>NEON RAMP RIDER</h1>
+    <p>Clear the gap. Feel the angle.<br>Math comes later.</p>
+    <button class="btn" id="startBtn">▶ START</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// NEON RAMP RIDER — A trigonometry arcade discovery game
+// ═══════════════════════════════════════════════════════════════
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const container = document.getElementById('container');
+const overlay = document.getElementById('overlay');
+const levelLabel = document.getElementById('levelLabel');
+const scoreLabel = document.getElementById('scoreLabel');
+
+const W = 400, H = 600;
+canvas.width = W; canvas.height = H;
+
+// ── Synthwave palette ───────────────────────────────────────
+const C = {
+  bg:      '#0a0a14',
+  grid:    '#ff00ff22',
+  cyan:    '#00ffff',
+  pink:    '#ff00ff',
+  purple:  '#9933ff',
+  yellow:  '#ffdd00',
+  white:   '#eeeeff',
+  dim:     '#555577',
+  ground:  '#1a1a2e',
+  platform:'#00ffff44',
+};
+
+// ── Game state ──────────────────────────────────────────────
+let phase = 'title';     // title | briefing | aiming | flying | landed | complete | reveal
+let level = 0;
+let score = 0;
+let angle = 45;          // ramp angle in degrees
+let launched = false;
+let bike = { x: 0, y: 0, vx: 0, vy: 0, flying: false, landed: false, crashed: false };
+let particles = [];
+let frameCount = 0;
+let shakeAmount = 0;
+let textFade = { msg: '', alpha: 0, t: 0 };
+
+// ── Level config ────────────────────────────────────────────
+const LEVELS = [
+  // Level 1: Intuition — adjust ramp angle to clear gaps
+  {
+    name: 'MISSION 1 — THE ANGLE',
+    briefing: 'A gap blocks the road. Tilt the ramp to launch your bike across.\n\nFEEL the angle. Numbers come later.',
+    gaps: [
+      { rampX: 60, rampW: 50, rampH: 30, platX: 220, platW: 80, platY: 460, solution: 48, tolerance: 8,
+        hint: 'Steeper = higher arc. Flatter = longer reach.' },
+      { rampX: 50, rampW: 50, rampH: 30, platX: 260, platW: 70, platY: 440, solution: 55, tolerance: 7,
+        hint: 'The platform is further AND higher. You need more angle.' },
+      { rampX: 60, rampW: 50, rampH: 30, platX: 180, platW: 60, platY: 480, solution: 35, tolerance: 6,
+        hint: 'Close platform. A shallow launch keeps you low and long.' }
+    ],
+    reveal: 'You just used ANGLES.\n\nAn angle measures how much you tilt from flat ground.\nSmall angle = shallow jump.\nLarge angle = high arc.'
+  },
+  // Level 2: Fixed Board — the hypotenuse has a fixed length
+  {
+    name: 'MISSION 2 — THE FIXED BOARD',
+    briefing: 'Your ramp is gone. Only a BOARD of FIXED LENGTH remains.\nDrag its top end. The bottom stays on the ground.\nThe board\'s length never changes — only its SLANT.',
+    boardLength: 160,
+    gaps: [
+      { anchorX: 100, anchorY: 520, platX: 240, platW: 70, platY: 450, solutionX: 228, solutionY: 370, tolerance: 18,
+        hint: 'The board is 160px long. Where does its top need to be to reach the platform?' },
+      { anchorX: 80, anchorY: 520, platX: 270, platW: 60, platY: 430, solutionX: 240, solutionY: 370, tolerance: 16,
+        hint: 'Further platform. The board has a fixed reach — angle it right.' },
+    ],
+    reveal: 'That board was the HYPOTENUSE.\n\nIt\'s the longest side of a right triangle.\nIts length is FIXED, but its angle determines\nhow high (vertical) and how far (horizontal) it reaches.'
+  },
+  // Level 3: Boss — systems break, math terms revealed
+  {
+    name: 'MISSION 3 — THE DECODE',
+    briefing: '⚠ SYSTEMS FAILING ⚠\n\nThe bike\'s computer is glitching.\nRaw data only: SINE, COSINE, TANGENT.\n\nYou already KNOW what these mean.\nYou just don\'t know the names yet.',
+    gaps: [
+      { rampX: 60, rampW: 50, rampH: 30, platX: 240, platW: 70, platY: 450, solution: 50, tolerance: 6,
+        hint: 'sin('  + String.fromCharCode(952) + ') = height ÷ hypotenuse', glitch: true },
+      { rampX: 50, rampW: 50, rampH: 30, platX: 200, platW: 80, platY: 470, solution: 42, tolerance: 5,
+        hint: 'cos(' + String.fromCharCode(952) + ') = horizontal ÷ hypotenuse', glitch: true },
+    ],
+    reveal: 'YOU ALREADY KNEW TRIGONOMETRY.\n\nSINE = how much of the ramp goes UP.\nCOSINE = how much goes ACROSS.\nTANGENT = the ratio of UP to ACROSS.\n\nThe angle controls all three.\n\n★ YOU ARE A RAMP RIDER ★'
+  }
+];
+
+let currentGap = 0;
+let gapData = null;
+let boardTop = { x: 200, y: 350 };
+let dragging = false;
+let dragTarget = null;
+let attempts = 0;
+
+// ── Init ────────────────────────────────────────────────────
+function initLevel(lvl) {
+  level = lvl;
+  currentGap = 0;
+  attempts = 0;
+  loadGap();
+  particles = [];
+  bike = { x: 0, y: 0, vx: 0, vy: 0, flying: false, landed: false, crashed: false };
+  launched = false;
+  if (LEVELS[lvl].boardLength) {
+    boardTop = { x: 200, y: 380 };
+  }
+  levelLabel.textContent = LEVELS[lvl].name;
+  scoreLabel.textContent = '★ ' + score;
+  phase = 'briefing';
+  showBriefing();
+}
+
+function loadGap() {
+  const lvl = LEVELS[level];
+  gapData = lvl.gaps[currentGap];
+  if (!lvl.boardLength) {
+    angle = 45;
+  }
+}
+
+// ── Overlay helpers ─────────────────────────────────────────
+function showBriefing() {
+  const lvl = LEVELS[level];
+  const gapInfo = currentGap > 0 ? `<p style="color:#ffdd00;font-size:10px;">Gap ${currentGap+1} of ${lvl.gaps.length}</p>` : '';
+  overlay.innerHTML = `
+    <h1>${lvl.name}</h1>
+    <p style="white-space:pre-line">${lvl.briefing}</p>
+    ${gapInfo}
+    <button class="btn" id="goBtn" onclick="overlay.classList.add('hidden');phase='aiming'">▶ LAUNCH</button>
+  `;
+  overlay.classList.remove('hidden');
+}
+
+function showReveal() {
+  const lvl = LEVELS[level];
+  const nextAction = level < 2
+    ? `onclick="overlay.classList.add('hidden');initLevel(${level+1})"`
+    : `onclick="overlay.innerHTML='<h1>NEON RAMP RIDER</h1><p style=\\'color:#ffdd00;font-size:20px;\\'>★ ${score} STARS ★</p><p>You mastered trigonometry without a single formula.</p><button class=\\'btn\\' onclick=\\'location.reload()\\'>▶ PLAY AGAIN</button>';overlay.classList.remove('hidden')"`;
+  overlay.innerHTML = `
+    <h1>DECODED</h1>
+    <p style="white-space:pre-line;color:#00ffff;text-shadow:0 0 8px #00ffff;">${lvl.reveal}</p>
+    <button class="btn ${level<2?'':'cyan'}" ${nextAction}>${level < 2 ? '▶ NEXT MISSION' : '★ FINISH'}</button>
+  `;
+  overlay.classList.remove('hidden');
+}
+
+function showCrash(msg) {
+  textFade = { msg, alpha: 1, t: 0 };
+  shakeAmount = 8;
+}
+
+// ── Input ───────────────────────────────────────────────────
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) * (W / rect.width);
+  const my = (e.clientY - rect.top) * (H / rect.height);
+  if (LEVELS[level].boardLength && phase === 'aiming') {
+    const dx = mx - boardTop.x, dy = my - boardTop.y;
+    if (Math.sqrt(dx*dx + dy*dy) < 30) { dragging = true; dragTarget = 'board'; }
+  }
+});
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.touches[0].clientX - rect.left) * (W / rect.width);
+  const my = (e.touches[0].clientY - rect.top) * (H / rect.height);
+  if (LEVELS[level].boardLength && phase === 'aiming') {
+    const dx = mx - boardTop.x, dy = my - boardTop.y;
+    if (Math.sqrt(dx*dx + dy*dy) < 35) { dragging = true; dragTarget = 'board'; }
+  }
+}, { passive: false });
+
+canvas.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) * (W / rect.width);
+  const my = (e.clientY - rect.top) * (H / rect.height);
+  if (dragTarget === 'board') updateBoardDrag(mx, my);
+});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!dragging) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.touches[0].clientX - rect.left) * (W / rect.width);
+  const my = (e.touches[0].clientY - rect.top) * (H / rect.height);
+  if (dragTarget === 'board') updateBoardDrag(mx, my);
+}, { passive: false });
+
+function updateBoardDrag(mx, my) {
+  const lvl = LEVELS[level];
+  const anchor = lvl.gaps[currentGap];
+  const dx = mx - anchor.anchorX, dy = my - anchor.anchorY;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  const len = lvl.boardLength;
+  const scale = len / Math.max(dist, 1);
+  boardTop = { x: anchor.anchorX + dx * scale, y: anchor.anchorY + dy * scale };
+}
+
+canvas.addEventListener('mouseup', () => { dragging = false; });
+canvas.addEventListener('touchend', () => { dragging = false; });
+
+// Angle slider input for Level 1 & 3
+document.addEventListener('keydown', e => {
+  if (phase !== 'aiming' || LEVELS[level].boardLength) return;
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { angle = Math.max(10, angle - 2); }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { angle = Math.min(80, angle + 2); }
+  if (e.key === ' ' || e.key === 'Enter') { launchBike(); e.preventDefault(); }
+});
+
+// ── Physics ─────────────────────────────────────────────────
+function launchBike() {
+  if (phase !== 'aiming') return;
+  phase = 'flying';
+  launched = true;
+  attempts++;
+
+  if (LEVELS[level].boardLength) {
+    // Board mode: launch from board top with velocity towards platform
+    const plat = gapData;
+    const dx = plat.platX + plat.platW/2 - boardTop.x;
+    const dy = plat.platY - boardTop.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const speed = 4.5;
+    bike = {
+      x: boardTop.x, y: boardTop.y,
+      vx: (dx / dist) * speed,
+      vy: (dy / dist) * speed - 1,
+      flying: true, landed: false, crashed: false
+    };
+  } else {
+    // Ramp mode
+    const ramp = gapData;
+    const rad = angle * Math.PI / 180;
+    const speed = 5;
+    const startX = ramp.rampX + ramp.rampW - 10;
+    const startY = ramp.platY - ramp.rampH;
+    bike = {
+      x: startX, y: startY,
+      vx: Math.cos(rad) * speed,
+      vy: -Math.sin(rad) * speed,
+      flying: true, landed: false, crashed: false
+    };
+  }
+}
+
+function updatePhysics() {
+  if (!bike.flying) return;
+  bike.vy += 0.25; // gravity
+  bike.x += bike.vx;
+  bike.y += bike.vy;
+
+  // Spawn trail particles
+  if (frameCount % 2 === 0) {
+    particles.push({ x: bike.x, y: bike.y + 5, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5, life: 20, color: C.cyan });
+  }
+
+  // Check landing
+  const plat = gapData;
+  if (LEVELS[level].boardLength) {
+    // Board mode landing
+    if (bike.y >= plat.platY - 8 && bike.y <= plat.platY + 12 &&
+        bike.x >= plat.platX && bike.x <= plat.platX + plat.platW) {
+      bike.landed = true; bike.flying = false;
+      bike.x = Math.max(plat.platX, Math.min(plat.platX + plat.platW, bike.x));
+      bike.y = plat.platY;
+      onLand();
+    }
+  } else {
+    // Ramp mode landing
+    if (bike.y >= plat.platY - 10 && bike.y <= plat.platY + 10 &&
+        bike.x >= plat.platX && bike.x <= plat.platX + plat.platW) {
+      bike.landed = true; bike.flying = false;
+      bike.x = Math.max(plat.platX, Math.min(plat.platX + plat.platW, bike.x));
+      bike.y = plat.platY;
+      onLand();
+    }
+  }
+
+  // Crash check
+  if (bike.y > H + 30 || bike.x < -30 || bike.x > W + 30) {
+    bike.crashed = true; bike.flying = false;
+    showCrash('MISSED! Adjust and retry.');
+    setTimeout(() => {
+      bike = { x: 0, y: 0, vx: 0, vy: 0, flying: false, landed: false, crashed: false };
+      particles = [];
+      phase = 'aiming';
+      launched = false;
+    }, 1000);
+  }
+}
+
+function onLand() {
+  score++;
+  scoreLabel.textContent = '★ ' + score;
+  // Success particles
+  for (let i = 0; i < 20; i++) {
+    particles.push({
+      x: bike.x, y: bike.y, vx: (Math.random()-0.5)*6, vy: (Math.random()-0.5)*6 - 2,
+      life: 30, color: C.yellow
+    });
+  }
+  phase = 'landed';
+  textFade = { msg: 'LANDED! ★', alpha: 1, t: 0 };
+
+  const lvl = LEVELS[level];
+  if (currentGap < lvl.gaps.length - 1) {
+    setTimeout(() => {
+      currentGap++;
+      loadGap();
+      bike = { x: 0, y: 0, vx: 0, vy: 0, flying: false, landed: false, crashed: false };
+      launched = false;
+      phase = 'aiming';
+      if (LEVELS[level].boardLength) {
+        const anchor = lvl.gaps[currentGap];
+        boardTop = { x: anchor.anchorX + 80, y: anchor.anchorY - 120 };
+      }
+    }, 1200);
+  } else {
+    setTimeout(() => {
+      phase = 'reveal';
+      showReveal();
+    }, 1500);
+  }
+}
+
+// ── Rendering ───────────────────────────────────────────────
+function drawGrid() {
+  ctx.strokeStyle = C.grid;
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 30) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 30) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  // Horizon glow line
+  const horizonY = 475;
+  ctx.strokeStyle = '#ff00ff44';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, horizonY); ctx.lineTo(W, horizonY); ctx.stroke();
+  // Glow
+  const grd = ctx.createLinearGradient(0, horizonY-6, 0, horizonY+6);
+  grd.addColorStop(0, 'transparent');
+  grd.addColorStop(0.5, '#ff00ff11');
+  grd.addColorStop(1, 'transparent');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, horizonY-6, W, 12);
+}
+
+function drawRamp(x, y, w, h, a) {
+  ctx.save();
+  ctx.translate(x + w, y);
+  ctx.rotate(-a * Math.PI / 180);
+  // Glow
+  ctx.shadowColor = C.pink; ctx.shadowBlur = 12;
+  ctx.fillStyle = C.pink + '44';
+  ctx.fillRect(-w, -h, w, h);
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = C.pink; ctx.lineWidth = 2;
+  ctx.strokeRect(-w, -h, w, h);
+  // Angle arc
+  ctx.beginPath();
+  ctx.arc(0, 0, 20, -a * Math.PI / 180, 0);
+  ctx.strokeStyle = C.yellow; ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawBoard(anchorX, anchorY, topX, topY) {
+  // Ghost line showing possible positions
+  ctx.setLineDash([4, 8]);
+  ctx.strokeStyle = C.purple + '44';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(anchorX, anchorY, LEVELS[level].boardLength, 0, Math.PI * 2); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Board
+  ctx.shadowColor = C.cyan; ctx.shadowBlur = 16;
+  ctx.strokeStyle = C.cyan; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(anchorX, anchorY); ctx.lineTo(topX, topY); ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Endpoint handles
+  ctx.fillStyle = C.cyan;
+  ctx.beginPath(); ctx.arc(anchorX, anchorY, 6, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = dragging && dragTarget === 'board' ? C.yellow : C.cyan;
+  ctx.beginPath(); ctx.arc(topX, topY, 8, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = C.white + '88'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(topX, topY, 8, 0, Math.PI*2); ctx.stroke();
+
+  // Length label
+  ctx.fillStyle = C.white; ctx.font = '9px monospace';
+  const mx = (anchorX + topX) / 2, my = (anchorY + topY) / 2 - 12;
+  ctx.fillText(LEVELS[level].boardLength + 'px', mx - 18, my);
+}
+
+function drawBike(x, y, vx, vy) {
+  if (!bike.flying && !bike.landed) return;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.shadowColor = C.cyan; ctx.shadowBlur = 14;
+
+  // Tilt bike based on velocity
+  const tilt = bike.flying ? Math.atan2(vy, vx) * 0.3 : 0;
+  ctx.rotate(tilt);
+
+  // Body
+  ctx.fillStyle = C.cyan;
+  ctx.fillRect(-14, -6, 28, 10);
+  // Wheels
+  ctx.fillStyle = C.pink;
+  ctx.beginPath(); ctx.arc(-8, 7, 5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(8, 7, 5, 0, Math.PI*2); ctx.fill();
+  // Rider
+  ctx.fillStyle = C.yellow;
+  ctx.fillRect(-4, -16, 8, 12);
+  ctx.fillRect(-1, -18, 3, 5); // head
+
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+function drawPlatform(x, y, w) {
+  ctx.shadowColor = C.cyan; ctx.shadowBlur = 18;
+  ctx.fillStyle = C.platform;
+  ctx.fillRect(x, y, w, 8);
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = C.cyan; ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, w, 8);
+  // Flag
+  ctx.fillStyle = C.yellow;
+  ctx.fillRect(x + w/2 - 1, y - 16, 2, 16);
+  ctx.beginPath();
+  ctx.moveTo(x + w/2, y - 16);
+  ctx.lineTo(x + w/2 + 12, y - 10);
+  ctx.lineTo(x + w/2, y - 4);
+  ctx.fillStyle = C.yellow; ctx.fill();
+}
+
+function drawParticles() {
+  particles = particles.filter(p => { p.life--; return p.life > 0; });
+  for (const p of particles) {
+    const alpha = p.life / 30;
+    ctx.fillStyle = p.color + Math.floor(alpha * 255).toString(16).padStart(2,'0');
+    ctx.beginPath(); ctx.arc(p.x + p.vx * (30-p.life)*0.1, p.y + p.vy * (30-p.life)*0.1, 1.5, 0, Math.PI*2); ctx.fill();
+  }
+}
+
+function drawHUD() {
+  if (phase === 'aiming' && !LEVELS[level].boardLength) {
+    // Angle display
+    ctx.fillStyle = C.pink;
+    ctx.font = 'bold 28px monospace';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = C.pink; ctx.shadowBlur = 16;
+    ctx.fillText(Math.round(angle) + '°', W/2, 80);
+    ctx.shadowBlur = 0;
+
+    // Angle bar
+    const barW = 200, barX = W/2 - barW/2, barY = 100;
+    ctx.fillStyle = '#ff00ff22';
+    ctx.fillRect(barX, barY, barW, 8);
+    ctx.fillStyle = C.pink;
+    ctx.fillRect(barX, barY, barW * (angle/90), 8);
+
+    ctx.font = '10px monospace';
+    ctx.fillStyle = '#ff00ff88';
+    ctx.fillText('◄ ARROW KEYS ►   |   SPACE to launch', W/2, 125);
+    ctx.textAlign = 'start';
+  }
+
+  if (phase === 'aiming' && LEVELS[level].boardLength) {
+    ctx.fillStyle = C.cyan;
+    ctx.font = 'bold 13px monospace';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = C.cyan; ctx.shadowBlur = 10;
+    ctx.fillText('DRAG the top of the board', W/2, 60);
+    ctx.font = '10px monospace';
+    ctx.fillStyle = '#00ffff88';
+    ctx.fillText('SPACE to launch', W/2, 80);
+    ctx.shadowBlur = 0;
+    ctx.textAlign = 'start';
+  }
+
+  // Text fade
+  if (textFade.alpha > 0) {
+    textFade.t += 0.02;
+    textFade.alpha = Math.max(0, 1 - textFade.t);
+    ctx.fillStyle = textFade.msg.includes('MISSED') ? C.pink : C.yellow;
+    ctx.font = 'bold 22px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(textFade.msg, W/2, H/2 - 40);
+    ctx.textAlign = 'start';
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  drawGrid();
+
+  const lvl = LEVELS[level];
+  const gap = gapData;
+  if (!gap) return;
+
+  if (lvl.boardLength) {
+    // Board mode
+    drawBoard(gap.anchorX, gap.anchorY, boardTop.x, boardTop.y);
+    drawPlatform(gap.platX, gap.platY, gap.platW);
+  } else {
+    // Ramp mode
+    drawRamp(gap.rampX, gap.platY, gap.rampW, gap.rampH, angle);
+    drawPlatform(gap.platX, gap.platY, gap.platW);
+    // Angle arc on ramp
+    ctx.strokeStyle = C.yellow;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    const rx = gap.rampX + gap.rampW;
+    const ry = gap.platY;
+    ctx.arc(rx, ry, 30, -angle * Math.PI/180, 0);
+    ctx.stroke();
+  }
+
+  // Draw bike
+  if (bike.flying || bike.landed) drawBike(bike.x, bike.y, bike.vx, bike.vy);
+  // Bike on ramp before launch
+  if (!launched && !lvl.boardLength) {
+    const rx = gap.rampX + gap.rampW - 10;
+    const ry = gap.platY - gap.rampH;
+    ctx.fillStyle = C.cyan;
+    ctx.shadowColor = C.cyan; ctx.shadowBlur = 8;
+    ctx.fillRect(rx - 14, ry - 8, 28, 10);
+    ctx.fillStyle = C.pink;
+    ctx.beginPath(); ctx.arc(rx - 8, ry + 4, 5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(rx + 8, ry + 4, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = C.yellow;
+    ctx.fillRect(rx - 4, ry - 18, 8, 12);
+    ctx.fillRect(rx - 1, ry - 20, 3, 5);
+    ctx.shadowBlur = 0;
+  }
+
+  drawParticles();
+  drawHUD();
+
+  // Glitch effect in Level 3
+  if (lvl.gaps[currentGap]?.glitch && frameCount % 40 < 6) {
+    ctx.fillStyle = '#ff00ff11';
+    ctx.fillRect(Math.random()*W, Math.random()*H, Math.random()*60, Math.random()*4);
+    ctx.fillStyle = '#00ffff11';
+    ctx.fillRect(Math.random()*W, Math.random()*H, Math.random()*60, Math.random()*4);
+  }
+}
+
+// ── Game loop ───────────────────────────────────────────────
+function loop() {
+  frameCount++;
+  if (phase === 'flying') updatePhysics();
+  if (shakeAmount > 0) {
+    canvas.style.transform = `translate(${(Math.random()-0.5)*shakeAmount}px,${(Math.random()-0.5)*shakeAmount}px)`;
+    shakeAmount *= 0.85;
+    if (shakeAmount < 0.5) { shakeAmount = 0; canvas.style.transform = ''; }
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// ── Start ───────────────────────────────────────────────────
+overlay.classList.remove('hidden');
+document.getElementById('startBtn').onclick = () => {
+  initLevel(0);
+};
+loop();
+</script>
+</body>
+</html>

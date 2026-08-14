@@ -1,0 +1,182 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The Bouncer at the Door",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "firewall", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If a computer must keep its network doors (ports) open to communicate with the world, it needs a way to filter the traffic.</p>" },
+        { "content": "<p>This job is handled by a Firewall.</p>" },
+        { "content": "<p>A firewall acts as a digital bouncer standing at the port. When a packet of data arrives, the firewall inspects the sender's IP address and the type of data it carries.</p>" },
+        { "content": "<p>It compares this information against a strict list of rules. If the packet comes from a known, trusted source and requests a permitted action (like loading a webpage), the firewall lets it pass.</p>" },
+        { "content": "<p>If the packet originates from an unknown or suspicious address, or tries to access a restricted part of the machine, the firewall silently drops the packet, deleting it before it ever reaches the processor.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Eavesdropper Problem",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "encryption", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A firewall protects the machine itself, but it does not protect the data while it is traveling through the physical network.</p>" },
+        { "content": "<p>Remember that Wi-Fi is just radio waves pulsing through the open air. Anyone with an antenna sitting in a coffee shop can pull those invisible waves out of the sky.</p>" },
+        { "content": "<p>If a password or a credit card number is sent across a wireless network as raw, plain text, any eavesdropper can intercept the packet, read the 1s and 0s, and steal the information instantly.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Math of Secrets",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "encryption", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To prevent eavesdropping, computer scientists use Encryption.</p>" },
+        { "content": "<p>Encryption is a mathematical algorithm that scrambles the 1s and 0s into a chaotic, unreadable mess before they ever leave the computer.</p>" },
+        { "content": "<p>If an eavesdropper pulls an encrypted packet out of the air, they do not see a credit card number. They just see a random, meaningless string of garbage characters.</p>" },
+        { "content": "<p>The data can only be unscrambled and read if the receiver possesses the exact mathematical 'Key' needed to reverse the algorithm. Without the key, even the most powerful supercomputers would take millions of years to guess the original message.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Public Key",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "encryption", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Encryption solves the eavesdropper problem, but it creates a massive logistical paradox.</p>" },
+        { "content": "<p>If a person wants to securely buy something from an online store, their browser and the store's server must use the exact same mathematical Key to lock and unlock the data.</p>" },
+        { "content": "<p>But they have never met before. If the store simply sends the secret Key across the internet to the buyer, the eavesdropper will steal the Key too, rendering the encryption useless. How do you securely share a secret Key in a crowded room?</p>" },
+        { "content": "<p>In the 1970s, mathematicians solved this with Public Key Cryptography.</p>" },
+        { "content": "<p>Instead of one Key, the store creates two mathematically linked Keys. One is a 'Public Lock' that can only scramble data. The other is a 'Private Key' that can only unscramble data. The store broadcasts the Public Lock to the entire internet, but strictly guards the Private Key. Anyone can lock a message, but only the store can open it.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Zero-Day Flaw",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cybersecurity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Even with firewalls blocking the doors and encryption hiding the data, the software running the machine is written by humans. And humans make mistakes.</p>" },
+        { "content": "<p>A modern operating system contains over 50 million lines of code. It is a mathematical certainty that some of those lines contain logical errors, or 'bugs.'</p>" },
+        { "content": "<p>Occasionally, a hacker discovers a bug that allows them to bypass the firewall or trick the processor into executing unauthorized commands.</p>" },
+        { "content": "<p>If the hacker discovers this flaw before the software creators know it exists, it is called a Zero-Day Vulnerability.</p>" },
+        { "content": "<p>The creators have had 'zero days' to fix it. These undiscovered structural flaws are the most highly prized weapons in cyber warfare, often hoarded by intelligence agencies or sold for millions on the black market.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Weakest Link",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "social-engineering", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The irony of cybersecurity is that despite all the firewalls, encryption, and complex mathematics, the system is almost never broken by a technical failure.</p>" },
+        { "content": "<p>It is broken by a human.</p>" },
+        { "content": "<p>A hacker does not need to spend months trying to break military-grade encryption if they can simply call an employee on the phone, pretend to be IT support, and politely ask for their password.</p>" },
+        { "content": "<p>This is called Social Engineering (or Phishing, when done via email).</p>" },
+        { "content": "<p>It relies on human psychology — fear, urgency, or authority — to bypass the digital locks entirely. The most sophisticated computer security in the world is instantly rendered useless the moment a human being willingly hands over the keys.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Local Room",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "lan", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Not all computer networks are global. Most networks are incredibly small and entirely isolated.</p>" },
+        { "content": "<p>When a laptop, a smartphone, and a smart TV are all connected to the same home Wi-Fi router, they form a LAN (Local Area Network).</p>" },
+        { "content": "<p>A LAN is a private, enclosed ecosystem. The router acts as the central hub, allowing the devices in the house to quickly trade data — like sending a video from a phone to the TV — without that data ever leaving the building.</p>" },
+        { "content": "<p>If the physical cable connecting the house to the outside world is cut, the global internet connection drops, but the LAN remains perfectly intact. The devices in the room can continue to communicate with each other indefinitely.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Wide Area",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "wan", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To connect two completely separate Local Area Networks, the data must travel across a WAN (Wide Area Network).</p>" },
+        { "content": "<p>A WAN covers massive geographical distances. If a company has a private LAN in a New York office, and another private LAN in a London office, a WAN is the physical infrastructure (like transatlantic undersea fiber-optic cables) that bridges the two.</p>" },
+        { "content": "<p>The global internet itself is simply the largest WAN in existence. It is a massive, chaotic web of connections that bridges billions of private, local LANs together into one unified system.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The short-range radio",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "bluetooth", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Inside a local network, devices usually connect without wires. But not all wireless connections are built for the same job.</p>" },
+        { "content": "<p>Wi-Fi is designed to flood an entire house with high-speed data. It requires a significant amount of electrical power to generate a radio signal strong enough to punch through drywall and cover hundreds of square feet.</p>" },
+        { "content": "<p>If a tiny device, like a wireless earbud, tried to maintain a Wi-Fi connection, its small battery would be drained in minutes.</p>" },
+        { "content": "<p>This is why Bluetooth was invented. It operates on the exact same radio frequencies as Wi-Fi, but it is heavily restricted.</p>" },
+        { "content": "<p>Bluetooth is designed to be a 'personal area network.' It uses a tiny fraction of the electrical power, limiting its range to just a few meters. It sacrifices distance and extreme speed for battery efficiency, allowing small devices to communicate quietly without screaming across the entire house.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The physical limits of computing",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cloud-computing", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Whether a computer is connected via Bluetooth, Wi-Fi, or fiber optics, it eventually hits a hard physical limit.</p>" },
+        { "content": "<p>Every task a computer performs requires processing power (the processor) and memory (RAM and hard drives).</p>" },
+        { "content": "<p>If a complex task requires massive processing power — like training a complex Artificial Intelligence model, or hosting a multiplayer video game for millions of players — a single local computer will physically run out of resources and crash.</p>" },
+        { "content": "<p>Historically, companies solved this by buying hundreds of massive, expensive servers and storing them in private, air-conditioned back rooms to handle the load.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Someone else's computer",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cloud-computing", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Owning a private server room is incredibly inefficient. If traffic spikes, the servers crash. If traffic drops, the expensive machines sit completely idle, wasting electricity.</p>" },
+        { "content": "<p>To solve this, the tech industry created Cloud Computing.</p>" },
+        { "content": "<p>The word 'Cloud' is a marketing term. There is nothing airy or invisible about it. 'The Cloud' simply means using someone else's computer.</p>" },
+        { "content": "<p>Massive corporations built warehouse-sized data centers, filled with millions of high-powered servers, strategically located around the world.</p>" },
+        { "content": "<p>Instead of buying their own hardware, businesses simply rent a fraction of the processing power from these massive warehouses. If a company suddenly needs 100 times more computing power for a single day, they click a button, rent the digital space for 24 hours, and release it when they are done.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The outsourced brain",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cloud-computing", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Cloud computing shifts the heavy lifting away from local devices.</p>" },
+        { "content": "<p>A modern smartphone is powerful, but it does not have the processing power to run complex voice-recognition software locally.</p>" },
+        { "content": "<p>When a user asks a digital assistant a question, the phone does not calculate the answer. The phone simply records the audio and sends it as a packet across the network to a massive Cloud server.</p>" },
+        { "content": "<p>The warehouse server crunches the data, calculates the response, and sends the answer back to the phone as a tiny text file.</p>" },
+        { "content": "<p>The smartphone is just a microphone and a screen. The actual thinking is done by a rented server sitting thousands of miles away, completely altering the architecture of modern technology.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Stored Program",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "von-neumann", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Early computers were not programmed with a keyboard. If an engineer wanted the machine to perform a different mathematical task, they had to spend days physically unplugging and rerouting hundreds of cables by hand. The hardware was the software.</p>" },
+        { "content": "<p>In 1945, mathematician John von Neumann published a design that solved this physical bottleneck.</p>" },
+        { "content": "<p>He proposed the Von Neumann Architecture. The core concept dictated that the instructions (the software) and the data (the numbers being calculated) should be stored in the exact same memory bank as identical strings of 1s and 0s.</p>" },
+        { "content": "<p>Software was no longer a physical configuration of wires. It was converted into pure data. By simply rewriting the 1s and 0s in the memory bank, the machine could completely alter its own behavior in milliseconds. This architecture remains the blueprint for nearly every computer built today.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Working Grid (RAM)",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "ram", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To execute this stored code, the machine requires a workspace. This is Random Access Memory (RAM).</p>" },
+        { "content": "<p>RAM is a vast physical grid of microscopic capacitors. Each capacitor holds a tiny electrical charge (representing a 1) or sits empty (representing a 0).</p>" },
+        { "content": "<p>Every intersection on this grid is assigned a strict numerical address. Because the grid is rigidly mapped, the processor can access any specific address instantly. It does not have to scan through the memory sequentially like a cassette tape. This is why it is called 'Random Access.'</p>" },
+        { "content": "<p>However, RAM is highly volatile. The microscopic capacitors constantly leak their electrical charge and must be continuously refreshed with power.</p>" },
+        { "content": "<p>If the power supply is cut, the grid immediately empties. Every 1 instantly becomes a 0, and all data held in RAM is permanently destroyed. It is strictly a temporary workspace, not a long-term storage vault.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Core (CPU)",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cpu", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The engine that actually reads the RAM is the Central Processing Unit (CPU). It is divided into highly specialized substructures.</p>" },
+        { "content": "<p>The Control Unit (CU) acts as the traffic director. It pulls the 1s and 0s from RAM, determines what the instructions mean, and routes the electrical signals to the correct circuits inside the chip.</p>" },
+        { "content": "<p>The actual mathematics is performed by the Arithmetic Logic Unit (ALU). The ALU is the dense cluster of millions of AND, OR, and NOT gates discussed earlier. It blindly executes the binary addition and logical comparisons.</p>" },
+        { "content": "<p>Sitting directly next to the ALU are Registers. These are ultra-fast, microscopic storage slots built directly into the silicon. They hold the specific numbers currently being calculated, allowing the ALU to manipulate them instantly without waiting for data to travel all the way back from the RAM.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Copper Highway (The Bus)",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "system-bus", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The CPU and the RAM are separate physical chips on the motherboard. To function, they must communicate continuously.</p>" },
+        { "content": "<p>They are connected by the System Bus — a dense cluster of parallel, microscopic copper traces woven directly into the circuit board.</p>" },
+        { "content": "<p>The Bus is split into strict lanes. The Address Bus sends the specific coordinate location from the CPU to the RAM. The Data Bus carries the actual payload of 1s and 0s back and forth.</p>" },
+        { "content": "<p>The width of this highway dictates the absolute capability of the machine. A '64-bit processor' means the Data Bus is exactly 64 copper lanes wide.</p>" },
+        { "content": "<p>It can push exactly 64 bits of data across the motherboard simultaneously in a single microscopic pulse. A wider bus means exponentially more data can move per cycle.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Heartbeat (The Clock)",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "clock-cycle", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>With billions of bits flying across the System Bus, the hardware requires perfect synchronization to prevent data collisions.</p>" },
+        { "content": "<p>Inside the motherboard sits a tiny quartz crystal. When subjected to a small electrical current, the quartz vibrates at a mathematically flawless frequency.</p>" },
+        { "content": "<p>This vibration drives the System Clock. Every single pulse of the clock triggers one step of the processor.</p>" },
+        { "content": "<p>The machine operates in a rigid, repeating three-step loop: Fetch the instruction from RAM, Decode the instruction in the Control Unit, and Execute the math in the ALU.</p>" },
+        { "content": "<p>This Fetch-Decode-Execute cycle is the absolute baseline of all computing. When a processor is rated at 3 Gigahertz (3 GHz), it means the quartz crystal pulses exactly three billion times per second. The CPU fetches, decodes, and executes three billion microscopic instructions every single second, with flawless mechanical precision.</p>" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "The name tags",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "blackboard-bold", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>Mathematicians write a lot on blackboards. To save time, they do not write out the words Natural Numbers or Rational Numbers over and over again. They just use single letters as shorthand.</p>" },
+        { "content": "<p>You will notice these letters look a little strange in textbooks. They have a double line in them, like an \u2115 or an \u211D. That is just a font style called blackboard bold. It is just a regular letter with an extra stripe so you know it is a category of numbers, not just a random letter in an equation.</p>" },
+        { "content": "<p>The first two boxes make perfect sense. The Natural numbers get an \u2115. The Whole numbers get a W. If you see an \u2115, it just means the clean counting numbers starting at 1.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The foreign letters",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "integer-rational-symbols", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>The Integers box is where the letters stop matching the English words. If you see the letter I in math, it usually stands for something else. So, the integers get a \u2124.</p>" },
+        { "content": "<p>Why a \u2124? Because a lot of early modern math was done in Germany. The German word for numbers is Zahlen. So, if you see a \u2124 on a chalkboard, just think of the solid stepping stones: positives, negatives, and zero.</p>" },
+        { "content": "<p>The Rational Numbers also get a strange letter. They get a \u211A.</p>" },
+        { "content": "<p>This is because the letter R was already taken for something bigger. Instead, they used \u211A for Quotient. A quotient is just the math word for the answer you get when you divide one number by another. And since rational numbers are just fractions (one number divided by another), \u211A actually makes perfect sense.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The big umbrella",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "real-symbol", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>The messy, unending numbers in the Irrational box are a bit of an outcast. They do not even have a universally agreed-upon letter. Sometimes you will see them labeled with an I, or sometimes a P, but often mathematicians just call them the leftovers.</p>" },
+        { "content": "<p>But the biggest box of all \u2014 the one that holds every single number on the solid line \u2014 gets the best letter. The Real Numbers get an \u211D.</p>" },
+        { "content": "<p>If you see an \u211D, it means everything. The \u2115, the W, the \u2124, and the \u211A are all just sitting inside the \u211D.</p>" }
+      ]
+    }
+  ]
+}

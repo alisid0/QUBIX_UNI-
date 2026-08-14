@@ -1,0 +1,61 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "Mostly nothing",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "atomic-structure", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>We know the atom has a heavy center (the nucleus) and a cloud of tiny electrons zipping around the outside. But what does that actually look like?</p>" },
+        { "content": "<p>If you look at diagrams in textbooks, they usually show the electrons orbiting right next to the center, like planets huddled around the sun. Those drawings are a lie. They are drawn that way because a true-to-size drawing wouldn't fit on the page.</p>" },
+        { "content": "<p>Let's blow an atom up to the size of a massive football stadium. The heavy nucleus is sitting dead center on the 50-yard line. How big is it? It is the size of a single glass marble.</p>" },
+        { "content": "<p>Where are the electrons? They are the size of gnats, buzzing around in the very highest seats of the upper deck.</p>" },
+        { "content": "<p>What is between the marble on the field and the gnats in the stands? Absolutely nothing. Pure, dead vacuum. An atom is 99.9999% empty space. And since you are made of atoms, you are almost entirely empty space, too.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The racetracks",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "electron-shells", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Let's look closer at those gnats in the bleachers — the electrons. They are moving incredibly fast, but they don't just fly around randomly like a swarm of angry bees.</p>" },
+        { "content": "<p>They follow strict traffic rules. They have to stay in specific lanes, or 'shells,' circling the center.</p>" },
+        { "content": "<p>The first lane, closest to the center, is very small. It only has room for exactly 2 electrons. Once two electrons park there, the lane is completely full. Any new electrons have to move to the next lane out.</p>" },
+        { "content": "<p>The second lane is a bit wider. It has room for 8 electrons. The third lane is even wider. The atom just fills up from the inside out, dropping electrons into these lanes until it runs out.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The golden rule",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "chemical-bonding", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Why do we care about these microscopic traffic lanes? Because they are the engine of all chemistry. They are the entire reason atoms snap together to build the world.</p>" },
+        { "content": "<p>Atoms have one ultimate desire: they desperately want their outermost lane to be completely full.</p>" },
+        { "content": "<p>If an atom has a partially empty outer lane, it is jittery and highly unstable. It will do anything to fix it.</p>" },
+        { "content": "<p>To get a perfectly full outer lane, an atom will steal electrons from its neighbors, give its own electrons away, or compromise and share them. That desperate bartering for a full outside lane is what causes chemical bonds.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The map",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "periodic-table", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Now, look back at the Periodic Table. It has a very weird shape. It isn't a neat square. It looks like a castle with tall towers on the sides and a sunken middle.</p>" },
+        { "content": "<p>It is shaped exactly like that because it isn't just a list. It is a map of the electron lanes.</p>" },
+        { "content": "<p>Look at the far-right column of the table (Neon, Argon, Helium). Every atom in this column naturally has a perfectly full outside lane. They are totally satisfied. Because they don't need to steal or share, they refuse to bond with anything. They just float around alone as invisible gases.</p>" },
+        { "content": "<p>Now look at the far-left column. Every atom here has exactly one lonely electron stuck in its outer lane. They are desperate to get rid of it so the lane underneath can become their new, perfectly full outer shell. Because they are so desperate to throw an electron away, they are highly reactive.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The matchmaker",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "ionic-bonding", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Once you know how to read the map, you can predict what will happen without ever stepping into a lab.</p>" },
+        { "content": "<p>Take Sodium. It lives on the far left edge of the map. It has one extra electron it wants to violently throw away.</p>" },
+        { "content": "<p>Take Chlorine. It lives on the far right edge, just one spot away from the perfect column. It has a gap. It is missing exactly one electron to be perfectly full. It is desperate to steal one.</p>" },
+        { "content": "<p>Put them in a room together. Sodium throws its extra electron directly into Chlorine's empty gap. Because they just exchanged a moving part, they lock together in a tight chemical bond.</p>" },
+        { "content": "<p>By themselves, Sodium is a soft metal that explodes in water, and Chlorine is a deadly green gas. But once they lock together and satisfy their electron lanes, they calm down completely. Together, they make NaCl. We call it table salt.</p>" }
+      ]
+    }
+  ]
+}

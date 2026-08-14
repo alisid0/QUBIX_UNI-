@@ -1,0 +1,59 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The physical function",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "logic-gates", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A mathematical function is just an abstract rule: an input goes in, the rule is applied, and an output comes out.</p>" },
+        { "content": "<p>To build a computer, this abstract mathematical concept must be forced into physical reality. A physical machine must be built that acts exactly like an f(x) equation.</p>" },
+        { "content": "<p>This requires translating the math into the only physical language a machine can understand: electricity.</p>" },
+        { "content": "<p>The inputs cannot be complex numbers like 5 or 12. The inputs must be reduced to the absolute simplest physical states. Electricity is either flowing, or it is not. A switch is either On (1) or Off (0).</p>" },
+        { "content": "<p>By passing electrical currents through microscopic switches, the physical hardware of a computer performs exactly the same job as an algebraic function.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Logic Gates",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "logic-gates", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>These physical functions are called Logic Gates. They take electrical inputs (1s and 0s), apply a strict rule, and spit out a final electrical output.</p>" },
+        { "content": "<p>The simplest machine is the AND Gate. Its rule is absolute: it requires both input wires to carry electricity (1) for the output wire to turn on (1). If even one wire is dead (0), the output is dead.</p>" },
+        { "content": "<p>The OR Gate applies a different rule. It is satisfied easily. As long as the top wire or the bottom wire carries electricity, the machine outputs a 1.</p>" },
+        { "content": "<p>The NOT Gate is the simplest function of all. It just flips whatever it is handed. Hand it a 1, it spits out a 0. Hand it a 0, it spits out a 1.</p>" },
+        { "content": "<p>These microscopic logic gates are not analogies. They are literal, physical machines — built out of silicon and metal — that enforce strict mathematical rules on flowing electricity.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The composite machine",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "circuits", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>By themselves, an AND gate or an OR gate cannot accomplish much. They can only make a single, isolated Yes or No decision.</p>" },
+        { "content": "<p>But remember the rule of composite functions: the output of one machine can be plugged directly into the input of a second machine.</p>" },
+        { "content": "<p>If the output wire of an AND gate is soldered directly to the input wire of an OR gate, a chain reaction is created.</p>" },
+        { "content": "<p>By chaining hundreds of these simple gates together, a complex circuit is born. A circuit can look at an eight-digit string of 1s and 0s, cascade the electricity through a maze of strict rules, and output a highly specific decision at the very end.</p>" },
+        { "content": "<p>This is all a computer processor is. It is not a brain. It is just billions of microscopic logic gates, bolted together into massive composite functions, routing electrical current.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Adding numbers with electricity",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "adder", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Once enough logic gates are chained together, the machine stops just making Yes or No decisions, and starts doing actual arithmetic.</p>" },
+        { "content": "<p>By wiring a specific combination of AND, OR, and NOT gates together, engineers create a circuit called an Adder.</p>" },
+        { "content": "<p>If an Adder circuit is handed an electrical signal representing the number 2, and another signal representing the number 3, the electricity flows through the maze of gates.</p>" },
+        { "content": "<p>The gates force the current down specific paths until it emerges at the end as a brand new signal: the number 5.</p>" },
+        { "content": "<p>The computer did not 'think' about the math. It just let the water flow through the pipes. The physical architecture of the gates guarantees that the output will always be mathematically correct.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The universal machine",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "computing", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This architecture reveals the ultimate secret of the digital age.</p>" },
+        { "content": "<p>Every single task a modern computer performs — whether it is rendering the 3D graphics of a video game, predicting global weather patterns, or searching the entire internet for a word — is just mathematics.</p>" },
+        { "content": "<p>And that mathematics is entirely executed by microscopic switches turning on and off.</p>" },
+        { "content": "<p>There is no difference between the abstract algebra written on a chalkboard by a mathematician in the 1800s, and the physical silicon chips sitting inside a modern smartphone.</p>" },
+        { "content": "<p>They are the exact same rules, simply speaking different languages. One uses ink on paper to define a function. The other uses flowing electricity to physically build it.</p>" }
+      ]
+    }
+  ]
+}

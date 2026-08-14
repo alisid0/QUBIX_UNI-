@@ -27,6 +27,25 @@ Boards are named rather than numbered, because the running order is not settled.
 
 No additional curriculum should be generated until these gates are reviewed.
 
+## Repository layout
+
+This repository now keeps the governed Qubix foundation and the latest complete
+application snapshot together:
+
+- The repository root contains the canonical curriculum, review process, mobile
+  shells, and the currently deployed pilot.
+- [`current-app/`](./current-app/) contains the latest interactive application,
+  its product and design plans, lesson content, authoring tools, tests, media,
+  promotional advert, and the Shorts mascot animation studio.
+- [`current-app/shorts/functions/`](./current-app/shorts/functions/) contains the
+  Aron and Qubix mascot assets and the Three.js animation work.
+- [`current-app/promo-video/`](./current-app/promo-video/) contains the advert
+  project and exported promotional videos.
+
+The snapshot was imported from `alisid0/strata` at commit `2bf2aa8`. Local and
+production credentials, generated dependencies, caches, and deployment state are
+not copied into this repository.
+
 ## What production serves
 
 The live site at `https://qubix.university/` is **the course**. Until 2026-08-10

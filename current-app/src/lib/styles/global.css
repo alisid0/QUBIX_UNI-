@@ -1,0 +1,295 @@
+/* ============================================================
+   Strata — Global styles
+   ============================================================ */
+@import './tokens.css';
+@import './qubix-tokens.css';
+@import './animations.css';
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--qx-bg);
+}
+
+body {
+  font-family: var(--qx-font);
+  color: var(--qx-text);
+  position: fixed;
+  width: 100%;
+  overscroll-behavior: none;
+}
+
+/* Desktop: remove mobile body lock */
+@media (min-width: 900px) {
+  html, body {
+    overflow: auto;
+  }
+  body {
+    position: relative;
+    overscroll-behavior: auto;
+  }
+}
+
+/* A restrained paper grain keeps the warm identity without dirtying controls. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.018;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* Ambient edge light; deliberately quiet so content remains the focal point. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 10%, color-mix(in srgb, var(--qx-accent) 4%, transparent), transparent 42%),
+    radial-gradient(ellipse at 82% 92%, color-mix(in srgb, var(--qx-green) 3%, transparent), transparent 38%);
+}
+
+#app {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  background: var(--qx-bg);
+}
+
+::selection {
+  background: var(--qx-accent-soft);
+  color: var(--qx-text);
+}
+
+/* Shared containment contract. Grid/flex children default to their content
+   width, which let long workshop labels and diagrams escape card boundaries.
+   Every Qubix surface now opts into shrinkable, wrapping content instead. */
+.qx-shell,
+.qx-shell * {
+  min-width: 0;
+}
+
+.qx-shell img,
+.qx-shell svg,
+.qx-shell canvas,
+.qx-shell video,
+.qx-shell iframe {
+  display: block;
+  max-width: 100%;
+}
+
+.qx-shell button,
+.qx-shell input,
+.qx-shell select,
+.qx-shell textarea {
+  max-width: 100%;
+  font-family: var(--qx-font);
+}
+
+.qx-shell h1,
+.qx-shell h2,
+.qx-shell h3,
+.qx-shell p,
+.qx-shell strong,
+.qx-shell small,
+.qx-shell span,
+.qx-shell li,
+.qx-shell button {
+  overflow-wrap: anywhere;
+}
+
+.qx-shell button {
+  touch-action: manipulation;
+}
+
+.qx-shell :where(h1, h2, h3) {
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+.qx-shell :where(
+  .session-card,
+  .continue-card,
+  .door,
+  .topic-tile,
+  .path-card,
+  .tc-card,
+  .metric,
+  .workout-card,
+  .topic-row,
+  .lesson-row,
+  .snippet-card
+) {
+  max-width: 100%;
+  min-width: 0;
+  box-shadow: var(--qx-shadow-card);
+}
+
+.qx-shell :where(
+  .home-view,
+  .path-tab,
+  .workshop-lab,
+  .stats-view,
+  .workout-view,
+  .subject-view,
+  .topic-detail-view,
+  .snippets-view
+) {
+  scrollbar-gutter: stable;
+  overscroll-behavior-y: contain;
+}
+
+.qx-shell :is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid var(--qx-accent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .qx-shell button:not(:disabled) {
+    transition:
+      transform var(--qx-duration-fast) var(--qx-ease-out),
+      border-color var(--qx-duration-fast) ease,
+      background-color var(--qx-duration-fast) ease,
+      box-shadow var(--qx-duration-fast) ease;
+  }
+
+  .qx-shell :where(.door, .topic-tile, .path-card, .workout-card):hover {
+    transform: translateY(-2px);
+    box-shadow: var(--qx-shadow-soft);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--qx-text-faint); border-radius: 3px; }
+
+@media (min-width: 620px) {
+  body {
+    background:
+      radial-gradient(circle at 50% -20%, var(--qx-accent-soft), transparent 48%),
+      var(--qx-bg);
+  }
+
+  #app {
+    width: min(calc(100% - 28px), 960px);
+    height: calc(100% - 28px);
+    margin: 14px auto;
+    margin-inline: auto;
+    overflow: hidden;
+    border: 1px solid var(--qx-border);
+    border-radius: 28px;
+    box-shadow: var(--qx-shadow-soft);
+  }
+}
+
+/* ── Desktop: remove phone-frame, go full-width with sidebar ── */
+@media (min-width: 900px) {
+  body {
+    background:
+      radial-gradient(circle at 50% -20%, var(--qx-accent-soft), transparent 48%),
+      var(--qx-bg);
+  }
+
+  #app {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  /* Only reserve the sidebar gutter when the sidebar is actually present.
+     Full-screen views (auth, reader, onboarding) have no .bottom-nav, so they
+     stay centred/full-width instead of being pushed 220px to the right. */
+  #app:has(.bottom-nav) {
+    padding-left: 220px;
+  }
+
+  /* Fixed sidebar navigation replacing bottom bar */
+  .bottom-nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    z-index: 50 !important;
+    width: 220px !important;
+    height: 100% !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(4, auto) !important;
+    align-self: auto !important;
+    gap: 2px !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    border-right: 1px solid var(--qx-border) !important;
+    background: color-mix(in srgb, var(--qx-surface) 97%, transparent) !important;
+    backdrop-filter: none !important;
+    padding: 20px 10px !important;
+    box-shadow: none !important;
+    align-content: start !important;
+    flex-shrink: 0 !important;
+  }
+  .bottom-nav .tab {
+    min-height: 48px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 11px !important;
+    justify-content: flex-start !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    text-align: left !important;
+    color: var(--qx-text-dim) !important;
+  }
+  .bottom-nav .tab:hover {
+    background: var(--qx-surface-2) !important;
+    color: var(--qx-text) !important;
+  }
+  .bottom-nav .tab.active {
+    background: var(--qx-accent-soft) !important;
+    color: var(--qx-accent-text) !important;
+  }
+  .bottom-nav .tab::after {
+    display: none !important;
+  }
+}
+
+@media (max-width: 410px) {
+  .qx-shell .session-card {
+    flex-wrap: wrap;
+  }
+
+  .qx-shell .session-cta {
+    margin-left: 50px;
+  }
+}
+
+@media (max-width: 340px) {
+  .qx-shell .session-cta {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+}
+
+/* Utility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

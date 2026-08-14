@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/ali10/strata/media/videos/cg01_number_line/1080p60/partial_movie_files/CG01NumberLine/3734030362_4120931375_223132457.mp4'
+file 'file:C:/Users/ali10/strata/media/videos/cg01_number_line/1080p60/partial_movie_files/CG01NumberLine/3613243851_4189728552_326966547.mp4'
+file 'file:C:/Users/ali10/strata/media/videos/cg01_number_line/1080p60/partial_movie_files/CG01NumberLine/3613243851_1170655000_1631984435.mp4'
+file 'file:C:/Users/ali10/strata/media/videos/cg01_number_line/1080p60/partial_movie_files/CG01NumberLine/3613243851_1754310298_3449503765.mp4'

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Polar Aegis</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#000;overflow:hidden;font-family:'Courier New',monospace;user-select:none;-webkit-user-select:none}
+  canvas{position:absolute;top:0;left:0;z-index:1}
+  #hud{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:16px 20px 24px;display:flex;flex-direction:column;gap:12px}
+  .slider-group{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .slider-item{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:120px}
+  .slider-item label{color:#0ff;font-size:9px;font-weight:bold;letter-spacing:2px;text-shadow:0 0 8px #0ff;text-transform:uppercase}
+  .slider-item span{color:#fff;font-size:16px;font-weight:900;text-shadow:0 0 6px #0ff}
+  input[type=range]{-webkit-appearance:none;width:140px;height:6px;background:#fff2;border-radius:3px;outline:none;accent-color:#0ff}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#0ff;box-shadow:0 0 16px #0ff;cursor:pointer}
+  #overlay{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000c;gap:18px}
+  #overlay h1{font-size:28px;color:#0ff;text-shadow:0 0 30px #0ff,0 0 60px #0ff8;letter-spacing:4px}
+  #overlay h2{font-size:16px;color:#f0f;text-shadow:0 0 12px #f0f}
+  #overlay p{color:#888;font-size:11px;line-height:1.6;text-align:center;max-width:320px}
+  .btn{background:transparent;border:2px solid #0ff;color:#0ff;font-family:'Courier New',monospace;font-size:14px;font-weight:bold;padding:10px 32px;cursor:pointer;letter-spacing:3px;transition:all .15s;text-shadow:0 0 8px #0ff}
+  .btn:hover{background:#0ff1;box-shadow:0 0 30px #0ff4}
+  .btn:active{transform:scale(.95)}
+  #boss-ui{display:none;flex-direction:column;align-items:center;gap:10px}
+  #boss-ui.active{display:flex}
+  #boss-ui .eq{display:flex;align-items:center;gap:6px;color:#0ff;font-size:18px;font-weight:bold;text-shadow:0 0 10px #0ff}
+  #boss-ui input{width:70px;height:36px;background:#000;border:2px solid #0ff;color:#0ff;font-family:'Courier New',monospace;font-size:16px;text-align:center;outline:none;border-radius:6px;text-shadow:0 0 6px #0ff}
+  .stat-bar{display:flex;justify-content:space-between;width:100%;max-width:400px}
+  .stat-bar span{color:#0ff;font-size:11px;font-weight:bold;text-shadow:0 0 6px #0ff}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud" class="hidden">
+  <div class="stat-bar"><span id="lvl"></span><span id="kills"></span></div>
+  <div class="slider-group" id="sliders"></div>
+  <div id="boss-ui">
+    <div class="eq">r = <input id="inpA" type="number" value="200" min="10" max="400"> × cos( <input id="inpK" type="number" value="4" min="1" max="20"> × θ )</div>
+    <button class="btn" id="execBtn">▶ EXECUTE</button>
+    <p style="color:#f0f;font-size:10px" id="bossTimer"></p>
+  </div>
+</div>
+<div id="overlay">
+  <h1>POLAR AEGIS</h1>
+  <p>Your weapon is a math equation.<br>Morph it. Master it.<br>Decode it.</p>
+  <button class="btn" id="startBtn">▶ ACTIVATE</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// POLAR AEGIS — Bullet Hell Rose Curve Arcade
+// ═══════════════════════════════════════════════════════════════
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+const ov=document.getElementById('overlay'),hud=document.getElementById('hud');
+const bossUI=document.getElementById('boss-ui'),lvlEl=document.getElementById('lvl'),killsEl=document.getElementById('kills'),slidersEl=document.getElementById('sliders');
+const inpA=document.getElementById('inpA'),inpK=document.getElementById('inpK'),bossTimer=document.getElementById('bossTimer');
+
+let W,H,cx,cy,state='MENU',frame=0,dt=0,lastTime=0;
+let a=150,kSlider=1;       // weapon params (from sliders)
+let enemies=[],particles=[],score=0,kills=0,totalKills=0;
+let shakeAmt=0,shakeDur=0;
+let bossNodes=[],bossHP=6,bossTimerVal=10;
+let levelClear=false,levelTimer=0;
+
+// ── High-DPI setup ──────────────────────────────────────────
+function resize(){const dpr=window.devicePixelRatio||1;W=window.innerWidth;H=window.innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);cx=W/2;cy=H/2}
+resize();window.addEventListener('resize',resize);
+
+// ── State machine ───────────────────────────────────────────
+function setState(s){
+  state=s;frame=0;levelTimer=0;levelClear=false;enemies=[];particles=[];score=kills=0;
+  hud.classList.add('hidden');bossUI.classList.remove('active');bossHP=6;
+  if(s==='LEVEL1'){a=150;kSlider=1;initSliders(false);hud.classList.remove('hidden');lvlEl.textContent='LEVEL 1 — THE SHIELD'}
+  else if(s==='LEVEL2'){a=150;kSlider=2;initSliders(true);hud.classList.remove('hidden');lvlEl.textContent='LEVEL 2 — THE PETALS'}
+  else if(s==='LEVEL3'){a=150;kSlider=3;initSliders(true);hud.classList.remove('hidden');lvlEl.textContent='LEVEL 3 — ODD SWARMS'}
+  else if(s==='BOSS'){a=200;kSlider=6;hud.classList.remove('hidden');bossUI.classList.add('active');initBoss();initBossInputs();lvlEl.textContent='LEVEL 4 — ROOT ACCESS'}
+  else if(s==='VICTORY'){hud.classList.add('hidden');ov.innerHTML='<h1>POLAR AEGIS</h1><h2>★ WEAPON MASTERED ★</h2><p>r = a · cos(k·θ)<br><br>a = radius (size)<br>k = petals (resonance)<br><br>You wielded a polar equation<br>as a weapon of mass destruction.<br><br>Math is the source code of reality.</p><button class="btn" onclick="setState(\'MENU\')">▶ REPLAY</button>';ov.classList.remove('hidden')}
+  else if(s==='GAMEOVER'){hud.classList.add('hidden');ov.innerHTML='<h1>SYSTEM FAILURE</h1><p>Enemies breached the core.<br>Kills: '+totalKills+'</p><button class="btn" onclick="setState(\'MENU\')">▶ RETRY</button>';ov.classList.remove('hidden')}
+  else{ov.innerHTML='<h1>POLAR AEGIS</h1><p>Your weapon is a math equation.<br>Morph it. Master it. Decode it.</p><button class="btn" id="startBtn">▶ ACTIVATE</button>';ov.classList.remove('hidden');document.getElementById('startBtn').onclick=()=>{ov.classList.add('hidden');setState('LEVEL1')}}
+}
+
+function initSliders(showK){
+  let html='<div class="slider-item"><label>Energy Radius (a)</label><span id="valA">'+a+'</span><input type="range" id="sldA" min="50" max="400" value="'+a+'"></div>';
+  if(showK)html+='<div class="slider-item"><label>Resonance (k)</label><span id="valK">'+Math.round(kSlider)+'</span><input type="range" id="sldK" min="1" max="8" step="1" value="'+Math.round(kSlider)+'"></div>';
+  slidersEl.innerHTML=html;
+  const sA=document.getElementById('sldA'),vA=document.getElementById('valA');
+  if(sA){sA.oninput=()=>{a=parseInt(sA.value);vA.textContent=a}}
+  if(showK){const sK=document.getElementById('sldK'),vK=document.getElementById('valK');sK.oninput=()=>{kSlider=parseInt(sK.value);vK.textContent=kSlider}}
+}
+
+function initBoss(){bossNodes=[];for(let i=0;i<6;i++){const th=i*Math.PI/3-Math.PI/6;bossNodes.push({x:cx+200*Math.cos(th),y:cy+200*Math.sin(th),alive:true,th})}bossHP=6;bossTimerVal=10;bossUI.classList.add('active');inpA.value=200;inpK.value=6}
+
+// ── Spawning ────────────────────────────────────────────────
+function spawnEnemy(dist,theta,speed){const sp=1.2+Math.random()*.8;return{x:cx+dist*Math.cos(theta),y:cy+dist*Math.sin(theta),sx:(cx-this.x)*sp/dist,sy:(cy-this.y)*sp/dist,speed:1.2+Math.random()*.8,r:3+Math.random()*3}};function spawnEnemyFn(dist,theta){return{x:cx+dist*Math.cos(theta),y:cy+dist*Math.sin(theta),speed:2.5+Math.random()*2,r:3+Math.random()*3}}
+
+function spawnLevel1(){if(frame%3===0){const th=Math.random()*Math.PI*2;const d=Math.min(W,H)*1.2;enemies.push(spawnEnemyFn(d,th))}}
+function spawnLevel2(){if(frame%2===0){const corridors=[0,Math.PI/2,Math.PI,3*Math.PI/2];const th=corridors[Math.floor(Math.random()*4)]+(Math.random()-.5)*.15;const d=Math.min(W,H)*1.2;enemies.push(spawnEnemyFn(d,th))}}
+function spawnLevel3(){const wave=Math.floor(frame/300)%2;const paths=wave===0?[0,2*Math.PI/3,4*Math.PI/3]:[0,2*Math.PI/5,4*Math.PI/5,6*Math.PI/5,8*Math.PI/5];
+  if(frame%2===0){const th=paths[Math.floor(Math.random()*paths.length)]+(Math.random()-.5)*.1;const d=Math.min(W,H)*1.2;enemies.push(spawnEnemyFn(d,th))}}
+
+// ── Collision: O(1) polar check ─────────────────────────────
+function enemyWeaponDist(e){const dx=e.x-cx,dy=e.y-cy;const theta=Math.atan2(dy,dx);const eR=Math.sqrt(dx*dx+dy*dy);
+  // k=1 (circle mode): use constant radius a
+  if(kSlider===1)return Math.abs(eR-a);
+  const wR=Math.abs(a*Math.cos(kSlider*theta));return Math.abs(eR-wR)}
+function checkHits(){const THICK=14;for(let i=enemies.length-1;i>=0;i--){const e=enemies[i];if(enemyWeaponDist(e)<THICK+e.r){spawnParticles(e.x,e.y,8);enemies.splice(i,1);kills++;totalKills++;score+=10}}
+  // Player damage: enemy within radius 12
+  for(let i=enemies.length-1;i>=0;i--){const e=enemies[i];const dx=e.x-cx,dy=e.y-cy;if(Math.sqrt(dx*dx+dy*dy)<12){shakeAmt=8;shakeDur=12;enemies.splice(i,1);score-=5;if(score<0)score=0}}}
+
+// ── Particles ──────────────────────────────────────────────
+function spawnParticles(x,y,n){for(let i=0;i<n;i++){particles.push({x,y,vx:(Math.random()-.5)*8,vy:(Math.random()-.5)*8,life:25+Math.random()*15,color:Math.random()>.5?'#0ff':'#f0f'})}}
+
+// ── Boss logic ──────────────────────────────────────────────
+function checkBossHits(){for(const node of bossNodes){if(!node.alive)continue;const dx=node.x-cx,dy=node.y-cy;const theta=Math.atan2(dy,dx);const eR=Math.sqrt(dx*dx+dy*dy);const wR=Math.abs(a*Math.cos(kSlider*theta));if(Math.abs(eR-wR)<20){node.alive=false;bossHP--;spawnParticles(node.x,node.y,15)}}
+  if(bossHP<=0){setState('VICTORY')}}
+
+function execBoss(){if(state!=='BOSS')return;a=parseInt(inpA.value)||200;kSlider=parseInt(inpK.value)||4;checkBossHits()}
+function initBossInputs(){document.getElementById('execBtn').onclick=execBoss;inpA.onkeydown=e=>{if(e.key==='Enter')execBoss()};inpK.onkeydown=e=>{if(e.key==='Enter')execBoss()}}
+
+// ── Start ───────────────────────────────────────────────────
+setState('MENU');
+function drawWeapon(){
+  ctx.beginPath();
+  if(kSlider===1){ctx.arc(cx,cy,a,0,Math.PI*2)}
+  else{let first=true;
+  for(let th=0;th<=Math.PI*2;th+=0.03){
+    const r=Math.abs(a*Math.cos(kSlider*th));
+    const x=cx+r*Math.cos(th),y=cy+r*Math.sin(th);
+    first?(ctx.moveTo(x,y),first=false):ctx.lineTo(x,y);
+  }}
+  ctx.strokeStyle='#0ff';ctx.lineWidth=3;ctx.shadowColor='#0ff';ctx.shadowBlur=20;ctx.stroke();ctx.shadowBlur=0;
+  // Inner glow
+  ctx.strokeStyle='#fff';ctx.lineWidth=0.8;ctx.globalAlpha=.4;ctx.stroke();ctx.globalAlpha=1;
+}
+
+function drawEnemies(){
+  for(const e of enemies){
+    const dx=e.x-cx,dy=e.y-cy;e.x-=(dx/Math.sqrt(dx*dx+dy*dy))*e.speed;e.y-=(dy/Math.sqrt(dx*dx+dy*dy))*e.speed;
+    ctx.fillStyle='#f44';ctx.shadowColor='#f44';ctx.shadowBlur=6;
+    ctx.fillRect(e.x-e.r,e.y-e.r,e.r*2,e.r*2);ctx.shadowBlur=0;
+  }
+}
+
+function drawParticles(){
+  for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.92;p.vy*=.92;p.life--;if(p.life<=0){particles.splice(i,1);continue}
+    ctx.globalAlpha=p.life/40;ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.fillRect(p.x-1.5,p.y-1.5,3,3);ctx.shadowBlur=0}
+  ctx.globalAlpha=1;
+}
+
+function drawBoss(){
+  for(const node of bossNodes){if(!node.alive)continue;
+    ctx.strokeStyle='#f0f';ctx.lineWidth=4;ctx.shadowColor='#f0f';ctx.shadowBlur=20;
+    ctx.beginPath();ctx.arc(node.x,node.y,12,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;
+    ctx.fillStyle='#f0f';ctx.beginPath();ctx.arc(node.x,node.y,5,0,Math.PI*2);ctx.fill()}
+  // Boss ring
+  ctx.strokeStyle='#f0f';ctx.lineWidth=2;ctx.shadowColor='#f0f';ctx.shadowBlur=14;
+  ctx.beginPath();ctx.arc(cx,cy,200,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;
+}
+
+function drawCore(){ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}
+
+function drawHUD(){if(state==='BOSS'){bossTimerVal-=dt;if(bossTimerVal<=0){setState('GAMEOVER')}bossTimer.textContent='⏱ '+bossTimerVal.toFixed(1)+'s · '+bossHP+' nodes remain'}
+  killsEl.textContent='KILLS: '+totalKills}
+
+// ── Shake ───────────────────────────────────────────────────
+function doShake(){if(shakeDur>0){const sx=(Math.random()-.5)*shakeAmt,sy=(Math.random()-.5)*shakeAmt;ctx.translate(sx,sy);shakeAmt*=.85;shakeDur--}}
+
+// ── Draw ────────────────────────────────────────────────────
+function draw(){
+  ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(-20,-20,W+40,H+40);
+  ctx.globalCompositeOperation='lighter';
+  ctx.save();doShake();
+  drawWeapon();drawEnemies();drawParticles();drawBoss();drawCore();
+  ctx.restore();ctx.globalCompositeOperation='source-over';
+  drawHUD();
+}
+
+// ── Loop ────────────────────────────────────────────────────
+function loop(ts){
+  dt=(ts-lastTime)/1000;lastTime=ts;if(dt>.1)dt=.1;frame++;
+  if(state==='LEVEL1'){spawnLevel1();checkHits();if(kills>=30)setState('LEVEL2')}
+  else if(state==='LEVEL2'){spawnLevel2();checkHits();if(kills>=60)setState('LEVEL3')}
+  else if(state==='LEVEL3'){spawnLevel3();checkHits();levelTimer+=dt;if(levelTimer>=30)setState('BOSS')}
+  else if(state==='BOSS'){if(frame%5===0){const th=Math.random()*Math.PI*2;enemies.push(spawnEnemyFn(Math.min(W,H)*1.2,th))}checkHits()}
+  if(state!=='MENU'&&state!=='VICTORY'&&state!=='GAMEOVER')draw();
+  requestAnimationFrame(loop);
+}
+
+// ── Start ───────────────────────────────────────────────────
+setState('MENU');
+document.getElementById('startBtn').onclick=()=>{ov.classList.add('hidden');setState('LEVEL1')};
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

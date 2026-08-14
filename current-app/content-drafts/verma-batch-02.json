@@ -1,0 +1,124 @@
+{
+  "boards": [
+    {
+      "kicker": "BB 95",
+      "title": "Nothing is at absolute rest",
+      "imagePrompt": "A chalk drawing showing a train with a passenger inside and an observer on the platform. Arrows from the passenger go to both observers — labelled \"at rest (train frame)\" and \"moving (ground frame)\". Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "frames-of-reference; relative-motion; rest-is-relative", "ground": "g0", "buildsOn": ["Card 01"] },
+      "floors": [
+        { "content": "<p>A book sits still on a table. Or does it? The answer depends entirely on who is watching. From your chair, the book is at rest. From the moon, the book, the table, the room, and you are all hurtling through space together.</p>" },
+        { "content": "<p>A robber jumps onto a moving train, points a gun at the passengers and says \"Don't move, stand still.\" The passengers freeze. Are they moving? To the robber, they are at rest — their coordinates in the train-frame haven't changed. To someone standing on the platform watching the train rush past, those same passengers are moving at great speed. Both answers are correct. Motion is a combined property of the object and the observer.</p>" },
+        { "content": "<p>A <strong>frame of reference</strong> is a set of coordinate axes (usually three mutually perpendicular X-Y-Z axes) plus a clock, against which the position and motion of objects are measured. A body is at <strong>rest</strong> with respect to a frame if all its coordinates remain unchanged as time passes. It is in <strong>motion</strong> if any coordinate changes. There is no absolute rest or absolute motion — only motion relative to a chosen frame.</p>" },
+        { "content": "<p>We choose frames for convenience. In a train, we use a frame attached to our compartment — the suitcase on the upper berth is at rest in that frame, while stations and trees are moving. On a road, we use a frame attached to the ground — the car is moving and the rickshaw is not. The physics works in any frame, but the description changes. When a problem says \"a car travels at 60 km/h,\" the road-frame is implied.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 96",
+      "title": "Distance and displacement are not the same",
+      "imagePrompt": "A chalk drawing of a semicircular arc with start (A) and end (B) labelled. A dashed straight arrow goes from A to B labelled \"displacement = 80 m\". The curved arc is labelled \"distance = 126 m\". Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "distance-vs-displacement; scalar-vs-vector-path", "ground": "g0", "buildsOn": ["Card 21", "Card 95"] },
+      "floors": [
+        { "content": "<p>You walk from your house to the shop and back again. Your legs have covered ground — maybe two kilometres. But at the end, you're standing exactly where you started. The journey was long; the result was zero.</p>" },
+        { "content": "<p>A particle moves from point A to point B along a winding path. The <strong>distance</strong> travelled is the total length of that winding path — the number your pedometer would count. The <strong>displacement</strong> is the straight arrow from A to B — the shortest possible line between start and finish, with a direction attached. If the particle returns to A, the distance is the full loop but the displacement is zero.</p>" },
+        { "content": "<p><strong>Distance</strong> is the length of the actual path travelled between two positions. It is a scalar — magnitude only, always positive. <strong>Displacement</strong> is the straight-line vector from the initial position to the final position. It has both magnitude and direction, and obeys the triangle rule of vector addition. The magnitude of displacement can never exceed the distance travelled for the same journey.</p>" },
+        { "content": "<p>An old person walks along a semi-circular track of radius 40 m from one end to the other. The distance covered is half the circumference: π × 40 = 126 m. The displacement is the straight diameter: 2 × 40 = 80 m, pointing from start to finish. The pedometer reads 126; the straight-line gap on a map is 80. In physics, displacement is the quantity that enters velocity, acceleration, and Newton's laws — distance alone is not enough.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 97",
+      "title": "Average and instantaneous speed",
+      "imagePrompt": "A chalk distance-time graph showing a curved line. A chord labelled \"average speed\" connects two points. A tangent at one point is labelled \"instantaneous speed\". Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "average-speed; instantaneous-speed; limit-definition", "ground": "g0", "buildsOn": ["Card 06", "Card 96"] },
+      "floors": [
+        { "content": "<p>A cricket match quote says \"the run rate is 5.2 per over.\" That doesn't mean every single over scored exactly 5.2 runs — some overs were expensive, some economical. The average smooths out the variation into one number. Speed works the same way.</p>" },
+        { "content": "<p>An athlete starts a race slowly and builds up. A single number — \"8 metres per second\" — cannot capture the whole race. The <strong>average speed</strong> over the whole race is total distance divided by total time. But at any single moment, the athlete has an <strong>instantaneous speed</strong> — the speed right now. To find it, measure the distance Δs covered in a tiny time interval Δt, then let Δt shrink toward zero. The ratio Δs/Δt settles on a finite value: the speed at that instant.</p>" },
+        { "content": "<p><strong>Average speed</strong> = total distance / total time interval. <strong>Instantaneous speed</strong> (or simply \"speed\") is defined as v = lim(Δt→0) Δs/Δt = ds/dt — the derivative of distance with respect to time. On a distance-time graph, average speed is the slope of the chord connecting two points; instantaneous speed is the slope of the tangent at a single point.</p>" },
+        { "content": "<p>If a particle's distance is given by s = 2.5t² (in metres, t in seconds), the average speed from t = 0 to t = 5 s is s/t = 62.5/5 = 12.5 m/s. But the instantaneous speed at exactly t = 5 s is ds/dt = 5.0t = 25 m/s — twice as fast. The average hides that the particle was accelerating the whole time. Instantaneous speed reveals what's happening at the exact moment you care about.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 98",
+      "title": "Velocity: speed with a direction, defined at an instant",
+      "imagePrompt": "A chalk diagram showing a curved path with points A and B. An arrow from origin to A is labelled r⃗₁, from origin to B is r⃗₂. The displacement arrow from A to B is labelled Δr⃗ = r⃗₂ − r⃗₁. Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "average-velocity; instantaneous-velocity; position-vector", "ground": "g0", "buildsOn": ["Card 06", "Card 21", "Card 97"] },
+      "floors": [
+        { "content": "<p>Speed tells you how fast. Velocity tells you how fast and which way. And just like speed, velocity can be averaged over a whole trip or measured at a single frozen instant.</p>" },
+        { "content": "<p>Imagine the tip of a clock's minute hand, 4 cm long. Between 6:00 and 6:30 a.m., the tip swings through a half-circle. Its displacement is the straight diameter across the clock face — 8 cm. The average velocity is that displacement divided by the 30 minutes taken: about 0.0044 cm/s. Between 6:00 a.m. and 6:30 p.m., the tip makes the exact same displacement (one diameter) but takes 12.5 hours — the average velocity is far smaller, even though the tip moved at the same speed the whole time.</p>" },
+        { "content": "<p>The <strong>position vector</strong> r⃗ is the arrow from the origin to the particle's location. <strong>Average velocity</strong> = (r⃗₂ − r⃗₁) / (t₂ − t₁). Only the start and end positions matter, not the path between. <strong>Instantaneous velocity</strong> v⃗ = lim(Δt→0) Δr⃗/Δt = dr⃗/dt. For very small Δt, the displacement Δr⃗ is along the actual path, so the magnitude of instantaneous velocity equals instantaneous speed: |v⃗| = ds/dt = v.</p>" },
+        { "content": "<p>Velocity's direction matters. Two cars doing 50 km/h, one north and one south, have identical speeds but opposite velocities. Their displacement vectors point in opposite directions. When solving physics problems, velocity is what enters Newton's laws and the equations of motion — not speed. The distinction becomes critical the moment anything turns, accelerates, or reverses direction.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 99",
+      "title": "Acceleration: the rate at which velocity itself changes",
+      "imagePrompt": "A chalk diagram showing a velocity vector v⃗₁ at time t₁ and a longer velocity vector v⃗₂ at time t₂. The difference arrow Δv⃗ = v⃗₂ − v⃗₁ is highlighted. Below: a⃗ = Δv⃗/Δt. Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "average-acceleration; instantaneous-acceleration; velocity-change", "ground": "g0", "buildsOn": ["Card 06", "Card 98", "Card 76"] },
+      "floors": [
+        { "content": "<p>Velocity tells you how position changes over time. Acceleration tells you how velocity itself changes over time. It is a rate of change of a rate of change — a second layer of \"how fast.\"</p>" },
+        { "content": "<p>A car's velocity at one moment is 10 m/s east. Three seconds later it is 22 m/s east. The velocity changed by +12 m/s over 3 seconds. The average acceleration over that interval is +12/3 = +4 m/s² east — meaning the velocity grew by 4 m/s every second, on average. But if the driver floored the pedal unevenly, the acceleration at any single instant may have been quite different from 4.</p>" },
+        { "content": "<p><strong>Average acceleration</strong> a⃗_av = (v⃗₂ − v⃗₁) / (t₂ − t₁). Only the velocities at the start and end of the interval matter. <strong>Instantaneous acceleration</strong> a⃗ = lim(Δt→0) Δv⃗/Δt = dv⃗/dt. Since velocity is a vector, acceleration captures three kinds of change: speeding up, slowing down, and turning. The SI unit is m/s²; the dimension is LT⁻².</p>" },
+        { "content": "<p>Because velocity is a vector, acceleration and velocity can point in different directions. If they point the same way, speed increases. If they point opposite ways, speed decreases — the particle decelerates. If they are at an angle (as in circular motion), the speed stays constant but the direction changes, and acceleration still exists. A deceleration of 2 m/s² west is exactly the same physical situation as an acceleration of 2 m/s² east — just described from a different sign convention.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 100",
+      "title": "The three equations of constant-acceleration motion",
+      "imagePrompt": "A chalk diagram showing the three equations in a column: v = u + at, x = ut + ½at², v² = u² + 2ax. Each has a small sketch: an arrow growing longer, a distance-time curve, and a squared relationship. Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "suvat-equations; constant-acceleration; derivation", "ground": "g1", "buildsOn": ["Card 99", "Card 76"] },
+      "floors": [
+        { "content": "<p>When acceleration is constant — the simplest case beyond standing still — three equations link position, velocity, acceleration, and time. They are not new laws. They are the definitions of velocity and acceleration, integrated.</p>" },
+        { "content": "<p>A particle starts at x = 0 with velocity u, and accelerates at a constant rate a. After time t, its velocity v has grown by a × t — so v = u + at. Meanwhile its position x has advanced by the steady contribution ut, plus the extra distance from acceleration, ½at² — so x = ut + ½at². Eliminating t between these two gives v² = u² + 2ax, which relates velocity directly to distance without involving time.</p>" },
+        { "content": "<p>For motion in a straight line with constant acceleration a, initial velocity u, and starting position x = 0 at t = 0:</p><div class='formula'>v = u + at<br>x = ut + ½at²<br>v² = u² + 2ax<span class='gloss'>The three SUVAT equations for constant acceleration in one dimension.</span></div><p>These are derived by integrating dv/dt = a and dx/dt = v. Each quantity can be positive or negative depending on direction along the chosen axis.</p>" },
+        { "content": "<p>A particle starts at 2.5 m/s and accelerates at 0.50 m/s². After 2 seconds: x = (2.5)(2) + ½(0.50)(4) = 6.0 m. To reach 7.5 m/s: t = (7.5 − 2.5)/0.50 = 10 s. Distance covered in that time: v² = u² + 2ax gives x = (7.5² − 2.5²)/(2 × 0.50) = 50 m. These three equations solve almost every constant-acceleration problem in one dimension.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 101",
+      "title": "Free fall: when gravity is the only accelerator",
+      "imagePrompt": "A chalk drawing of a ball thrown upward with an initial velocity arrow u labelled. At the top, v = 0. On the way down, the velocity arrow grows downward. A dashed line shows the parabolic height over time. g = 9.8 m/s² is labelled pointing down throughout. Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "free-fall; g; vertical-motion", "ground": "g0", "buildsOn": ["Card 28", "Card 100"] },
+      "floors": [
+        { "content": "<p>Drop a stone and a feather in a vacuum chamber, and they hit the ground at the same instant. Without air resistance, every object near Earth's surface falls with the same constant acceleration — about 9.8 m/s², straight down.</p>" },
+        { "content": "<p>A ball is thrown straight up at 4.0 m/s. As it rises, gravity pulls it downward, eating away 10 m/s of upward speed every second (using g ≈ 10 m/s² for simplicity). After 0.4 seconds, its upward speed reaches zero — that's the highest point. Using v² = u² − 2gy: 0 = 16 − 2(10)y, so y = 0.80 m. The ball climbs less than a metre, then falls back down with the same acceleration.</p>" },
+        { "content": "<p><strong>Free fall</strong> is motion under gravity alone, with negligible air resistance. Near Earth's surface, the acceleration due to gravity <strong>g</strong> is approximately 9.8 m/s² downward. Choosing upward as positive makes a = −g; choosing downward as positive makes a = +g. The three constant-acceleration equations apply directly, with a replaced by ±g. The value of g varies slightly with altitude and latitude.</p>" },
+        { "content": "<p>Free fall is a special case of constant-acceleration motion, not a separate topic. The same SUVAT equations work: v = u ± gt, y = ut ± ½gt², v² = u² ± 2gy. The sign depends on your axis choice. What makes free fall worth naming separately is that g is the same for all objects — a hammer and a feather on the moon, where there is no air, fall side by side. Galileo allegedly demonstrated this from the Tower of Pisa; Apollo 15 astronauts actually demonstrated it on the moon.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 102",
+      "title": "Motion in a plane: splitting the problem in two",
+      "imagePrompt": "A chalk diagram showing a grid with x and y axes. A particle at (x,y) has two component velocity arrows: vₓ along x and vᵧ along y. Equations for each component appear beside their respective axes. Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "kinematics", "concept": "2d-motion; components; independence-of-axes", "ground": "g1", "buildsOn": ["Card 27", "Card 28", "Card 100"] },
+      "floors": [
+        { "content": "<p>A particle moving freely in a plane has two coordinates, x and y, that change independently. What happens along the x-axis and what happens along the y-axis are two separate stories, linked only by the fact that they share the same clock.</p>" },
+        { "content": "<p>A particle's position at time t is (x, y). A moment later, at t + Δt, it has moved to (x + Δx, y + Δy). The displacement in that tiny interval is Δr⃗ = Δx î + Δy ĵ. Dividing by Δt and taking the limit gives the velocity: v⃗ = (dx/dt) î + (dy/dt) ĵ — the x-component vₓ = dx/dt and the y-component vᵧ = dy/dt are completely separate. Differentiating again gives the acceleration components aₓ = dvₓ/dt and aᵧ = dvᵧ/dt.</p>" },
+        { "content": "<p>For motion in a plane with constant acceleration components aₓ and aᵧ, the x and y motions each obey the one-dimensional SUVAT equations independently:</p><div class='formula'>vₓ = uₓ + aₓt  x = uₓt + ½aₓt²  vₓ² = uₓ² + 2aₓx<br>vᵧ = uᵧ + aᵧt  y = uᵧt + ½aᵧt²  vᵧ² = uᵧ² + 2aᵧy<span class='gloss'>The x and y equations are solved separately — only time t is shared.</span></div>" },
+        { "content": "<p>Projectile motion is the classic example: aₓ = 0 (no horizontal force after launch, ignoring air) and aᵧ = −g (gravity). x = uₓt is steady coasting. y = uᵧt − ½gt² is free fall. The two don't interfere. This independence of axes is why a bullet fired horizontally and a bullet dropped from the same height hit the ground at the same moment. The x-motion can be as fast as you like — gravity doesn't care.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 103",
+      "title": "dy/dx: calculus as the rate measurer of physics",
+      "imagePrompt": "A chalk graph of a curved function y = f(x). At point P, a tangent line is drawn. The slope triangle shows Δy/Δx shrinking to dy/dx. Below: \"speed = ds/dt\", \"acceleration = dv/dt\". Chalk on dark green board.",
+      "tags": { "subject": "maths", "topic": "calculus", "concept": "derivative-as-rate; dy-dx-physics; instantaneous-rate", "ground": "g0", "buildsOn": ["Card 14", "Card 97"] },
+      "floors": [
+        { "content": "<p>A car's speedometer doesn't calculate average speed over the whole trip. It shows the speed right now. The mathematics that makes that possible — capturing an instantaneous rate from a changing quantity — is the derivative.</p>" },
+        { "content": "<p>If the distance s a particle travels is known as a function of time, s(t), then the speed at an instant is ds/dt — the derivative of distance with respect to time. If s = 2.5t², then ds/dt = 5.0t. At t = 5, the speed is exactly 25. This is not an average over any interval; it is the rate at a single instant, captured by letting the time interval shrink to zero and seeing what ratio the shrinking distance and shrinking time settle on.</p>" },
+        { "content": "<p>The <strong>derivative</strong> dy/dx of a function y = f(x) is defined as lim(Δx→0) Δy/Δx — the limiting value of the ratio of the change in y to the change in x, as the change in x approaches zero. Geometrically, it is the slope of the tangent to the curve y = f(x) at a point. Physically, it is the instantaneous rate of change of y with respect to x. Speed is ds/dt; velocity is dr⃗/dt; acceleration is dv⃗/dt — all are derivatives.</p>" },
+        { "content": "<p>Every \"rate\" in physics is a derivative. Velocity = dx/dt. Acceleration = dv/dt = d²x/dt². Force = dp/dt (rate of change of momentum). Current = dq/dt (rate of flow of charge). The derivative turns a description of where something is into a description of how fast it's changing, and a second derivative turns that into a description of how fast the change itself is changing. Calculus is not an add-on to physics — it is the language in which rates are expressed.</p>" }
+      ]
+    },
+    {
+      "kicker": "BB 104",
+      "title": "Significant digits: which numbers actually carry meaning",
+      "imagePrompt": "A chalk diagram of a metre scale showing an object whose end falls between 10.4 and 10.5 cm. The reading 10.46 cm is written, with the 1, 0, 4 in white chalk and the 6 in pale yellow chalk labelled \"doubtful digit\". Chalk on dark green board.",
+      "tags": { "subject": "physics", "topic": "measurement", "concept": "significant-digits; rounding; measurement-precision", "ground": "g0", "buildsOn": ["Card 85"] },
+      "floors": [
+        { "content": "<p>Measure a table with a metre stick marked in millimetres, and you might write 104.6 cm. The 1, 0, and 4 are certain. The 6 is your best guess between the millimetre marks — the doubtful digit. All four together are the significant digits. Write more digits and you're claiming precision you don't have.</p>" },
+        { "content": "<p>Mass A is measured as 12.0 kg. Mass B is measured as 7.0 kg. The ratio 12.0/7.0 = 1.714285... but reporting all those digits is wrong. The zero in 12.0 is already doubtful (the scale only reads to tenths), and the zero in 7.0 is equally doubtful. The quotient can only be trusted to two significant digits: 1.7. Writing 1.714285 claims precision that never existed.</p>" },
+        { "content": "<p><strong>Significant digits</strong> are the digits in a measurement that carry meaning — all the certain digits plus one doubtful digit. The rightmost digit is the <strong>least significant digit</strong>. In multiplication/division, the result has as many significant digits as the input with the fewest. In addition/subtraction, the result is rounded to the first column (from the left) that contains a doubtful digit. Rounding rule: if the next digit > 5, round up; if < 5, round down; if exactly 5, round to make the last digit even.</p>" },
+        { "content": "<p>Zeros at the right end are ambiguous without context. \"600 mm\" could have 1, 2, or 3 significant digits depending on the instrument. Writing it as 6 × 10² mm, 6.0 × 10² mm, or 6.00 × 10² mm removes the ambiguity by explicitly stating how many digits are significant. In science, the number of digits you report is a statement about your measurement precision — more digits is not more accurate, it's a claim your instrument cannot back.</p>" }
+      ]
+    }
+  ]
+}

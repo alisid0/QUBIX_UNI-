@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Integration from scratch</title>
+<style>
+:root{
+  --bg:#faf9f7; --surface:#ffffff; --surface2:#f1efe8;
+  --text:#1a1a19; --muted:#5f5e5a; --faint:#898781;
+  --border:#e1e0d9; --border2:#c3c2b7;
+  --accent:#185fa5; --accentbg:#e6f1fb; --accentline:#378add;
+  --warm:#ba7517; --warmbg:#faeeda; --coral:#f5c4b3;
+  --ok:#3b6d11; --okbg:#eaf3de;
+}
+html[data-theme="dark"]{
+  --bg:#151514; --surface:#1e1e1c; --surface2:#2c2c2a;
+  --text:#f2f1ec; --muted:#b5b4ac; --faint:#898781;
+  --border:#33332f; --border2:#4a4a45;
+  --accent:#85b7eb; --accentbg:#0c447c; --accentline:#378add;
+  --warm:#ef9f27; --warmbg:#412402; --coral:#993c1d;
+  --ok:#97c459; --okbg:#173404;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{display:flex;gap:40px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav{width:230px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;padding:32px 0 40px}
+nav .brand{font-size:15px;font-weight:600;margin:0 0 4px}
+nav .sub{font-size:13px;color:var(--muted);margin:0 0 20px}
+nav a{display:block;text-decoration:none;color:var(--muted);font-size:14px;
+  padding:5px 10px;border-left:2px solid transparent;border-radius:0;line-height:1.4}
+nav a:hover{color:var(--text);background:var(--surface2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);font-weight:500}
+nav .nav-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 4px}
+nav .themebtn{position:static;flex-shrink:0;margin:0}
+main{flex:1;min-width:0;max-width:780px;padding:40px 0 120px}
+h1{font-size:34px;line-height:1.25;font-weight:600;margin:0 0 8px;letter-spacing:-0.02em}
+h2{font-size:24px;font-weight:600;margin:56px 0 14px;letter-spacing:-0.01em;scroll-margin-top:24px}
+h3{font-size:18px;font-weight:600;margin:32px 0 10px}
+p{margin:0 0 16px}
+.lede{font-size:19px;color:var(--muted);margin:0 0 8px}
+.sec-no{font-size:13px;color:var(--warm);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:0}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin:0 0 8px}
+strong{font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
+  background:var(--surface2);padding:1px 5px;border-radius:4px}
+.math{font-family:Georgia,"Times New Roman",serif;font-size:1.06em;font-style:italic}
+.eq{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:16px 20px;margin:20px 0;font-family:Georgia,"Times New Roman",serif;
+  font-size:19px;text-align:center;overflow-x:auto;line-height:1.9}
+.eq .lbl{display:block;font-family:inherit;font-size:13px;font-style:normal;
+  color:var(--faint);margin-top:8px;font-family:-apple-system,sans-serif}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--warm);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:22px 0}
+.callout p:last-child{margin:0}
+.callout .tag{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--warm);margin:0 0 6px}
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin:26px 0}
+.wtitle{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 16px}
+.ctrl{display:flex;align-items:center;gap:14px;margin:0 0 16px}
+.ctrl label{font-size:14px;color:var(--muted);white-space:nowrap}
+.ctrl .out{font-size:14px;font-weight:600;min-width:76px;text-align:right;
+  font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
+  background:var(--border2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;
+  border-radius:50%;background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+  background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+.segs{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.seg{font-size:13px;padding:6px 13px;border-radius:8px;border:1px solid var(--border2);
+  background:transparent;color:var(--text);cursor:pointer;font-family:inherit}
+.seg:hover{background:var(--surface2)}
+.seg[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.presets{display:flex;gap:6px;margin:-6px 0 16px;flex-wrap:wrap;align-items:center}
+.presets .plab{font-size:12px;color:var(--faint);margin-right:2px}
+.preset{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);
+  background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;
+  font-variant-numeric:tabular-nums}
+.preset:hover{background:var(--surface2);color:var(--text)}
+.preset[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.cvwrap{position:relative;width:100%;margin:0 0 14px}
+canvas{display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cap{font-size:12px;color:var(--faint);margin:0 0 6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin:0 0 14px}
+.card{background:var(--surface2);border-radius:9px;padding:10px 13px}
+.card .k{font-size:12px;color:var(--muted);margin:0 0 3px}
+.card .v{font-size:19px;font-weight:600;margin:0;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0;line-height:1.6}
+details{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;margin:10px 0}
+details summary{cursor:pointer;font-size:15px;font-weight:500;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"?";display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;background:var(--accentbg);color:var(--accent);
+  font-size:12px;font-weight:700;margin-right:10px;vertical-align:1px}
+details[open] summary{margin-bottom:10px}
+details .ans{font-size:15px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px}
+details .ans p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 20px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border)}
+th{font-weight:600;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.n{font-variant-numeric:tabular-nums}
+.ref{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:8px 22px 18px}
+.ref h3{font-size:15px;margin:22px 0 6px;color:var(--warm)}
+.themebtn{font-size:13px;padding:7px 13px;
+  border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);
+  cursor:pointer;font-family:inherit}
+.themebtn:hover{background:var(--surface2)}
+.jar-sketch{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0 0}
+.jar-sketch .pane{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.jar-sketch .pt{font-size:12px;color:var(--muted);margin:0 0 8px}
+.jar-sketch .bars{display:flex;align-items:flex-end;gap:5px;height:56px}
+.jar-sketch .b{flex:1;border-radius:3px 3px 0 0;background:var(--accentline);opacity:.85}
+.jar-sketch .run{height:8px;border-radius:4px;background:var(--warm);margin-top:10px}
+.signed{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 8px}
+.signed .box{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.signed .box .k{font-size:12px;color:var(--muted);margin:0 0 4px}
+.signed .box .v{font-size:15px;margin:0;line-height:1.45}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
+  font-size:14px;color:var(--faint)}
+@media(max-width:900px){
+  .wrap{flex-direction:column;gap:0;padding:0 18px}
+  nav{width:auto;position:static;height:auto;padding:20px 0 0;border-bottom:1px solid var(--border)}
+  nav .links{display:flex;flex-wrap:wrap;gap:2px;padding-bottom:14px}
+  nav a{border-left:none;border-bottom:2px solid transparent;padding:4px 9px;font-size:13px}
+  nav a.on{border-left-color:transparent;border-bottom-color:var(--accent)}
+  main{padding:26px 0 80px}
+  h1{font-size:27px} h2{font-size:21px} body{font-size:16px}
+  .jar-sketch,.signed{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="nav-top">
+    <div>
+      <p class="brand">Integration from scratch</p>
+      <p class="sub">Rectangles to real life</p>
+    </div>
+    <button class="themebtn" id="themebtn" type="button" aria-label="Toggle colour theme">Dark</button>
+  </div>
+  <div class="links">
+    <a href="#s1">1. The one idea</a>
+    <a href="#s2">2. Rectangles under a curve</a>
+    <a href="#s3">3. Why it converges</a>
+    <a href="#s4">4. The algebra</a>
+    <a href="#s5">5. The shortcut</a>
+    <a href="#s6">6. Slope without fear</a>
+    <a href="#s7">7. The simplest version</a>
+    <a href="#s8">8. Beyond area</a>
+    <a href="#s9">9. Where it's used</a>
+    <a href="#s10">10. Reference card</a>
+    <a href="#s11">11. What's left</a>
+  </div>
+</nav>
+
+<main>
+
+<p class="sec-no">A visual course</p>
+<h1>Integration from scratch</h1>
+<p class="lede">Everything here was built from one question: is integration just a complicated way of finding the area of shapes? It isn't &mdash; but the road to why is worth walking.</p>
+<p style="color:var(--faint);font-size:14px">Every diagram is live. Drag the sliders.</p>
+
+<h2 id="s1">1. The one idea</h2>
+<p>Straight edges are easy because nothing changes. A rectangle's height is the same all the way across, so area is one multiplication: height &times; width. Done.</p>
+<p>Curves ruin that. The height is different at <em>every single point</em>, so there is no single number to multiply by. This is the entire problem, and integration is the entire solution:</p>
+
+<div class="callout">
+  <span class="tag">The whole idea</span>
+  <p>Chop the region into slices so thin that the quantity is effectively <strong>constant</strong> across each one. Multiply. Add them all up. Then shrink the slices to nothing.</p>
+</div>
+
+<p>That's it. Turn one changing thing into infinitely many unchanging things. Everything below is either a demonstration that this works, a shortcut for doing it quickly, or an example of it being used on something that isn't a shape at all.</p>
+
+<div class="callout">
+  <span class="tag">A picture to keep in your pocket</span>
+  <p>There's a version of this with no curves at all: bars for each day's pocket money, and a jar for the running total. Adding the bars fills the jar; subtracting two jar readings recovers one day. <a href="#s7">Section 7</a> is that picture in full. Until then, every diagram below is the same idea with the days made thinner and thinner.</p>
+  <div class="jar-sketch" aria-hidden="true">
+    <div class="pane">
+      <p class="pt">Bars (the curve)</p>
+      <div class="bars">
+        <div class="b" style="height:30%"></div>
+        <div class="b" style="height:55%"></div>
+        <div class="b" style="height:22%"></div>
+        <div class="b" style="height:90%"></div>
+        <div class="b" style="height:45%"></div>
+        <div class="b" style="height:70%"></div>
+        <div class="b" style="height:15%"></div>
+      </div>
+    </div>
+    <div class="pane">
+      <p class="pt">Jar (the running total)</p>
+      <div class="bars">
+        <div class="b" style="height:12%;background:var(--warm)"></div>
+        <div class="b" style="height:28%;background:var(--warm)"></div>
+        <div class="b" style="height:35%;background:var(--warm)"></div>
+        <div class="b" style="height:62%;background:var(--warm)"></div>
+        <div class="b" style="height:75%;background:var(--warm)"></div>
+        <div class="b" style="height:92%;background:var(--warm)"></div>
+        <div class="b" style="height:100%;background:var(--warm)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 id="s2">2. Rectangles under a curve</h2>
+<p>Take a semicircle of radius 1. Its true area is <span class="math">&pi;/2 &asymp; 1.5708</span>. Pretend you don't know that, and try to measure it with rectangles.</p>
+
+<div class="widget">
+  <p class="wtitle">Riemann sums on a semicircle</p>
+  <div class="ctrl">
+    <label for="w1n">Rectangles</label>
+    <input type="range" id="w1n" min="1" max="200" step="1" value="6" />
+    <span class="out" id="w1o">6</span>
+  </div>
+  <div class="presets" role="group" aria-label="Jump to rectangle count">
+    <span class="plab">Jump</span>
+    <button type="button" class="preset" data-w1n="1">1</button>
+    <button type="button" class="preset" data-w1n="20">20</button>
+    <button type="button" class="preset" data-w1n="40">40</button>
+    <button type="button" class="preset" data-w1n="80">80</button>
+  </div>
+  <div class="segs">
+    <button class="seg" data-w1="in" aria-pressed="true">Inscribed</button>
+    <button class="seg" data-w1="mid" aria-pressed="false">Midpoint</button>
+    <button class="seg" data-w1="out" aria-pressed="false">Circumscribed</button>
+  </div>
+  <div class="cvwrap" style="height:250px">
+    <canvas id="w1c" role="img" aria-labelledby="w1-fallback"></canvas>
+    <p class="sr-only" id="w1-fallback">Live diagram of Riemann rectangles under a semicircle. See the rectangle sum, exact antiderivative value, and error readouts below.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Rectangle sum</p><p class="v" id="w1s">&mdash;</p></div>
+    <div class="card"><p class="k">Exact F(1)&minus;F(&minus;1)</p><p class="v" id="w1x">1.5708</p></div>
+    <div class="card"><p class="k">Error</p><p class="v" id="w1e">&mdash;</p></div>
+  </div>
+  <p class="note" id="w1t"></p>
+</div>
+
+<p>Three things to try:</p>
+<ul>
+  <li><strong>Start at 1 rectangle</strong> (use the jump buttons). Hopeless &mdash; about 36% off. That's the "shapes with edges" answer, and it fails because the height isn't constant.</li>
+  <li><strong>Jump 20 &rarr; 40 &rarr; 80.</strong> Watch the error column roughly halve each time you double. That pattern is the whole game, and section 4 proves it.</li>
+  <li><strong>Switch inscribed vs circumscribed.</strong> One is always too small, one always too big, and they squeeze toward the same number from both sides. That squeeze <em>is</em> the definition of the integral.</li>
+</ul>
+<p><strong>Midpoint</strong> is the surprise. Each rectangle overshoots on one side of its strip and undershoots on the other, and the errors largely cancel. It's accurate to four decimals by about 40 strips. That cancellation is a smooth-curve gift: on sharp corners or jumps, midpoint can still miss badly.</p>
+<p>The middle card is not a memorised constant. It is the antiderivative of <span class="math">&radic;(1&minus;x&sup2;)</span> evaluated at the ends &mdash; the shortcut from section 5, used here as the referee for the rectangles.</p>
+
+<details>
+  <summary>Why does inscribed always come out under the true area?</summary>
+  <div class="ans"><p>Because on each strip the inscribed rectangle takes the <em>lowest</em> height anywhere in that strip. The curve is at or above that height across the whole strip, so the rectangle can never contain more area than the true region. Every strip is short, so the total is short.</p></div>
+</details>
+<details>
+  <summary>If the rectangles never fill the region, how can the answer ever be exact?</summary>
+  <div class="ans"><p>No individual sum is exact &mdash; each one is genuinely too small. The integral isn't any one of those sums; it's the number they close in on. The definition contains a limit, and the limit is exact even though no member of the sequence is.</p></div>
+</details>
+<details>
+  <summary>Where does 1.5708 come from without memorising &pi;/2?</summary>
+  <div class="ans"><p>An antiderivative of <span class="math">&radic;(1&minus;x&sup2;)</span> is <span class="math">F(x) = (x&radic;(1&minus;x&sup2;) + arcsin x)/2</span>. Then <span class="math">F(1) = (0 + &pi;/2)/2 = &pi;/4</span> and <span class="math">F(&minus;1) = (0 &minus; &pi;/2)/2 = &minus;&pi;/4</span>, so <span class="math">F(1) &minus; F(&minus;1) = &pi;/2</span>. Same answer the rectangles are chasing, found in one evaluation.</p></div>
+</details>
+
+<h2 id="s3">3. Why it converges</h2>
+<p>Chopping a curve into rectangles leaves little slivers between each rectangle's flat top and the curve above it &mdash; roughly triangles. The natural worry is that adding more rectangles means more slivers, so the error should pile up. It doesn't, and here's why.</p>
+
+<div class="widget">
+  <p class="wtitle">One strip, magnified</p>
+  <div class="ctrl">
+    <label for="w2k">Halve the width</label>
+    <input type="range" id="w2k" min="0" max="6" step="1" value="0" />
+    <span class="out" id="w2o">5 rects</span>
+  </div>
+  <p class="cap">Whole semicircle &mdash; every rectangle, zoom window marked</p>
+  <div class="cvwrap" style="height:120px">
+    <canvas id="w2a" role="img" aria-labelledby="w2-fallback"></canvas>
+  </div>
+  <p class="cap">Zoomed into one strip</p>
+  <div class="cvwrap" style="height:190px">
+    <canvas id="w2b" role="img" aria-labelledby="w2-fallback"></canvas>
+    <p class="sr-only" id="w2-fallback">Diagram comparing a full semicircle Riemann sum with a magnified view of one error sliver. Readouts show strip width, one sliver area, and total error.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Rectangles</p><p class="v" id="w2n">&mdash;</p><p class="k" id="w2nt" style="color:var(--accent)">&nbsp;</p></div>
+    <div class="card"><p class="k">Width w</p><p class="v" id="w2w">&mdash;</p><p class="k" id="w2wt" style="color:var(--accent)">&nbsp;</p></div>
+    <div class="card"><p class="k">One sliver</p><p class="v" id="w2s">&mdash;</p><p class="k" id="w2st" style="color:var(--accent)">&nbsp;</p></div>
+    <div class="card"><p class="k">Total error</p><p class="v" id="w2e">&mdash;</p><p class="k" id="w2et" style="color:var(--accent)">&nbsp;</p></div>
+  </div>
+  <p class="note" id="w2t"></p>
+</div>
+
+<p>The sliver is roughly a triangle, so its area is about <span class="math">&frac12; &middot; w &middot; &Delta;h</span>. Halve the strip width and <em>two</em> things shrink at once: <span class="math">w</span> halves, and <span class="math">&Delta;h</span> halves too, because you're now sampling a shorter piece of the curve.</p>
+
+<table>
+  <tr><th>Halvings</th><th>Width</th><th>One sliver</th><th>Count</th><th>Total error</th></tr>
+  <tr><td class="n">0</td><td class="n">w</td><td class="n">s</td><td class="n">n</td><td class="n">n&middot;s</td></tr>
+  <tr><td class="n">1</td><td class="n">w/2</td><td class="n">s/4</td><td class="n">2n</td><td class="n">n&middot;s/2</td></tr>
+  <tr><td class="n">2</td><td class="n">w/4</td><td class="n">s/16</td><td class="n">4n</td><td class="n">n&middot;s/4</td></tr>
+</table>
+
+<p>Each sliver shrinks by a factor of <strong>4</strong>, but you only gain <strong>2&times;</strong> as many of them. Four beats two, so the total loses. The error is racing to zero faster than the slivers can accumulate.</p>
+
+<details>
+  <summary>Why does &Delta;h halve when the width halves?</summary>
+  <div class="ans"><p>Over a short stretch, a smooth curve looks like a straight line with some slope <span class="math">m</span>. Rise equals slope times run, so <span class="math">&Delta;h &asymp; m&middot;w</span>. Halve the run and you halve the rise. This is exactly why the sliver &mdash; a product of the two &mdash; drops by four.</p></div>
+</details>
+
+<h2 id="s4">4. The algebra</h2>
+<p>The picture above is convincing, but it can be proved in four lines with no calculus at all &mdash; just monotonicity and one cancellation.</p>
+
+<p><strong>Setup.</strong> Take <span class="math">f</span> decreasing on <span class="math">[a, b]</span>, cut into <span class="math">n</span> strips of width <span class="math">w = (b &minus; a)/n</span>, with cut points <span class="math">x&#8320; = a, x&#8321;, &hellip;, x&#8345; = b</span>. The inscribed rectangle on strip <span class="math">i</span> takes the lower height, <span class="math">f(x<sub>i+1</sub>)</span>.</p>
+
+<p><strong>Step one &mdash; trap each strip.</strong> Since <span class="math">f</span> is decreasing, its value on strip <span class="math">i</span> never leaves the band between <span class="math">f(x<sub>i+1</sub>)</span> and <span class="math">f(x<sub>i</sub>)</span>. So the error on that strip is at most the band height times the width:</p>
+
+<div class="eq">E<sub>i</sub> &le; w &middot; [ f(x<sub>i</sub>) &minus; f(x<sub>i+1</sub>) ]<span class="lbl">no calculus &mdash; just "the curve stays inside the band"</span></div>
+
+<p><strong>Step two &mdash; sum, and watch it collapse.</strong> Add these up and write the sum out in full:</p>
+
+<div class="eq">[f(x&#8320;) &minus; f(x&#8321;)] + [f(x&#8321;) &minus; f(x&#8322;)] + &hellip; + [f(x<sub>n&minus;1</sub>) &minus; f(x&#8345;)]<span class="lbl">every interior term appears twice with opposite signs</span></div>
+
+<p>Everything in the middle cancels. This is a <strong>telescoping sum</strong>, and it collapses to just the two endpoints: <span class="math">f(a) &minus; f(b)</span>. Therefore:</p>
+
+<div class="eq">E &le; (b &minus; a) &middot; [ f(a) &minus; f(b) ] / n &nbsp;=&nbsp; K / n<span class="lbl">K is fixed by the problem, not by n</span></div>
+
+<p><strong>The result.</strong> The error is bounded by a constant over <span class="math">n</span>. Double the rectangles, halve the error ceiling. As <span class="math">n &rarr; &infin;</span>, the error goes to zero. That's the convergence, proved.</p>
+
+<div class="callout">
+  <span class="tag">The intuition behind the collapse</span>
+  <p>The strips' errors are not independent &mdash; each one's height drop is where the next one starts. Stacked end to end, all <span class="math">n</span> drops add up to the <em>total</em> drop of the function, which is a fixed number however finely you chop. You're dividing one fixed budget among <span class="math">n</span> strips.</p>
+</div>
+
+<p>For your semicircle, apply the bound to the rising half <span class="math">[&minus;1, 0]</span> and the falling half <span class="math">[0, 1]</span> separately &mdash; the curve is not monotone on the whole interval. Each half has height change 1 and width 1, so each contributes at most <span class="math">1/n<sub>half</sub></span>; together the total variation is 2 and the span is 2, giving <span class="math">E &le; 4/n</span> for <span class="math">n</span> strips across the full diameter. Loose but honest &mdash; and note the argument never needed <span class="math">f</span> to be differentiable, which matters here because the semicircle's slope is infinite at the ends.</p>
+
+<details>
+  <summary>What if the curve wiggles up and down instead of just decreasing?</summary>
+  <div class="ans"><p>Split it into monotone pieces and apply the same argument to each. In general, replace <span class="math">f(a) &minus; f(b)</span> with the <strong>total variation</strong> <span class="math">V</span> &mdash; the sum of all rises and falls. The bound becomes <span class="math">E &le; (b&minus;a)&middot;V/n</span>. Still <span class="math">1/n</span>, still zero in the limit. The semicircle paragraph above is exactly that: two monotone pieces, <span class="math">V = 2</span>.</p></div>
+</details>
+
+<h2 id="s5">5. The shortcut</h2>
+<p>Everything so far tells you <em>what</em> the answer is. It's a terrible way to actually get it. Nobody computes integrals by adding rectangles &mdash; there's a shortcut, and it's a shocking one.</p>
+
+<p>Imagine sweeping left to right across a curve, keeping a running total of the area so far. Call it <span class="math">A</span>. How fast is <span class="math">A</span> growing? Nudge one tiny step right and you tack on a sliver as tall as the curve and as thin as your step. So <strong>the rate <span class="math">A</span> grows at is just the height of the curve right there.</strong></p>
+
+<p>Which means <span class="math">A</span> is a function whose rate of change is <span class="math">f</span>. That's exactly what an antiderivative is. Area and slopes turn out to be the same problem seen from two ends.</p>
+
+<div class="widget">
+  <p class="wtitle">The parabola and its running total</p>
+  <div class="ctrl">
+    <label for="w3b">Sweep to b</label>
+    <input type="range" id="w3b" min="0.05" max="2" step="0.01" value="1.2" />
+    <span class="out" id="w3o">1.20</span>
+  </div>
+  <p class="cap">f(x) = x&sup2; &mdash; the shaded area is what you're accumulating</p>
+  <div class="cvwrap" style="height:175px">
+    <canvas id="w3f" role="img" aria-labelledby="w3-fallback"></canvas>
+  </div>
+  <p class="cap">A(x) = x&sup3;/3 &mdash; the running total, with its tangent at b</p>
+  <div class="cvwrap" style="height:175px">
+    <canvas id="w3a" role="img" aria-labelledby="w3-fallback"></canvas>
+    <p class="sr-only" id="w3-fallback">Two linked diagrams: area under y equals x squared, and the running-total curve A equals x cubed over 3 with a tangent. Readouts compare shaded area to A(b) and slope of A to height f(b).</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Shaded area</p><p class="v" id="w3ar">&mdash;</p></div>
+    <div class="card"><p class="k">A(b) = b&sup3;/3</p><p class="v" id="w3ab">&mdash;</p></div>
+    <div class="card"><p class="k">Slope of A at b</p><p class="v" id="w3sp">&mdash;</p></div>
+    <div class="card"><p class="k">Height f(b) = b&sup2;</p><p class="v" id="w3hb">&mdash;</p></div>
+  </div>
+  <p class="note" id="w3t"></p>
+</div>
+
+<p>Slide anywhere and check: the left two cards always match, and so do the right two. <strong>The slope of the running total always equals the height of the curve.</strong> That's not a coincidence, it's the reason the shortcut works.</p>
+
+<h3>Worked example: the area under x&sup2;</h3>
+<p><strong>The hard way.</strong> Chop <span class="math">[0, b]</span> into <span class="math">n</span> strips of width <span class="math">b/n</span>. Using right edges, strip <span class="math">i</span> has height <span class="math">(ib/n)&sup2;</span>, so the sum is</p>
+
+<div class="eq">&Sigma; (ib/n)&sup2; &middot; (b/n) = (b&sup3;/n&sup3;) &middot; n(n+1)(2n+1)/6 = (b&sup3;/3)(1 + 3/2n + 1/2n&sup2;)<span class="lbl">using the sum-of-squares identity</span></div>
+
+<p>Let <span class="math">n &rarr; &infin;</span> and the junk terms vanish, leaving <span class="math">b&sup3;/3</span>. Notice the leading junk term is <span class="math">3/2n</span> &mdash; there's the <span class="math">1/n</span> error again, this time visible in the algebra rather than trusted from a bound.</p>
+
+<p><strong>The easy way.</strong> Ask what has derivative <span class="math">x&sup2;</span>. Since <span class="math">d/dx(x&sup3;) = 3x&sup2;</span>, the answer is <span class="math">x&sup3;/3</span>. Then just evaluate at the ends:</p>
+
+<div class="eq">&int;<sub>0</sub><sup>b</sup> x&sup2; dx = [ x&sup3;/3 ]<sub>0</sub><sup>b</sup> = b&sup3;/3<span class="lbl">one line, no identities, no limit</span></div>
+
+<p>At <span class="math">b = 2</span> that's <span class="math">8/3 &asymp; 2.667</span>. Drag the slider to 2.00 and both left cards read 2.6667.</p>
+
+<details>
+  <summary>Why is there a "+ C" on indefinite integrals?</summary>
+  <div class="ans"><p>Because constants have zero slope. <span class="math">x&sup3;/3</span>, <span class="math">x&sup3;/3 + 7</span> and <span class="math">x&sup3;/3 &minus; 400</span> all have derivative <span class="math">x&sup2;</span>, so all are valid running totals &mdash; they just start the jar at different amounts. For a <em>definite</em> integral it never matters: you subtract two values and the constant cancels.</p></div>
+</details>
+
+<h2 id="s6">6. Slope without fear</h2>
+<p>Slope has a frightening name and a boring meaning: <strong>how much you get per step</strong>. Five kilometres per hour is a slope. Thirty pounds an hour is a slope. Anything phrased as "this per that" is a slope.</p>
+<p>The best proof that it isn't intimidating: you read one through your windscreen every day. Your car has two dials.</p>
+
+<div class="widget">
+  <p class="wtitle">Speedometer and odometer</p>
+  <div class="ctrl">
+    <label for="w4t">Minutes in</label>
+    <input type="range" id="w4t" min="1" max="60" step="1" value="20" />
+    <span class="out" id="w4o">20 min</span>
+  </div>
+  <p class="cap">Speedometer &mdash; the shaded area is the distance you've covered</p>
+  <div class="cvwrap" style="height:165px">
+    <canvas id="w4s" role="img" aria-labelledby="w4-fallback"></canvas>
+  </div>
+  <p class="cap">Odometer &mdash; steep where you were fast, flat where you crawled</p>
+  <div class="cvwrap" style="height:165px">
+    <canvas id="w4d" role="img" aria-labelledby="w4-fallback"></canvas>
+    <p class="sr-only" id="w4-fallback">Linked speedometer and odometer diagrams. The shaded area under speed equals distance; the tangent steepness of distance equals current speed. See the live readouts below.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Speedometer says</p><p class="v" id="w4v">&mdash;</p></div>
+    <div class="card"><p class="k">Odometer says</p><p class="v" id="w4m">&mdash;</p></div>
+    <div class="card"><p class="k">Odometer climbing at</p><p class="v" id="w4c">&mdash;</p></div>
+  </div>
+  <p class="note" id="w4n"></p>
+</div>
+
+<p>Your odometer is the running total. Your speedometer is its slope. You've been reading a derivative your whole driving life without anyone calling it that.</p>
+<p>The orange line is the <strong>tangent</strong>, and that word does a lot of unnecessary intimidating. All it means is: <em>if you froze your speed right now and held it, this is the path the odometer would follow.</em> Its steepness is your speed.</p>
+
+<p>Now read the two panels in opposite directions:</p>
+<ul>
+  <li>Area under the speed curve &rarr; distance. <strong>That's integration.</strong></li>
+  <li>Steepness of the distance curve &rarr; speed. <strong>That's differentiation.</strong></li>
+</ul>
+<p>"The running total's slope equals the curve's height" is a sentence you'd find obvious about a car: <em>the faster you go, the faster the odometer climbs.</em> Of course it does. The parabola was the same sentence in an unfamiliar accent.</p>
+
+<details>
+  <summary>Is a steep curve the same as a curve that bends sharply?</summary>
+  <div class="ans"><p>No &mdash; and this trips people up. Slope is <em>steepness</em>, not bendiness. A straight line can be violently steep and never bend at all. How fast the slope itself changes is a separate thing, the second derivative, which measures curvature.</p></div>
+</details>
+
+<h2 id="s7">7. The simplest version</h2>
+<p>No curves, no limits, no infinity. Pocket money &mdash; the picture flagged in section 1, now in full.</p>
+
+<div class="widget">
+  <p class="wtitle">Bars and the jar</p>
+  <div class="ctrl">
+    <label for="w5d">Up to day</label>
+    <input type="range" id="w5d" min="1" max="7" step="1" value="4" />
+    <span class="out" id="w5o">4</span>
+  </div>
+  <p class="cap">Money you got each day</p>
+  <div id="w5r1" style="display:flex;align-items:flex-end;gap:8px;height:112px;margin:0 0 18px" role="img" aria-labelledby="w5-fallback"></div>
+  <p class="cap">Money in the jar &mdash; the running total</p>
+  <div id="w5r2" style="display:flex;align-items:flex-end;gap:8px;height:112px;margin:0 0 18px" role="img" aria-labelledby="w5-fallback"></div>
+  <p class="sr-only" id="w5-fallback">Bar charts of daily pocket money and the running jar total. The readouts below show that subtracting neighbouring jar totals recovers today's money.</p>
+  <div class="cards">
+    <div class="card"><p class="k">Jar yesterday</p><p class="v" id="w5y">&mdash;</p></div>
+    <div class="card"><p class="k">Jar today</p><p class="v" id="w5j">&mdash;</p></div>
+    <div class="card"><p class="k">Today &minus; yesterday</p><p class="v" id="w5f">&mdash;</p></div>
+    <div class="card"><p class="k">Today's money</p><p class="v" id="w5p">&mdash;</p></div>
+  </div>
+  <p class="note" id="w5t"></p>
+</div>
+
+<p>Two operations, both learned at the age of seven. <strong>Adding up</strong> the daily bars gives the jar &mdash; that's integration. <strong>Subtracting</strong> two neighbouring jar totals gives back one day's money &mdash; that's differentiation. Obviously they undo each other: if you add &pound;8 to the jar and then ask what changed, the answer is &pound;8. There is nothing to prove.</p>
+
+<p>Now the payoff. How much did you collect from day 3 through day 6? You could add: 2 + 8 + 4 + 6 = 20. Or read the jar twice &mdash; &pound;28 on day 6, &pound;8 on day 2 &mdash; and subtract. Also 20, with no adding.</p>
+
+<div class="eq">&int;<sub>a</sub><sup>b</sup> f = F(b) &minus; F(a)<span class="lbl">read the jar at the end, read it at the start, subtract</span></div>
+
+<div class="callout">
+  <span class="tag">The whole course in four lines</span>
+  <p>The <strong>bars</strong> are your curve. The <strong>jar</strong> is the area under it.<br>
+  Building the jar from the bars is <strong>integration</strong>.<br>
+  Getting one bar back from the jar is <strong>differentiation</strong>.<br>
+  Want a stretch of bars? Don't add them &mdash; subtract two jar readings.</p>
+</div>
+
+<p>Everything else on this page is this picture with the days made infinitely thin. That is the only difference. Calculus isn't a new idea; it's this idea with the steps shrunk to zero.</p>
+
+<h2 id="s8">8. Beyond area</h2>
+<p>The rectangles were never about area. Here's the proof: spin the semicircle from section 2 around its flat edge and it sweeps out a sphere. Slice that sphere into coins.</p>
+
+<div class="widget">
+  <p class="wtitle">A sphere, sliced into discs</p>
+  <div class="ctrl">
+    <label for="w6n">Discs</label>
+    <input type="range" id="w6n" min="1" max="60" step="1" value="8" />
+    <span class="out" id="w6o">8</span>
+  </div>
+  <div class="segs">
+    <button class="seg" data-w6="mid" aria-pressed="true">Midpoint radius</button>
+    <button class="seg" data-w6="ins" aria-pressed="false">Inscribed radius</button>
+  </div>
+  <div class="cvwrap" style="height:250px">
+    <canvas id="w6c" role="img" aria-labelledby="w6-fallback"></canvas>
+    <p class="sr-only" id="w6-fallback">Cross-section of a sphere approximated by a stack of discs. A spin cue marks the axis of revolution. Volume readouts compare the stack to the true 4&pi;/3.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Discs drawn</p><p class="v" id="w6d">&mdash;</p></div>
+    <div class="card"><p class="k">Stack volume</p><p class="v" id="w6v">&mdash;</p></div>
+    <div class="card"><p class="k">True 4&pi;/3</p><p class="v">4.1888</p></div>
+    <div class="card"><p class="k">Difference</p><p class="v" id="w6e">&mdash;</p></div>
+  </div>
+  <p class="note" id="w6t"></p>
+</div>
+
+<p>Each disc is a cylinder, and cylinder volume is easy: <span class="math">&pi;r&sup2; &times; thickness</span>. At position <span class="math">x</span> the radius is <span class="math">&radic;(1&minus;x&sup2;)</span>, so <span class="math">r&sup2; = 1 &minus; x&sup2;</span>. Stack and shrink:</p>
+
+<div class="eq">V = &int;<sub>&minus;1</sub><sup>1</sup> &pi;(1 &minus; x&sup2;) dx = &pi;[ x &minus; x&sup3;/3 ]<sub>&minus;1</sub><sup>1</sup> = 4&pi;/3<span class="lbl">the sphere volume formula, derived in two lines</span></div>
+
+<p>Archimedes considered this his finest result and had it carved on his tombstone. Notice what changed in the machinery: <strong>nothing</strong>. You still chopped, multiplied, added and shrank. The only difference is you multiplied by <span class="math">&pi;r&sup2;</span> instead of a height.</p>
+
+<div class="callout">
+  <span class="tag">A note on the disc count</span>
+  <p>Switch to <strong>inscribed radius</strong> and the "discs drawn" card falls below the slider value. That's not a bug in the drawing &mdash; the inscribed radius at the two poles is exactly zero, so those discs have no volume and nothing to render. Midpoint radii avoid it, and converge faster besides.</p>
+</div>
+
+<h3>Signed area &mdash; when the curve goes below</h3>
+<p>Everything so far stayed above the axis. Real curves don't. Below the axis the "height" is negative, so each slice contributes a negative amount. The integral is then a <strong>signed</strong> total: area above counts positive, area below counts negative.</p>
+<div class="signed">
+  <div class="box">
+    <p class="k">Ordinary area</p>
+    <p class="v">How much paint to cover the region &mdash; always positive.</p>
+  </div>
+  <div class="box">
+    <p class="k">Definite integral</p>
+    <p class="v">Net signed total &mdash; downs cancel ups. Distance vs displacement.</p>
+  </div>
+</div>
+<p>That's why <span class="math">&int;<sub>0</sub><sup>2&pi;</sup> sin x&nbsp;dx = 0</span>: equal lobes above and below. If you wanted paint, you'd integrate <span class="math">|sin x|</span> instead. Same rectangles; the sign on the height is the only new rule.</p>
+
+<h3>The same trick in three other costumes</h3>
+<p><strong>Work.</strong> Pulling a spring, the force grows as you stretch: <span class="math">F = kx</span>. Over a tiny move the force is effectively constant, so the work is <span class="math">F&middot;dx</span>. Add them up: <span class="math">W = &int;<sub>0</sub><sup>d</sup> kx dx = kd&sup2;/2</span>.</p>
+<p><strong>Average value.</strong> The average of <span class="math">n</span> numbers is their sum over <span class="math">n</span>. Let the numbers become a continuum and the sum becomes an integral: <span class="math">(1/(b&minus;a)) &int;<sub>a</sub><sup>b</sup> f dx</span>. That's how average speed comes out of the odometer trip.</p>
+<p><strong>Probability.</strong> A bell curve isn't measuring area, it's measuring chance. The height is a <em>density</em>: the chance of landing in a tiny window is <span class="math">p(x)&middot;dx</span>. Add the windows and <span class="math">P(a &lt; X &lt; b) = &int;<sub>a</sub><sup>b</sup> p(x) dx</span>. And <span class="math">&int;<sub>&minus;&infin;</sub><sup>&infin;</sup> p = 1</span>, because something must happen.</p>
+
+<details>
+  <summary>What actually is "dx"?</summary>
+  <div class="ans"><p>It's the width of a slice, after the shrinking. In the sum it's a real number <span class="math">w</span>; in the integral it's the fossil of that width, telling you what you're slicing along. It also carries units, which is why <span class="math">&int;</span> power <span class="math">dt</span> comes out in kilowatt-<em>hours</em> and not kilowatts.</p></div>
+</details>
+
+<h2 id="s9">9. Where it's used</h2>
+<p>The pattern never changes: <strong>whenever something varies continuously and you need the total, that's an integral.</strong> Rates to totals, densities to amounts. Reality varies continuously, so integration is everywhere &mdash; mostly hidden inside instruments and software nobody thinks of as doing calculus.</p>
+
+<div class="widget">
+  <p class="wtitle">Your electricity meter</p>
+  <div class="ctrl">
+    <label for="w7h">Hour of day</label>
+    <input type="range" id="w7h" min="0" max="24" step="0.25" value="18" />
+    <span class="out" id="w7o">18:00</span>
+  </div>
+  <p class="cap">Power draw (kW) &mdash; shaded area is energy used so far</p>
+  <div class="cvwrap" style="height:180px">
+    <canvas id="w7c" role="img" aria-labelledby="w7-fallback"></canvas>
+    <p class="sr-only" id="w7-fallback">Power against time for a household day. The shaded area up to the chosen hour is the energy in kilowatt-hours. See the live meter readouts below.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Power now</p><p class="v" id="w7p">&mdash;</p></div>
+    <div class="card"><p class="k">Energy so far</p><p class="v" id="w7e">&mdash;</p></div>
+    <div class="card"><p class="k">Full-day bill</p><p class="v" id="w7b">&mdash;</p></div>
+  </div>
+  <p class="note" id="w7t"></p>
+</div>
+
+<p>A kilowatt-hour <em>is</em> an integral: power varying second by second, accumulated over time. Drag through the evening peak and watch the meter climb faster where the curve is tall.</p>
+
+<table>
+  <tr><th>Where</th><th>What's being integrated</th></tr>
+  <tr><td><strong>Your electricity bill</strong></td><td>Power varies second by second; the meter integrates it over time. A kilowatt-hour <em>is</em> an integral. You are billed on the area under a curve every month.</td></tr>
+  <tr><td><strong>CT scanners</strong></td><td>Each X-ray records total absorption along its line &mdash; one integral per beam. Thousands of angles are reconstructed into a cross-section. Reversing that is the Radon transform, and it won a Nobel Prize in Medicine.</td></tr>
+  <tr><td><strong>Drug dosing</strong></td><td>Pharmacologists use "AUC" &mdash; area under the blood-concentration curve &mdash; as total exposure to a drug. It appears on regulatory submissions by name. Your dose is set by an integral.</td></tr>
+  <tr><td><strong>MP3, JPEG, Wi-Fi</strong></td><td>All built on the Fourier transform, an integral that splits a signal into frequencies. Every compressed photo and streamed song passed through one.</td></tr>
+  <tr><td><strong>Option pricing</strong></td><td>Black&ndash;Scholes values a derivative as expected payoff &mdash; an integral of payoff against a probability density. Trillions are marked to it daily.</td></tr>
+  <tr><td><strong>Ships and aircraft</strong></td><td>Hull displacement, wing lift, the shifting centre of mass of a draining fuel tank &mdash; integrals over irregular shapes with no formula.</td></tr>
+  <tr><td><strong>Insurance and pensions</strong></td><td>Expected lifetime payouts integrate benefit against survival probability. Your premium is an integral.</td></tr>
+</table>
+
+<h2 id="s10">10. Reference card</h2>
+<div class="ref">
+  <h3>The definition</h3>
+  <div class="eq" style="margin:8px 0">&int;<sub>a</sub><sup>b</sup> f(x) dx = lim<sub>n&rarr;&infin;</sub> &Sigma; f(x<sub>i</sub>) &middot; w,&nbsp;&nbsp; w = (b&minus;a)/n<span class="lbl">&int; is a stretched S for sum; dx is the width after shrinking</span></div>
+
+  <h3>The Fundamental Theorem</h3>
+  <div class="eq" style="margin:8px 0">&int;<sub>a</sub><sup>b</sup> f(x) dx = F(b) &minus; F(a),&nbsp;&nbsp; where F&prime; = f<span class="lbl">read the jar at the end, read it at the start, subtract</span></div>
+
+  <h3>Error bound for n strips</h3>
+  <div class="eq" style="margin:8px 0">E &le; (b&minus;a)&middot;V / n<span class="lbl">V = total variation. Double n, halve the ceiling</span></div>
+
+  <h3>Antiderivatives used here</h3>
+  <table style="margin:6px 0 0">
+    <tr><th>f(x)</th><th>F(x)</th><th>Where it appeared</th></tr>
+    <tr><td class="math">x&sup2;</td><td class="math">x&sup3;/3</td><td>Section 5</td></tr>
+    <tr><td class="math">x<sup>n</sup></td><td class="math">x<sup>n+1</sup>/(n+1)</td><td>the general power rule, n &ne; &minus;1</td></tr>
+    <tr><td class="math">kx</td><td class="math">kx&sup2;/2</td><td>spring work</td></tr>
+    <tr><td class="math">&pi;(1&minus;x&sup2;)</td><td class="math">&pi;(x &minus; x&sup3;/3)</td><td>sphere volume</td></tr>
+    <tr><td class="math">&radic;(1&minus;x&sup2;)</td><td class="math">(x&radic;(1&minus;x&sup2;) + arcsin x)/2</td><td>Section 2 &mdash; exact check against the rectangles</td></tr>
+    <tr><td class="math">P(t)</td><td class="math">&int; P dt</td><td>Section 9 &mdash; energy from power</td></tr>
+  </table>
+
+  <h3>Slicing recipes</h3>
+  <table style="margin:6px 0 0">
+    <tr><th>Quantity</th><th>Slice</th><th>Integral</th></tr>
+    <tr><td>Area</td><td>height &times; dx</td><td class="math">&int; f dx</td></tr>
+    <tr><td>Volume of revolution</td><td>&pi;r&sup2; &times; dx</td><td class="math">&int; &pi;f&sup2; dx</td></tr>
+    <tr><td>Distance</td><td>speed &times; dt</td><td class="math">&int; v dt</td></tr>
+    <tr><td>Work</td><td>force &times; dx</td><td class="math">&int; F dx</td></tr>
+    <tr><td>Energy</td><td>power &times; dt</td><td class="math">&int; P dt</td></tr>
+    <tr><td>Probability</td><td>density &times; dx</td><td class="math">&int; p dx</td></tr>
+    <tr><td>Average</td><td>sum &divide; count</td><td class="math">(1/(b&minus;a)) &int; f dx</td></tr>
+  </table>
+</div>
+
+<h2 id="s11">11. What's left</h2>
+<p>You have the concept, not yet the craft. Plenty of people pass calculus exams without the understanding on this page, but there is real machinery on top of it.</p>
+<ul>
+  <li><strong>Techniques</strong> &mdash; substitution, integration by parts, partial fractions. Plumbing for finding antiderivatives. Tedious, learnable, increasingly done by software.</li>
+  <li><strong>Numerical integration</strong> &mdash; because most real integrals have no closed form at all. There is no formula for <span class="math">&int;e<sup>&minus;x&sup2;</sup></span>. So computers go back to your rectangles, tuned up: Simpson's rule, Gaussian quadrature, Monte Carlo. Your first slider is a crude version of what production engineering code actually runs.</li>
+  <li><strong>Multiple dimensions</strong> &mdash; double and triple integrals, slicing volumes and fields instead of lines.</li>
+  <li><strong>Differential equations</strong> &mdash; where integration stops being about measuring and starts being about prediction. This is where it earns its keep in science.</li>
+  <li><strong>Measure theory</strong> &mdash; the rigorous rebuild, for curves so badly behaved that the rectangle argument breaks.</li>
+</ul>
+
+<div class="callout">
+  <span class="tag">If you remember one thing</span>
+  <p>Slice it thin enough that nothing changes across a slice. Multiply. Add. Shrink. Everything else is notation.</p>
+</div>
+
+<footer>
+  <p>Built from a conversation that started with "is integration just a complicated way of finding the area of shapes?"<br>
+  Open this file in any browser. No internet needed &mdash; every diagram is drawn locally.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+"use strict";
+var draws=[];
+function reg(fn){draws.push(fn);}
+function redrawAll(){
+  for(var i=0;i<draws.length;i++){
+    try{draws[i]();}catch(e){if(window.console&&console.warn){console.warn('widget '+i+' failed',e);}}
+  }
+}
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function P(){
+  var d=isDark();
+  return {area:d?'#0c447c':'#e6f1fb',rect:d?'#378add':'#85b7eb',rect2:d?'#185fa5':'#b5d4f4',
+    sliv:d?'#993c1d':'#f5c4b3',line:d?'#b5d4f4':'#185fa5',warm:d?'#ef9f27':'#ba7517',
+    axis:d?'#4a4a45':'#c3c2b7',ink:d?'#898781':'#898781',off:d?'#2c2c2a':'#e8e6de',
+    txt:d?'#b5d4f4':'#0c447c'};
+}
+function fit(cv){
+  var w=cv.parentNode.clientWidth,h=cv.parentNode.clientHeight,dp=window.devicePixelRatio||1;
+  cv.width=Math.max(w*dp,1);cv.height=Math.max(h*dp,1);
+  cv.style.width=w+'px';cv.style.height=h+'px';
+  var c=cv.getContext('2d');c.setTransform(dp,0,0,dp,0,0);c.clearRect(0,0,w,h);
+  return {c:c,W:w,H:h};
+}
+function semi(x){var v=1-x*x;return v>0?Math.sqrt(v):0;}
+function semiF(x){
+  var s=semi(x);
+  return (x*s+Math.asin(Math.max(-1,Math.min(1,x))))/2;
+}
+function seg(attr,cb){
+  var bs=document.querySelectorAll('[data-'+attr+']');
+  for(var i=0;i<bs.length;i++){
+    (function(b){
+      b.addEventListener('click',function(){
+        for(var j=0;j<bs.length;j++){bs[j].setAttribute('aria-pressed','false');}
+        b.setAttribute('aria-pressed','true');
+        cb(b.getAttribute('data-'+attr));
+      });
+    })(bs[i]);
+  }
+}
+function txt(id,v){var e=document.getElementById(id);if(e){e.textContent=v;}}
+function setFallback(id,msg){var e=document.getElementById(id);if(e){e.textContent=msg;}}
+
+/* ---------- 1. Riemann sums ---------- */
+(function(){
+  var cv=document.getElementById('w1c'),sl=document.getElementById('w1n'),mode='in';
+  var exact=semiF(1)-semiF(-1);
+  function syncPresets(){
+    var n=+sl.value,ps=document.querySelectorAll('[data-w1n]');
+    for(var i=0;i<ps.length;i++){
+      ps[i].setAttribute('aria-pressed',(+ps[i].getAttribute('data-w1n')===n)?'true':'false');
+    }
+  }
+  function draw(){
+    var f=fit(cv),c=f.c,W=f.W,H=f.H,p=P(),pad=18,base=H-26;
+    var sx=function(x){return pad+(x+1)/2*(W-2*pad);};
+    var sy=function(y){return base-y*(base-pad);};
+    c.beginPath();c.moveTo(sx(-1),sy(0));
+    for(var i=0;i<=400;i++){var x=-1+2*i/400;c.lineTo(sx(x),sy(semi(x)));}
+    c.closePath();c.fillStyle=p.area;c.fill();
+    var n=+sl.value,w=2/n,S=0;
+    c.fillStyle=p.rect;
+    for(var k=0;k<n;k++){
+      var a=(k===0)?-1:-1+k*w,b=(k===n-1)?1:-1+(k+1)*w,h;
+      if(mode==='mid'){h=semi((a+b)/2);}
+      else if(mode==='in'){h=Math.min(semi(a),semi(b));}
+      else{h=(a<0&&b>0)?1:Math.max(semi(a),semi(b));}
+      S+=h*w;
+      var t=sy(h);
+      c.fillRect(sx(a)+0.5,t,Math.max(sx(b)-sx(a)-1,0.6),sy(0)-t);
+    }
+    c.beginPath();
+    for(var j=0;j<=400;j++){var xx=-1+2*j/400,px=sx(xx),py=sy(semi(xx));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(sx(-1),sy(0));c.lineTo(sx(1),sy(0));c.stroke();
+    c.fillStyle=p.ink;c.font='11px sans-serif';c.textAlign='center';
+    c.fillText('-1',sx(-1),base+16);c.fillText('0',sx(0),base+16);c.fillText('1',sx(1),base+16);
+    var e=Math.abs(exact-S);
+    txt('w1o',n);txt('w1s',S.toFixed(4));txt('w1x',exact.toFixed(4));txt('w1e',e.toFixed(4));
+    txt('w1t','With '+n+' rectangle'+(n===1?'':'s')+', each is '+(2/n).toFixed(3)+
+      ' wide and the sum is off by '+(e/exact*100).toFixed(2)+'% of the antiderivative value F(1)−F(−1) = π/2.');
+    setFallback('w1-fallback','Riemann sum with '+n+' '+mode+
+      ' rectangles under a unit semicircle. Sum '+S.toFixed(4)+', exact antiderivative '+exact.toFixed(4)+
+      ', error '+e.toFixed(4)+'.');
+    syncPresets();
+  }
+  sl.addEventListener('input',draw);
+  seg('w1',function(v){mode=v;draw();});
+  var presets=document.querySelectorAll('[data-w1n]');
+  for(var i=0;i<presets.length;i++){
+    (function(b){
+      b.addEventListener('click',function(){
+        sl.value=b.getAttribute('data-w1n');
+        draw();
+      });
+    })(presets[i]);
+  }
+  reg(draw);
+})();
+
+/* ---------- 2. Sliver zoom ---------- */
+(function(){
+  var ov=document.getElementById('w2a'),zm=document.getElementById('w2b'),sl=document.getElementById('w2k');
+  var x0=0.5,xa=0.44,xb=0.98,ya=0.14,yb=0.92;
+  function inscribed(n){var w=2/n,S=0;for(var i=0;i<n;i++){var a=-1+i*w;S+=Math.min(semi(a),semi(a+w))*w;}return S;}
+  function draw(){
+    var k=+sl.value,w=0.4/Math.pow(2,k),n=Math.round(2/w),p=P();
+    var f1=fit(ov),c=f1.c,W=f1.W,H=f1.H,pad=12,base=H-18;
+    var sx=function(x){return pad+(x+1)/2*(W-2*pad);};
+    var sy=function(y){return base-y*(base-pad);};
+    c.beginPath();c.moveTo(sx(-1),sy(0));
+    for(var i=0;i<=400;i++){var x=-1+2*i/400;c.lineTo(sx(x),sy(semi(x)));}
+    c.closePath();c.fillStyle=p.area;c.fill();
+    c.fillStyle=p.rect;
+    for(var q=0;q<n;q++){
+      var a=-1+q*w,b=a+w,h=Math.min(semi(a),semi(b)),t=sy(h);
+      c.fillRect(sx(a),t,Math.max(sx(b)-sx(a)-(n>80?0:0.6),0.5),sy(0)-t);
+    }
+    c.beginPath();
+    for(var j=0;j<=400;j++){var xx=-1+2*j/400,px=sx(xx),py=sy(semi(xx));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=1.5;c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(sx(-1),sy(0));c.lineTo(sx(1),sy(0));c.stroke();
+    c.strokeStyle=p.warm;c.lineWidth=1.5;
+    c.strokeRect(sx(xa),pad-4,sx(xb)-sx(xa),base-pad+8);
+    c.fillStyle=p.warm;c.font='11px sans-serif';c.textAlign='left';
+    c.fillText('zoom',sx(xa)+4,pad+6);
+
+    var f2=fit(zm),z=f2.c,W2=f2.W,H2=f2.H,pd=14,bs=H2-22;
+    var zx=function(x){return pd+(x-xa)/(xb-xa)*(W2-2*pd);};
+    var zy=function(y){return bs-(y-ya)/(yb-ya)*(bs-pd);};
+    var h2=semi(x0+w),dh=semi(x0)-h2,xL=zx(x0),xR=zx(x0+w),yT=zy(h2);
+    z.fillStyle=p.rect;z.fillRect(xL,yT,Math.max(xR-xL,1.2),bs-yT);
+    z.beginPath();z.moveTo(xL,yT);
+    for(var m=0;m<=120;m++){var xm=x0+w*m/120;z.lineTo(zx(xm),zy(semi(xm)));}
+    z.lineTo(xR,yT);z.closePath();z.fillStyle=p.sliv;z.fill();
+    z.beginPath();
+    for(var r=0;r<=400;r++){var xr=xa+(xb-xa)*r/400,rx=zx(xr),ry=zy(semi(xr));if(r){z.lineTo(rx,ry);}else{z.moveTo(rx,ry);}}
+    z.strokeStyle=p.line;z.lineWidth=2;z.lineJoin='round';z.stroke();
+    z.strokeStyle=p.axis;z.lineWidth=1;
+    z.beginPath();z.moveTo(pd,bs);z.lineTo(W2-pd,bs);z.stroke();
+    z.setLineDash([3,3]);
+    z.beginPath();z.moveTo(xL,zy(semi(x0)));z.lineTo(Math.max(xR,xL+1),zy(semi(x0)));z.stroke();
+    z.setLineDash([]);
+    z.fillStyle=p.ink;z.font='11px sans-serif';z.textAlign='left';
+    z.fillText('height drop = '+dh.toFixed(4),Math.min(xR+8,W2-pd-96),zy(semi(x0))-4);
+    z.textAlign='center';
+    z.fillText('w = '+w.toFixed(4),Math.min(Math.max(xL+(xR-xL)/2,pd+32),W2-pd-32),bs+15);
+
+    var sv=0,M=400;
+    for(var s=0;s<M;s++){sv+=(semi(x0+w*(s+0.5)/M)-h2)*(w/M);}
+    var err=Math.PI/2-inscribed(n);
+    txt('w2o',n+' rects');
+    txt('w2n',n);txt('w2w',w.toFixed(4));txt('w2s',sv.toExponential(2));txt('w2e',err.toFixed(5));
+    txt('w2nt',k?'× '+Math.pow(2,k):'\u00a0');
+    txt('w2wt',k?'÷ '+Math.pow(2,k):'\u00a0');
+    txt('w2st',k?'÷ ~'+Math.pow(4,k):'\u00a0');
+    txt('w2et',k?'÷ ~'+Math.pow(2,k):'\u00a0');
+    txt('w2t',n+' rectangles, each '+w.toFixed(4)+' wide. Every one leaves a sliver of about '+
+      sv.toExponential(2)+', and all '+n+' together account for the remaining '+err.toFixed(5)+'.');
+    setFallback('w2-fallback',n+' rectangles of width '+w.toFixed(4)+
+      '. One sliver about '+sv.toExponential(2)+'; total error '+err.toFixed(5)+'.');
+  }
+  sl.addEventListener('input',draw);
+  reg(draw);
+})();
+
+/* ---------- 3. Parabola and running total ---------- */
+(function(){
+  var pf=document.getElementById('w3f'),pa=document.getElementById('w3a'),sl=document.getElementById('w3b');
+  var XM=2;
+  function ax(c,W,pad,base,left,top,p,lbl){
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(left,base);c.lineTo(W-pad,base);c.stroke();
+    c.beginPath();c.moveTo(left,base);c.lineTo(left,top);c.stroke();
+    c.fillStyle=p.ink;c.font='11px sans-serif';c.textAlign='center';
+    c.fillText('0',left,base+15);c.fillText('1',left+(W-pad-left)/2,base+15);c.fillText('2',W-pad,base+15);
+    c.textAlign='right';c.fillText(lbl,left-6,top+9);
+  }
+  function draw(){
+    var b=+sl.value,p=P();
+    var f1=fit(pf),c=f1.c,W=f1.W,H=f1.H,pad=16,base=H-22,left=34,top=14,ym=4.2;
+    var sx=function(x){return left+x/XM*(W-pad-left);};
+    var sy=function(y){return base-y/ym*(base-top);};
+    c.beginPath();c.moveTo(sx(0),sy(0));
+    for(var i=0;i<=200;i++){var x=b*i/200;c.lineTo(sx(x),sy(x*x));}
+    c.lineTo(sx(b),sy(0));c.closePath();c.fillStyle=p.area;c.fill();
+    c.beginPath();
+    for(var j=0;j<=200;j++){var xx=XM*j/200,px=sx(xx),py=sy(xx*xx);if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
+    ax(c,W,pad,base,left,top,p,'y');
+    c.strokeStyle=p.warm;c.lineWidth=1.5;c.setLineDash([3,3]);
+    c.beginPath();c.moveTo(sx(b),sy(0));c.lineTo(sx(b),sy(b*b));c.stroke();c.setLineDash([]);
+    c.fillStyle=p.warm;c.beginPath();c.arc(sx(b),sy(b*b),4,0,7);c.fill();
+    c.font='11px sans-serif';c.textAlign='center';c.fillText('b',sx(b),base+15);
+
+    var f2=fit(pa),a=f2.c,W2=f2.W,H2=f2.H,b2=H2-22,ym2=2.9;
+    var ax2=function(x){return left+x/XM*(W2-pad-left);};
+    var ay2=function(y){return b2-y/ym2*(b2-top);};
+    a.beginPath();
+    for(var k=0;k<=200;k++){var xk=XM*k/200,ax0=ax2(xk),ay0=ay2(xk*xk*xk/3);if(k){a.lineTo(ax0,ay0);}else{a.moveTo(ax0,ay0);}}
+    a.strokeStyle=p.line;a.lineWidth=2;a.lineJoin='round';a.stroke();
+    ax(a,W2,pad,b2,left,top,p,'A');
+    var Ab=b*b*b/3,m=b*b,d=0.55,x1=Math.max(b-d,0),x2=Math.min(b+d,XM);
+    a.beginPath();a.moveTo(ax2(x1),ay2(Ab+m*(x1-b)));a.lineTo(ax2(x2),ay2(Ab+m*(x2-b)));
+    a.strokeStyle=p.warm;a.lineWidth=2;a.stroke();
+    a.fillStyle=p.warm;a.beginPath();a.arc(ax2(b),ay2(Ab),4,0,7);a.fill();
+    a.font='11px sans-serif';a.textAlign='center';a.fillText('b',ax2(b),b2+15);
+    a.textAlign='left';
+    a.fillText('slope '+m.toFixed(2),Math.min(ax2(x2)+6,W2-74),ay2(Ab+m*(x2-b))+4);
+
+    txt('w3o',b.toFixed(2));
+    txt('w3ar',(b*b*b/3).toFixed(4));txt('w3ab',(b*b*b/3).toFixed(4));
+    txt('w3sp',(b*b).toFixed(4));txt('w3hb',(b*b).toFixed(4));
+    txt('w3t','At b = '+b.toFixed(2)+' the parabola is '+(b*b).toFixed(2)+
+      ' tall, and the running total below is climbing at exactly that rate. Tall curve, steep total.');
+    setFallback('w3-fallback','At b = '+b.toFixed(2)+', shaded area and A(b) are both '+
+      (b*b*b/3).toFixed(4)+'; slope of A and height f(b) are both '+(b*b).toFixed(4)+'.');
+  }
+  sl.addEventListener('input',draw);
+  reg(draw);
+})();
+
+/* ---------- 4. Speedometer / odometer ---------- */
+(function(){
+  var s1=document.getElementById('w4s'),o1=document.getElementById('w4d'),sl=document.getElementById('w4t');
+  function v(t){return 20+60*Math.exp(-Math.pow((t-0.25)/0.17,2))+40*Math.exp(-Math.pow((t-0.75)/0.13,2));}
+  var N=600,cum=new Float64Array(N+1);
+  for(var i=1;i<=N;i++){var a=(i-1)/N,b=i/N;cum[i]=cum[i-1]+(v(a)+4*v((a+b)/2)+v(b))/6*(1/N);}
+  function dist(t){var q=t*N,j=Math.floor(q);if(j>=N){return cum[N];}return cum[j]+(cum[j+1]-cum[j])*(q-j);}
+  var VM=95,DM=52;
+  function ax(c,W,pad,base,left,top,p,lbl){
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(left,base);c.lineTo(W-pad,base);c.stroke();
+    c.beginPath();c.moveTo(left,base);c.lineTo(left,top);c.stroke();
+    c.fillStyle=p.ink;c.font='11px sans-serif';c.textAlign='center';
+    c.fillText('0',left,base+15);c.fillText('30 min',left+(W-pad-left)/2,base+15);c.fillText('60',W-pad,base+15);
+    c.textAlign='right';c.fillText(lbl,left-6,top+9);
+  }
+  function draw(){
+    var mins=+sl.value,t=mins/60,p=P();
+    var f1=fit(s1),c=f1.c,W=f1.W,H=f1.H,pad=16,base=H-22,left=40,top=14;
+    var sx=function(x){return left+x*(W-pad-left);};
+    var sy=function(y){return base-y/VM*(base-top);};
+    c.beginPath();c.moveTo(sx(0),sy(0));
+    for(var i=0;i<=240;i++){var x=t*i/240;c.lineTo(sx(x),sy(v(x)));}
+    c.lineTo(sx(t),sy(0));c.closePath();c.fillStyle=p.area;c.fill();
+    c.beginPath();
+    for(var j=0;j<=300;j++){var xx=j/300,px=sx(xx),py=sy(v(xx));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
+    ax(c,W,pad,base,left,top,p,'km/h');
+    c.strokeStyle=p.warm;c.lineWidth=1.5;c.setLineDash([3,3]);
+    c.beginPath();c.moveTo(sx(t),sy(0));c.lineTo(sx(t),sy(v(t)));c.stroke();c.setLineDash([]);
+    c.fillStyle=p.warm;c.beginPath();c.arc(sx(t),sy(v(t)),4,0,7);c.fill();
+
+    var f2=fit(o1),o=f2.c,W2=f2.W,H2=f2.H,b2=H2-22;
+    var ox=function(x){return left+x*(W2-pad-left);};
+    var oy=function(y){return b2-y/DM*(b2-top);};
+    o.beginPath();
+    for(var k=0;k<=300;k++){var xk=k/300,px2=ox(xk),py2=oy(dist(xk));if(k){o.lineTo(px2,py2);}else{o.moveTo(px2,py2);}}
+    o.strokeStyle=p.line;o.lineWidth=2;o.lineJoin='round';o.stroke();
+    ax(o,W2,pad,b2,left,top,p,'km');
+    var D=dist(t),m=v(t),d=0.16,x1=Math.max(t-d,0),x2=Math.min(t+d,1);
+    o.beginPath();o.moveTo(ox(x1),oy(D+m*(x1-t)));o.lineTo(ox(x2),oy(D+m*(x2-t)));
+    o.strokeStyle=p.warm;o.lineWidth=2;o.stroke();
+    o.fillStyle=p.warm;o.beginPath();o.arc(ox(t),oy(D),4,0,7);o.fill();
+
+    txt('w4o',mins+' min');
+    txt('w4v',v(t).toFixed(1)+' km/h');
+    txt('w4m',dist(t).toFixed(2)+' km');
+    txt('w4c',v(t).toFixed(1)+' km/h');
+    var msg=v(t)>55?'Flooring it — the odometer line is visibly steep.':
+      (v(t)<28?'Barely moving — the odometer line has gone nearly flat.':'Middling pace.');
+    txt('w4n',msg+' The bottom two cards are the same number, always. Speed is the steepness of distance.');
+    setFallback('w4-fallback','At '+mins+' minutes: speed '+v(t).toFixed(1)+
+      ' km/h, distance '+dist(t).toFixed(2)+' km. Odometer climbing at the same '+v(t).toFixed(1)+' km/h.');
+  }
+  sl.addEventListener('input',draw);
+  reg(draw);
+})();
+
+/* ---------- 5. Pocket money ---------- */
+(function(){
+  var pay=[3,5,2,8,4,6,1],tot=[],run=0;
+  for(var i=0;i<pay.length;i++){run+=pay[i];tot.push(run);}
+  var sl=document.getElementById('w5d'),r1=document.getElementById('w5r1'),r2=document.getElementById('w5r2');
+  function row(el,vals,max,sel,p){
+    el.innerHTML='';
+    for(var i=0;i<vals.length;i++){
+      var on=i<sel;
+      var col=document.createElement('div');
+      col.style.cssText='flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px';
+      var val=document.createElement('div');
+      val.style.cssText='font-size:11px;font-variant-numeric:tabular-nums;color:'+(on?p.txt:'var(--faint)');
+      val.textContent='\u00a3'+vals[i];
+      var bar=document.createElement('div');
+      bar.style.cssText='width:100%;border-radius:4px 4px 0 0;height:'+
+        Math.max(vals[i]/max*70,3)+'px;background:'+(on?p.rect:p.off);
+      var lab=document.createElement('div');
+      lab.style.cssText='font-size:11px;color:var(--faint)';
+      lab.textContent='d'+(i+1);
+      col.appendChild(val);col.appendChild(bar);col.appendChild(lab);el.appendChild(col);
+    }
+  }
+  function draw(){
+    var k=+sl.value,p=P();
+    row(r1,pay,8,k,p);row(r2,tot,29,k,p);
+    var jy=k>1?tot[k-2]:0,jt=tot[k-1];
+    txt('w5o',k);
+    txt('w5y','\u00a3'+jy);txt('w5j','\u00a3'+jt);
+    txt('w5f','\u00a3'+(jt-jy));txt('w5p','\u00a3'+pay[k-1]);
+    txt('w5t','Add up days 1 to '+k+' and you get \u00a3'+jt+
+      '. Subtract two neighbouring jar totals and you get back that day\u2019s \u00a3'+pay[k-1]+
+      '. Adding and subtracting undo each other.');
+    setFallback('w5-fallback','Through day '+k+': jar is \u00a3'+jt+
+      '. Today minus yesterday is \u00a3'+(jt-jy)+', matching today\u2019s \u00a3'+pay[k-1]+'.');
+  }
+  sl.addEventListener('input',draw);
+  reg(draw);
+})();
+
+/* ---------- 6. Sphere discs ---------- */
+(function(){
+  var cv=document.getElementById('w6c'),sl=document.getElementById('w6n'),mode='mid';
+  function draw(){
+    var f=fit(cv),c=f.c,W=f.W,H=f.H,p=P(),pad=16,R=H/2-pad,cx=W/2,cy=H/2;
+    var sx=function(x){return cx+x*R;},sy=function(y){return cy-y*R;};
+    c.beginPath();c.arc(cx,cy,R,0,7);c.fillStyle=p.area;c.fill();
+    var n=+sl.value,w=2/n,V=0,drawn=0,gap=n<=30?1:0.5;
+    c.fillStyle=p.rect;
+    for(var k=0;k<n;k++){
+      var a=(k===0)?-1:-1+k*w,b=(k===n-1)?1:-1+(k+1)*w;
+      var rad=(mode==='mid')?semi((a+b)/2):Math.min(semi(a),semi(b));
+      V+=Math.PI*rad*rad*w;
+      if(rad>1e-9){
+        drawn++;
+        var x1=sx(a),x2=sx(b),yt=sy(rad),yb=sy(-rad);
+        c.fillRect(x1+gap/2,yt,Math.max(x2-x1-gap,0.8),Math.max(yb-yt,1));
+      }
+    }
+    c.beginPath();c.arc(cx,cy,R,0,7);c.strokeStyle=p.line;c.lineWidth=2;c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;c.setLineDash([4,4]);
+    c.beginPath();c.moveTo(sx(-1.06),cy);c.lineTo(sx(1.06),cy);c.stroke();c.setLineDash([]);
+
+    /* Spin cue: curved arrows around the axis */
+    c.strokeStyle=p.warm;c.lineWidth=1.6;
+    c.beginPath();c.ellipse(cx,cy,R*0.42,R*0.16,0,0.35,Math.PI-0.35);c.stroke();
+    c.beginPath();c.ellipse(cx,cy,R*0.42,R*0.16,0,Math.PI+0.35,2*Math.PI-0.35);c.stroke();
+    function arrowTip(ang,flip){
+      var ex=cx+R*0.42*Math.cos(ang),ey=cy+R*0.16*Math.sin(ang);
+      var tx=-R*0.42*Math.sin(ang),ty=R*0.16*Math.cos(ang);
+      var len=Math.hypot(tx,ty)||1;tx/=len;ty/=len;
+      if(flip){tx=-tx;ty=-ty;}
+      var nx=-ty,ny=tx;
+      c.beginPath();
+      c.moveTo(ex,ey);
+      c.lineTo(ex-tx*9+nx*4,ey-ty*9+ny*4);
+      c.moveTo(ex,ey);
+      c.lineTo(ex-tx*9-nx*4,ey-ty*9-ny*4);
+      c.stroke();
+    }
+    arrowTip(0.35,true);
+    arrowTip(Math.PI+0.35,true);
+    c.fillStyle=p.warm;c.font='11px sans-serif';c.textAlign='left';
+    c.fillText('spin',sx(-0.15),cy-R*0.22);
+    c.fillStyle=p.ink;c.font='11px sans-serif';c.textAlign='center';
+    c.fillText('spin axis',cx,cy+R+13);
+
+    var T=4*Math.PI/3,diff=V-T,miss=n-drawn,msg;
+    if(miss>0){
+      msg=drawn+' discs visible out of '+n+'. The '+miss+' missing '+
+        (miss===1?'disc sits':'discs sit')+' at the pole'+(miss===1?'':'s')+
+        ', where the inscribed radius is exactly zero — no volume, nothing to draw.';
+    }else{
+      msg='All '+n+' discs drawn, each '+w.toFixed(3)+' thick. The stack holds '+V.toFixed(4)+
+        ', '+(diff>=0?'over':'under')+' the true 4.1888 by '+Math.abs(diff).toFixed(4)+'.';
+    }
+    txt('w6o',n);txt('w6d',drawn+' of '+n);txt('w6v',V.toFixed(4));
+    txt('w6e',(diff>=0?'+':'')+diff.toFixed(4));txt('w6t',msg);
+    setFallback('w6-fallback','Sphere of radius 1 sliced into '+n+' discs ('+mode+
+      '). Stack volume '+V.toFixed(4)+' versus true 4.1888.');
+  }
+  sl.addEventListener('input',draw);
+  seg('w6',function(v){mode=v;draw();});
+  reg(draw);
+})();
+
+/* ---------- 7. Electricity meter ---------- */
+(function(){
+  var cv=document.getElementById('w7c'),sl=document.getElementById('w7h');
+  /* Stylised household load: overnight base, morning bump, evening peak */
+  function power(h){
+    var base=0.35;
+    var morn=1.4*Math.exp(-Math.pow((h-7.5)/1.6,2));
+    var eve=2.2*Math.exp(-Math.pow((h-19)/2.1,2));
+    var mid=0.55*Math.exp(-Math.pow((h-13)/2.8,2));
+    return base+morn+eve+mid;
+  }
+  var N=960,cum=new Float64Array(N+1);
+  for(var i=1;i<=N;i++){
+    var a=24*(i-1)/N,b=24*i/N;
+    cum[i]=cum[i-1]+(power(a)+4*power((a+b)/2)+power(b))/6*((b-a));
+  }
+  function energy(h){
+    var q=h/24*N,j=Math.floor(q);
+    if(j>=N){return cum[N];}
+    if(j<0){return 0;}
+    return cum[j]+(cum[j+1]-cum[j])*(q-j);
+  }
+  var dayTotal=cum[N];
+  function draw(){
+    var h=+sl.value,p=P();
+    var f=fit(cv),c=f.c,W=f.W,H=f.H,pad=16,base=H-22,left=40,top=14,ym=4.2;
+    var sx=function(x){return left+x/24*(W-pad-left);};
+    var sy=function(y){return base-y/ym*(base-top);};
+    c.beginPath();c.moveTo(sx(0),sy(0));
+    for(var i=0;i<=240;i++){var x=h*i/240;c.lineTo(sx(x),sy(power(x)));}
+    c.lineTo(sx(h),sy(0));c.closePath();c.fillStyle=p.area;c.fill();
+    c.beginPath();
+    for(var j=0;j<=300;j++){var xx=24*j/300,px=sx(xx),py=sy(power(xx));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(left,base);c.lineTo(W-pad,base);c.stroke();
+    c.beginPath();c.moveTo(left,base);c.lineTo(left,top);c.stroke();
+    c.fillStyle=p.ink;c.font='11px sans-serif';c.textAlign='center';
+    c.fillText('0',left,base+15);c.fillText('12:00',sx(12),base+15);c.fillText('24',W-pad,base+15);
+    c.textAlign='right';c.fillText('kW',left-6,top+9);
+    c.strokeStyle=p.warm;c.lineWidth=1.5;c.setLineDash([3,3]);
+    c.beginPath();c.moveTo(sx(h),sy(0));c.lineTo(sx(h),sy(power(h)));c.stroke();c.setLineDash([]);
+    c.fillStyle=p.warm;c.beginPath();c.arc(sx(h),sy(power(h)),4,0,7);c.fill();
+
+    var hh=Math.floor(h),mm=Math.round((h-hh)*60);
+    if(mm===60){hh++;mm=0;}
+    var clock=(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm;
+    var E=energy(h),Pw=power(h);
+    txt('w7o',clock);
+    txt('w7p',Pw.toFixed(2)+' kW');
+    txt('w7e',E.toFixed(2)+' kWh');
+    txt('w7b',dayTotal.toFixed(2)+' kWh');
+    txt('w7t','At '+clock+' the house is drawing '+Pw.toFixed(2)+
+      ' kW. The shaded area — energy so far — is '+E.toFixed(2)+
+      ' kWh. A full day totals '+dayTotal.toFixed(2)+' kWh: that is the integral of power over time.');
+    setFallback('w7-fallback','At '+clock+': power '+Pw.toFixed(2)+
+      ' kW, energy so far '+E.toFixed(2)+' kWh, full-day total '+dayTotal.toFixed(2)+' kWh.');
+  }
+  sl.addEventListener('input',draw);
+  reg(draw);
+})();
+
+/* ---------- theme + nav ---------- */
+(function(){
+  var btn=document.getElementById('themebtn');
+  var stored=null;
+  try{stored=window.localStorage?localStorage.getItem('int-theme'):null;}catch(e){stored=null;}
+  var init=stored||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  function apply(t){
+    document.documentElement.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?'Light':'Dark';
+    redrawAll();
+  }
+  apply(init);
+  btn.addEventListener('click',function(){
+    var t=isDark()?'light':'dark';
+    try{if(window.localStorage){localStorage.setItem('int-theme',t);}}catch(e){}
+    apply(t);
+  });
+
+  var links=document.querySelectorAll('nav a'),heads=[];
+  for(var i=0;i<links.length;i++){
+    var h=document.getElementById(links[i].getAttribute('href').slice(1));
+    if(h){heads.push({a:links[i],h:h});}
+  }
+  function spy(){
+    var best=null,y=window.pageYOffset+120;
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].h.offsetTop<=y){best=heads[i];}
+    }
+    for(var j=0;j<heads.length;j++){heads[j].a.className=(heads[j]===best)?'on':'';}
+  }
+  window.addEventListener('scroll',spy);spy();
+})();
+
+var rt;
+window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(redrawAll,120);});
+redrawAll();
+})();
+</script>
+</body>
+</html>

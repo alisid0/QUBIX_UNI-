@@ -1,0 +1,57 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The physical traffic",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "hardware", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Software uses 'If/Then' logic to route information. But software is just an abstract concept. It doesn't physically exist.</p>" },
+        { "content": "<p>To actually execute an 'If/Then' command, the hardware must physically route electricity down a specific wire on the microchip.</p>" },
+        { "content": "<p>This creates a massive traffic problem. If billions of signals are zooming around a processor at the same time, the electricity could easily flow backward down the wrong wire, destroying the logic gates and crashing the machine.</p>" },
+        { "content": "<p>The computer needs a way to enforce one-way traffic on a microscopic scale.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The one-way valve",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "diode", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>In a plumbing system, if you want water to flow into a tank but prevent it from flowing back out, you install a check valve. The water pressure pushes a physical flap open to enter. If the water tries to reverse, it slams the flap shut.</p>" },
+        { "content": "<p>In electronics, the exact same one-way valve exists for electricity. It is called a Diode.</p>" },
+        { "content": "<p>A diode has no moving parts. It is a tiny, solid piece of material (usually silicon) that has been chemically altered on each side.</p>" },
+        { "content": "<p>If electrical current hits the diode from the correct direction, the silicon lets it pass through effortlessly.</p>" },
+        { "content": "<p>But if the current tries to flow backward, the chemical structure of the silicon acts like a slammed door. The electricity hits a dead end. By placing diodes throughout a circuit, engineers guarantee that the microscopic traffic only ever moves forward.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The mechanical switch problem",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "vacuum-tubes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Diodes keep traffic moving forward, but to actually process logic (like an AND gate), the computer must be able to turn that current On and Off.</p>" },
+        { "content": "<p>In the 1940s, early computers used physical, mechanical switches to do this. They were glass vacuum tubes the size of lightbulbs, and they literally clicked open and closed.</p>" },
+        { "content": "<p>This was a disaster. Because they had physical moving parts, they generated massive heat, they were slow, and they constantly burned out.</p>" },
+        { "content": "<p>A modern smartphone requires billions of switches to function. If you tried to build a smartphone using 1940s glass vacuum tubes, the phone would be the size of a skyscraper, and it would melt itself into slag in seconds.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Transistor",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "transistor", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>In 1947, scientists at Bell Labs solved the moving parts problem. They invented the Transistor.</p>" },
+        { "content": "<p>A transistor is simply an electrical switch with absolutely no moving parts.</p>" },
+        { "content": "<p>It is built out of a material called a semiconductor. Normally, this material acts like a wall, blocking electricity from flowing across it (Off / 0).</p>" },
+        { "content": "<p>But the transistor has a third wire attached to its center. If a tiny zap of electricity is sent down that third wire, the chemical structure of the wall instantly changes. It becomes conductive.</p>" },
+        { "content": "<p>The wall drops. The main current flows across the gap (On / 1).</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The engine of the modern world",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "transistor", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because the transistor has no physical moving parts to swing open or closed, there is almost no mechanical delay.</p>" },
+        { "content": "<p>A transistor can be flipped from On to Off billions of times in a single second, without ever breaking or wearing out.</p>" },
+        { "content": "<p>Furthermore, because it is just a solid block of chemicals, it can be shrunk down to a microscopic scale.</p>" },
+        { "content": "<p>A modern computer chip is smaller than a fingernail, but it contains over ten billion individual transistors, all packed together to form complex AND and OR gates.</p>" },
+        { "content": "<p>The transistor is universally considered the most important invention of the 20th century. Every computer, satellite, medical device, and piece of software in existence relies entirely on these microscopic, motionless switches.</p>" }
+      ]
+    }
+  ]
+}

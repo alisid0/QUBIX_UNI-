@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QUBIX Cube Mascot Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/node_modules/three/build/three.module.js",
+          "three/addons/": "/node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="studio">
+      <section class="preview-panel">
+        <div class="stage-shell" id="stage-shell">
+          <canvas id="mascot-canvas" aria-label="Animated QUBIX cube mascot"></canvas>
+          <div class="safe-zone" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="controls-panel">
+        <p class="eyebrow">QUBIX SHORTS</p>
+        <h1>Cube mascot studio</h1>
+        <p class="intro">One fixed model, reusable animation states, and a vertical 9:16 recording canvas.</p>
+
+        <div class="control-group">
+          <span class="label">Animation</span>
+          <div class="animation-grid" id="animation-grid">
+            <button class="active" data-animation="idle">1 Idle</button>
+            <button data-animation="curious">2 Curious</button>
+            <button data-animation="think">3 Think</button>
+            <button data-animation="surprise">4 Surprise</button>
+            <button data-animation="celebrate">5 Celebrate</button>
+            <button data-animation="error">6 Error</button>
+            <button data-animation="point-left">7 Point left</button>
+            <button data-animation="point-right">8 Point right</button>
+            <button data-animation="press">9 Press</button>
+            <button data-animation="transition">0 Transition</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <label>
+            <span class="label">Background</span>
+            <select id="background-select">
+              <option value="navy">QUBIX navy</option>
+              <option value="cream">Warm cream</option>
+              <option value="transparent">Transparent</option>
+            </select>
+          </label>
+          <label>
+            <span class="label">Speed</span>
+            <select id="speed-select">
+              <option value="0.75">Gentle</option>
+              <option value="1" selected>Normal</option>
+              <option value="1.35">Fast</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="toggle-row">
+          <input id="safe-zone-toggle" type="checkbox" />
+          <span>Show Shorts safe area</span>
+        </label>
+
+        <div class="export-row">
+          <button class="primary" id="record-button">Record one loop</button>
+          <button id="snapshot-button">Save PNG</button>
+        </div>
+
+        <div class="status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="status-text">Idle loop ready</span>
+        </div>
+        <p class="hint">Keyboard shortcuts: 1 to 9, 0 for transition, S for snapshot.</p>
+      </section>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

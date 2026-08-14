@@ -1,0 +1,104 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "The map problem",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Let's go back to the field. You are standing there blindfolded, and there is a million dollars exactly 10 meters away, heading North.</p>" },
+        { "content": "<p>If you take off the blindfold and try to draw a map to the money, you have to use geometry. So, which of our three geometry tools — the line, the ray, or the segment — do you use?</p>" },
+        { "content": "<p>You can't use a true line. A true line stretches infinitely in both directions. It has no starting point and no ending point. It tells you nothing.</p>" },
+        { "content": "<p>You might think about using a ray. A ray has a solid anchor point (where you are standing), and it points in a specific direction (North).</p>" },
+        { "content": "<p>But a ray is flawed, too. A ray shoots off into infinity. It points North, but it never stops. If you followed a ray, you would walk past the money and keep walking until you hit the North Pole.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The dumb stick",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>That leaves the line segment. A segment has a hard start and a hard stop.</p>" },
+        { "content": "<p>Because it is trapped between two points, it has an exact, measurable length. You can draw a segment on your map that perfectly represents 10 meters.</p>" },
+        { "content": "<p>But a standard line segment is just a dumb stick lying on a piece of paper. It has length, but it doesn't have an attitude. It doesn't tell you which end is the start, and which end is the finish.</p>" },
+        { "content": "<p>If you just draw a 10-meter stick on your map, it gives you the scalar (the amount). But it still fails to give you the vector (the direction).</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The hack",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Physicists needed a way to easily draw vectors on a chalkboard. So, they just hacked the line segment.</p>" },
+        { "content": "<p>They took a standard, trapped line segment with a specific length, and they simply painted an arrowhead on one end.</p>" },
+        { "content": "<p>In math textbooks, this is called a 'directed line segment.' In physics, it is just called a vector arrow.</p>" },
+        { "content": "<p>It is a brilliant, totally complete piece of information. The length of the stick tells you exactly how much (10 meters). The arrowhead tells you exactly which way.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Drawing reality",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This simple arrow is the most heavily used drawing tool in all of physics.</p>" },
+        { "content": "<p>If a car is driving 30 miles per hour East, you draw a short arrow pointing to the right.</p>" },
+        { "content": "<p>If the car hits the gas and speeds up to 60 miles per hour, you don't need to write out new, complicated math equations. You literally just draw a longer arrow.</p>" },
+        { "content": "<p>The geometry we learned at the very beginning isn't just for abstract math tests. By simply slapping an arrowhead onto a line segment, you bridge the gap between invisible math and the physical world. You can map exactly how things move.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The broken math",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vector-addition", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>In normal, everyday math (using scalars), 1 + 1 always equals 2. One kilogram of apples plus one kilogram of apples is 2 kilograms. It never changes.</p>" },
+        { "content": "<p>But vectors break this rule. If you walk 1 meter North, and then walk 1 meter South, you haven't gone 2 meters away from your starting point. You are right back where you started.</p>" },
+        { "content": "<p>In vector math, 1 + 1 can equal 0. It can equal 2. It can equal 1.4.</p>" },
+        { "content": "<p>Because vectors have an attitude (direction), you cannot just add their sizes together like a pile of apples. You have to combine their directions.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The shortcut",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "resultant-vector", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Let's go back to the field. You walk 3 meters East. Then you turn and walk 4 meters North.</p>" },
+        { "content": "<p>You just drew two arrows on the ground, placing them tip-to-tail. You have a starting point, and you have an ending point.</p>" },
+        { "content": "<p>If you look at where you started and where you ended, there is a direct, straight line across the grass between those two points. A shortcut.</p>" },
+        { "content": "<p>If you draw one single arrow for that shortcut, it represents your exact journey, just completed in one step. In physics, this shortcut arrow is called the Resultant Vector. It is simply the final result of combining two or more arrows.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The number list",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Drawing arrows on paper is great for a human. But a computer does not have eyes. It cannot look at a drawing of a shortcut.</p>" },
+        { "content": "<p>So, how do you put an arrow into a computer? You turn the arrow into a simple list of instructions.</p>" },
+        { "content": "<p>Instead of drawing the shortcut arrow, you write a list inside brackets: [3 steps East, 4 steps North].</p>" },
+        { "content": "<p>To a computer, that list of numbers is the vector. The visual arrow on the paper, and the list of numbers in the code, are the exact same thing. They are just spoken in two different languages.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Stepping off the paper",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Once you realize a vector is just a list of numbers, a massive door opens.</p>" },
+        { "content": "<p>A list with two numbers [East, North] describes a flat piece of paper (2D). A list with three numbers [East, North, Up] describes our physical, 3D reality.</p>" },
+        { "content": "<p>But a computer does not care about our physical reality. It just sees a list of numbers. There is absolutely no reason you can't hand a computer a list with four numbers. Or ten. Or a thousand.</p>" },
+        { "content": "<p>We cannot physically draw a 1,000-dimensional arrow. Human brains cannot picture it. But the math doesn't break. The computer can still perfectly calculate the 'shortcuts' and distances in a 1,000-number list.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The AI map",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This simple concept — that a vector can be a massive list of numbers describing a point in space — is the entire foundation of Artificial Intelligence and Machine Learning.</p>" },
+        { "content": "<p>If a list of 3 numbers can describe a physical location, a list of 128 numbers can describe the physical features of a human face (the exact distance between your eyes, the width of your nose, the curve of your jaw).</p>" },
+        { "content": "<p>To an AI, your face is not a photograph. It is just a single coordinate point on a massively complex map, defined by a 128-number vector arrow.</p>" },
+        { "content": "<p>When facial recognition software tries to identify you, it is not 'looking' at you. It is just measuring the distance between two vector arrows to see if they point to the exact same spot. It is just geometry, scaled up to infinity.</p>" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The communication problem",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "machine-code", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A computer processor is just billions of microscopic switches (logic gates) wired together. It is an incredibly powerful machine, but it has a massive flaw.</p>" },
+        { "content": "<p>It only understands two words: On and Off (1 and 0).</p>" },
+        { "content": "<p>If a human wants the machine to perform a complex task — like adding two massive numbers together — they cannot speak to the computer in English.</p>" },
+        { "content": "<p>To manually instruct the machine, a human would have to type out millions of 1s and 0s in the exact perfect order to route the electricity through the correct gates.</p>" },
+        { "content": "<p>This is physically impossible for a human brain to do without making a mistake. The raw language of the machine (Machine Code) is completely unreadable to humans.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The translator",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "programming", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To bridge this gap, computer scientists invented a translator.</p>" },
+        { "content": "<p>Instead of typing 1s and 0s, humans created a language that uses standard English words, logical symbols, and basic math. This is a Programming Language (like Python, C++, or Java).</p>" },
+        { "content": "<p>A human writes a set of instructions in this readable language. For example: If button is pressed, turn screen blue.</p>" },
+        { "content": "<p>This readable text is handed to a specialized program called a Compiler.</p>" },
+        { "content": "<p>The compiler acts as an automatic dictionary. It reads the English instructions, instantly translates them into millions of flawless 1s and 0s, and feeds them directly into the processor. Humans write the logic; the compiler handles the electricity.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Algorithm",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "algorithms", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>When a human writes code, they are not just shouting random commands. They are building an Algorithm.</p>" },
+        { "content": "<p>An algorithm is simply a step-by-step recipe to solve a specific problem.</p>" },
+        { "content": "<p>Baking a cake is an algorithm. Step 1: Crack eggs. Step 2: Add flour. Step 3: Bake for 30 minutes. If the steps are followed in the exact correct order, the result is guaranteed. If the steps are out of order, the cake is ruined.</p>" },
+        { "content": "<p>Software algorithms work the exact same way, just with data instead of flour.</p>" },
+        { "content": "<p>A search engine algorithm is a specific set of steps the computer takes to sort through a billion websites and find a single word. The computer has no intelligence; it is just blindly, flawlessly executing the recipe it was handed.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The loop",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "loops", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>One of the most powerful tools inside an algorithm is the ability to repeat a task without human intervention.</p>" },
+        { "content": "<p>If a computer needs to search through ten thousand documents, a programmer does not write out the 'search' command ten thousand separate times.</p>" },
+        { "content": "<p>Instead, they write the command once, and wrap it in a Loop.</p>" },
+        { "content": "<p>A loop tells the computer to execute a specific block of instructions, check if the job is completely finished, and if it isn't, jump back to the beginning and do it all over again.</p>" },
+        { "content": "<p>This is where computers vastly outperform humans. A human brain gets bored or makes an error after checking a hundred documents. A computer will execute a loop a billion times in a row, with absolute, unblinking perfection.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The If-Then branch",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "conditionals", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Algorithms cannot just repeat blind actions. They must be able to react to a changing environment.</p>" },
+        { "content": "<p>To do this, programmers use Conditional Statements, most commonly known as an 'If/Then' branch.</p>" },
+        { "content": "<p>It is a fork in the road based entirely on Boolean logic (True or False).</p>" },
+        { "content": "<p>The code asks the machine a question: Is the user's password correct? If True: Route the electricity to the 'Login' screen. If False: Route the electricity to the 'Error' screen.</p>" },
+        { "content": "<p>By combining millions of loops and If/Then branches, simple code is woven into an incredibly complex, reactive system. Every video game, banking app, and operating system in the world is just a massive web of these branching decisions.</p>" }
+      ]
+    }
+  ]
+}
