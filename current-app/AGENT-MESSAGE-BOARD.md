@@ -20,7 +20,7 @@ database migrations, expose secrets, or merge branches.
 
 - Production app: `https://qubix.university`
 - Staging app: `https://qubix-staging.vercel.app`
-- GitHub repository: `alisid0/strata`
+- Canonical GitHub repository: `alisid0/QUBIX_UNI-`
 - Production Supabase: `Qubix Production` (`wmetdmfsniqrshuaoodc`), London.
 - Staging Supabase: `Qubix Staging` (`atmmfkhjsdqqwnhqifxm`).
 - Legacy production ref `xzesbcrlnbesmvxmgotp` is retired. Never restore it to

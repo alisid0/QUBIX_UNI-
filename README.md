@@ -29,22 +29,23 @@ No additional curriculum should be generated until these gates are reviewed.
 
 ## Repository layout
 
-This repository now keeps the governed Qubix foundation and the latest complete
-application snapshot together:
+This repository is the standalone source of truth for the governed Qubix
+foundation and the latest complete application:
 
 - The repository root contains the canonical curriculum, review process, mobile
   shells, and the currently deployed pilot.
-- [`current-app/`](./current-app/) contains the latest interactive application,
+- [`current-app/`](./current-app/) is the latest interactive application,
   its product and design plans, lesson content, authoring tools, tests, media,
-  promotional advert, and the Shorts mascot animation studio.
+  promotional advert, and the Shorts mascot animation studio. See the
+  [current application guide](./docs/CURRENT-APP.md) for the fresh-clone setup.
 - [`current-app/shorts/functions/`](./current-app/shorts/functions/) contains the
   Aron and Qubix mascot assets and the Three.js animation work.
 - [`current-app/promo-video/`](./current-app/promo-video/) contains the advert
   project and exported promotional videos.
 
-The snapshot was imported from `alisid0/strata` at commit `2bf2aa8`. Local and
-production credentials, generated dependencies, caches, and deployment state are
-not copied into this repository.
+No other source checkout is required. Local and production credentials,
+generated dependencies, caches, and deployment state remain intentionally
+untracked and must be supplied for the relevant environment.
 
 ## What production serves
 

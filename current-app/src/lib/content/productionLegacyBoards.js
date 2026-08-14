@@ -1,4 +1,4 @@
-import productionSnapshot from '../../../.audit-cache/live-production-bbs.json';
+import productionSnapshot from './data/production-legacy-boards.json';
 
 // A deliberately lazy outage fallback for authored legacy topics that still
 // live only in production Supabase. This module is dynamically imported only
@@ -18,4 +18,3 @@ export const PRODUCTION_LEGACY_BOARDS = Object.fromEntries(
     tags: board.tags || null
   }])
 );
-

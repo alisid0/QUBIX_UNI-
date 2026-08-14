@@ -5,9 +5,11 @@ const vercelEnvironment = process.env.VERCEL_ENV;
 const configuredEnvironment = process.env.VITE_APP_ENV;
 const mode = requestedMode
   || (configuredEnvironment === 'staging' ? 'staging' : undefined)
-  || (vercelEnvironment === 'preview' ? 'staging' : 'production');
+  || (vercelEnvironment === 'preview' ? 'staging' : undefined)
+  || (vercelEnvironment === 'production' ? 'production' : undefined)
+  || 'standalone';
 
-if (!['production', 'staging'].includes(mode)) {
+if (!['production', 'staging', 'standalone'].includes(mode)) {
   throw new Error(`Unsupported Qubix build environment: ${mode}`);
 }
 
@@ -17,5 +19,5 @@ execSync(`vite build --mode ${mode}`, { stdio: 'inherit' });
 if (mode === 'production') {
   execSync('node scripts/build-seo-pages.mjs', { stdio: 'inherit' });
 } else {
-  console.log('[build-app] Skipping production SEO page generation for staging.');
+  console.log(`[build-app] Skipping production SEO page generation for ${mode}.`);
 }

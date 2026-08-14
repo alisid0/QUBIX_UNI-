@@ -115,7 +115,7 @@ async function uploadReference(page, imgPath) {
 A drop-in replacement for the `uploadReference(page, imgPath)` function that reliably:
 
 1. Opens the file chooser dialog triggered by clicking the `[data-agent-id^="file-upload-"]` button
-2. Sets the file to `imgPath` (absolute Windows path, e.g. `C:\Users\ali10\strata\public\media\frames\bb-1000\f0\frame-1.png`)
+2. Sets the file to `imgPath` (absolute path to a file inside this checkout)
 3. Waits for the upload to register in the ElevenLabs UI before returning
 
 Key constraints:

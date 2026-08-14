@@ -1,5 +1,5 @@
 import { writeFileSync, mkdirSync } from 'fs';
-import { dirname } from 'path';
+import { dirname, resolve } from 'path';
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -82,7 +82,7 @@ for (const topic of topics) {
   markdown += '---\n\n';
 }
 
-const output = 'C:/Users/ali10/Documents/Codex/2026-07-07/was/outputs/live-physics-bb-floor-review.md';
+const output = resolve(process.argv[2] || '.audit-cache/live-physics-bb-floor-review.md');
 mkdirSync(dirname(output), { recursive: true });
 writeFileSync(output, markdown);
 

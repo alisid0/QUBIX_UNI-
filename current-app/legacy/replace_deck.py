@@ -264,7 +264,11 @@ new_deck = r"""const DECK=[
 
 """
 
-with open('C:/Users/ali10/strata/index.html', 'r', encoding='utf-8') as f:
+from pathlib import Path
+
+index_path = Path(__file__).resolve().parents[1] / 'index.html'
+
+with index_path.open('r', encoding='utf-8') as f:
     content = f.read()
 
 deck_start = content.index('const DECK=[')
@@ -275,7 +279,7 @@ deck_section_end = content.rindex(';\n\n', deck_start, engine_start) + 3
 
 new_content = content[:deck_start] + new_deck + content[deck_section_end:]
 
-with open('C:/Users/ali10/strata/index.html', 'w', encoding='utf-8') as f:
+with index_path.open('w', encoding='utf-8') as f:
     f.write(new_content)
 
 print("Done.")

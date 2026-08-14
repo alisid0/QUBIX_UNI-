@@ -11,8 +11,8 @@
  *   node scripts/progress-report.mjs            # send
  *   node scripts/progress-report.mjs --dry-run  # print only
  *
- * Windows Task Scheduler (already registered as "QubixDailyReport" at 08:00):
- *   schtasks /create /tn "QubixDailyReport" /tr "node C:\Users\ali10\strata\scripts\progress-report.mjs" /sc daily /st 08:00 /f
+ * Windows Task Scheduler example, run from this directory:
+ *   schtasks /create /tn "QubixDailyReport" /tr "node scripts\progress-report.mjs" /sc daily /st 08:00 /f
  */
 
 import { existsSync, readFileSync, readdirSync } from 'fs';

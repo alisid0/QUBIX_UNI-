@@ -28,8 +28,8 @@ const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 // Tighten to the production origin before public launch.
 const ALLOWED_ORIGINS = [
   'https://qubix.university',
+  'https://www.qubix.university',
   'https://qubix.arcavetech.co.uk',
-  'https://strata-nine-pi.vercel.app',
   'https://qubix-staging.vercel.app',
   'http://localhost:8000'
 ];

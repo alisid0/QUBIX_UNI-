@@ -2,7 +2,7 @@
 
 Qubix is a Svelte/Vite microlearning app organised as Building Blocks (BBs).
 Learners move horizontally between BBs and vertically through floors inside a
-BB. The internal repository codename is Strata; user-facing copy says Qubix.
+BB. Qubix University is the canonical repository and product identity.
 
 Production: `https://qubix.university`
 Staging: `https://qubix-staging.vercel.app`
@@ -21,16 +21,19 @@ Run `pnpm run audit:live-media` first.
 ## Run locally
 
 ```bash
-pnpm install
-pnpm run dev
-pnpm run build:staging
-pnpm run build:production
-pnpm run preview
+npm ci
+npm run dev
+npm run build
+npm run preview
 ```
 
-Local development uses the isolated staging configuration. Copy
+The default development and build commands use the committed standalone
+configuration and bundled lesson fallbacks. They require no cloud credentials.
+
+For connected staging development, copy
 `.env.staging.example` to `.env.staging.local` and supply the staging project's
-public URL and anon key. Never place a service-role key in a `VITE_*` variable.
+public URL and anon key, then run `npm run dev:staging`. Never place a
+service-role key in a `VITE_*` variable.
 
 ## Live content architecture
 
@@ -66,8 +69,8 @@ SVG, canvas, or Three.js assets.
 ## Live audit
 
 ```bash
-pnpm run audit:live-catalogue
-pnpm run audit:live-media
+npm run audit:live-catalogue
+npm run audit:live-media
 ```
 
 These are read-only production-public-data audits. Disposable exports go under
@@ -80,8 +83,8 @@ Pushing `main` updates the current staging deployment. Production remains a
 manual release:
 
 ```bash
-pnpm run build:production
-pnpm run deploy
+npm run build:production
+npm run deploy
 ```
 
 Deploy from a clean worktree so unrelated local changes cannot be uploaded.

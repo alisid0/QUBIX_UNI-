@@ -1,12 +1,13 @@
 {
-  "name": "strata",
+  "name": "qubix-university-app",
   "private": true,
   "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode staging",
+    "dev": "vite --mode standalone",
+    "dev:staging": "vite --mode staging",
     "dev:production": "vite --mode production",
-    "build": "node scripts/build-app.mjs",
+    "build": "node scripts/build-app.mjs standalone",
     "build:production": "node scripts/build-app.mjs production",
     "build:staging": "node scripts/build-app.mjs staging",
     "test:security": "node scripts/test-sanitize-html.mjs",
@@ -17,7 +18,8 @@
     "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
     "audit:live-catalogue": "node scripts/export-live-path-catalogue.mjs",
     "audit:live-media": "node scripts/export-live-path-catalogue.mjs && node scripts/build-gif-eligibility-audit.mjs",
-    "preview": "vite preview",
+    "preview": "vite preview --mode standalone",
+    "preview:production": "vite preview --mode production",
     "deploy": "node scripts/deploy.mjs"
   },
   "dependencies": {

@@ -12,6 +12,10 @@
     "mobile:sync": "npm run build && cap sync",
     "mobile:android": "cap open android",
     "mobile:ios": "cap open ios",
+    "app:install": "npm --prefix current-app ci",
+    "app:dev": "npm --prefix current-app run dev",
+    "app:build": "npm --prefix current-app run build",
+    "app:test": "npm --prefix current-app run test:security",
     "deploy": "node scripts/deploy.mjs"
   },
   "dependencies": {
