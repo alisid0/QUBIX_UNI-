@@ -20,6 +20,9 @@ const mimeTypes = {
 const animations = [
   'idle',
   'curious',
+  'face-front',
+  'face-right',
+  'face-left',
   'think',
   'surprise',
   'celebrate',

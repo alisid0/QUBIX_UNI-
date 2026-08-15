@@ -16,6 +16,9 @@ The page imports the repository's existing `three` dependency through an import 
 
 - Idle and blink
 - Curious tilt
+- Front-facing loop
+- Turn right
+- Turn left
 - Thinking orbit
 - Surprise
 - Celebration

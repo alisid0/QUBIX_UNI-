@@ -23,8 +23,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(COLORS.navy);
 
 const camera = new THREE.OrthographicCamera(-3, 3, 5.333, -5.333, 0.1, 100);
-camera.position.set(4.4, 3.2, 7.5);
-camera.lookAt(0, 0.2, 0);
+camera.position.set(0, .2, 8);
+camera.lookAt(0, .2, 0);
 
 scene.add(new THREE.HemisphereLight(0xfff6d6, 0x18334a, 2.2));
 const keyLight = new THREE.DirectionalLight(0xffe4b6, 3.1);
@@ -70,6 +70,7 @@ for (const x of [-.43, .43]) {
 
   const glint = new THREE.Mesh(new THREE.PlaneGeometry(.075, .095), highlightBasic);
   glint.position.set(x - .055, .33, .027);
+  glint.userData.homePosition = glint.position.clone();
   face.add(glint);
   pupils.push(glint);
 }
@@ -154,6 +155,9 @@ scene.add(transitionPixels);
 const duration = {
   idle: 3.4,
   curious: 3.2,
+  'face-front': 3.4,
+  'face-right': 3.2,
+  'face-left': 3.2,
   think: 4,
   surprise: 2.6,
   celebrate: 3,
@@ -167,6 +171,9 @@ const duration = {
 const labels = {
   idle: 'Idle loop ready',
   curious: 'Curious tilt playing',
+  'face-front': 'Front-facing loop playing',
+  'face-right': 'Right-facing turn playing',
+  'face-left': 'Left-facing turn playing',
   think: 'Thinking orbit playing',
   surprise: 'Surprise reaction playing',
   celebrate: 'Celebration playing',
@@ -195,7 +202,10 @@ function resetModel() {
   shadow.scale.set(1.2, .42, 1);
   shadow.material.opacity = .25;
   eyes.forEach(eye => eye.scale.set(1, 1, 1));
-  pupils.forEach(glint => glint.visible = true);
+  pupils.forEach(glint => {
+    glint.position.copy(glint.userData.homePosition);
+    glint.visible = true;
+  });
   mouth.visible = true;
   openMouth.visible = false;
   arrow.visible = false;
@@ -213,7 +223,7 @@ function resetModel() {
 function baseFloat(t) {
   const bob = Math.sin(t * Math.PI * 2 / 2.8) * .085;
   mascotRoot.position.y += bob;
-  mascotRoot.rotation.y = Math.sin(t * Math.PI * 2 / 4.6) * .045;
+  mascotRoot.rotation.y = 0;
   shadow.scale.x = 1.2 - bob * .32;
   shadow.scale.y = .42 - bob * .1;
 }
@@ -237,8 +247,15 @@ function animateModel(timeMs) {
   if (activeAnimation === 'curious') {
     const tilt = pulse(p, .15, .78);
     mascotRoot.rotation.z = -.16 * tilt;
-    mascotRoot.rotation.y += .12 * tilt;
-    pupils.forEach(glint => glint.position.x += .035 * tilt);
+    pupils.forEach(glint => {
+      glint.position.x = glint.userData.homePosition.x + .035 * tilt;
+    });
+  }
+
+  if (activeAnimation === 'face-right' || activeAnimation === 'face-left') {
+    const direction = activeAnimation === 'face-right' ? 1 : -1;
+    const turn = pulse(p, .1, .9);
+    mascotRoot.rotation.y = direction * .62 * turn;
   }
 
   if (activeAnimation === 'think') {
@@ -399,8 +416,9 @@ document.querySelector('#record-button').addEventListener('click', async event =
 document.addEventListener('keydown', event => {
   const shortcuts = {
     '1': 'idle', '2': 'curious', '3': 'think', '4': 'surprise', '5': 'celebrate',
-    '6': 'error', '7': 'point-left', '8': 'point-right', '9': 'press', '0': 'transition'
+    '6': 'error', '7': 'point-left', '8': 'point-right', '9': 'press', '0': 'transition',
+    'f': 'face-front', 'r': 'face-right', 'l': 'face-left'
   };
-  if (shortcuts[event.key]) selectAnimation(shortcuts[event.key]);
+  if (shortcuts[event.key.toLowerCase()]) selectAnimation(shortcuts[event.key.toLowerCase()]);
   if (event.key.toLowerCase() === 's') document.querySelector('#snapshot-button').click();
 });
