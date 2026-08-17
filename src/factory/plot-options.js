@@ -140,11 +140,11 @@ export const plot = {
         },
         {
           code: 'S2-I3', kind: 'point-target-drill',
-          note: 'A pair is called out and the learner must place it directly on the grid. Five correct placements complete the round.'
+          note: 'Rebuilt 2026-08-17 on founder instruction. Was a 7x9 grid of buttons, so the learner clicked a cell rather than a point, and y ran 0 to 8 with no negative half: a quadrant with the axes drawn on its edge, not a plane. Now a real plane with both axes running through zero, and four candidate points offered on it. Each decoy is a specific error rather than a random wrong answer, and says which mistake it is when tapped, so a learner who swaps x and y is told that rather than merely marked wrong.'
         },
         {
           code: 'S2-I4', kind: 'point-target-shuffle',
-          note: 'Ordered pairs arrive in a deliberately irregular sequence. Repetition trains x-first, y-second placement without tracing a curve.'
+          note: 'The same rebuilt plane, with pairs arriving in an irregular order so x-first, y-second becomes a habit rather than a pattern the learner rides. Its decoys lean on the swap error, which is the one this drill exists to catch.'
         }
       ],
       exercises: [
@@ -212,11 +212,11 @@ export const plot = {
         },
         {
           code: 'S3-I3', kind: 'curve-plot-drill',
-          note: 'Plot five called-out points of y = x² directly on the grid. The curve appears only when every point has been placed.'
+          note: 'Four points of y = x² selected from candidates on the rebuilt plane. The curve is drawn only once every point is placed, so it confirms the work rather than giving it away. Decoys here include points that are on the plane but not on the rule, which is a different error from misreading a coordinate and is worth separating.'
         },
         {
           code: 'S3-I4', kind: 'curve-point-check',
-          note: 'Plot five points of y = x + 3 in mixed x-order. The final line checks whether repeated substitution and placement stayed consistent.'
+          note: 'Four points of y = x + 3 in mixed x-order on the rebuilt plane. Reaches below the axis at x = −3, so a learner has to place a point at y = 0 and cross into the negative half rather than working only in the top right.'
         }
       ],
       exercises: [

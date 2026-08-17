@@ -255,21 +255,92 @@
   };
   const graphOrder = kind => kind === 'table-points-order' ? [2, -1, 3, 0, -2, 1, -3] : GRAPH_X;
   const graphPoint = (x, y) => ({ x: 150 + x * 32, y: 124 - y * 13 });
+  // ---- Plotting drills, rebuilt 2026-08-17 --------------------------------
+  // Founder: these needed major changes, and asked for sample points that
+  // activate on touch or cursor so the stage is an accurate Cartesian plane.
+  //
+  // What was wrong. The old version was a 7x9 grid of buttons, so a learner
+  // clicked a *cell* rather than a *point*, and cells are small targets on a
+  // phone. Worse, y ran 0 to 8 with no negative half, so the thing being called
+  // a coordinate plane was a quadrant with the axes drawn on its edge. A learner
+  // could finish the drill without ever meeting a negative ordinate.
+  //
+  // What it is now. A real plane, x and y both running negative through zero to
+  // positive, with a small set of candidate points offered on it. Each candidate
+  // carries an oversized transparent hit circle so a fingertip lands reliably
+  // while the drawn dot stays small enough to sit at one coordinate.
+  //
+  // The decoys are the teaching. Each one is a specific error rather than a
+  // random wrong answer, and each says which mistake it is when tapped, so a
+  // learner who swaps x and y is told that rather than just marked wrong.
+  // One unit is the same length on both axes. The first rebuild had 27px per
+  // unit across and 15px up, which is not a Cartesian plane: a square drawn on
+  // it would not be square, and y = x would not leave the origin at 45°. Equal
+  // scaling is most of what "accurate representation" means here.
+  //
+  // UNIT also sets the hit radius. Candidates are whole coordinates, so the
+  // closest two can ever be is one unit; a hit circle must therefore stay under
+  // half a unit or neighbouring points swallow each other. The first build used
+  // r=15 against a 15px unit and made every vertically adjacent point
+  // unreachable, which the drill only revealed when driven.
+  const UNIT = 22;
+  const HIT_R = 10;            // < UNIT / 2, so adjacent targets never overlap
+  const PLANE = { minX: -4, maxX: 4, minY: -4, maxY: 6, pad: 28, top: 14 };
+  const planePt = (x, y) => ({
+    px: PLANE.pad + (x - PLANE.minX) * UNIT,
+    py: PLANE.top + (PLANE.maxY - y) * UNIT
+  });
+  const PLANE_W = PLANE.pad + (PLANE.maxX - PLANE.minX) * UNIT + 20;
+  const PLANE_H = PLANE.top + (PLANE.maxY - PLANE.minY) * UNIT + 22;
+  const SWAP = 'x and y the wrong way round';
+  const SIGNX = 'the sign of x is wrong';
+  const SIGNY = 'the sign of y is wrong';
+  const OFF = 'not on this rule';
   const PLOT_DRILLS = {
-    'point-target-drill': [[-2, 4], [1, 1], [0, 0], [2, 4], [-1, 1]],
-    'point-target-shuffle': [[3, 2], [-1, 5], [2, 7], [-3, 1], [0, 6]],
-    'curve-plot-drill': [[-2, 4], [0, 0], [2, 4], [-1, 1], [1, 1]],
-    'curve-point-check': [[2, 5], [-2, 1], [3, 6], [-3, 0], [0, 3]]
+    'point-target-drill': { rule: null, rounds: [
+      { t: [-2, 4], d: [[4, -2, SWAP], [2, 4, SIGNX], [-2, -4, SIGNY]] },
+      { t: [3, -1], d: [[-1, 3, SWAP], [3, 1, SIGNY], [-3, -1, SIGNX]] },
+      { t: [0, -3], d: [[-3, 0, SWAP], [0, 3, SIGNY], [3, 0, SWAP]] },
+      { t: [-4, -2], d: [[-2, -4, SWAP], [4, -2, SIGNX], [-4, 2, SIGNY]] }
+    ]},
+    'point-target-shuffle': { rule: null, rounds: [
+      { t: [1, 5], d: [[5, 1, SWAP], [1, -5, SIGNY], [-1, 5, SIGNX]] },
+      { t: [-3, 2], d: [[2, -3, SWAP], [3, 2, SIGNX], [-3, -2, SIGNY]] },
+      { t: [4, 0], d: [[0, 4, SWAP], [-4, 0, SIGNX], [4, 4, SIGNY]] },
+      { t: [-1, -4], d: [[-4, -1, SWAP], [1, -4, SIGNX], [-1, 4, SIGNY]] }
+    ]},
+    'curve-plot-drill': { rule: 'square it', label: 'y = x²', rounds: [
+      { t: [-2, 4], d: [[-2, -4, SIGNY], [4, -2, SWAP], [-2, 2, OFF]] },
+      { t: [-1, 1], d: [[-1, -1, SIGNY], [1, -1, OFF], [-1, 2, OFF]] },
+      { t: [0, 0], d: [[0, 1, OFF], [1, 0, SWAP], [0, -1, OFF]] },
+      { t: [2, 4], d: [[4, 2, SWAP], [2, -4, SIGNY], [2, 2, OFF]] }
+    ]},
+    'curve-point-check': { rule: 'add three', label: 'y = x + 3', rounds: [
+      { t: [-3, 0], d: [[0, -3, SWAP], [-3, 3, OFF], [3, 0, SIGNX]] },
+      { t: [0, 3], d: [[3, 0, SWAP], [0, -3, SIGNY], [0, 0, OFF]] },
+      { t: [2, 5], d: [[5, 2, SWAP], [2, -5, SIGNY], [2, 3, OFF]] },
+      { t: [-1, 2], d: [[2, -1, SWAP], [-1, -2, SIGNY], [-1, 4, OFF]] }
+    ]}
   };
-  let plotDrill = { kind: '', step: 0, hits: [], misses: 0 };
-  const drillState = (kind, state) => state.kind === kind ? state : { kind, step: 0, hits: [], misses: 0 };
-  function tryPlot(kind, x, y) {
-    const state = drillState(kind, plotDrill);
-    const target = PLOT_DRILLS[kind][state.step];
-    if (!target) return;
-    plotDrill = target[0] === x && target[1] === y
-      ? { ...state, step: state.step + 1, hits: [...state.hits, target] }
-      : { ...state, misses: state.misses + 1 };
+  let plotDrill = { kind: '', step: 0, hits: [], misses: 0, said: '' };
+  const drillState = (kind, s) => s.kind === kind ? s : { kind, step: 0, hits: [], misses: 0, said: '' };
+  // Candidates for the current round, in a fixed order so they do not jump
+  // around under the learner's finger between renders.
+  function planeChoices(kind, step) {
+    const round = PLOT_DRILLS[kind].rounds[step];
+    if (!round) return [];
+    return [{ x: round.t[0], y: round.t[1], ok: true }, ...round.d.map(([x, y, why]) => ({ x, y, ok: false, why }))]
+      .sort((a, b) => (a.x - b.x) || (a.y - b.y));
+  }
+  function pickPoint(kind, choice) {
+    const s = drillState(kind, plotDrill);
+    if (s.step >= PLOT_DRILLS[kind].rounds.length) return;
+    plotDrill = choice.ok
+      ? { ...s, step: s.step + 1, hits: [...s.hits, [choice.x, choice.y]], said: '' }
+      : { ...s, misses: s.misses + 1, said: `( ${choice.x}, ${choice.y} ) has ${choice.why}.` };
+  }
+  function resetDrill(kind) {
+    plotDrill = { kind, step: 0, hits: [], misses: 0, said: '' };
   }
 
   let line = { run: 3, rise: 2, previousRise: 2, target: 1 };
@@ -2136,34 +2207,81 @@
 
                 {:else if interaction.kind === 'point-target-drill' || interaction.kind === 'point-target-shuffle' || interaction.kind === 'curve-plot-drill' || interaction.kind === 'curve-point-check'}
                   {@const drill = drillState(interaction.kind, plotDrill)}
-                  {@const pairs = PLOT_DRILLS[interaction.kind]}
-                  {@const target = pairs[drill.step]}
+                  {@const spec = PLOT_DRILLS[interaction.kind]}
+                  {@const rounds = spec.rounds}
+                  {@const round = rounds[drill.step]}
+                  {@const done = drill.step >= rounds.length}
+                  {@const choices = planeChoices(interaction.kind, drill.step)}
                   <div class="rows centre">
                     <div class="drill-status">
-                      {#if target}<span>Plot <b>( {target[0]}, {target[1]} )</b></span>{:else}<strong>Round complete · {pairs.length}/{pairs.length}</strong>{/if}
-                      <small>{drill.misses === 0 ? 'No misplaced points' : `${drill.misses} misplaced ${drill.misses === 1 ? 'point' : 'points'} — keep going`}</small>
+                      {#if round}
+                        <span>Select <b>( {round.t[0]}, {round.t[1]} )</b>{#if spec.label} on <em>{spec.label}</em>{/if}</span>
+                      {:else}
+                        <strong>Round complete · {rounds.length}/{rounds.length}</strong>
+                      {/if}
+                      <small>{drill.misses === 0 ? 'No wrong selections' : `${drill.misses} wrong so far`}</small>
                     </div>
-                    <div class="coordinate-grid" role="group" aria-label="Plot a coordinate on the grid">
-                      {#each [8, 7, 6, 5, 4, 3, 2, 1, 0] as y}
-                        {#each [-3, -2, -1, 0, 1, 2, 3] as x}
-                          <button class:hit={drill.hits.some(pair => pair[0] === x && pair[1] === y)} class:x-axis={y === 0} class:y-axis={x === 0}
-                            aria-label={`Plot ${x}, ${y}`} on:click={() => tryPlot(interaction.kind, x, y)}>
-                            {drill.hits.some(pair => pair[0] === x && pair[1] === y) ? '●' : ''}
-                            {#if x === -3}<small>{y}</small>{/if}
-                          </button>
-                        {/each}
+
+                    <svg class="plane-svg" viewBox={`0 0 ${PLANE_W} ${PLANE_H}`} role="group"
+                      aria-label="Cartesian plane with candidate points to select">
+                      <!-- Grid, then both axes through zero, so all four
+                           quadrants are present rather than implied. -->
+                      {#each Array(PLANE.maxX - PLANE.minX + 1) as _, i}
+                        {@const gx = planePt(PLANE.minX + i, 0).px}
+                        <line class="pl-grid" x1={gx} y1={planePt(0, PLANE.maxY).py} x2={gx} y2={planePt(0, PLANE.minY).py}/>
                       {/each}
-                      <div class="coordinate-labels" aria-hidden="true">{#each [-3, -2, -1, 0, 1, 2, 3] as x}<span>{x}</span>{/each}</div>
+                      {#each Array(PLANE.maxY - PLANE.minY + 1) as _, i}
+                        {@const gy = planePt(0, PLANE.minY + i).py}
+                        <line class="pl-grid" x1={planePt(PLANE.minX, 0).px} y1={gy} x2={planePt(PLANE.maxX, 0).px} y2={gy}/>
+                      {/each}
+                      <line class="pl-axis" x1={planePt(PLANE.minX, 0).px} y1={planePt(0, 0).py} x2={planePt(PLANE.maxX, 0).px} y2={planePt(0, 0).py}/>
+                      <line class="pl-axis" x1={planePt(0, 0).px} y1={planePt(0, PLANE.maxY).py} x2={planePt(0, 0).px} y2={planePt(0, PLANE.minY).py}/>
+                      {#each [-4, -2, 2, 4] as t}
+                        <text class="pl-tick" x={planePt(t, 0).px} y={planePt(0, 0).py + 13}>{t < 0 ? '−' + Math.abs(t) : t}</text>
+                        <text class="pl-tick" x={planePt(0, 0).px - 9} y={planePt(0, t).py + 3.5}>{t < 0 ? '−' + Math.abs(t) : t}</text>
+                      {/each}
+
+                      <!-- Points already placed stay on the plane. -->
+                      {#each drill.hits as [hx, hy]}
+                        {@const h = planePt(hx, hy)}
+                        <circle class="pl-placed" cx={h.px} cy={h.py} r="4.5"/>
+                      {/each}
+
+                      <!-- Candidates. The drawn dot is small so it sits at one
+                           coordinate; the hit circle is 15px so a fingertip
+                           lands on it. -->
+                      {#if !done}
+                        {#each choices as c (`${c.x},${c.y}`)}
+                          {@const pt = planePt(c.x, c.y)}
+                          <g class="pl-choice">
+                            <circle class="pl-dot" cx={pt.px} cy={pt.py} r="5.5"/>
+                            <text class="pl-label" x={pt.px + 9} y={pt.py - 7}>{c.x},{c.y}</text>
+                            <circle class="pl-hit" cx={pt.px} cy={pt.py} r={HIT_R} role="button" tabindex="0"
+                              aria-label={`Select the point ${c.x}, ${c.y}`}
+                              on:click={() => pickPoint(interaction.kind, c)}
+                              on:keydown={e => (e.key === 'Enter' || e.key === ' ') && pickPoint(interaction.kind, c)}/>
+                          </g>
+                        {/each}
+                      {/if}
+
+                      <!-- The curve is drawn only once every point is placed, so
+                           it confirms the work rather than giving it away. -->
+                      {#if done && spec.rule}
+                        <polyline class="pl-curve" points={Array.from({ length: 65 }, (_, i) => {
+                          const x = PLANE.minX + i * (PLANE.maxX - PLANE.minX) / 64;
+                          const y = GRAPH_RULES[spec.rule](x);
+                          if (y < PLANE.minY || y > PLANE.maxY) return null;
+                          const p = planePt(x, y);
+                          return `${p.px},${p.py}`;
+                        }).filter(Boolean).join(' ')}/>
+                      {/if}
+                    </svg>
+
+                    {#if drill.said}<p class="pl-said">{drill.said}</p>{/if}
+                    <div class="row">
+                      <p class="stage-note">{drill.step} of {rounds.length} placed{#if done && spec.label} — the points lie on {spec.label}{/if}</p>
+                      <button class="chip" on:click={() => resetDrill(interaction.kind)}>start again</button>
                     </div>
-                    {#if drill.step >= pairs.length && (interaction.kind === 'curve-plot-drill' || interaction.kind === 'curve-point-check')}
-                      {@const rule = interaction.kind === 'curve-plot-drill' ? 'square it' : 'add three'}
-                      <svg class="plot-svg drill-result" viewBox="0 0 300 170" role="img" aria-label="Curve revealed by the completed plotting round">
-                        <path class="plot-axis" d="M22 124H282M150 8V158"/>
-                        <polyline class="plot-curve" points={Array.from({ length: 49 }, (_, i) => { const x = -3 + i / 8; const p = graphPoint(x, GRAPH_RULES[rule](x)); return `${p.x},${p.y}`; }).join(' ')}/>
-                        {#each drill.hits as pair}{@const hit = graphPoint(pair[0], pair[1])}<circle class="plot-dot" cx={hit.x} cy={hit.y} r="5"/>{/each}
-                      </svg>
-                    {/if}
-                    <p class="stage-note">{drill.step} of {pairs.length} points placed correctly.</p>
                   </div>
 
                 {:else if interaction.kind === 'circle-displacement' || interaction.kind === 'circle-journey' || interaction.kind === 'compass-direction' || interaction.kind === 'direction-angle' || interaction.kind === 'vector-builder' || interaction.kind === 'vector-compare'}
@@ -3455,6 +3573,24 @@
   .plot-axis { fill: none; stroke: var(--qx-text-dim); stroke-width: 1.7; }
   .plot-grid { stroke: var(--qx-border); stroke-width: .7; }
   .plot-dot { fill: var(--qx-accent); }
+  /* Plotting drills, rebuilt 2026-08-17. A real plane with selectable sample
+     points: the drawn dot is 5px so it reads as one coordinate, and the hit
+     circle over it is 15px so a fingertip lands reliably. */
+  .plane-svg { width: 100%; max-width: 340px; height: auto; touch-action: manipulation; }
+  .plane-svg .pl-grid { stroke: var(--qx-border-2); stroke-width: .5; opacity: .5; }
+  .plane-svg .pl-axis { stroke: var(--qx-text-dim); stroke-width: 1.4; }
+  .plane-svg .pl-tick { fill: var(--qx-text-faint); font-size: 8px; font-weight: 700; text-anchor: middle; }
+  .plane-svg .pl-placed { fill: var(--qx-green, #3E9E2A); }
+  .plane-svg .pl-dot { fill: var(--qx-surface); stroke: var(--qx-accent); stroke-width: 2; transition: fill .12s; }
+  .plane-svg .pl-label { fill: var(--qx-text-faint); font-size: 8px; font-weight: 800; }
+  .plane-svg .pl-hit { fill: transparent; cursor: pointer; outline: none; }
+  .plane-svg .pl-choice:hover .pl-dot,
+  .plane-svg .pl-hit:focus-visible + .pl-dot { fill: var(--qx-accent); }
+  .plane-svg .pl-choice:hover .pl-label { fill: var(--qx-accent-text); }
+  .plane-svg .pl-hit:focus-visible { outline: 2px solid var(--qx-accent); outline-offset: 1px; border-radius: 50%; }
+  .plane-svg .pl-curve { fill: none; stroke: var(--qx-accent); stroke-width: 2; opacity: .75; }
+  .pl-said { margin: 0; font-size: 11.5px; font-weight: 700; color: var(--qx-accent-text); background: var(--qx-accent-soft); border-radius: 8px; padding: 7px 10px; }
+
   .coordinate-grid { display: grid; grid-template-columns: repeat(7, 1fr); position: relative; width: min(100%, 390px); margin-bottom: 18px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); }
   .coordinate-grid button { position: relative; min-width: 0; height: 44px; padding: 0; border: 0; border-right: 1px solid var(--qx-border); border-bottom: 1px solid var(--qx-border); border-radius: 0; background: transparent; color: var(--qx-accent-text); cursor: crosshair; font-size: 15px; }
   .coordinate-grid button:hover, .coordinate-grid button:focus { background: var(--qx-accent-soft); outline: 2px solid var(--qx-accent); outline-offset: -2px; }
