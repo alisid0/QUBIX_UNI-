@@ -1,5 +1,6 @@
 <script>
   import QxButton from '../lib/components/qubix/QxButton.svelte';
+  import QubixMascot from '../lib/components/qubix/QubixMascot.svelte';
   import { profile } from '../lib/stores/profile.js';
 
   export let onComplete = () => {};
@@ -177,6 +178,7 @@
     </section>
   {:else}
     <section class="content gestures">
+      <div class="onboarding-mascot"><QubixMascot intent="success" size="lg" decorative eager /></div>
       <h2>Start small, build daily</h2>
       <p class="sub">One short session is enough to keep momentum.</p>
       <div class="goal-card">
@@ -307,6 +309,8 @@
   .minute.active { color: var(--qx-accent-text); background: var(--qx-accent-soft); border-color: var(--qx-accent); }
 
   .gestures { display: flex; flex-direction: column; justify-content: center; }
+  .onboarding-mascot { height: 76px; display: grid; place-items: center; margin-bottom: 4px; }
+  .onboarding-mascot :global(.mascot) { --mascot-size: 96px; }
   .goal-card {
     display: flex;
     align-items: center;
@@ -353,4 +357,3 @@
 
   .footer { display: flex; gap: 10px; align-items: center; padding: 16px 0 18px; }
 </style>
-

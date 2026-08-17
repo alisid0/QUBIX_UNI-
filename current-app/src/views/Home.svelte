@@ -8,6 +8,7 @@
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import SettingsMenu from '../lib/components/qubix/SettingsMenu.svelte';
   import CheckpointQuiz from '../lib/components/qubix/CheckpointQuiz.svelte';
+  import QubixMascot from '../lib/components/qubix/QubixMascot.svelte';
 
   export let onNavigate; // (view, args?) => void
   let settingsOpen = false;
@@ -152,6 +153,12 @@
           cta: 'Start', run: () => onNavigate?.('workout')
         };
 
+  $: primaryMascotIntent = primary.kind === 'review' || primary.kind === 'pair-recall'
+    ? 'loading'
+    : primary.kind === 'continue' || primary.kind === 'pair-next'
+      ? 'guide'
+      : 'welcome';
+
   // Home is for choosing a direction, not inspecting inventory. Keep each
   // subject door's useful description stable instead of replacing it with a
   // raw board count once the learner has started.
@@ -204,7 +211,7 @@
        Home answers "what now?" with a single confident action. -->
   <div class="focus-card">
     <button class="focus-main" on:click={primary.run}>
-      <span class="focus-bolt"><QxIcon name={primary.icon} size={20} /></span>
+      <span class="focus-mascot"><QubixMascot intent={primaryMascotIntent} size="md" decorative eager /></span>
       <span class="focus-copy">
         <span class="focus-label">{primary.label}</span>
         <span class="focus-title qx-display">{primary.title}</span>
@@ -439,10 +446,10 @@
     font-size: 11px;
     font-variant-numeric: tabular-nums;
   }
-  .focus-bolt {
-    width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
-    background: var(--qx-accent-soft); color: var(--qx-accent-text);
-    display: flex; align-items: center; justify-content: center;
+  .focus-mascot {
+    width: 68px; height: 72px; flex: 0 0 68px;
+    display: grid; place-items: center;
+    margin: -5px 0;
   }
   .focus-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .focus-label { font-size: 9px; font-weight: 900; letter-spacing: 0.11em; color: var(--qx-accent); }
@@ -616,7 +623,8 @@
     .menu-btn.icon-btn { grid-area: snippets; }
     .menu-btn:not(.icon-btn) { grid-area: menu; }
     .focus-main { min-height: 100px; padding: 16px; border-radius: 22px; }
-    .focus-bolt { width: 38px; height: 38px; }
+    .focus-mascot { width: 54px; height: 60px; flex-basis: 54px; margin-left: -7px; }
+    .focus-mascot :global(.mascot) { --mascot-size: 58px; }
     .focus-cta { padding: 9px 12px; }
     .learning-loop { padding: 13px 14px; margin-bottom: 24px; border-radius: 16px; }
     .loop-head { align-items: center; gap: 10px; }

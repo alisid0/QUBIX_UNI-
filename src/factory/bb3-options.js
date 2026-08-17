@@ -145,6 +145,10 @@ export const bb3 = {
           note: 'x in, x² out, with both ends now named rather than shown as bare figures: a learner should not have to work out which number is which. The tie is drawn as a step between the two rather than stated.'
         },
         {
+          code: 'S2-I4', kind: 'variable-ticker',
+          note: 'Founder-proposed scrolling relationship counter, amended 2026-08-16. Scroll or step x through whole-number assignments. The separate rule y = 2x + 1 avoids repeating the square already shown in S2-I1 and S2-I2; the y counter and substitution update together while only x remains adjustable. Unselected Factory candidate.'
+        },
+        {
           code: 'S2-I3', kind: 'square-3d',
           note: 'Rejected by the founder, 2026-08-09. A three.js slab, lit and inert, growing with x. Kept in the Factory as a candidate for a later board; a genuine cube belongs in BB7, where x³ arrives.'
         }

@@ -1,4 +1,5 @@
 <script>
+  import QubixMascot from '../lib/components/qubix/QubixMascot.svelte';
   import { onDestroy } from 'svelte';
   import {
     signUp,
@@ -224,6 +225,7 @@
 <div class="qx-shell auth-view">
   {#if mode === 'welcome'}
     <div class="screen welcome">
+      <div class="auth-mascot"><QubixMascot intent="welcome" size="lg" decorative eager /></div>
       <div class="brand">QUB<span class="acc">I</span>X</div>
       <h1 class="sr-only">Log in or sign up to Qubix</h1>
       <div class="tagline">
@@ -371,6 +373,8 @@
     overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
   .brand { font-size: 25px; font-weight: 950; letter-spacing: 0.16em; color: var(--qx-text); margin-bottom: 5px; }
+  .auth-mascot { height: 76px; display: grid; place-items: center; margin: -8px 0 2px; }
+  .auth-mascot :global(.mascot) { --mascot-size: 96px; }
   .acc { color: var(--qx-accent); }
   .tagline {
     display: flex;

@@ -26,6 +26,7 @@
   import CommandPalette from './lib/components/qubix/CommandPalette.svelte';
   import SignupPrompt from './lib/components/SignupPrompt.svelte';
   import WToast from './lib/components/qubix/WToast.svelte';
+  import QubixMascot from './lib/components/qubix/QubixMascot.svelte';
   import { appEnvironment } from './lib/environment.js';
 
   // loading | auth | onboarding | home | topics | topicDetail | stats | leaderboard | otherUserStats | snippets | reader | quiz | author
@@ -307,6 +308,7 @@
 
   {#if currentView === 'loading'}
     <div class="view-layer qx-shell loading-screen" in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
+      <QubixMascot intent="rest" size="lg" decorative still eager />
       <div class="loading-brand">QUBIX</div>
       <div class="loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     </div>
@@ -343,6 +345,7 @@
             />
           {:catch}
             <div class="lazy-view-error" role="alert">
+              <QubixMascot intent="retry" size="sm" decorative />
               <strong>Workshop could not load.</strong>
               <button type="button" on:click={retryWorkshopComponent}>Try again</button>
             </div>

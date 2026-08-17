@@ -4,6 +4,7 @@
   import { view } from '../lib/stores/view.js';
   import { boards, TOTAL_SECTIONS } from '../lib/content/course.js';
   import AuthButton from '../lib/components/AuthButton.svelte';
+  import QubixMascot from '../lib/components/QubixMascot.svelte';
 
   // Counted, not written down. The line here used to say "five boards, twenty
   // sections" in the markup, which stopped being true the moment the pilot
@@ -85,18 +86,23 @@
 
   <main class="home-body">
     <section class="resume-card">
-      <span class="micro">{$summary.started ? 'CONTINUE' : 'BEGIN'}</span>
+      <div class="resume-lead">
+        <div class="resume-copy">
+          <span class="micro">{$summary.started ? 'CONTINUE' : 'BEGIN'}</span>
 
-      {#if $summary.started}
-        <h1>{$summary.boardTitle}</h1>
-        <p class="where">
-          Subtopic {$summary.boardNumber} of {$summary.boardCount} ·
-          section {$summary.sectionNumber} of {$summary.sectionCount}
-        </p>
-      {:else}
-        <h1>Qubix University Pilot</h1>
-        <p class="where">{count(boards.length).replace(/^\w/, c => c.toUpperCase())} subtopics, {TOTAL_SECTIONS} sections, from letters and functions to rates, force and acceleration.</p>
-      {/if}
+          {#if $summary.started}
+            <h1>{$summary.boardTitle}</h1>
+            <p class="where">
+              Subtopic {$summary.boardNumber} of {$summary.boardCount} ·
+              section {$summary.sectionNumber} of {$summary.sectionCount}
+            </p>
+          {:else}
+            <h1>Qubix University Pilot</h1>
+            <p class="where">{count(boards.length).replace(/^\w/, c => c.toUpperCase())} subtopics, {TOTAL_SECTIONS} sections, from letters and functions to rates, force and acceleration.</p>
+          {/if}
+        </div>
+        <QubixMascot animation={$summary.started ? 'point-right' : 'curious'} size="lg" eager />
+      </div>
 
       <div class="track" aria-label={`${$summary.doneCount} of ${$summary.totalSections} sections done`}>
         <span style={`width:${($summary.doneCount / $summary.totalSections) * 100}%`}></span>
@@ -199,6 +205,8 @@
   .home-body { max-width: 900px; margin: 0 auto; padding: 22px clamp(16px, 4vw, 40px) 60px; display: flex; flex-direction: column; gap: 22px; }
 
   .resume-card { background: var(--qx-surface); border: 1px solid var(--qx-border); border-radius: 22px; box-shadow: var(--qx-shadow-card); padding: 22px 20px; display: flex; flex-direction: column; gap: 11px; }
+  .resume-lead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+  .resume-copy { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
   .micro { color: var(--qx-accent-text); font-size: 10px; letter-spacing: .14em; font-weight: 900; }
   .resume-card h1 { font-size: clamp(24px, 5vw, 32px); line-height: 1.15; }
   .where { color: var(--qx-text-2); font-size: 14px; line-height: 1.5; }

@@ -52,6 +52,7 @@
     'circle-displacement', 'circle-journey', 'compass-direction', 'direction-angle', 'vector-builder', 'vector-compare',
     'vector-translate', 'vector-copy-test', 'vector-head-tail', 'vector-route-order', 'vector-resultant', 'vector-cancel',
     'force-push', 'force-vector', 'force-compare', 'force-bars', 'mass-push', 'mass-race',
+    'variable-ticker',
     'switch-toggle', 'switch-plain', 'tap-valve', 'tap-piston', 'machine-panel', 'machine-labels',
     'forked-button', 'flaky-button'];
 
@@ -765,6 +766,30 @@
 
   const squareSize = v => 74 + (v - 1.5) * 39; // 1.5 -> 74px, 3.5 -> 152px, no cap
   const fmt = v => Number(v).toFixed(1);
+  const tickerMin = 0;
+  const tickerMax = 6;
+  const clampTicker = value => Math.max(tickerMin, Math.min(tickerMax, Math.round(value)));
+  const tickerOutput = value => 2 * value + 1;
+  const counterDigits = value => String(value).padStart(2, '0');
+  function stepVariableTicker(sectionIndex, delta) {
+    const next = clampTicker(clampTicker(values[sectionIndex]) + delta);
+    values = values.map((value, index) => index === sectionIndex ? next : value);
+  }
+  function tickerKey(event, sectionIndex) {
+    if (event.key === 'ArrowUp' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      stepVariableTicker(sectionIndex, 1);
+    } else if (event.key === 'ArrowDown' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      stepVariableTicker(sectionIndex, -1);
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      values = values.map((value, index) => index === sectionIndex ? tickerMin : value);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      values = values.map((value, index) => index === sectionIndex ? tickerMax : value);
+    }
+  }
 
   function cycle(chip) {
     sorted = { ...sorted, [chip]: (sorted[chip] + 1) % 3 };
@@ -1244,6 +1269,66 @@
                     </div>
                   </div>
 
+                {:else if interaction.kind === 'variable-ticker'}
+                  {@const xValue = clampTicker(values[si])}
+                  {@const yValue = tickerOutput(xValue)}
+                  <div class="rows centre ticker-demo">
+                    <div class="counter-shell">
+                      <div class="counter-header">
+                        <span class="counter-live"><i></i>LINKED</span>
+                        <strong>VARIABLE COUNTER</strong>
+                        <span class="counter-model">RULE 01</span>
+                      </div>
+                      <div class="ticker-pair">
+                        <section class="ticker-unit independent">
+                          <div class="counter-label"><b>x</b><small>INPUT · SET</small></div>
+                          <button class="ticker-button" aria-label="Increase x" disabled={xValue >= tickerMax} on:click={() => stepVariableTicker(si, 1)}><span>▲</span></button>
+                          <div class="number-ticker" role="spinbutton" tabindex="0"
+                            aria-label="Value assigned to x" aria-valuemin={tickerMin} aria-valuemax={tickerMax} aria-valuenow={xValue}
+                            on:wheel|preventDefault={(event) => stepVariableTicker(si, event.deltaY < 0 ? 1 : -1)}
+                            on:keydown={(event) => tickerKey(event, si)}>
+                            {#key xValue}
+                              <div class="ticker-stack">
+                                <span>{xValue < tickerMax ? counterDigits(xValue + 1) : '··'}</span>
+                                <strong>{counterDigits(xValue)}</strong>
+                                <span>{xValue > tickerMin ? counterDigits(xValue - 1) : '··'}</span>
+                              </div>
+                            {/key}
+                          </div>
+                          <button class="ticker-button" aria-label="Decrease x" disabled={xValue <= tickerMin} on:click={() => stepVariableTicker(si, -1)}><span>▼</span></button>
+                          <em>scroll to assign</em>
+                        </section>
+
+                        <div class="ticker-rule" aria-label="The rule is y equals two x plus one">
+                          <small>FIXED RULE</small>
+                          <span>y = 2x + 1</span>
+                          <i aria-hidden="true">→</i>
+                        </div>
+
+                        <section class="ticker-unit dependent">
+                          <div class="counter-label"><b>y</b><small>OUTPUT · AUTO</small></div>
+                          <span class="ticker-button spacer" aria-hidden="true"><span>▲</span></span>
+                          <div class="number-ticker locked" aria-live="polite">
+                            {#key yValue}
+                              <div class="ticker-stack">
+                                <span>{xValue < tickerMax ? counterDigits(tickerOutput(xValue + 1)) : '··'}</span>
+                                <strong>{counterDigits(yValue)}</strong>
+                                <span>{xValue > tickerMin ? counterDigits(tickerOutput(xValue - 1)) : '··'}</span>
+                              </div>
+                            {/key}
+                          </div>
+                          <span class="ticker-button spacer" aria-hidden="true"><span>▼</span></span>
+                          <em>follows the rule</em>
+                        </section>
+                      </div>
+                      <div class="counter-legend"><span><i class="input-light"></i>x is adjustable</span><span><i></i>y is linked</span></div>
+                    </div>
+                    <div class="ticker-equation" aria-live="polite">
+                      <span>y = 2x + 1</span><i>→</i><span>y = 2({xValue}) + 1</span><i>→</i><b>y = {yValue}</b>
+                    </div>
+                    <p class="stage-note">Scroll the x counter or use its buttons. x receives a new value; the linked y counter changes through a different relationship from the square above.</p>
+                  </div>
+
                 {:else if interaction.kind === 'two-squares'}
                   <div class="rows centre">
                     <div class="pair">
@@ -1645,10 +1730,22 @@
                 {:else if interaction.kind === 'switch-toggle' || interaction.kind === 'switch-plain'}
                   <div class="rows centre">
                     <div class="lamp" class:lit={sw.up}>{sw.up ? 'ON' : 'OFF'}</div>
-                    <div class="switch-body">
-                      <button class="switch-half" class:on={sw.up} on:click={() => flick(true)}>up</button>
-                      <button class="switch-half" class:on={!sw.up} on:click={() => flick(false)}>down</button>
-                    </div>
+                    <button
+                      class="switch-body"
+                      class:on={sw.up}
+                      type="button"
+                      role="switch"
+                      aria-checked={sw.up}
+                      aria-label={`Light switch is ${sw.up ? 'up and the lamp is on' : 'down and the lamp is off'}. Press to move it ${sw.up ? 'down' : 'up'}.`}
+                      on:click={() => flick(!sw.up)}
+                    >
+                      <img
+                        src={sw.up ? '/media/functions/function-switch-on.png' : '/media/functions/function-switch-off.png'}
+                        alt=""
+                        draggable="false"
+                      />
+                      <small>{sw.up ? 'UP · ON' : 'DOWN · OFF'}</small>
+                    </button>
                     {#if interaction.kind === 'switch-toggle'}
                       <p class="stage-note">
                         up chosen {sw.tally.up} {sw.tally.up === 1 ? 'time' : 'times'}, light came on {sw.tally.up} {sw.tally.up === 1 ? 'time' : 'times'}.
@@ -3633,10 +3730,42 @@
   /* What a Button Does. */
   .lamp { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 900; letter-spacing: .08em; border: 2px solid var(--qx-border-2); color: var(--qx-text-faint); transition: background .12s, color .12s, border-color .12s; }
   .lamp.lit { background: var(--qx-accent-soft); border-color: var(--qx-accent); color: var(--qx-accent-text); box-shadow: 0 0 0 7px var(--qx-accent-soft); }
-  .switch-body { display: flex; flex-direction: column; border: 1px solid var(--qx-border-2); border-radius: 11px; overflow: hidden; width: 96px; }
-  .switch-half { padding: 9px 0; font-size: 12px; font-weight: 800; letter-spacing: .05em; background: transparent; border: 0; color: var(--qx-text-dim); cursor: pointer; }
-  .switch-half + .switch-half { border-top: 1px solid var(--qx-border-2); }
-  .switch-half.on { background: var(--qx-accent); color: #fff; }
+  .switch-body {
+    width: 112px;
+    min-height: 164px;
+    padding: 5px 6px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--qx-text-dim);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .switch-body:hover { background: var(--qx-surface-2); }
+  .switch-body:active { transform: scale(.97); }
+  .switch-body:focus-visible { outline: 3px solid var(--qx-accent); outline-offset: 2px; }
+  .switch-body.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .switch-body img {
+    width: 96px;
+    height: 138px;
+    display: block;
+    object-fit: contain;
+    image-rendering: pixelated;
+    pointer-events: none;
+    user-select: none;
+  }
+  .switch-body small {
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: .07em;
+    color: var(--qx-text-faint);
+  }
+  .switch-body.on small { color: var(--qx-accent-text); }
   .flow-row { display: flex; align-items: baseline; gap: 7px; }
   .flow-row b { font-size: 25px; color: var(--qx-accent-text); }
   .flow-row small { font-size: 11px; color: var(--qx-text-faint); }
@@ -3648,6 +3777,10 @@
   .panel-btn em { font-style: normal; font-size: 10px; color: var(--qx-text-faint); }
   .panel-btn.sm { min-width: 40px; padding: 6px 7px; }
   .io-table b.two { color: var(--qx-accent-text); background: var(--qx-accent-soft); border-radius: 5px; padding: 1px 5px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .switch-body { transition: none; }
+  }
 
   .kind-note { font-size: 12.5px; color: var(--qx-text-dim); line-height: 1.5; }
   .kind-note b { color: var(--qx-text-dim); }
@@ -3737,6 +3870,58 @@
   .flow-arrow { position: relative; color: var(--qx-text-faint); font-size: 22px; width: 42px; text-align: center; }
   .flow-arrow i { position: absolute; left: 0; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--qx-accent); transform: translateY(-50%); animation: pulse-right .55s ease-out; }
   @keyframes pulse-right { from { left: 0; opacity: 1; } to { left: 34px; opacity: 0; } }
+  .ticker-demo { gap: 16px; }
+  .counter-shell { width: min(100%, 440px); padding: 12px 14px 10px; border: 1px solid #171819; border-radius: 18px; background: linear-gradient(145deg, #45423d 0%, #292a2a 48%, #1d1f20 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -1px 0 rgba(0,0,0,.7), 0 15px 28px rgba(24,19,14,.2); }
+  .counter-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; padding: 0 2px 10px; color: #e9e1d3; }
+  .counter-header > strong { font-size: 9px; letter-spacing: .16em; text-align: center; }
+  .counter-live, .counter-model { font-size: 7px; letter-spacing: .12em; font-weight: 900; color: #aaa49b; }
+  .counter-live { display: flex; align-items: center; gap: 5px; }
+  .counter-live i { width: 6px; height: 6px; border-radius: 50%; background: #8db65e; box-shadow: 0 0 7px rgba(141,182,94,.85); }
+  .counter-model { text-align: right; }
+  .ticker-pair { display: grid; grid-template-columns: minmax(96px, 1fr) minmax(72px, auto) minmax(96px, 1fr); align-items: center; gap: 10px; width: 100%; }
+  .ticker-unit { display: grid; justify-items: center; gap: 6px; min-width: 0; border: 1px solid #8c8579; border-radius: 12px; padding: 10px 9px 9px; background: linear-gradient(145deg, #e7dfd1, #bbb2a4); box-shadow: inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 5px rgba(45,38,31,.15), 0 5px 10px rgba(0,0,0,.25); }
+  .ticker-unit.independent { border-color: #bb765b; box-shadow: inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 5px rgba(45,38,31,.15), 0 0 0 1px rgba(187,118,91,.3), 0 5px 10px rgba(0,0,0,.25); }
+  .counter-label { width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: 5px; color: #38342e; }
+  .counter-label b { font-family: Georgia, serif; font-style: italic; font-size: 23px; line-height: 1; color: #703c2d; }
+  .counter-label small { font-size: 6.5px; letter-spacing: .1em; font-weight: 900; color: #686158; white-space: nowrap; }
+  .ticker-unit em { font-size: 7px; letter-spacing: .06em; font-style: normal; font-weight: 900; color: #625b52; text-transform: uppercase; }
+  .ticker-button { width: 42px; height: 25px; display: grid; place-items: center; border: 1px solid #777067; border-radius: 6px; background: linear-gradient(#f6efe3, #b8aea0); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 2px 2px rgba(35,31,27,.25); color: #513b33; cursor: pointer; font-size: 10px; }
+  .ticker-button span { transform: translateY(-1px); }
+  .ticker-button:hover:not(:disabled), .ticker-button:focus-visible { border-color: #9e513b; background: linear-gradient(#fff5e8, #cf9b86); color: #6e2f20; outline: 2px solid rgba(187,118,91,.35); outline-offset: 2px; }
+  .ticker-button:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 1px 2px rgba(35,31,27,.25); }
+  .ticker-button:disabled { opacity: .32; cursor: default; }
+  .ticker-button.spacer { visibility: hidden; }
+  .number-ticker { position: relative; width: 82px; height: 96px; overflow: hidden; border: 3px solid #57534d; border-radius: 7px; background: #101214; box-shadow: inset 0 12px 15px rgba(0,0,0,.85), inset 0 -12px 15px rgba(0,0,0,.85), 0 1px 0 rgba(255,255,255,.55); cursor: ns-resize; }
+  .number-ticker::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(rgba(0,0,0,.72), transparent 31%, transparent 69%, rgba(0,0,0,.72)); }
+  .number-ticker:focus-visible { outline: 3px solid rgba(202,129,100,.55); border-color: #c77e61; }
+  .number-ticker.locked { cursor: default; border-color: #6b675f; }
+  .ticker-stack { height: 96px; display: grid; grid-template-rows: 26px 44px 26px; align-items: center; justify-items: center; animation: ticker-settle .24s ease-out; font-family: 'Courier New', monospace; font-variant-numeric: tabular-nums; }
+  .ticker-stack span { color: #827f77; font-size: 14px; letter-spacing: .08em; opacity: .55; }
+  .ticker-stack strong { width: 100%; padding: 7px 0; border-top: 1px solid #504d47; border-bottom: 1px solid #504d47; color: #f2ead8; text-shadow: 0 0 8px rgba(255,236,191,.2); font-size: 28px; letter-spacing: .08em; text-align: center; }
+  .ticker-rule { display: grid; justify-items: center; gap: 7px; color: #e9e1d3; font-weight: 900; }
+  .ticker-rule small { font-size: 6px; letter-spacing: .14em; color: #9c978f; }
+  .ticker-rule span { padding: 8px 9px; border: 1px solid #5b5d5d; border-radius: 6px; background: #151718; box-shadow: inset 0 1px 4px rgba(0,0,0,.8); color: #f0d9c2; font-family: Georgia, serif; font-size: 13px; white-space: nowrap; }
+  .ticker-rule i { font-style: normal; font-size: 19px; color: #c77e61; }
+  .counter-legend { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.1); color: #aaa49b; font-size: 7px; letter-spacing: .08em; font-weight: 800; text-transform: uppercase; }
+  .counter-legend span { display: flex; align-items: center; gap: 5px; }
+  .counter-legend i { width: 5px; height: 5px; border-radius: 50%; background: #76736e; }
+  .counter-legend .input-light { background: #c77e61; box-shadow: 0 0 5px rgba(199,126,97,.7); }
+  .ticker-equation { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 7px; padding: 9px 12px; border-radius: 11px; background: var(--qx-surface); font-family: Georgia, serif; font-size: 17px; }
+  .ticker-equation i { font-style: normal; color: var(--qx-text-faint); }
+  .ticker-equation b { color: var(--qx-accent-text); }
+  @keyframes ticker-settle { from { transform: translateY(-9px); opacity: .45; } to { transform: translateY(0); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .ticker-stack { animation: none; } }
+  @media (max-width: 540px) {
+    .counter-shell { padding: 10px 9px 8px; }
+    .counter-header > strong { letter-spacing: .1em; }
+    .ticker-pair { grid-template-columns: minmax(88px, 1fr) minmax(62px, auto) minmax(88px, 1fr); gap: 6px; }
+    .ticker-unit { padding: 8px 5px; }
+    .number-ticker { width: 68px; }
+    .ticker-rule span { padding: 7px 5px; font-size: 11px; }
+    .counter-label { justify-content: center; }
+    .counter-label small { display: none; }
+    .ticker-unit em { font-size: 6.5px; }
+  }
   .unit-fig { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; justify-items: center; gap: 7px; }
   .unit-sq { width: 62px; height: 62px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 3px; padding: 0; }
   .unit-sq.live { cursor: pointer; }

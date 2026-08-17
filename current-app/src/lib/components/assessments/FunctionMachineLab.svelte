@@ -33,6 +33,14 @@
   const feedChips = [0, 1, 2, 3, 4];
   let fed = [];
   let feedPick = null;
+  let switchOn = false;
+  let switchUsed = false;
+  $: switchInput = switchOn ? 1 : 0;
+  $: switchOutput = switchInput + 3;
+  function toggleInputSwitch() {
+    switchOn = !switchOn;
+    switchUsed = true;
+  }
   function feedChip(x) {
     if (fed.includes(x) || stageDone) return;
     fed = [...fed, x];
@@ -162,6 +170,39 @@
 
     {#if stage === 0}
       <div class="fm-rule">Machine rule: <strong>f(x) = x + 3</strong></div>
+      <div class="fm-switch-demo">
+        <div class="fm-switch-value">
+          <span>Input</span>
+          <strong>x = {switchInput}</strong>
+          <small>{switchOn ? 'ON' : 'OFF'}</small>
+        </div>
+        <button
+          class="fm-input-switch"
+          class:used={switchUsed}
+          type="button"
+          role="switch"
+          aria-checked={switchOn}
+          aria-label={`Input switch ${switchOn ? 'on' : 'off'}; x is ${switchInput}. Flip it to change the input.`}
+          on:click={toggleInputSwitch}
+        >
+          <img
+            src={switchOn ? '/media/functions/function-switch-on.png' : '/media/functions/function-switch-off.png'}
+            alt=""
+            draggable="false"
+          />
+        </button>
+        <div class="fm-switch-arrow" aria-hidden="true">→</div>
+        <div class="fm-switch-value output">
+          <span>Output</span>
+          <strong>f({switchInput}) = {switchOutput}</strong>
+          <small>+ 3</small>
+        </div>
+      </div>
+      <div class="fm-note fm-switch-note">
+        {switchUsed
+          ? 'The switch changed x, so the same rule produced a new output.'
+          : 'Flip the switch: one changed input gives one changed output.'}
+      </div>
       <div class="fm-machine-row">
         <div class="fm-chips">
           {#each feedChips as x}
@@ -425,6 +466,81 @@
 
   .fm-machine-row { width: 100%; display: flex; justify-content: center; }
 
+  .fm-switch-demo {
+    width: 100%;
+    min-height: 136px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(72px, 1fr) 84px 18px minmax(90px, 1fr);
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border: 1px solid var(--qx-border);
+    border-radius: 12px;
+    background: var(--qx-surface-2);
+  }
+
+  .fm-input-switch {
+    width: 84px;
+    height: 120px;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    touch-action: manipulation;
+    transition: transform 0.12s ease, filter 0.12s ease;
+  }
+  .fm-input-switch:hover { filter: brightness(1.03); }
+  .fm-input-switch:active { transform: scale(0.96); }
+  .fm-input-switch:focus-visible {
+    outline: 3px solid var(--qx-accent);
+    outline-offset: 3px;
+  }
+  .fm-input-switch.used { filter: drop-shadow(0 4px 7px color-mix(in srgb, var(--qx-text) 18%, transparent)); }
+  .fm-input-switch img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .fm-switch-value {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+  }
+  .fm-switch-value span,
+  .fm-switch-value small {
+    color: var(--qx-text-faint);
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .fm-switch-value strong {
+    color: var(--qx-text);
+    font-size: 15px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .fm-switch-value.output strong { color: var(--qx-accent-text); }
+  .fm-switch-arrow {
+    color: var(--qx-accent);
+    font-size: 21px;
+    font-weight: 900;
+    text-align: center;
+  }
+  .fm-switch-note { text-align: center; }
+
   .fm-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
   .fm-chip {
@@ -606,6 +722,19 @@
   }
 
   .fm-note { font-size: 12px; font-weight: 700; color: var(--qx-text-faint); }
+
+  @media (max-width: 360px) {
+    .fm-switch-demo {
+      grid-template-columns: minmax(60px, 1fr) 72px 14px minmax(80px, 1fr);
+      padding-inline: 8px;
+    }
+    .fm-input-switch { width: 72px; height: 104px; }
+    .fm-switch-value strong { font-size: 13px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fm-input-switch { transition: none; }
+  }
 
   .fm-hint {
     width: 100%;

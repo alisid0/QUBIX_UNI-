@@ -2,10 +2,12 @@ import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
+import { spawn } from 'node:child_process';
 
 const root = path.resolve('.');
 const studioPath = '/shorts/functions/mascot-studio/';
 const outputDir = path.resolve('shorts/functions/mascot-studio/renders');
+const finalOutputDir = path.resolve('shorts/functions/mascot-studio/renders-final');
 const port = 4179;
 
 const mimeTypes = {
@@ -32,6 +34,15 @@ const animations = [
   'press',
   'transition'
 ];
+const posterOnly = process.argv.includes('--poster-only');
+
+function run(command, args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { stdio: 'inherit' });
+    child.once('error', reject);
+    child.once('exit', code => code === 0 ? resolve() : reject(new Error(`${command} exited with ${code}`)));
+  });
+}
 
 const server = http.createServer(async (request, response) => {
   try {
@@ -49,6 +60,7 @@ const server = http.createServer(async (request, response) => {
 });
 
 await fs.mkdir(outputDir, { recursive: true });
+await fs.mkdir(finalOutputDir, { recursive: true });
 await new Promise(resolve => server.listen(port, '127.0.0.1', resolve));
 
 const browser = await chromium.launch({ headless: true });
@@ -59,15 +71,17 @@ try {
   await page.selectOption('#background-select', 'transparent');
   await page.selectOption('#speed-select', '1');
 
-  for (const animation of animations) {
-    await page.click(`[data-animation="${animation}"]`);
-    await page.waitForTimeout(180);
-    const downloadReady = page.waitForEvent('download', { timeout: 15000 });
-    await page.click('#record-button');
-    const download = await downloadReady;
-    const output = path.join(outputDir, `qubix-cube-${animation}.webm`);
-    await download.saveAs(output);
-    console.log(`Saved ${path.relative(root, output)}`);
+  if (!posterOnly) {
+    for (const animation of animations) {
+      await page.click(`[data-animation="${animation}"]`);
+      await page.waitForTimeout(180);
+      const downloadReady = page.waitForEvent('download', { timeout: 15000 });
+      await page.click('#record-button');
+      const download = await downloadReady;
+      const output = path.join(outputDir, `qubix-cube-${animation}.webm`);
+      await download.saveAs(output);
+      console.log(`Saved ${path.relative(root, output)}`);
+    }
   }
 
   const errors = await page.evaluate(() => window.__mascotRenderErrors || []);
@@ -77,4 +91,37 @@ try {
   await new Promise(resolve => server.close(resolve));
 }
 
-console.log(`Rendered ${animations.length} transparent animation clips.`);
+const idleVideo = path.join(outputDir, 'qubix-cube-idle.webm');
+const idlePoster = path.join(outputDir, 'qubix-cube-idle.png');
+const ffmpeg = process.env.FFMPEG_PATH || 'ffmpeg';
+await run(ffmpeg, [
+  '-y', '-ss', '0.5', '-i', idleVideo,
+  '-vf', 'colorkey=0x000000:0.018:0.04,format=rgba',
+  '-frames:v', '1', '-update', '1', idlePoster
+]);
+console.log('Saved transparent idle poster.');
+
+if (!posterOnly) {
+  for (const animation of animations) {
+    await run(ffmpeg, [
+      '-loglevel', 'error', '-y', '-c:v', 'libvpx-vp9',
+      '-i', path.join(outputDir, `qubix-cube-${animation}.webm`),
+      '-vf', 'scale=270:480:flags=lanczos',
+      '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p',
+      '-crf', '34', '-b:v', '0', '-an',
+      path.join(finalOutputDir, `qubix-cube-${animation}.webm`)
+    ]);
+  }
+  console.log(`Optimised ${animations.length} app and production clips.`);
+}
+
+await run(ffmpeg, [
+  '-loglevel', 'error', '-y', '-i', idlePoster,
+  '-vf', 'scale=270:480:flags=lanczos',
+  path.join(finalOutputDir, 'qubix-cube-idle.png')
+]);
+console.log('Saved optimised idle poster.');
+
+console.log(posterOnly
+  ? 'Rendered transparent idle poster.'
+  : `Rendered ${animations.length} transparent animation clips.`);
