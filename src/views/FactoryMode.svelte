@@ -53,6 +53,10 @@
     'vector-translate', 'vector-copy-test', 'vector-head-tail', 'vector-route-order', 'vector-resultant', 'vector-cancel',
     'force-push', 'force-vector', 'force-compare', 'force-bars', 'mass-push', 'mass-race',
     'variable-ticker',
+    'subtract-strip', 'grow-bars', 'change-sign', 'change-table',
+    'plant-tree', 'same-change-bars', 'change-only-table',
+    'per-one', 'rate-convert', 'rate-dial', 'rate-cards',
+    'rate-of-change', 'rate-race', 'change-over-time', 'unit-match',
     'switch-toggle', 'switch-plain', 'tap-valve', 'tap-piston', 'machine-panel', 'machine-labels',
     'forked-button', 'flaky-button'];
 
@@ -283,6 +287,67 @@
   // half a unit or neighbouring points swallow each other. The first build used
   // r=15 against a 15px unit and made every vertically adjacent point
   // unreachable, which the drill only revealed when driven.
+  // ---- Two Inches and Two Feet -------------------------------------------
+  // Thompson's plant and tree. Both change by 2, and both come to 2 inches a
+  // month, which is the board's payoff and is computed here rather than written
+  // into any string, so the figures cannot drift from the arithmetic.
+  let rbOld = 12, rbNew = 14;                    // subtract-strip, change-sign
+  let rbRows = [12, 14, 13, 17];                 // change-table
+  let rbApples = 6, rbCost = 300;                // per-one, in pence
+  let rbYps = 10;                                // rate-convert, yards per second
+  let rbDial = 3, rbSecs = 4;                    // rate-dial
+  let rbUnit = 'month';                          // unit-match
+  // A reactive declaration, not a helper. `const rbChange = () => rbNew - rbOld`
+  // reads both values inside the function body, so Svelte cannot see that the
+  // markup depends on them and never marks it dirty: the strip showed 10 − 12 = 2
+  // and called it a rise. Sixth time this exact fault has appeared in this file.
+  // Read state at the call site, or declare it reactively as here.
+  $: rbDelta = rbNew - rbOld;
+  const PLANT = { name: 'plant', from: 12, to: 14, unit: 'inches', per: 1, perUnit: 'month' };
+  const TREE = { name: 'tree', from: 12, to: 14, unit: 'feet', per: 12, perUnit: 'months' };
+  // Everything reduced to inches per month so the two are actually comparable.
+  const inchesPerMonth = o => ((o.to - o.from) * (o.unit === 'feet' ? 12 : 1)) / o.per;
+  const rbSame = Math.abs(inchesPerMonth(PLANT) - inchesPerMonth(TREE)) < 1e-9;
+
+  // Growing bench. Goals stick, for the reason the tally bench needed them to.
+  let gb = { aChange: 2, aTime: 1, bChange: 2, bTime: 1 };
+  let gbSeen = { equalChange: false, twiceAsFast: false, smallerFaster: false, sameRate: false };
+  const gbRate = (c, t) => t === 0 ? null : c / t;
+  $: {
+    const ra = gbRate(gb.aChange, gb.aTime), rb2 = gbRate(gb.bChange, gb.bTime);
+    const next = { ...gbSeen };
+    if (gb.aChange === gb.bChange) next.equalChange = true;
+    if (gb.aChange === gb.bChange && ra !== null && rb2 !== null && ra !== 0 &&
+        (Math.abs(ra / rb2 - 2) < 1e-9 || Math.abs(rb2 / ra - 2) < 1e-9)) next.twiceAsFast = true;
+    if (ra !== null && rb2 !== null) {
+      if ((gb.aChange < gb.bChange && ra > rb2) || (gb.bChange < gb.aChange && rb2 > ra)) next.smallerFaster = true;
+      if (gb.aChange !== gb.bChange && Math.abs(ra - rb2) < 1e-9) next.sameRate = true;
+    }
+    if (JSON.stringify(next) !== JSON.stringify(gbSeen)) gbSeen = next;
+  }
+  const gbGoal = (id, s) => ({ g1: s.equalChange, g2: s.twiceAsFast, g3: s.smallerFaster, g4: s.sameRate }[id] || false);
+
+  // Rate quiz bench.
+  const RQ = [
+    { q: 'grew 6 cm in 2 hours', a: 3, unit: 'cm per hour' },
+    { q: 'fell 12 degrees in 4 hours', a: -3, unit: 'degrees per hour' },
+    { q: 'gained 20 pages in 5 days', a: 4, unit: 'pages per day' },
+    { q: 'lost 9 litres in 3 minutes', a: -3, unit: 'litres per minute' },
+    { q: 'rose 15 metres in 5 seconds', a: 3, unit: 'metres per second' }
+  ];
+  let rq = { i: 0, guess: 0, streak: 0, seen: { run3: false, negative: false, multiUnit: false } };
+  function rqCheck() {
+    const item = RQ[rq.i % RQ.length];
+    const right = rq.guess === item.a;
+    const seen = { ...rq.seen };
+    const streak = right ? rq.streak + 1 : 0;
+    if (streak >= 3) seen.run3 = true;
+    if (right && item.a < 0) seen.negative = true;
+    if (right && !/ 1 /.test(item.q)) seen.multiUnit = true;
+    rq = { i: rq.i + (right ? 1 : 0), guess: 0, streak, seen };
+  }
+  const rqGoal = (id, s) => ({ q1: s.run3, q2: s.negative, q3: s.multiUnit }[id] || false);
+
   const UNIT = 22;
   const HIT_R = 10;            // < UNIT / 2, so adjacent targets never overlap
   const PLANE = { minX: -4, maxX: 4, minY: -4, maxY: 6, pad: 28, top: 14 };
@@ -1798,6 +1863,177 @@
                     </p>
                   </div>
 
+                {:else if interaction.kind === 'subtract-strip' || interaction.kind === 'change-sign'}
+                  
+                  <div class="rows">
+                    <div class="row"><small>WAS</small>
+                      <button on:click={() => (rbOld = Math.max(0, rbOld - 1))} aria-label="Lower old value">−</button>
+                      <b>{rbOld}</b>
+                      <button on:click={() => (rbOld = rbOld + 1)} aria-label="Raise old value">+</button>
+                    </div>
+                    <div class="row"><small>NOW</small>
+                      <button on:click={() => (rbNew = Math.max(0, rbNew - 1))} aria-label="Lower new value">−</button>
+                      <b>{rbNew}</b>
+                      <button on:click={() => (rbNew = rbNew + 1)} aria-label="Raise new value">+</button>
+                    </div>
+                    <div class="work-lines">
+                      <span>new − old</span>
+                      <span>{rbNew} − {rbOld}</span>
+                      <b class:falling={rbDelta < 0}>{rbDelta < 0 ? '−' + Math.abs(rbDelta) : rbDelta}</b>
+                    </div>
+                    <p class="stage-note">
+                      {rbDelta > 0 ? 'It rose, so the change is positive.'
+                        : rbDelta < 0 ? 'It fell, so the change is negative. The subtraction records direction as well as size.'
+                        : 'No change at all, which is a change of nought.'}
+                    </p>
+                  </div>
+
+                {:else if interaction.kind === 'grow-bars' || interaction.kind === 'same-change-bars'}
+                  {@const pair = interaction.kind === 'same-change-bars' ? [PLANT, TREE] : [PLANT]}
+                  <div class="rows">
+                    {#each pair as o}
+                      <div class="grow-row">
+                        <small>{o.name}</small>
+                        <span class="gbar"><i style={`width:${(o.from / 20) * 100}%`}></i><em style={`left:${(o.from / 20) * 100}%;width:${((o.to - o.from) / 20) * 100}%`}></em></span>
+                        <b>+{o.to - o.from} {o.unit}</b>
+                      </div>
+                    {/each}
+                    <p class="stage-note">
+                      {interaction.kind === 'same-change-bars'
+                        ? 'Both shaded pieces are the same length on the page. One is inches and the other is feet, and one took a month while the other took a year.'
+                        : `From ${PLANT.from} to ${PLANT.to}. The shaded piece is the change.`}
+                    </p>
+                  </div>
+
+                {:else if interaction.kind === 'change-table' || interaction.kind === 'change-only-table' || interaction.kind === 'change-over-time'}
+                  <div class="rows">
+                    {#if interaction.kind === 'change-table'}
+                      <table class="io-table">
+                        <thead><tr><th>reading</th><th>was</th><th>now</th><th>change</th></tr></thead>
+                        <tbody>
+                          {#each rbRows.slice(0, -1) as v, i}
+                            <tr><td>{i + 1} → {i + 2}</td><td>{v}</td><td>{rbRows[i + 1]}</td><td><b>{rbRows[i + 1] - v > 0 ? '+' : ''}{rbRows[i + 1] - v}</b></td></tr>
+                          {/each}
+                        </tbody>
+                      </table>
+                      <p class="stage-note">A change belongs to a pair of readings, not to one of them.</p>
+                    {:else if interaction.kind === 'change-only-table'}
+                      <table class="io-table">
+                        <thead><tr><th></th><th>change</th><th>which grew faster?</th></tr></thead>
+                        <tbody>
+                          <tr><td>plant</td><td><b>2</b></td><td class="blank">—</td></tr>
+                          <tr><td>tree</td><td><b>2</b></td><td class="blank">—</td></tr>
+                        </tbody>
+                      </table>
+                      <p class="stage-note">The last column cannot be filled from this table. What is missing is not hidden; it was never collected.</p>
+                    {:else}
+                      <table class="io-table">
+                        <thead><tr><th></th><th>change</th><th>over</th><th>rate</th></tr></thead>
+                        <tbody>
+                          {#each [PLANT, TREE] as o}
+                            <tr><td>{o.name}</td><td>{o.to - o.from} {o.unit}</td><td>{o.per} {o.perUnit}</td>
+                              <td><b>{inchesPerMonth(o)} in/month</b></td></tr>
+                          {/each}
+                        </tbody>
+                      </table>
+                      <p class="stage-note">The same table the next board opens with, before any notation is put on it.</p>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'plant-tree' || interaction.kind === 'rate-of-change' || interaction.kind === 'rate-race' || interaction.kind === 'unit-match'}
+                  {@const showRate = interaction.kind !== 'plant-tree'}
+                  <div class="rows">
+                    <div class="pt-pair">
+                      {#each [PLANT, TREE] as o}
+                        <div class="pt-one">
+                          <small>{o.name}</small>
+                          <span class="pt-bar"><i class:racing={interaction.kind === 'rate-race'}
+                            style={`height:${(o.from / 20) * 100}%`}></i></span>
+                          <b>{o.from} → {o.to} {o.unit}</b>
+                          <em>in {o.per} {o.perUnit}</em>
+                          {#if showRate}<strong>{inchesPerMonth(o)} inches per month</strong>{/if}
+                        </div>
+                      {/each}
+                    </div>
+                    {#if interaction.kind === 'unit-match'}
+                      <div class="plates">
+                        {#each ['month', 'year'] as u}
+                          <button class="chip" class:on={rbUnit === u} on:click={() => (rbUnit = u)}>compare per {u}</button>
+                        {/each}
+                      </div>
+                      <p class="stage-note">
+                        Per {rbUnit}: plant {inchesPerMonth(PLANT) * (rbUnit === 'year' ? 12 : 1)} inches,
+                        tree {inchesPerMonth(TREE) * (rbUnit === 'year' ? 12 : 1)} inches. Same verdict either way, once the units agree.
+                      </p>
+                    {:else}
+                      <p class="stage-note">
+                        {#if !showRate}
+                          Both grew by 2. One took a month and the other a year, and one is measured in inches and the other in feet. Nothing here settles which grew faster.
+                        {:else if rbSame}
+                          Both come to {inchesPerMonth(PLANT)} inches a month. They are growing at exactly the same rate, which the bare changes could not have told you.
+                        {:else}
+                          The rates differ.
+                        {/if}
+                      </p>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'per-one' || interaction.kind === 'rate-cards'}
+                  {#if interaction.kind === 'per-one'}
+                    <div class="rows">
+                      <div class="row"><small>APPLES</small>
+                        <button on:click={() => (rbApples = Math.max(1, rbApples - 1))} aria-label="Fewer apples">−</button>
+                        <b>{rbApples}</b>
+                        <button on:click={() => (rbApples = rbApples + 1)} aria-label="More apples">+</button>
+                      </div>
+                      <div class="row"><small>COST</small>
+                        <button on:click={() => (rbCost = Math.max(0, rbCost - 50))} aria-label="Lower cost">−</button>
+                        <b>{(rbCost / 100).toFixed(2)}</b>
+                        <button on:click={() => (rbCost = rbCost + 50)} aria-label="Raise cost">+</button>
+                      </div>
+                      <div class="big"><b>{(rbCost / rbApples).toFixed(0)}p</b><small>for each apple</small></div>
+                      <p class="stage-note">Move both and the per-one figure can stay where it is. That is what makes it a thing of its own.</p>
+                    </div>
+                  {:else}
+                    <div class="rows">
+                      {#each [['3 pounds for 6 apples', '50p per apple'], ['120 miles in 2 hours', '60 miles per hour'], ['40 pages in 5 days', '8 pages per day']] as [said, means]}
+                        <div class="rule-card"><b>{said}</b><em>{means}</em></div>
+                      {/each}
+                      <p class="stage-note">Each says the same thing twice. The right-hand form is the rate.</p>
+                    </div>
+                  {/if}
+
+                {:else if interaction.kind === 'rate-convert'}
+                  <div class="rows">
+                    <label class="range-row"><span>1</span>
+                      <input type="range" min="1" max="20" step="1" bind:value={rbYps} aria-label="Yards per second"/>
+                      <span>20</span></label>
+                    <div class="readouts">
+                      <div class="readout live"><small>per second</small><b>{rbYps} yd</b></div>
+                      <div class="readout live"><small>per minute</small><b>{rbYps * 60} yd</b></div>
+                      <div class="readout live"><small>per hour</small><b>{((rbYps * 3600) / 1760).toFixed(1)} mi</b></div>
+                    </div>
+                    <p class="stage-note">One motion, three descriptions. Nothing about the car changes when the unit does.</p>
+                  </div>
+
+                {:else if interaction.kind === 'rate-dial'}
+                  <div class="rows">
+                    <div class="row"><small>RATE</small>
+                      <button on:click={() => (rbDial = Math.max(0, rbDial - 1))} aria-label="Lower rate">−</button>
+                      <b>{rbDial}</b>
+                      <button on:click={() => (rbDial = rbDial + 1)} aria-label="Raise rate">+</button>
+                      <small>per second</small>
+                    </div>
+                    <div class="row"><small>FOR</small>
+                      <button on:click={() => (rbSecs = Math.max(0, rbSecs - 1))} aria-label="Fewer seconds">−</button>
+                      <b>{rbSecs}</b>
+                      <button on:click={() => (rbSecs = rbSecs + 1)} aria-label="More seconds">+</button>
+                      <small>seconds</small>
+                    </div>
+                    <div class="big"><b>{rbDial * rbSecs}</b><small>altogether</small></div>
+                    <p class="stage-note">Read the other way: given a rate and a time, the amount follows.</p>
+                  </div>
+
                 {:else if interaction.kind === 'switch-toggle' || interaction.kind === 'switch-plain'}
                   <div class="rows centre">
                     <div class="lamp" class:lit={sw.up}>{sw.up ? 'ON' : 'OFF'}</div>
@@ -3084,6 +3320,55 @@
                     </ul>
                   </div>
 
+                {:else if w.kind === 'growth-bench'}
+                  <div class="rows">
+                    {#each [['A', 'aChange', 'aTime'], ['B', 'bChange', 'bTime']] as [label, ck, tk]}
+                      <div class="coll">
+                        <small>{label}</small>
+                        <span class="pm">
+                          <button on:click={() => gb = { ...gb, [ck]: gb[ck] - 1 }} aria-label={`Less change for ${label}`}>−</button>
+                          <b class="gb-num">{gb[ck]}</b>
+                          <button on:click={() => gb = { ...gb, [ck]: gb[ck] + 1 }} aria-label={`More change for ${label}`}>+</button>
+                        </span>
+                        <small>in</small>
+                        <span class="pm">
+                          <button on:click={() => gb = { ...gb, [tk]: Math.max(1, gb[tk] - 1) }} aria-label={`Less time for ${label}`}>−</button>
+                          <b class="gb-num">{gb[tk]}</b>
+                          <button on:click={() => gb = { ...gb, [tk]: gb[tk] + 1 }} aria-label={`More time for ${label}`}>+</button>
+                        </span>
+                        <strong class="gb-rate">{gbRate(gb[ck], gb[tk])} per unit</strong>
+                      </div>
+                    {/each}
+                    <p class="stage-note">
+                      {gbRate(gb.aChange, gb.aTime) === gbRate(gb.bChange, gb.bTime)
+                        ? 'Same rate.'
+                        : gbRate(gb.aChange, gb.aTime) > gbRate(gb.bChange, gb.bTime) ? 'A is faster.' : 'B is faster.'}
+                    </p>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={gbGoal(g.id, gbSeen)}><i>{gbGoal(g.id, gbSeen) ? '✓' : '○'}</i>{g.text}</li>
+                      {/each}
+                    </ul>
+                  </div>
+
+                {:else if w.kind === 'rate-quiz-bench'}
+                  {@const item = RQ[rq.i % RQ.length]}
+                  <div class="rows">
+                    <div class="drill-status"><span>Something <b>{item.q}</b></span><small>streak {rq.streak}</small></div>
+                    <div class="row"><small>RATE</small>
+                      <button on:click={() => rq = { ...rq, guess: rq.guess - 1 }} aria-label="Lower guess">−</button>
+                      <b>{rq.guess}</b>
+                      <button on:click={() => rq = { ...rq, guess: rq.guess + 1 }} aria-label="Raise guess">+</button>
+                      <small>{item.unit}</small>
+                    </div>
+                    <button class="chip" on:click={rqCheck}>check</button>
+                    <ul class="goals">
+                      {#each w.goals as g}
+                        <li class:met={rqGoal(g.id, rq.seen)}><i>{rqGoal(g.id, rq.seen) ? '✓' : '○'}</i>{g.text}</li>
+                      {/each}
+                    </ul>
+                  </div>
+
                 {:else if w.kind === 'walk-bench'}
                   <div class="rows">
                     <div class="numline walk">
@@ -3806,6 +4091,28 @@
   .both-arrows .node b { font-size: 25px; color: var(--qx-accent-text); }
   .both-arrows .arrows { display: flex; flex-direction: column; gap: 3px; }
   .both-arrows .arrows em { font-style: normal; font-size: 10px; font-weight: 800; color: var(--qx-text-faint); }
+
+  /* Two Inches and Two Feet. */
+  .work-lines b.falling { color: var(--qx-accent-text); }
+  .grow-row { display: flex; align-items: center; gap: 10px; }
+  .grow-row small { min-width: 42px; font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
+  .grow-row b { font-size: 13px; color: var(--qx-accent-text); min-width: 78px; }
+  .gbar { position: relative; flex: 1; height: 18px; border-radius: 4px; background: var(--qx-surface-2); overflow: hidden; }
+  .gbar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--qx-border-2); }
+  .gbar em { position: absolute; top: 0; bottom: 0; background: var(--qx-accent); }
+  .pt-pair { display: flex; gap: 14px; }
+  .pt-one { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; border: 1px solid var(--qx-border-2); border-radius: 12px; padding: 10px 8px; }
+  .pt-one small { font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
+  .pt-one b { font-size: 12px; color: var(--qx-text-2); }
+  .pt-one em { font-style: normal; font-size: 10.5px; color: var(--qx-text-faint); }
+  .pt-one strong { font-size: 13px; color: var(--qx-accent-text); }
+  .pt-bar { width: 26px; height: 76px; display: flex; align-items: flex-end; border-bottom: 2px solid var(--qx-text-dim); }
+  .pt-bar i { width: 100%; background: var(--qx-accent-soft); border-top: 2px solid var(--qx-accent); transition: height .5s ease; }
+  .pt-bar i.racing { animation: grow-race 2.6s ease-in-out infinite alternate; }
+  @keyframes grow-race { from { height: 30%; } to { height: 78%; } }
+  .io-table td.blank { color: var(--qx-text-faint); }
+  .gb-num { min-width: 26px; text-align: center; }
+  .gb-rate { font-size: 12.5px; color: var(--qx-accent-text); }
 
   /* Foundations: the number line. */
   .numline.walk { padding-top: 26px; }

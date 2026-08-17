@@ -25,6 +25,7 @@ import { func2, selections as selF2, finalised as finF2, rejected as rejF2, gate
 import { decimal, selections as selDec, finalised as finDec, rejected as rejDec, gated as gateDec } from './decimal-options.js';
 import { number, selections as selNum, finalised as finNum, rejected as rejNum, gated as gateNum } from './number-options.js';
 import { numberLine, selections as selLine, finalised as finLine, rejected as rejLine, gated as gateLine } from './line-options.js';
+import { rateBasics, selections as selRB, finalised as finRB, rejected as rejRB, gated as gateRB } from './rate-basics-options.js';
 import { root, selections as selRoot, finalised as finRoot, rejected as rejRoot, gated as gateRoot } from './root-options.js';
 
 export { sources };
@@ -70,6 +71,9 @@ export const registry = [
   { key: 'triangle-angles', unit: 'plane-geometry', label: 'Triangle angles', bb: triangleAngles, selections: selTriangleAngles, finalised: finTriangleAngles, rejected: rejTriangleAngles, gated: gateTriangleAngles },
   // The differential calculus. The pilot proposal moves these out of the first
   // course and makes them the opening of the next one.
+  // Proposed prerequisite for the rate board: change, then rate, then rate of
+  // change. Drafted 2026-08-17, not placed in the map.
+  { key: 'rate-basics', unit: 'rates', label: 'Change & Rate', bb: rateBasics, selections: selRB, finalised: finRB, rejected: rejRB, gated: gateRB },
   { key: 'rate', unit: 'rates', label: 'Rate', bb: bb4, selections: sel4, finalised: fin4 },
   { key: 'points', unit: 'rates', label: 'Two Points', bb: bb5, selections: sel5, finalised: fin5 },
   { key: 'notation', unit: 'rates', label: 'Notation', bb: bb6, selections: sel6, finalised: fin6, gated: gate6 },
