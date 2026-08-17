@@ -10,14 +10,28 @@ export const selections = {
   // lap where the chord is at its longest. They are the two ends of the same idea.
   'S1-X1': '2026-08-12',
   'S1-X2': '2026-08-12',
-  'S2-A': '2026-08-12'
+  'S2-A': '2026-08-12',
+  // Founder: the two S2 interactions do the same thing, so only one is kept.
+  'S2-I2': '2026-08-12',
+  'S2-X1': '2026-08-12',
+  'S2-X2': '2026-08-12',
+  'S3-A': '2026-08-12',
+  'S3-I2': '2026-08-12',
+  // Founder asked whether both S3 checks are needed. Both taken; see the note on
+  // S3-X1, which is the weaker of the two and the one to drop if the section
+  // reads long.
+  'S3-X1': '2026-08-12',
+  'S3-X2': '2026-08-12'
 };
 export const finalised = {};
 
 export const rejected = {
   'S1-B': 'Not selected; S1-A states the distinction before giving the lap example, so the example lands on a rule rather than standing in for one.',
   'S1-I1': 'Not selected; S1-I2 animates the same circle and keeps the displacement arrow reconnecting as the marker moves.',
-  'S2-B': 'Not selected; S2-A introduces direction with a magnitude already attached, which is the pairing section 3 formalises.'
+  'S2-B': 'Not selected; S2-A introduces direction with a magnitude already attached, which is the pairing section 3 formalises.',
+  'S2-I1': 'Founder, 2026-08-12: it and S2-I2 do the same thing. Both rotate a fixed-magnitude arrow around an origin; one names the compass point and the other adds the angle. S2-I2 carries both labels, so nothing is lost.',
+  'S3-B': 'Not selected; S3-A says what the arrow\'s two parts represent, which is what S3-X2 goes on to test.',
+  'S3-I1': 'Not selected; S3-I2 builds two vectors and tests equality, which is the section\'s actual claim rather than a display of one vector.'
 };
 export const gated = 'Proposed vector prerequisite after Speed and Velocity. Every candidate is AI_DRAFT and awaits founder selection, prerequisite mapping, placement and approval. It must remain outside the learner build.';
 
@@ -58,7 +72,16 @@ export const vectors = {
       {code:'S3-I1',kind:'vector-builder',note:'Choose magnitude from 1 to 8 and rotate direction through 360°. Arrow length, arrowhead and readout update together.'},
       {code:'S3-I2',kind:'vector-compare',note:'Build two vectors and test equality. They match only when both magnitude and direction match.'}
     ], exercises:[
+      // The weaker of the two, and the one to drop if section 3 reads long. S3-I2
+      // already has the learner build two vectors and test equality, so this
+      // asks them to restate what they have just done. That is the see-it-then-
+      // say-it pattern every other board uses, which is why it is kept, but it
+      // is the only check on this board that repeats its own interaction.
       {code:'S3-X1',kind:'choice',prompt:'When are two vectors equal?',options:[{label:'When magnitude and direction both match',correct:true},{label:'Whenever their magnitudes match',feedback:'Equal length with different direction gives different vectors.'},{label:'Whenever they point the same way',feedback:'Direction alone does not fix magnitude.'}],successNote:'Both parts must agree.'},
+      // The stronger keep. Its third option, "distance travelled along a path",
+      // is the only place the board reaches back to section 1, so this is what
+      // ties the vector to the distance-versus-displacement distinction the
+      // whole board opened with.
       {code:'S3-X2',kind:'choice',prompt:'What does the arrowhead of a vector show?',options:[{label:'Direction',correct:true},{label:'Magnitude',feedback:'Magnitude is represented by the arrow length.'},{label:'Distance travelled along a path',feedback:'A vector joins a directed change; it does not trace the route.'}],successNote:'Arrowhead means direction; length means magnitude.'}
     ]}
   ], closing:'Next proposed board: Vector Addition, using head-to-tail arrows before two-dimensional forces.'
