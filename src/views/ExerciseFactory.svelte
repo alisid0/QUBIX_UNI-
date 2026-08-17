@@ -58,6 +58,21 @@
     return out.map(r => r.join(' '));
   };
 
+  // Solutions. Stepped, per exercise, and independent of the approach state so a
+  // learner can read the working without losing where they had got to.
+  let solStep = {};
+  const openSol = code => solStep[code] !== undefined;
+  function showSolution(code) { solStep = { ...solStep, [code]: 0 }; }
+  function nextStep(ex) {
+    const i = solStep[ex.code] ?? 0;
+    solStep = { ...solStep, [ex.code]: Math.min(ex.solution.length - 1, i + 1) };
+  }
+  function hideSolution(code) {
+    const next = { ...solStep };
+    delete next[code];
+    solStep = next;
+  }
+
   let tab = 'limits';
 </script>
 
@@ -174,6 +189,87 @@
               From below {fmt(s.left)}, from above {fmt(s.right)}. Keep closing.
             {/if}
           </p>
+          <div class="sol-wrap">
+            {#if solStep[ex.code] === undefined}
+              <button class="chip solve" on:click={() => showSolution(ex.code)}>show the solution</button>
+            {:else}
+              {@const si = solStep[ex.code]}
+              {@const step = ex.solution[si]}
+              {@const drawnAt = ex.solution.findIndex(t => t.mark === 'overlay')}
+              {@const showSimple = ex.simple && drawnAt >= 0 && si >= drawnAt}
+              <div class="sol">
+                <div class="sol-head">
+                  <b>Solution</b>
+                  <span class="sol-count">step {si + 1} of {ex.solution.length}</span>
+                  <button class="chip quiet" on:click={() => hideSolution(ex.code)}>hide</button>
+                </div>
+
+                <!-- The diagram answers to the step, so the picture and the
+                     sentence never describe different things. -->
+                <svg class="ex-plane sol-plane" viewBox="0 0 300 192" role="img"
+                  aria-label={`Solution diagram, step ${si + 1}: ${step.say}`}>
+                  {#each [-4, -2, 2, 4] as t}
+                    <line class="g" x1={pt(t, 0).x} y1={pt(0, 5).y} x2={pt(t, 0).x} y2={pt(0, -5).y}/>
+                    <line class="g" x1={pt(-5, 0).x} y1={pt(0, t).y} x2={pt(5, 0).x} y2={pt(0, t).y}/>
+                  {/each}
+                  <line class="ax" x1={pt(-5, 0).x} y1={pt(0, 0).y} x2={pt(5, 0).x} y2={pt(0, 0).y}/>
+                  <line class="ax" x1={pt(0, 0).x} y1={pt(0, 5).y} x2={pt(0, 0).x} y2={pt(0, -5).y}/>
+
+                  {#if showSimple}
+                    {#each curve(ex.simple) as seg}<polyline class="simple" points={seg}/>{/each}
+                  {/if}
+                  {#each curve(ex.f, -5, 5, ex.hole ? ex.at : null) as seg}
+                    <polyline class="fn" points={seg}/>
+                  {/each}
+
+                  {#if step.mark === 'zero'}
+                    <line class="mark hot" x1={pt(ex.at, 0).x} y1={pt(0, 5).y} x2={pt(ex.at, 0).x} y2={pt(0, -5).y}/>
+                    <text class="callout" x={pt(ex.at, 0).x + 6} y={18}>nothing here</text>
+                  {/if}
+                  {#if step.mark === 'right'}
+                    {#each [1, 0.5, 0.2, 0.1] as g}
+                      {#if Math.abs(ex.f(ex.at + g)) <= 7}
+                        <circle class="probe" cx={pt(ex.at + g, ex.f(ex.at + g)).x} cy={pt(ex.at + g, ex.f(ex.at + g)).y} r="3.5"/>
+                      {/if}
+                    {/each}
+                  {/if}
+                  {#if step.mark === 'left'}
+                    {#each [1, 0.5, 0.2, 0.1] as g}
+                      {#if Math.abs(ex.f(ex.at - g)) <= 7}
+                        <circle class="probe left" cx={pt(ex.at - g, ex.f(ex.at - g)).x} cy={pt(ex.at - g, ex.f(ex.at - g)).y} r="3.5"/>
+                      {/if}
+                    {/each}
+                  {/if}
+                  {#if step.mark === 'sides'}
+                    {#each [1, 0.5, 0.2, 0.1] as g}
+                      {#if Math.abs(ex.f(ex.at + g)) <= 7}<circle class="probe" cx={pt(ex.at + g, ex.f(ex.at + g)).x} cy={pt(ex.at + g, ex.f(ex.at + g)).y} r="3.5"/>{/if}
+                      {#if Math.abs(ex.f(ex.at - g)) <= 7}<circle class="probe left" cx={pt(ex.at - g, ex.f(ex.at - g)).x} cy={pt(ex.at - g, ex.f(ex.at - g)).y} r="3.5"/>{/if}
+                    {/each}
+                  {/if}
+                  {#if (step.mark === 'hole' || step.mark === 'value') && ex.limit !== null}
+                    <circle class={step.mark === 'hole' ? 'hole big' : 'probe'} cx={pt(ex.at, ex.limit).x} cy={pt(ex.at, ex.limit).y} r="5.5"/>
+                    <text class="callout" x={pt(ex.at, ex.limit).x + 9} y={pt(ex.at, ex.limit).y - 7}>{ex.limit}</text>
+                  {/if}
+                </svg>
+
+                {#if showSimple && ex.simpleExpr}
+                  <p class="sol-key"><i class="swatch"></i>{ex.simpleExpr}, drawn under the original</p>
+                {/if}
+
+                <ol class="sol-steps">
+                  {#each ex.solution.slice(0, si + 1) as st, k}
+                    <li class:current={k === si}>{st.say}</li>
+                  {/each}
+                </ol>
+
+                {#if si < ex.solution.length - 1}
+                  <button class="chip" on:click={() => nextStep(ex)}>next step</button>
+                {:else}
+                  <p class="sol-done">That is the whole of it.</p>
+                {/if}
+              </div>
+            {/if}
+          </div>
           <p class="note">{ex.note}</p>
         </article>
       {/each}
@@ -252,5 +348,23 @@
   .verdict { margin: 0; font-size: 12px; line-height: 1.5; color: var(--qx-text-2); }
   .verdict.done { color: var(--qx-accent-text); font-weight: 700; }
   .note { margin: 0; font-size: 11.5px; line-height: 1.5; color: var(--qx-text-faint); border-top: 1px dashed var(--qx-border-2); padding-top: 9px; }
+  .sol-wrap { border-top: 1px dashed var(--qx-border-2); padding-top: 10px; }
+  .chip.solve { border-style: dashed; }
+  .sol { display: flex; flex-direction: column; gap: 10px; }
+  .sol-head { display: flex; align-items: center; gap: 9px; }
+  .sol-head b { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--qx-accent-text); }
+  .sol-count { font-size: 10px; color: var(--qx-text-faint); font-weight: 800; margin-right: auto; }
+  .sol-plane .simple { fill: none; stroke: var(--qx-green, #3E9E2A); stroke-width: 4; opacity: .45; }
+  .sol-plane .mark.hot { stroke: var(--qx-accent); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .sol-plane .callout { fill: var(--qx-accent-text); font-size: 9px; font-weight: 800; }
+  .sol-plane .probe.left { fill: var(--qx-accent); }
+  .sol-plane .hole.big { stroke-width: 2.5; }
+  .sol-key { margin: 0; display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: var(--qx-text-dim); }
+  .swatch { width: 16px; height: 4px; border-radius: 2px; background: var(--qx-green, #3E9E2A); opacity: .55; }
+  .sol-steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 7px; }
+  .sol-steps li { font-size: 12.5px; line-height: 1.55; color: var(--qx-text-faint); }
+  .sol-steps li.current { color: var(--qx-text); font-weight: 600; }
+  .sol-done { margin: 0; font-size: 11.5px; font-weight: 800; color: var(--qx-green-text); }
+
   .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
 </style>

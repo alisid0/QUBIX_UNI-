@@ -53,6 +53,14 @@ export const LIMIT_EXERCISES = [
       'x + 1,  provided x ≠ 1',
       'so as x → 1 the value → 2'
     ],
+    simple: x => x + 1, simpleExpr: 'y = x + 1',
+    solution: [
+      { say: 'Put x = 1 straight in. The top becomes 1 − 1 = 0 and the bottom becomes 1 − 1 = 0. Nought over nought is not a number, so the expression has no value at x = 1.', mark: 'zero' },
+      { say: 'But the top factorises: x² − 1 is (x + 1)(x − 1). Now the same (x − 1) appears above and below.', mark: 'algebra' },
+      { say: 'Cancel it, and this is the only delicate step: cancelling is dividing by (x − 1), which is allowed for every x except 1, because there it is nought. So x + 1 agrees with the original everywhere except at the one point where the original has nothing to say.', mark: 'algebra' },
+      { say: 'Draw x + 1 on the same axes and the two lie exactly on top of each other. The expression was never a strange curve; it is this straight line with a single point punched out of it.', mark: 'overlay' },
+      { say: 'So as x approaches 1, the value approaches whatever the line gives at 1, which is 2. The hole is at height 2, and nothing has to happen at the hole for the approach to be perfectly definite.', mark: 'hole' }
+    ],
     note: 'The opening case, and the one that shows why limits are needed at all. At x = 1 the expression is 0/0 and has no value, yet everywhere around it the value is plainly heading for 2. The learner drags x towards 1 and watches it settle without ever arriving, which is the whole idea in one gesture.'
   },
   {
@@ -69,6 +77,14 @@ export const LIMIT_EXERCISES = [
       'x + 2,  provided x ≠ 2',
       'so as x → 2 the value → 4'
     ],
+    simple: x => x + 2, simpleExpr: 'y = x + 2',
+    solution: [
+      { say: 'At x = 2 the top is 4 − 4 = 0 and the bottom is 2 − 2 = 0. No value there.', mark: 'zero' },
+      { say: 'x² − 4 factorises as (x + 2)(x − 2), so (x − 2) appears above and below.', mark: 'algebra' },
+      { say: 'Cancelling divides by (x − 2), which is fine for every x except 2. What is left is x + 2.', mark: 'algebra' },
+      { say: 'x + 2 drawn on the same axes lies exactly along the original. Same line, one point missing.', mark: 'overlay' },
+      { say: 'So the value approaches 4, which is where the hole sits.', mark: 'hole' }
+    ],
     note: 'The same shape with different numbers, so the learner can see the method rather than remember one answer. Worth pairing with E-LIM-001 rather than using alone.'
   },
   {
@@ -80,6 +96,12 @@ export const LIMIT_EXERCISES = [
     at: 3, limit: 9,
     hole: false,
     algebra: ['x²', 'at x = 3 the value is 9', 'and nothing special happens on the way'],
+    simple: null, simpleExpr: null,
+    solution: [
+      { say: 'Put x = 3 in. Nothing goes wrong: 3² is 9, and the expression has a perfectly good value there.', mark: 'value' },
+      { say: 'The curve passes through that point without a break, so approaching from either side simply walks along it.', mark: 'overlay' },
+      { say: 'The limit is therefore just the value, 9. Most limits are this dull, and it is worth knowing that before meeting the awkward ones.', mark: 'value' }
+    ],
     note: 'The dull case, included on purpose. Most limits are simply the value, and a learner who only meets the awkward ones comes away thinking a limit is a trick for repairing broken expressions rather than an ordinary question about where something is heading.'
   },
   {
@@ -95,6 +117,13 @@ export const LIMIT_EXERCISES = [
       'from the right the values grow without bound',
       'from the left they fall without bound',
       'the two sides disagree, so there is no limit'
+    ],
+    simple: null, simpleExpr: null,
+    solution: [
+      { say: 'At x = 0 the bottom is nought and the top is not, so there is nothing to divide into. Unlike the earlier cases, no factor cancels: this cannot be repaired.', mark: 'zero' },
+      { say: 'Come in from the right, through 0.1, 0.01, 0.001. The values are 10, 100, 1000 and keep climbing without ever settling.', mark: 'right' },
+      { say: 'Come in from the left, through −0.1, −0.01, −0.001. The values are −10, −100, −1000 and fall without settling.', mark: 'left' },
+      { say: 'The two sides do not merely disagree on a number; neither side settles at all. There is no limit, and saying "infinity" would be naming a destination that is never reached.', mark: 'sides' }
     ],
     note: 'The first case with no answer, and the reason the format earns its keep. A multiple-choice question would have to offer "no limit" as an option and give the game away. Here the learner approaches from each side and watches the two disagree, which is the actual evidence.'
   },
@@ -112,6 +141,13 @@ export const LIMIT_EXERCISES = [
       'for x < 0 this is −1',
       'the sides disagree, so there is no limit'
     ],
+    simple: null, simpleExpr: null,
+    solution: [
+      { say: 'At x = 0 the bottom is nought again, so again no value there.', mark: 'zero' },
+      { say: 'For any positive x, |x| is x, so the whole thing is x ÷ x = 1. Flat at 1, all the way in.', mark: 'right' },
+      { say: 'For any negative x, |x| is −x, so it is −x ÷ x = −1. Flat at −1, all the way in.', mark: 'left' },
+      { say: 'Both sides settle perfectly, at 1 and at −1, and they disagree. So there is no limit, and this time nothing ran off anywhere. A jump is enough.', mark: 'sides' }
+    ],
     note: 'A jump rather than a blow-up. Included because E-LIM-004 might teach that "no limit" means "runs off to infinity", and this one has both sides perfectly finite and still no limit.'
   },
   {
@@ -128,6 +164,14 @@ export const LIMIT_EXERCISES = [
       '(4h + h²) / h',
       '4 + h,  provided h ≠ 0',
       'so as h → 0 the value → 4'
+    ],
+    simple: h => 4 + h, simpleExpr: 'y = 4 + h',
+    solution: [
+      { say: 'This is the slope between two points on y = x², one at x = 2 and one h further along. Put h = 0 and both the rise and the run are nought: the two points have become one, and one point has no slope.', mark: 'zero' },
+      { say: 'Expand the top: (2 + h)² is 4 + 4h + h², and taking away 4 leaves 4h + h².', mark: 'algebra' },
+      { say: 'Every term on top now has an h in it, so 4h + h² over h is 4 + h, provided h is not nought.', mark: 'algebra' },
+      { say: 'Draw 4 + h and the original lies along it exactly. The slope between two points is a straight line in h, with one point missing where the points coincide.', mark: 'overlay' },
+      { say: 'So as the gap closes the slope approaches 4. That is the same 4 that Two Points, Almost Touching arrives at by shrinking an interval, and the same 4 Thompson gets from 2x·dx at x = 2. Three routes, one number.', mark: 'hole' }
     ],
     note: 'The one that ties the bank to the course. Two Points, Almost Touching already makes 4 appear at x = 2 by shrinking an interval, and Thompson gets the same 4 from 2x·dx in ch. II. This is that number arriving a third way, as a limit taken by hand, and it is the exercise to use if only one from this bank is ever adopted.'
   }
