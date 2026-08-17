@@ -15,6 +15,9 @@
   // asking for it, and it carries the source citations and the review wording,
   // none of which belongs in the bundle a learner downloads.
   let ReviewMode = null;
+  // Cross-board listing of interactions and exercises. Authoring only: it selects
+  // nothing and is the only place the no-repeat rule can actually be checked.
+  let PartsSheet = null;
 
   const params = new URLSearchParams(window.location.search);
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
@@ -22,6 +25,7 @@
   // Authoring surface. Never reached in production: options are drafts, not curriculum.
   const showFactoryMode = params.get('mode') === 'factory' && !import.meta.env.PROD;
   const showStrataMigrationFactory = params.get('mode') === 'strata-factory' && !import.meta.env.PROD;
+  const showPartsSheet = params.get('mode') === 'parts' && !import.meta.env.PROD;
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
@@ -34,6 +38,9 @@
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
   }
+  if (showPartsSheet) {
+    import('./views/PartsSheet.svelte').then(m => { PartsSheet = m.default; });
+  }
   if (showReviewMode) {
     import('./views/ReviewMode.svelte').then(m => { ReviewMode = m.default; });
   }
@@ -44,6 +51,8 @@
     <svelte:component this={FactoryMode} />
   {:else if showStrataMigrationFactory}
     <svelte:component this={StrataMigrationFactory} />
+  {:else if showPartsSheet}
+    <svelte:component this={PartsSheet} />
   {:else if showReviewMode}
     <svelte:component this={ReviewMode} />
   {:else if $view === 'lesson'}
