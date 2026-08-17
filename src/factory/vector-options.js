@@ -1,6 +1,24 @@
-export const selections = {};
+// Founder pass of 2026-08-12. Sections 1 and 2 settled except for S2's
+// interaction and checks; section 3 untouched.
+export const selections = {
+  'S1-A': '2026-08-12',
+  // The animated journey over the static four-position stepper. The displacement
+  // arrow reconnecting to the moving marker is the thing worth watching, and it
+  // is what makes "distance remembers the route" visible rather than asserted.
+  'S1-I2': '2026-08-12',
+  // Both checks kept: X1 is the full lap where displacement is zero, X2 the half
+  // lap where the chord is at its longest. They are the two ends of the same idea.
+  'S1-X1': '2026-08-12',
+  'S1-X2': '2026-08-12',
+  'S2-A': '2026-08-12'
+};
 export const finalised = {};
-export const rejected = {};
+
+export const rejected = {
+  'S1-B': 'Not selected; S1-A states the distinction before giving the lap example, so the example lands on a rule rather than standing in for one.',
+  'S1-I1': 'Not selected; S1-I2 animates the same circle and keeps the displacement arrow reconnecting as the marker moves.',
+  'S2-B': 'Not selected; S2-A introduces direction with a magnitude already attached, which is the pairing section 3 formalises.'
+};
 export const gated = 'Proposed vector prerequisite after Speed and Velocity. Every candidate is AI_DRAFT and awaits founder selection, prerequisite mapping, placement and approval. It must remain outside the learner build.';
 
 export const vectors = {
