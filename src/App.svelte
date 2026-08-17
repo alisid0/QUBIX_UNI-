@@ -18,6 +18,8 @@
   // Cross-board listing of interactions and exercises. Authoring only: it selects
   // nothing and is the only place the no-repeat rule can actually be checked.
   let PartsSheet = null;
+  // The exercises factory: questions answered by operating them. Authoring only.
+  let ExerciseFactory = null;
 
   const params = new URLSearchParams(window.location.search);
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
@@ -26,6 +28,7 @@
   const showFactoryMode = params.get('mode') === 'factory' && !import.meta.env.PROD;
   const showStrataMigrationFactory = params.get('mode') === 'strata-factory' && !import.meta.env.PROD;
   const showPartsSheet = params.get('mode') === 'parts' && !import.meta.env.PROD;
+  const showExerciseFactory = params.get('mode') === 'exercises' && !import.meta.env.PROD;
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
@@ -41,6 +44,9 @@
   if (showPartsSheet) {
     import('./views/PartsSheet.svelte').then(m => { PartsSheet = m.default; });
   }
+  if (showExerciseFactory) {
+    import('./views/ExerciseFactory.svelte').then(m => { ExerciseFactory = m.default; });
+  }
   if (showReviewMode) {
     import('./views/ReviewMode.svelte').then(m => { ReviewMode = m.default; });
   }
@@ -53,6 +59,8 @@
     <svelte:component this={StrataMigrationFactory} />
   {:else if showPartsSheet}
     <svelte:component this={PartsSheet} />
+  {:else if showExerciseFactory}
+    <svelte:component this={ExerciseFactory} />
   {:else if showReviewMode}
     <svelte:component this={ReviewMode} />
   {:else if $view === 'lesson'}
