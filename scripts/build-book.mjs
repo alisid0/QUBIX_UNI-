@@ -35,12 +35,20 @@ const C = {
 // Deterministic, no dependency, no MathJax. Handles the notation this book
 // actually uses; anything else passes through unchanged rather than silently
 // rendering wrong.
-const SUP = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻', '+': '⁺', 'n': 'ⁿ' };
+// Letter exponents matter as much as numeric ones: this book writes 2^x and
+// b^x far more often than it writes x^2. Unicode has a superscript for every
+// lowercase letter except q, which nothing here uses as an exponent.
+const SUP = {
+  '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+  '-': '⁻', '+': '⁺', '−': '⁻',
+  a: 'ᵃ', b: 'ᵇ', c: 'ᶜ', d: 'ᵈ', e: 'ᵉ', f: 'ᶠ', g: 'ᵍ', h: 'ʰ', i: 'ⁱ', j: 'ʲ', k: 'ᵏ', l: 'ˡ', m: 'ᵐ',
+  n: 'ⁿ', o: 'ᵒ', p: 'ᵖ', r: 'ʳ', s: 'ˢ', t: 'ᵗ', u: 'ᵘ', v: 'ᵛ', w: 'ʷ', x: 'ˣ', y: 'ʸ', z: 'ᶻ'
+};
 
 export const math = s => String(s)
   .replace(/\bsqrt\(([^)]*)\)/g, '√($1)')
   .replace(/\^\{([^}]+)\}/g, (_, g) => [...g].map(c => SUP[c] ?? c).join(''))
-  .replace(/\^(-?\d+|n)/g, (_, g) => [...g].map(c => SUP[c] ?? c).join(''))
+  .replace(/\^(-?\d+|[a-z])/g, (_, g) => [...g].map(c => SUP[c] ?? c).join(''))
   .replace(/\bdelta\b/g, 'Δ').replace(/\bDelta\b/g, 'Δ')
   // Both forms: prose is escaped before formatting, so "->" has already
   // become "-&gt;" by the time it arrives here.
@@ -197,7 +205,7 @@ const block = (b, ctx) => {
     case 'h': return `<h3>${rich(b.text)}</h3>`;
     case 'formula': return `<div class="formula">${esc(math(b.text))}</div>`;
     case 'list': return `<${b.ordered ? 'ol' : 'ul'} class="bullets">${b.items.map(i => `<li>${rich(i)}</li>`).join('')}</${b.ordered ? 'ol' : 'ul'}>`;
-    case 'table': return `<table class="data"><thead><tr>${b.head.map(h => `<th>${rich(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    case 'table': return `<div class="tw"><table class="data"><thead><tr>${b.head.map(h => `<th>${rich(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     case 'callout': return `<aside class="callout ${b.tone || ''}"><b>${rich(b.title)}</b><p>${rich(b.text)}</p></aside>`;
     case 'figure': {
       const f = FIG[b.kind];
@@ -275,7 +283,7 @@ const gateHTML = chapters => {
   <div class="kicker">COMPLETION</div>
   <h2>What this book still owes its reader</h2>
   <p class="stand">The gate below is the standard set in Draft 1: every chapter needs a worked example, at least six practice items, an answer for every one of them, a named misconception, and a link back to earlier work. This table is generated from the source at build time, so it cannot flatter the book.</p>
-  <table class="data gate">
+  <div class="tw"><table class="data gate">
     <thead><tr><th>Chapter</th><th>Worked</th><th>Practice</th><th>Answered</th><th>Mistake</th><th>Review</th><th>Gate</th></tr></thead>
     <tbody>${rows.map(r => `<tr class="${r.pass ? 'ok' : 'no'}">
       <td>${r.c.id}. ${rich(r.c.title)}</td>
@@ -283,7 +291,7 @@ const gateHTML = chapters => {
       <td>${r.p ? (r.answered === r.p ? 'all' : `${r.answered} of ${r.p}`) : '—'}</td>
       <td>${r.c.misconception ? 'yes' : '—'}</td><td>${r.c.review ? 'yes' : '—'}</td>
       <td>${r.pass ? 'PASS' : 'open'}</td></tr>`).join('')}</tbody>
-  </table>
+  </table></div>
   <p class="gate-sum"><b>${done} of ${chapters.length} chapters</b> meet the gate.
   ${chapters.reduce((n, c) => n + (c.practice || []).length, 0)} practice items,
   ${chapters.reduce((n, c) => n + (c.blocks || []).filter(b => b.t === 'example').length, 0)} worked examples,
@@ -294,15 +302,32 @@ const gateHTML = chapters => {
 const page = (meta, chapters) => `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(meta.title)} — ${esc(meta.subtitle)}</title>
+<title>${esc(meta.title)}</title>
 <style>
   @page { size: A4; margin: 18mm 16mm; }
   :root { --ink:${C.ink}; --teal:${C.teal}; --orange:${C.orange}; --rose:${C.rose};
-          --paper:${C.paper}; --rule:${C.rule}; --mute:${C.mute}; --faint:${C.faint}; }
+          --paper:${C.paper}; --rule:${C.rule}; --mute:${C.mute}; --faint:${C.faint};
+          /* Three roles. Running text is a book and gets a serif; the apparatus
+             around it (eyebrows, table headers, figure labels, practice tags) is
+             machinery and gets the sans; formulas get the mono. All system faces,
+             so there is no webfont to fail silently behind the CSP. */
+          --serif: Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+          --sans: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+          --mono: ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace; }
   * { box-sizing: border-box; }
-  body { margin:0; background:#fff; color:var(--ink); font:15px/1.62 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
-  .sheet { max-width: 760px; margin: 0 auto; padding: 0 22px 80px; }
-  code, .formula, .fig-table td:first-child { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; }
+  /* This page commits to one world on purpose: it is a printed book, laid out
+     for A4, and it carries its own ground rather than borrowing the viewer's.
+     Hence no dark palette, and an explicit background here. */
+  body { margin:0; background:#fff; color:var(--ink); font:16.5px/1.66 var(--serif); }
+  .sheet { max-width: 41rem; margin: 0 auto; padding: 0 22px 80px; }   /* ~72 characters */
+  code, .formula { font-family: var(--mono); }
+  .kicker, .pr-head, .pr-l, .wk-h, table.data th, .fig-table th, figcaption,
+  nav.toc h2, .cover .series, .cover .stamp,
+  .cover h1, .cover h2 { font-family: var(--sans); }   /* the jacket stays as Draft 1 set it */
+  table.data, .fig-table, .gate-sum { font-variant-numeric: tabular-nums; }
+  /* Wide content scrolls inside itself so the page body never moves sideways. */
+  .tw { overflow-x: auto; margin: 16px 0; }
+  .tw table.data { margin: 0; min-width: 30rem; }
 
   .cover { background:var(--ink); color:#fff; padding:64px 44px 52px; margin-bottom:44px; border-radius:0 0 18px 18px; }
   .cover .dots { display:flex; gap:10px; justify-content:flex-end; margin-bottom:34px; }
@@ -424,6 +449,15 @@ for (const name of books) {
     for (const q of c.practice || []) if (!q.q) throw new Error(`${name} ch${c.id}: a practice item has no question`);
   }
   const html = page(meta, chapters);
+
+  // Unformatted notation must not ship. A stray "2^x" or "sqrt(x)" in the
+  // rendered text means the formatter has a gap, and the gap is invisible in
+  // the source because the source is meant to be written that way. Letter
+  // exponents were missed for exactly this reason once already.
+  const text = html.replace(/<[^>]+>/g, ' ');
+  const raw = [...text.matchAll(/.{0,20}(\^|sqrt\(|<=|>=|\binfinity\b).{0,16}/g)].map(m => m[0].replace(/\s+/g, ' ').trim());
+  if (raw.length) throw new Error(`${name}: ${raw.length} unformatted notation site(s) in the rendered book:\n  ` + raw.slice(0, 6).join('\n  '));
+
   const file = join(OUT, `${name}.html`);
   await writeFile(file, html, 'utf8');
   const words = chapters.reduce((n, c) => n + JSON.stringify(c).split(/\s+/).length, 0);
