@@ -16,7 +16,9 @@
     "app:dev": "npm --prefix current-app run dev",
     "app:build": "npm --prefix current-app run build",
     "app:test": "npm --prefix current-app run test:security",
-    "deploy": "node scripts/deploy.mjs"
+    "deploy": "node scripts/deploy.mjs",
+    "build:book": "node scripts/build-book.mjs",
+    "check:book": "node scripts/check-book-maths.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

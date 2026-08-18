@@ -1,0 +1,59 @@
+# The reference e-books
+
+Book 1 arrived as a PDF with no origin in this repo. That is the problem this
+directory fixes.
+
+A PDF cannot be diffed, cannot be reviewed a paragraph at a time, and drifts
+from the boards the moment either side is edited — the same fault as
+`current-app/` against the root, one level up. The books are now authored here
+as source and rendered on demand.
+
+```bash
+pnpm run build:book     # -> book/dist/book1-functions.html
+pnpm run check:book     # recomputes every number the book asserts
+```
+
+Open the HTML and print to PDF from the browser. `book/dist/` is gitignored:
+the source is the record, and the rendered book is never committed, because a
+committed artefact is how the drift started.
+
+## Layout
+
+```
+book/book1-functions/
+  index.js              meta + the chapter order
+  ch01-reliable-rule.js one file per chapter
+  ...
+```
+
+A chapter exports `{ id, title, standfirst, blocks, practice, misconception,
+review }`. Blocks are data, not HTML — `p`, `h`, `formula`, `list`, `table`,
+`callout`, `example`, `figure`, `figures`.
+
+## Two rules that are enforced, not merely intended
+
+**Figures are computed, never drawn.** A `figure` block names a kind and the
+numbers; `scripts/build-book.mjs` generates the SVG. A curve is sampled from
+the formula printed beside it, so a figure cannot disagree with its own
+caption. This is the project media rule: technical visuals are deterministic,
+never raster.
+
+**The book counts its own gaps.** The completion table at the back is
+generated at build time from these files against the standard set in Draft 1 —
+a worked example, at least six practice items, an answer for every one, a
+named misconception, and a link back to earlier work. An unfinished chapter
+says so inside the book rather than in a note someone has to remember to read.
+Do not hand-write that table.
+
+`check:book` recomputes the arithmetic the prose asserts: difference tables,
+rectangle sums, average rates, difference quotients, composites, inverses,
+excluded domain points. Prose can claim anything; this fails loudly when a
+claim is wrong. Run it after editing any number.
+
+## Where the book meets the app
+
+Draft 1 proposed that each app board map to one subsection. That mapping does
+not hold yet, and the shortfall is on the app side: of the 13 chapters, six
+have no Factory board at all and five more have a board with nothing selected.
+The book is currently ahead of the app in coverage. Nothing here should be
+treated as evidence that a board exists.
