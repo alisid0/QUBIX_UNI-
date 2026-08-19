@@ -17,7 +17,8 @@ const { HOW, LEGEND } = await import(`file://${join(ROOT, 'book', 'spine', 'draw
 const { ATLAS: A12 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-1-2.js')}`);
 const { ATLAS_3_5 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-3-5.js')}`);
 const { ATLAS_6_8 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-6-8.js')}`);
-const ATLAS = { ...A12, ...ATLAS_3_5, ...ATLAS_6_8 };
+const { ATLAS_9_10 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-9-10.js')}`);
+const ATLAS = { ...A12, ...ATLAS_3_5, ...ATLAS_6_8, ...ATLAS_9_10 };
 const { draw, line1d } = await import(`file://${join(ROOT, 'scripts', 'atlas-figures.mjs')}`);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -45,10 +46,15 @@ const strayFig = Object.keys(ATLAS).filter(k => !seen.has(k.toLowerCase()));
 if (strayFig.length) throw new Error('atlas figures for concepts not in the spine:\n  ' + strayFig.join('\n  '));
 
 const how = t => HOW[t] || 'direct';
-const figure = t => {
+const one = spec => spec.line ? line1d(spec) : draw(spec);
+const figure = (t, id) => {
   const spec = ATLAS[t];
   if (!spec) return '';
-  return spec.line ? line1d(spec) : draw(spec);
+  if (!spec.frames) return one(spec);
+  return `<div class="afr" id="${id}">`
+    + spec.frames.map((f, i) => `<div class="afr-f${i ? '' : ' on'}" data-i="${i}">${one({ ...spec, ...f, frames: undefined })}</div>`).join('')
+    + `<div class="afr-b">${spec.frames.map((f, i) =>
+        `<button type="button" class="afr-x${i ? '' : ' on'}" data-i="${i}">${esc(f.pick ?? (i + 1))}</button>`).join('')}</div></div>`;
 };
 const drawn = stages.flatMap(s => s.terms).filter(t => ATLAS[t]).length;
 const tally = ks => Object.fromEntries(LEGEND.map(([k]) => [k, ks.filter(x => x === k).length]));
@@ -128,6 +134,15 @@ const html = `<!doctype html>
              color:var(--mute); font-variant-numeric:tabular-nums; }
   .plate figcaption { font-family:var(--sans); font-size:12px; margin-top:6px; color:var(--ink);
                       line-height:1.35; }
+  .plate.moving figcaption::after { content:" · press to run"; color:var(--mute); font-size:10.5px; }
+  .afr-f { display:none; } .afr-f.on { display:block; }
+  .afr-b { display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; }
+  .afr-x { font:600 10.5px/1 var(--sans); min-height:24px; padding:5px 8px; border-radius:5px;
+           cursor:pointer; border:1px solid var(--edge); background:#fff; color:var(--ink); }
+  .afr-x.on { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
+  .afr-x:focus-visible { outline:2px solid var(--teal-text); outline-offset:2px; }
+  @media print { .afr-b { display:none; } .afr-f { display:none !important; }
+                 .afr-f[data-i="0"] { display:block !important; } }
   footer { margin-top:40px; padding:16px 18px; background:var(--paper); border-radius:9px;
            font-size:14px; color:var(--mute); }
   @media print { .stage { break-inside:auto; } ol.terms { columns:2; } }
@@ -173,13 +188,29 @@ ${stages.map(st => {
     <p class="can"><b>By the end</b>${esc(st.can)}</p>
     ${st.terms.some(t => ATLAS[t]) ? `<div class="plates">${st.terms.map(t => {
       const j = ++i;
-      return ATLAS[t] ? `<figure class="plate"><div class="plate-n">${j}</div>${figure(t)}
+      return ATLAS[t] ? `<figure class="plate${ATLAS[t].frames ? ' moving' : ''}"><div class="plate-n">${j}</div>${figure(t, `f${j}`)}
         <figcaption>${esc(t)}</figcaption></figure>` : '';
     }).join('')}</div>` : `<ol class="terms">${st.terms.map(t => `<li class="h-${how(t)}"><span>${++i}</span>${esc(t)}</li>`).join('')}</ol>`}
   </section>`;
 }).join('\n')}
 <footer>${esc(meta.note)} Every term is listed once: the build refuses to run if two stages claim the same concept.</footer>
-</div></body></html>`;
+</div>
+<script>
+/* Switches between frames that were drawn at build time. It computes nothing,
+   for the same reason the book's runtime computes nothing. */
+document.querySelectorAll('.afr').forEach(function (r) {
+  r.addEventListener('click', function (e) {
+    var b = e.target.closest('.afr-x'); if (!b) return;
+    var i = +b.dataset.i;
+    r.querySelectorAll('.afr-f').forEach(function (f, k) { f.classList.toggle('on', k === i); });
+    r.querySelectorAll('.afr-x').forEach(function (x, k) {
+      x.classList.toggle('on', k === i);
+      x.setAttribute('aria-pressed', k === i ? 'true' : 'false');
+    });
+  });
+});
+</script>
+</body></html>`;
 
 const OUT = join(ROOT, 'book', 'dist');
 if (!existsSync(OUT)) await mkdir(OUT, { recursive: true });
