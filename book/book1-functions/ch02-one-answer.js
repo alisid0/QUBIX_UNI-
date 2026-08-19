@@ -12,8 +12,8 @@ export default {
 
   blocks: [
     { t: 'figures', items: [
-      { kind: 'mapping', pairs: [['1', '3'], ['2', '4'], ['3', '5']], caption: 'a function' },
-      { kind: 'mapping', pairs: [['1', '3'], ['2', '4', '9'], ['3', '5']], broken: '2', caption: 'not a function' }
+      { kind: 'mapping', pairs: [['1', '3'], ['2', '4'], ['3', '5']], tag: 'a function' },
+      { kind: 'mapping', pairs: [['1', '3'], ['2', '4', '9'], ['3', '5']], broken: '2', tag: 'not a function' }
     ] },
 
 { t: 'lab', kind: 'frames', id: 'fork',
@@ -143,29 +143,80 @@ export default {
 
   practice: [
     { q: 'Is {(−1, 2), (0, 2), (1, 2)} a function? Explain.', level: 'Recognise',
-      a: 'Yes. No input repeats at all, so no input can have two outputs. The shared output 2 is permitted.' },
+      a: 'Yes. No input repeats at all, so no input can have two outputs. The shared output 2 is permitted.',
+      show: { kind: 'mapping', pairs: [['-1', '2'], ['0', '2'], ['1', '2']],
+        caption: 'No first entry repeats, so no input can have two outputs. The shared 2 is the constant rule, drawn.' } },
     { q: 'Is {(1, 3), (1, 4), (2, 5)} a function? Identify the breaking input.', level: 'Recognise',
-      a: 'No. The input 1 has both 3 and 4.' },
+      a: 'No. The input 1 has both 3 and 4.',
+      show: { kind: 'mapping', pairs: [['1', '3', '4'], ['2', '5']], broken: '1',
+        caption: 'The fork at 1 is the whole fault. Everything else in the set is irrelevant to the verdict.' } },
     { q: 'Is {(0, 0), (1, 1), (2, 4), (−1, 1), (−2, 4)} a function?', level: 'Recognise',
-      a: 'Yes. The first entries 0, 1, 2, −1, −2 are all different. This is squaring, listed on five inputs.' },
+      a: 'Yes. The first entries 0, 1, 2, −1, −2 are all different. This is squaring, listed on five inputs.',
+      show: { kind: 'graph', f: x => x * x, title: 'THE FIVE PAIRS', note: 'squaring', x0: -3, x1: 3, y0: -1, y1: 6, w: 265, h: 195,
+        marks: [[0, 0], [1, 1], [2, 4], [-1, 1], [-2, 4]],
+        caption: 'Squaring, listed on five inputs. Pairs at the same height come from different inputs, which is sharing rather than splitting.' } },
     { q: 'Does "the square of x" define a function? Does "a square root of x" define one over the real numbers?', level: 'Recognise',
-      a: 'Squaring does. "A square root of x" does not, because a positive input has two roots and the phrase does not choose. Fixing the principal root repairs it.' },
+      a: 'Squaring does. "A square root of x" does not, because a positive input has two roots and the phrase does not choose. Fixing the principal root repairs it.',
+      show: { kind: 'frames', label: 'Read it each way',
+        frames: [
+          { kind: 'mapping', pairs: [['3', '9'], ['-3', '9']], pick: 'the square of x',
+            say: 'One arrow out of each input. A function.' },
+          { kind: 'mapping', pairs: [['9', '3', '-3']], broken: '9', pick: 'a square root of x',
+            say: 'The same two facts, reversed. Now one input has two arrows, and it is not a function.' }
+        ] } },
     { q: 'Draw a mapping diagram with inputs 1, 2, 3 and outputs 5, 6 that is a function.', level: 'Represent',
-      a: 'Answers vary; one arrow must leave each of 1, 2, 3. For example 1 → 5, 2 → 5, 3 → 6. With three inputs and two outputs some sharing is unavoidable, which is fine.' },
+      a: 'Answers vary; one arrow must leave each of 1, 2, 3. For example 1 → 5, 2 → 5, 3 → 6. With three inputs and two outputs some sharing is unavoidable, which is fine.',
+      show: { kind: 'mapping', pairs: [['1', '5'], ['2', '5'], ['3', '6']],
+        caption: 'One valid answer. Three inputs and two outputs make some sharing unavoidable, and sharing was never the problem.' } },
     { q: 'Draw a mapping diagram with inputs 1, 2, 3 and outputs 5, 6 that is not a function, and say which input breaks it.', level: 'Represent',
-      a: 'Answers vary; some input must send arrows to both 5 and 6. For example 2 → 5 and 2 → 6, so 2 breaks it.' },
+      a: 'Answers vary; some input must send arrows to both 5 and 6. For example 2 → 5 and 2 → 6, so 2 breaks it.',
+      show: { kind: 'mapping', pairs: [['1', '5'], ['2', '5', '6'], ['3', '6']], broken: '2',
+        caption: 'One valid answer. The input 2 sends arrows to both outputs, and that alone is the failure.' } },
     { q: 'Is 1/x a function? What happens at x = 0?', level: 'Recognise',
-      a: 'Yes. At x = 0 it has no value, because 0 is not an allowed input. Refusing an input does not break the promise.' },
+      a: 'Yes. At x = 0 it has no value, because 0 is not an allowed input. Refusing an input does not break the promise.',
+      show: { kind: 'graph', f: x => 1 / x, title: 'A REFUSED INPUT', note: '1/x', x0: -4, x1: 4, y0: -4, y1: 4, w: 265, h: 205,
+        caption: 'The curve never crosses the vertical axis, because zero is not an allowed input. Refusing an input is legal; answering one twice is not.' } },
     { q: 'A rule pairs each person with their date of birth. Function? Now reverse it: each date with the people born on it. Function?', level: 'Recognise',
-      a: 'The first is a function: one person has exactly one date of birth. The reverse is not, because one date pairs with many people. Chapter 9 shows this is exactly the condition for having an inverse.' },
+      a: 'The first is a function: one person has exactly one date of birth. The reverse is not, because one date pairs with many people. Chapter 9 shows this is exactly the condition for having an inverse.',
+      show: { kind: 'frames', label: 'Forwards, then backwards',
+        frames: [
+          { kind: 'mapping', pairs: [['Ann', '3 May'], ['Ben', '3 May'], ['Cal', '9 Jul']], pick: 'person to date',
+            say: 'Each person has exactly one date of birth. A function, with two people sharing a date.' },
+          { kind: 'mapping', pairs: [['3 May', 'Ann', 'Ben'], ['9 Jul', 'Cal']], broken: '3 May', pick: 'date to person',
+            say: 'Reversed, the shared date forks. This is exactly the condition chapter 9 needs for an inverse.' }
+        ] } },
     { q: 'Solve x² = 25. Then evaluate f(5) for f(x) = x². Explain why one has two answers and the other has one.', level: 'Calculate', hard: true,
-      a: 'x = 5 or x = −5. f(5) = 25. Solving asks which inputs produce a given output, and two inputs may; evaluating asks what one input produces, and only one thing may. The two-ness lives on the input side, where it is legal.' },
+      a: 'x = 5 or x = −5. f(5) = 25. Solving asks which inputs produce a given output, and two inputs may; evaluating asks what one input produces, and only one thing may. The two-ness lives on the input side, where it is legal.',
+      show: { kind: 'frames', label: 'Which side is the plural on?',
+        frames: [
+          { kind: 'mapping', pairs: [['5', '25']], pick: 'evaluate f(5)',
+            say: 'One input, one output. Evaluating can only ever give one answer.' },
+          { kind: 'mapping', pairs: [['5', '25'], ['-5', '25']], pick: 'solve x^2 = 25',
+            say: 'Two inputs land on 25. The two-ness lives on the input side, where the definition permits it.' }
+        ] } },
     { q: 'The equation x² + y² = 9 describes a circle. Treating x as input and y as output, is it a function?', level: 'Recognise', hard: true,
-      a: 'No. Take x = 0: then y² = 9, so y is 3 or −3. One input, two outputs. Chapter 5 turns this into a test you can perform by eye.' },
+      a: 'No. Take x = 0: then y² = 9, so y is 3 or −3. One input, two outputs. Chapter 5 turns this into a test you can perform by eye.',
+      show: { kind: 'linetest', f: x => Math.sqrt(Math.max(0, 9 - x * x)), second: x => -Math.sqrt(Math.max(0, 9 - x * x)),
+        at: [0, 2], title: 'TWO HITS PER LINE', note: 'x^2+y^2=9', x0: -4, x1: 4, y0: -4, y1: 4, w: 265, h: 205,
+        caption: 'At x = 0 the outputs are 3 and −3; at x = 2 they are about 2.24 and −2.24. Chapter 5 turns this into a test you perform by eye.' } },
     { q: 'Is "the mother of x" a function on the set of people? Is "the child of x"?', level: 'Recognise',
-      a: 'The first is: each person has exactly one biological mother. The second is not: a person may have several children, or none, so some inputs fork and some have no output at all.' },
+      a: 'The first is: each person has exactly one biological mother. The second is not: a person may have several children, or none, so some inputs fork and some have no output at all.',
+      show: { kind: 'frames', label: 'One direction works',
+        frames: [
+          { kind: 'mapping', pairs: [['Ann', 'Eve'], ['Ben', 'Eve'], ['Cal', 'Ida']], pick: 'the mother of',
+            say: 'Each person has exactly one biological mother. Siblings share theirs, which is permitted.' },
+          { kind: 'mapping', pairs: [['Eve', 'Ann', 'Ben'], ['Ida', 'Cal']], broken: 'Eve', pick: 'the child of',
+            say: 'Eve has two children, so the rule forks. A childless person would have no output at all, which fails the other demand.' }
+        ] } },
     { q: 'A machine returns the input unchanged on weekdays and doubles it at weekends. Is the output a function of the number typed in?', level: 'Recognise', hard: true,
-      a: 'Not of the number alone: 5 gives 5 on Tuesday and 10 on Sunday, so that input forks. It is a function of the pair (number, day). When a rule seems to break the promise, the usual repair is that the real input has more parts than you were counting.' }
+      a: 'Not of the number alone: 5 gives 5 on Tuesday and 10 on Sunday, so that input forks. It is a function of the pair (number, day). When a rule seems to break the promise, the usual repair is that the real input has more parts than you were counting.',
+      show: { kind: 'frames', label: 'Widen the input',
+        frames: [
+          { kind: 'mapping', pairs: [['5', '5', '10']], broken: '5', pick: 'number alone',
+            say: 'The input 5 gives 5 on Tuesday and 10 on Sunday. As a function of the number, it forks.' },
+          { kind: 'mapping', pairs: [['5,Tue', '5'], ['5,Sun', '10']], pick: 'number and day',
+            say: 'Count the day as part of the input and the fork disappears. The usual repair for a broken promise.' }
+        ] } },
   ],
 
   misconception: {

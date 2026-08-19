@@ -133,7 +133,10 @@ const FIG = {
   },
 
   // Two mappings side by side: the fork is what fails, not the repeat.
-  mapping({ pairs, broken = null, caption = '' }) {
+  // No `caption` here on purpose. The block renderer owns captions; a figure
+  // that also drew its own would print every caption twice, once clipped
+  // inside the frame. Short in-frame labels go in `tag`.
+  mapping({ pairs, broken = null, tag = '' }) {
     const b = [];
     const ins = [...new Set(pairs.map(p => p[0]))];
     const outs = [...new Set(pairs.flatMap(p => p.slice(1)))];
@@ -147,8 +150,8 @@ const FIG = {
     }));
     ins.forEach((v, i) => { b.push(`<circle cx="52" cy="${yI(i)}" r="13" fill="${C.orange}"/>`, label(52, yI(i) + 4, v, '#fff', 11)); });
     outs.forEach((v, i) => { b.push(`<circle cx="196" cy="${yO(i)}" r="13" fill="${broken && pairs.find(p => p[0] === broken)?.includes(v) ? C.rose : C.teal}"/>`, label(196, yO(i) + 4, v, '#fff', 11)); });
-    const h = 34 + Math.max(ins.length, outs.length) * 38 + (caption ? 18 : 6);
-    if (caption) b.push(label(124, h - 5, caption, broken ? C.rose : C.teal, 9));
+    const h = 34 + Math.max(ins.length, outs.length) * 38 + (tag ? 18 : 6);
+    if (tag) b.push(label(124, h - 5, tag, broken ? C.rose : C.teal, 9));
     return svg(248, h, b.join(''));
   },
 
@@ -380,9 +383,8 @@ const LAB = {
   // Step through prepared frames with buttons or a slider.
   frames({ id, label, control = 'buttons', frames, hint }) {
     const body = frames.map((fr, i) => {
-      const f = FIG[fr.kind];
-      if (!f) throw new Error(`lab ${id}: unknown figure kind "${fr.kind}"`);
-      return `<div class="lab-frame${i ? '' : ' on'}" data-i="${i}">${f(fr)}`
+      checkFigure(fr, `lab ${id} frame ${i + 1}`);
+      return `<div class="lab-frame${i ? '' : ' on'}" data-i="${i}">${FIG[fr.kind](fr)}`
         + (fr.say ? `<p class="lab-say">${rich(fr.say)}</p>` : '') + `</div>`;
     }).join('');
     const ctrl = control === 'slider'
@@ -421,6 +423,27 @@ export const overInputs = (inputs, make) => inputs.map(make);
 // keeps the worked-example and practice call sites from disagreeing.
 const showType = s => s.frames ? 'lab' : s.items ? 'figures' : 'figure';
 
+// An option a figure does not read is silent: the figure draws something
+// plausible and the caption describes something else. That has happened twice
+// — `linetest` took its sweep direction in `kind`, which a lab frame overwrote,
+// and `mapping` had a `caption` that fought the real one. Both were invisible
+// until someone looked at the picture. So every option is checked against what
+// the figure function actually destructures.
+const ACCEPTS = Object.fromEntries(Object.entries(FIG).map(([name, fn]) => {
+  const m = /^[\w$]+\(\s*\{([\s\S]*?)\}\s*(?:=\s*\{\}\s*)?\)/.exec(fn.toString());
+  const keys = m ? [...m[1].matchAll(/(?:^|,)\s*([A-Za-z_$][\w$]*)/g)].map(x => x[1]) : [];
+  return [name, new Set([...keys, 'kind', 'caption', 'pick', 'say', 't', 'id'])];
+}));
+
+const checkFigure = (spec, where) => {
+  const allow = ACCEPTS[spec.kind];
+  if (!allow) throw new Error(`${where}: unknown figure kind "${spec.kind}"`);
+  const stray = Object.keys(spec).filter(k => !allow.has(k));
+  if (stray.length) throw new Error(
+    `${where}: figure "${spec.kind}" was given ${stray.map(s => `"${s}"`).join(', ')}, which it does not read.\n` +
+    `  it accepts: ${[...allow].sort().join(', ')}`);
+};
+
 /* ------------------------------------------------------------ block render */
 const block = (b, ctx) => {
   switch (b.t) {
@@ -431,9 +454,8 @@ const block = (b, ctx) => {
     case 'table': return `<div class="tw"><table class="data"><thead><tr>${b.head.map(h => `<th>${rich(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     case 'callout': return `<aside class="callout ${b.tone || ''}"><b>${rich(b.title)}</b><p>${rich(b.text)}</p></aside>`;
     case 'figure': {
-      const f = FIG[b.kind];
-      if (!f) throw new Error(`${ctx}: unknown figure kind "${b.kind}"`);
-      return `<figure>${f(b)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
+      checkFigure(b, ctx);
+      return `<figure>${FIG[b.kind](b)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
     }
     case 'figures': return `<div class="fig-row">${b.items.map(i => block({ ...i, t: 'figure' }, ctx)).join('')}</div>`;
     case 'lab': {
@@ -497,19 +519,34 @@ const chapterHTML = (ch, i) => {
 </section>`;
 };
 
-const answersHTML = chapters => `
+// The answer key is not an appendix of numbers. It is where a reader who got
+// something wrong goes to find out why, which makes it the part of the book
+// most in need of a picture. Each entry restates the question, answers it, and
+// shows it: a set map, a number line, a graph, or a machine run on the actual
+// values, drawn from the same computed figure vocabulary as the chapters.
+const answersHTML = chapters => {
+  const withFig = chapters.reduce((n, c) => n + (c.practice || []).filter(p => p.show).length, 0);
+  const total = chapters.reduce((n, c) => n + (c.practice || []).length, 0);
+  return `
 <section class="chapter answers" id="answers">
   <div class="kicker">ANSWER KEY</div>
-  <h2>Answers, in full</h2>
-  <p class="stand">Every practice item is answered here, with the reasoning that produces it. A book that answers only the odd numbers teaches its reader to guess.</p>
+  <h2>Answers, shown</h2>
+  <p class="stand">Every practice item is answered here, with the reasoning that produces it and, wherever a picture says it better than a sentence, the picture. ${withFig} of ${total} are drawn so far. A book that answers only the odd numbers teaches its reader to guess.</p>
   ${chapters.filter(c => (c.practice || []).some(p => p.a)).map(c => `
   <div class="ans-ch">
-    <h3>${c.id}. ${rich(c.title)}</h3>
-    <ol class="ans-list">
-      ${(c.practice || []).map(p => `<li>${p.a ? rich(p.a) : '<i class="todo">not yet answered</i>'}</li>`).join('')}
-    </ol>
+    <h3><a href="#ch${c.id}">${c.id}. ${rich(c.title)}</a></h3>
+    ${(c.practice || []).map((p, i) => `
+    <div class="ans${p.show ? ' has-fig' : ''}">
+      <div class="ans-n">${i + 1}</div>
+      <div class="ans-body">
+        <p class="ans-q">${rich(p.q)}</p>
+        <p class="ans-a">${p.a ? rich(p.a) : '<i class="todo">not yet answered</i>'}</p>
+        ${p.show ? block({ ...p.show, t: showType(p.show), id: `key${c.id}-${i}` }, `ch${c.id} answer ${i + 1}`) : ''}
+      </div>
+    </div>`).join('')}
   </div>`).join('')}
 </section>`;
+};
 
 // The book measures itself against its own completion gate and prints the
 // result. An unfinished chapter says so in the book rather than in a note
@@ -742,10 +779,19 @@ const page = (meta, chapters) => `<!doctype html>
   .pr-list li.hard::after { content:"harder"; }
   .pr-l { color:var(--mute); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; padding-top:3px; }
 
-  .answers .ans-ch { margin-bottom:20px; break-inside:avoid; }
-  .answers h3 { margin:0 0 6px; }
-  .ans-list { margin:0; padding-left:22px; font-size:13.5px; color:#2c3e55; }
-  .ans-list li { margin-bottom:5px; }
+  .answers .ans-ch { margin-bottom:26px; }
+  .answers h3 { margin:22px 0 10px; padding-bottom:5px; border-bottom:1px solid var(--rule); }
+  .answers h3 a { color:var(--teal); text-decoration:none; }
+  .ans { display:grid; grid-template-columns:26px 1fr; gap:0 10px; padding:9px 0;
+         border-bottom:1px solid var(--faint); break-inside:avoid; }
+  .ans:last-child { border-bottom:0; }
+  .ans-n { font-family:var(--sans); font-size:12px; font-weight:700; color:var(--teal);
+           text-align:right; padding-top:2px; font-variant-numeric:tabular-nums; }
+  .ans-q { font-size:13.5px; color:var(--mute); margin:0 0 4px; }
+  .ans-a { font-size:14px; margin:0; }
+  .ans.has-fig { padding-bottom:14px; }
+  .ans figure, .ans .lab-wrap { margin:11px 0 0; text-align:center; }
+  .ans figcaption { font-size:12px; }
   .todo { color:var(--orange); }
 
   nav.toc { background:var(--paper); border-radius:10px; padding:20px 24px; margin-bottom:34px; }
