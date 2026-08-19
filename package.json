@@ -18,7 +18,8 @@
     "app:test": "npm --prefix current-app run test:security",
     "deploy": "node scripts/deploy.mjs",
     "build:book": "node scripts/build-book.mjs",
-    "check:book": "node scripts/check-book-maths.mjs"
+    "check:book": "node scripts/check-book-maths.mjs",
+    "build:spine": "node scripts/build-spine.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
