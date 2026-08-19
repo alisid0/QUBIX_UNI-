@@ -421,7 +421,7 @@ const FIG = {
 
   // Input/output table drawn as a figure so it sits beside a graph.
   table({ head, rows }) {
-    return `<table class="fig-table"><thead><tr>${head.map(h => `<th>${rich(h)}</th>`).join('')}</tr></thead>`
+    return `<table class="fig-table"><thead><tr>${head.map(h => `<th scope="col">${rich(h)}</th>`).join('')}</tr></thead>`
       + `<tbody>${rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
   }
 };
@@ -635,13 +635,17 @@ const LAB = {
     }).join('');
     const ctrl = control === 'slider'
       ? `<input type="range" class="lab-range" min="0" max="${frames.length - 1}" value="0" step="1"
-           aria-label="${esc(label || 'step')}">`
+           aria-label="${esc(label || 'step')}" aria-valuetext="${esc(String(frames[0].pick ?? 1))}">`
       : `<div class="lab-btns" role="group" aria-label="${esc(label || 'choose')}">`
         + frames.map((fr, i) => `<button type="button" class="lab-b${i ? '' : ' on'}" data-i="${i}">${rich(fr.pick ?? String(i))}</button>`).join('')
         + `</div>`;
+    // Switching a frame changes the picture and its commentary. Without a
+    // status message a screen reader user presses a button and hears nothing,
+    // so the new frame's line is announced once, politely.
     return `<div class="lab" data-lab="frames" id="${id}">`
       + (label ? `<div class="lab-h">${rich(label)}</div>` : '')
       + `<div class="lab-stage">${body}</div>${ctrl}`
+      + `<p class="sr-only lab-status" aria-live="polite"></p>`
       + (hint ? `<p class="lab-hint">${rich(hint)}</p>` : '') + `</div>`;
   },
 
@@ -651,10 +655,15 @@ const LAB = {
     return `<div class="lab" data-lab="judge" id="${id}">`
       + (label ? `<div class="lab-h">${rich(label)}</div>` : '')
       + `<p class="lab-ask">${rich(ask)}</p><ul class="jd">`
-      + items.map((it, i) => `<li data-ok="${it.ok ? 1 : 0}">
-          <span class="jd-t">${rich(it.t)}</span>
-          <span class="jd-c"><button type="button" data-v="1">${esc(yes)}</button><button type="button" data-v="0">${esc(no)}</button></span>
-          <span class="jd-w" hidden>${rich(it.why)}</span></li>`).join('')
+      // Twelve buttons all called "reliable" are useless read aloud, so each
+      // one names the rule it is judging.
+      + items.map((it, i) => {
+        const subject = esc(String(it.t).replace(/\*/g, '').replace(/\s+/g, ' ').trim());
+        return `<li data-ok="${it.ok ? 1 : 0}">
+          <span class="jd-t" id="${id}-t${i}">${rich(it.t)}</span>
+          <span class="jd-c"><button type="button" data-v="1" aria-label="${esc(yes)}: ${subject}">${esc(yes)}</button><button type="button" data-v="0" aria-label="${esc(no)}: ${subject}">${esc(no)}</button></span>
+          <span class="jd-w" hidden>${rich(it.why)}</span></li>`;
+      }).join('')
       + `</ul><p class="lab-score" aria-live="polite"></p>`
       + (hint ? `<p class="lab-hint">${rich(hint)}</p>` : '') + `</div>`;
   }
@@ -681,7 +690,12 @@ const showType = s => s.frames ? 'lab' : s.items ? 'figures' : 'figure';
 
 // Spoken, not printed. A hyphen is announced as "dash"; the blank glyph is
 // announced as "white square" or skipped entirely. Neither is what is meant.
-const say = v => String(v).replace(/(^|[\s(])-(?=[\d.])/g, '$1−').replace(/⬚/g, 'blank');
+// Spoken, not printed. Notation is formatted here too, or a screen reader
+// announces "x caret 2" where a sighted reader sees x². A hyphen is announced
+// as "dash" and the blank glyph as "white square"; neither is what is meant.
+const say = v => math(String(v))
+  .replace(/(^|[\s(])-(?=[\d.])/g, '$1−')
+  .replace(/⬚/g, 'blank');
 const listOf = (a, join = 'and') => a.length < 2 ? (say(a[0] ?? ''))
   : `${a.slice(0, -1).map(say).join(', ')} ${join} ${say(a.at(-1))}`;
 const pt = ([x, y]) => `(${num(x)}, ${num(y)})`;
@@ -788,7 +802,7 @@ const DESCRIBE = {
     for (let i = 0; i < n; i++) s += f(side === 'right' ? x0 + (i + 1) * w : x0 + i * w) * w;
     return `${n} rectangles beneath a curve between x = ${num(x0)} and x = ${num(x1)}, each taking its height from the`
       + ` ${side} of its strip, so every rectangle ${side === 'right' ? 'pokes above' : 'sits under'} the curve.`
-      + ` Their total is ${num(s)}.${title ? ` Titled ${title}.` : ''}`;
+      + ` Their total is ${num(s)}.${title ? ` Titled ${say(title)}.` : ''}`;
   },
 
   zoom: o => { const { at, spans, holeAt } = { ...FIG_DEFAULTS.zoom, ...o }; return (
@@ -848,7 +862,7 @@ const block = (b, ctx) => {
     case 'h': return `<h3>${rich(b.text)}</h3>`;
     case 'formula': return `<div class="formula">${esc(math(b.text))}</div>`;
     case 'list': return `<${b.ordered ? 'ol' : 'ul'} class="bullets">${b.items.map(i => `<li>${rich(i)}</li>`).join('')}</${b.ordered ? 'ol' : 'ul'}>`;
-    case 'table': return `<div class="tw"><table class="data"><thead><tr>${b.head.map(h => `<th>${rich(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    case 'table': return `<div class="tw"><table class="data"><thead><tr>${b.head.map(h => `<th scope="col">${rich(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     case 'callout': return `<aside class="callout ${b.tone || ''}"><b>${rich(b.title)}</b><p>${rich(b.text)}</p></aside>`;
     case 'figure': {
       return `<figure>${drawFigure(b, ctx)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
@@ -996,7 +1010,7 @@ const gateHTML = chapters => {
   <h2>What this book still owes its reader</h2>
   <p class="stand">A chapter passes when it carries at least ${GATE.examples} worked examples, each followed by a parallel one the reader does; at least ${GATE.figures} figures; an illustrated or operable answer on every worked example; at least ${GATE.practice} practice items with an answer for every one; a named misconception; and a link back to earlier work. This table is counted from the source at build time, so it cannot flatter the book.</p>
   <div class="tw"><table class="data gate">
-    <thead><tr><th>Chapter</th><th>Worked</th><th>Your turn</th><th>Shown</th><th>Labs</th><th>Figures</th><th>Practice</th><th>Answered</th><th>Mistake</th><th>Review</th><th>Gate</th></tr></thead>
+    <thead><tr>${['Chapter','Worked','Your turn','Shown','Labs','Figures','Practice','Answered','Mistake','Review','Gate'].map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead>
     <tbody>${rows.map(r => `<tr class="${r.pass ? 'ok' : 'no'}">
       <td>${r.c.id}. ${rich(r.c.title)}</td>
       <td${r.ex < GATE.examples ? ' class="short"' : ''}>${r.ex || '—'}</td>
@@ -1024,6 +1038,9 @@ const page = (meta, chapters) => `<!doctype html>
   @page { size: A4; margin: 18mm 16mm; }
   :root { --ink:${C.ink}; --teal:${C.teal}; --orange:${C.orange}; --rose:${C.rose};
           --paper:${C.paper}; --rule:${C.rule}; --mute:${C.mute}; --faint:${C.faint};
+          /* Graphics need 3:1 and keep the identity hues above. Text needs
+             4.5:1, so anything a person reads uses these instead. */
+          --teal-text:#10796e; --orange-text:#a25d2a; --rose-text:#b84d4a;
           /* Three roles. Running text is a book and gets a serif; the apparatus
              around it (eyebrows, table headers, figure labels, practice tags) is
              machinery and gets the sans; formulas get the mono. All system faces,
@@ -1059,9 +1076,9 @@ const page = (meta, chapters) => `<!doctype html>
   .cover .stamp { margin-top:38px; padding-top:18px; border-top:1px solid #33475f; color:#9fb0c4; font-size:12px; }
   .cover .stamp b { color:#fff; display:block; margin-bottom:6px; letter-spacing:.06em; }
 
-  .kicker { color:var(--teal); font-size:11px; font-weight:700; letter-spacing:.13em; margin-bottom:6px; }
+  .kicker { color:var(--teal-text); font-size:11px; font-weight:700; letter-spacing:.13em; margin-bottom:6px; }
   h2 { font-size:29px; line-height:1.16; margin:0 0 12px; letter-spacing:-.015em; }
-  h3 { font-size:17px; color:var(--teal); margin:26px 0 8px; }
+  h3 { font-size:17px; color:var(--teal-text); margin:26px 0 8px; }
   .stand { font-size:16px; color:var(--mute); margin:0 0 20px; }
   p { margin:0 0 13px; }
   .bullets { margin:0 0 14px; padding-left:20px; } .bullets li { margin-bottom:5px; }
@@ -1076,9 +1093,9 @@ const page = (meta, chapters) => `<!doctype html>
   table.data th { background:var(--ink); color:#fff; text-align:left; padding:9px 11px; font-size:11px; letter-spacing:.05em; }
   table.data td { padding:9px 11px; border-bottom:1px solid var(--rule); vertical-align:top; }
   table.data tbody tr:nth-child(even) { background:var(--paper); }
-  table.gate tr.ok td:last-child { color:var(--teal); font-weight:700; }
-  table.gate tr.no td:last-child { color:var(--orange); font-weight:700; }
-  table.gate td.short { color:var(--orange); font-weight:700; }
+  table.gate tr.ok td:last-child { color:var(--teal-text); font-weight:700; }
+  table.gate tr.no td:last-child { color:var(--orange-text); font-weight:700; }
+  table.gate td.short { color:var(--orange-text); font-weight:700; }
   .gate-sum { background:var(--paper); padding:12px 15px; border-radius:7px; font-size:14px; }
 
   figure { margin:20px 0; text-align:center; break-inside:avoid; }
@@ -1094,26 +1111,28 @@ const page = (meta, chapters) => `<!doctype html>
   .callout b { display:block; margin-bottom:5px; }
   .callout p { margin:0 0 6px; font-size:14px; } .callout p:last-child { margin:0; }
   .callout.warn { background:#fdf3ec; border-color:#f0d5bf; }
-  .callout.warn b { color:#a85a1d; }
+  .callout.warn b { color:var(--orange-text); }
   .callout.back { background:var(--paper); border-color:var(--rule); }
   .callout .fix { color:var(--mute); }
 
   .worked { border:1px solid var(--rule); border-left:3px solid var(--orange); border-radius:0 8px 8px 0;
             padding:14px 16px; margin:18px 0; background:#fffdf9; break-inside:avoid; }
-  .wk-h { color:var(--orange); font-size:11px; letter-spacing:.09em; text-transform:uppercase; display:block; margin-bottom:6px; }
+  .wk-h { color:var(--orange-text); font-size:11px; letter-spacing:.09em; text-transform:uppercase; display:block; margin-bottom:6px; }
   .wk-q { font-weight:600; margin-bottom:9px; }
   .wk-steps { margin:0 0 10px; padding-left:20px; font-size:14px; } .wk-steps li { margin-bottom:5px; }
   .wk-a { margin:0; padding-top:9px; border-top:1px solid var(--rule); font-size:14px; }
   .wk-n { margin:8px 0 0; font-size:13px; color:var(--mute); }
   .turn { margin:11px -16px -14px; padding:10px 16px; background:var(--paper);
           border-top:1px solid var(--rule); border-radius:0 0 8px 0; font-size:13.5px; }
-  .turn > b { color:var(--teal); font-family:var(--sans); font-size:11px; letter-spacing:.07em;
+  .turn > b { color:var(--teal-text); font-family:var(--sans); font-size:11px; letter-spacing:.07em;
               text-transform:uppercase; display:inline; margin-right:5px; }
   .turn details { margin-top:6px; }
-  .turn summary { cursor:pointer; color:var(--teal); font-family:var(--sans); font-size:11.5px;
+  .turn summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11.5px;
                   letter-spacing:.04em; width:max-content; }
   .turn summary:focus-visible { outline:2px solid var(--teal); outline-offset:3px; border-radius:3px; }
   .turn details[open] summary { margin-bottom:4px; }
+  .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+             overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
   .zoom-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
 
   /* ---- interactive labs ---- */
@@ -1121,7 +1140,7 @@ const page = (meta, chapters) => `<!doctype html>
   .lab { border:1px solid var(--rule); border-radius:9px; background:var(--paper);
          padding:13px 14px 12px; text-align:center; }
   .lab-h { font-family:var(--sans); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
-           color:var(--teal); margin-bottom:9px; text-align:left; }
+           color:var(--teal-text); margin-bottom:9px; text-align:left; }
   .lab-stage { min-height:1px; }
   .lab-frame { display:none; }
   .lab-frame.on { display:block; }
@@ -1130,7 +1149,7 @@ const page = (meta, chapters) => `<!doctype html>
   .lab-b, .jd-c button { font:600 13px/1 var(--sans); padding:7px 13px; border-radius:6px; cursor:pointer;
           border:1px solid var(--rule); background:#fff; color:var(--ink); }
   .lab-b:hover, .jd-c button:hover { border-color:var(--teal); }
-  .lab-b.on { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .lab-b.on { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
   .lab-b:focus-visible, .jd-c button:focus-visible, .lab-range:focus-visible,
   .pr-sol summary:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
   .lab-range { width:min(100%,300px); margin-top:12px; accent-color:var(--teal); }
@@ -1143,18 +1162,18 @@ const page = (meta, chapters) => `<!doctype html>
   .jd-t { font-size:14px; }
   .jd-c { display:flex; gap:6px; }
   .jd-w { grid-column:1 / -1; font-size:13px; color:var(--mute); padding:2px 0 1px; }
-  .jd li.right .jd-w { color:var(--teal); }
-  .jd li.wrong .jd-w { color:#a85a1d; }
-  .jd li.right .jd-c button.picked { background:var(--teal); border-color:var(--teal); color:#fff; }
-  .jd li.wrong .jd-c button.picked { background:#a85a1d; border-color:#a85a1d; color:#fff; }
+  .jd li.right .jd-w { color:var(--teal-text); }
+  .jd li.wrong .jd-w { color:var(--orange-text); }
+  .jd li.right .jd-c button.picked { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
+  .jd li.wrong .jd-c button.picked { background:var(--orange-text); border-color:var(--orange-text); color:#fff; }
   .lab-ask { font-size:13.5px; color:var(--mute); text-align:left; margin:0 0 4px; }
-  .lab-score { font-family:var(--sans); font-size:12px; color:var(--teal); margin:10px 0 0; text-align:left; min-height:1.2em; }
+  .lab-score { font-family:var(--sans); font-size:12px; color:var(--teal-text); margin:10px 0 0; text-align:left; min-height:1.2em; }
 
   /* ---- practice solutions ---- */
   .pr-list li { display:block; }
   .pr-top { display:flex; gap:10px; justify-content:space-between; }
   .pr-sol { margin-top:6px; }
-  .pr-sol summary { cursor:pointer; color:var(--teal); font-family:var(--sans); font-size:11px;
+  .pr-sol summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11px;
                     letter-spacing:.05em; text-transform:uppercase; width:max-content; }
   .pr-sol[open] summary { margin-bottom:6px; }
   .pr-steps { margin:0 0 6px; padding-left:19px; font-size:13.5px; color:#33445c; }
@@ -1182,31 +1201,31 @@ const page = (meta, chapters) => `<!doctype html>
                         display:flex; gap:10px; align-items:baseline; justify-content:flex-start; }
   .pr-list li.pr-tier::before { content:none; }
   .pr-list li.pr-tier b { font-family:var(--sans); font-size:11px; letter-spacing:.09em;
-                          text-transform:uppercase; color:var(--teal); }
+                          text-transform:uppercase; color:var(--teal-text); }
   .pr-list li.pr-tier span { font-size:12.5px; color:var(--mute); }
-  .pr-list li::before { content:counter(pr) "."; position:absolute; left:13px; color:var(--teal); font-weight:700; }
+  .pr-list li::before { content:counter(pr) "."; position:absolute; left:13px; color:var(--teal-text); font-weight:700; }
   .pr-l { color:var(--mute); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; padding-top:3px; }
 
   .answers .ans-ch { margin-bottom:26px; }
   .answers h3 { margin:22px 0 10px; padding-bottom:5px; border-bottom:1px solid var(--rule); }
-  .answers h3 a { color:var(--teal); text-decoration:none; }
+  .answers h3 a { color:var(--teal-text); text-decoration:none; }
   .ans { display:grid; grid-template-columns:26px 1fr; gap:0 10px; padding:9px 0;
          border-bottom:1px solid var(--faint); break-inside:avoid; }
   .ans:last-child { border-bottom:0; }
-  .ans-n { font-family:var(--sans); font-size:12px; font-weight:700; color:var(--teal);
+  .ans-n { font-family:var(--sans); font-size:12px; font-weight:700; color:var(--teal-text);
            text-align:right; padding-top:2px; font-variant-numeric:tabular-nums; }
   .ans-q { font-size:13.5px; color:var(--mute); margin:0 0 4px; }
   .ans-a { font-size:14px; margin:0; }
   .ans.has-fig { padding-bottom:14px; }
   .ans figure, .ans .lab-wrap { margin:11px 0 0; text-align:center; }
   .ans figcaption { font-size:12px; }
-  .todo { color:var(--orange); }
+  .todo { color:var(--orange-text); }
 
   nav.toc { background:var(--paper); border-radius:10px; padding:20px 24px; margin-bottom:34px; }
   nav.toc h2 { font-size:20px; margin-bottom:12px; }
   nav.toc ol { margin:0; padding-left:20px; columns:2; column-gap:30px; font-size:14px; }
   nav.toc li { margin-bottom:5px; break-inside:avoid; }
-  nav.toc a { color:var(--ink); text-decoration:none; } nav.toc a:hover { color:var(--teal); }
+  nav.toc a { color:var(--ink); text-decoration:none; } nav.toc a:hover { color:var(--teal-text); }
 
   /* Print is still a book: every disclosure opens, the controls go, and each
      lab falls back to its first frame, which is why frame 0 is authored as the
@@ -1216,7 +1235,7 @@ const page = (meta, chapters) => `<!doctype html>
     .pr-sol, .turn details { display:block; }
     .pr-sol summary { display:none; }
     .pr-sol::before { content:"Solution."; font-family:var(--sans); font-size:11px;
-                      letter-spacing:.05em; text-transform:uppercase; color:var(--teal); }
+                      letter-spacing:.05em; text-transform:uppercase; color:var(--teal-text); }
     .lab-btns, .lab-range, .lab-hint, .jd-c { display:none; }
     .lab-frame { display:none !important; }
     .lab-frame[data-i="0"] { display:block !important; }
@@ -1252,6 +1271,20 @@ const page = (meta, chapters) => `<!doctype html>
   var show = function (lab, i) {
     var fr = lab.querySelectorAll('.lab-frame');
     for (var k = 0; k < fr.length; k++) fr[k].classList.toggle('on', k === i);
+    var status = lab.querySelector('.lab-status');
+    if (status) {
+      var live = fr[i];
+      var said = live.querySelector('.lab-say');
+      var pic = live.querySelector('svg[aria-label]');
+      status.textContent = (said ? said.textContent.trim() + ' ' : '')
+        + (pic ? pic.getAttribute('aria-label') : '');
+    }
+    var range = lab.querySelector('.lab-range');
+    if (range) {
+      var btn = lab.querySelectorAll('.lab-b')[i];
+      range.value = i;
+      range.setAttribute('aria-valuetext', btn ? btn.textContent.trim() : String(i + 1));
+    }
     var bs = lab.querySelectorAll('.lab-b');
     for (var k = 0; k < bs.length; k++) {
       var on = +bs[k].dataset.i === i;
@@ -1367,7 +1400,11 @@ for (const name of books) {
   // rendered text means the formatter has a gap, and the gap is invisible in
   // the source because the source is meant to be written that way. Letter
   // exponents were missed for exactly this reason once already.
-  const text = html.replace(/<[^>]+>/g, ' ');
+  // Includes aria-labels. What is read aloud needs formatting as much as what
+  // is read on screen, and they are different strings, so scanning the visible
+  // text alone let raw notation into the spoken descriptions unnoticed.
+  const spoken = [...html.matchAll(/aria-label="([^"]*)"/g)].map(m => m[1]).join(' ');
+  const text = html.replace(/<[^>]+>/g, ' ') + ' ' + spoken;
   const raw = [...text.matchAll(/.{0,20}(\^|sqrt\(|<=|>=|\binfinity\b).{0,16}/g)].map(m => m[0].replace(/\s+/g, ' ').trim());
   if (raw.length) throw new Error(`${name}: ${raw.length} unformatted notation site(s) in the rendered book:\n  ` + raw.slice(0, 6).join('\n  '));
 
