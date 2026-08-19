@@ -133,6 +133,12 @@ export default {
       turn: { ask: 'Find the range of f(x) = x^2 + 1.', a: '[1, infinity). Solving x² + 1 = y needs x² = y − 1, which has a real solution exactly when y is at least 1.' } }
   ],
 
+  drills: [
+{ kind: 'evaluate', name: 'f', expr: 'sqrt(x)', f: x => Math.sqrt(x), at: [0, 1, 4, 9, 16] },
+    { kind: 'evaluate', name: 'g', expr: '1/(x - 3)', f: x => 1 / (x - 3), at: [0, 1, 2, 4, 5], tier: 'Core' },
+    { kind: 'evaluate', name: 'h', expr: 'x^2 + 3', f: x => x * x + 3, at: [0, 1, -1, 3, -3], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'State the domain of q(x) = 1/(x − 3).', level: 'Calculate',
       a: 'All real x except 3: (−infinity, 3) and (3, infinity).',

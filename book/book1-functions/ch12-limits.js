@@ -104,6 +104,23 @@ export default {
         a: 'The limit is 10 and the value is 0. The definition at the point cannot affect the limit.' } }
   ],
 
+  drills: [
+    { kind: 'limit', tier: 'Warm-up', cases: [
+      { a: 2, other: 2, expr: '(x^2 - 4)/(x - 2)' },
+      { a: 3, other: 3, expr: '(x^2 - 9)/(x - 3)' },
+      { a: 1, other: 1, expr: '(x^2 - 1)/(x - 1)' },
+      { a: 5, other: 5, expr: '(x^2 - 25)/(x - 5)' }
+    ] },
+    { kind: 'limit', cases: [
+      { a: 4, other: 1, expr: '(x^2 - 3x - 4)/(x - 4)' },
+      { a: 2, other: 5, expr: '(x^2 + 3x - 10)/(x - 2)' },
+      { a: 3, other: -1, expr: '(x^2 - 4x + 3)/(x - 3)' },
+      { a: -2, other: 4, expr: '(x^2 + 6x + 8)/(x + 2)' },
+      { a: 6, other: 2, expr: '(x^2 - 4x - 12)/(x - 6)' },
+      { a: 1, other: 6, expr: '(x^2 + 5x - 6)/(x - 1)' }
+    ] }
+  ],
+
   practice: [
     { q: 'From the table above, what value is f(x) approaching as x approaches 1?', level: 'Analyse change',
       a: '2.',

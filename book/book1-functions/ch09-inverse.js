@@ -108,6 +108,23 @@ export default {
         a: 'The rule is (x + 3)² − 9 with its low point at x = −3, so restrict to [−3, infinity), or to (−infinity, −3] if you prefer the falling half.' } }
   ],
 
+  drills: [
+    { kind: 'inverse', tier: 'Warm-up', cases: [
+      { m: 1, c: 7, expr: 'x + 7', invExpr: 'x - 7' },
+      { m: 1, c: -4, expr: 'x - 4', invExpr: 'x + 4' },
+      { m: 2, c: 0, expr: '2x', invExpr: 'x/2' },
+      { m: 5, c: 0, expr: '5x', invExpr: 'x/5' }
+    ] },
+    { kind: 'inverse', cases: [
+      { m: 3, c: -5, expr: '3x - 5', invExpr: '(x + 5)/3' },
+      { m: 4, c: 8, expr: '4x + 8', invExpr: '(x - 8)/4' },
+      { m: 0.5, c: 3, expr: '0.5x + 3', invExpr: '2x - 6' },
+      { m: -2, c: 6, expr: '-2x + 6', invExpr: '(6 - x)/2' },
+      { m: 6, c: -1, expr: '6x - 1', invExpr: '(x + 1)/6' },
+      { m: -1, c: 9, expr: '9 - x', invExpr: '9 - x' }
+    ] }
+  ],
+
   practice: [
     { q: 'Find the inverse of f(x) = 3x − 5.', level: 'Combine',
       a: 'f⁻¹(x) = (x + 5)/3.',

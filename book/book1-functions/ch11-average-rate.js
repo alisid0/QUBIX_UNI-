@@ -125,6 +125,12 @@ export default {
       caption: 'Every rise is +3, so every average rate is 3 whichever interval is chosen. Compare the staircase above, where the rises were 5, 7 and 9 and the answer depended entirely on which interval was named.' }
   ],
 
+  drills: [
+    { kind: 'avgrate', tier: 'Warm-up', name: 'f', expr: 'x^2', f: x => x * x, on: [[2, 5], [1, 4], [0, 3], [3, 6]] },
+    { kind: 'avgrate', name: 'g', expr: '3x + 1', f: x => 3 * x + 1, on: [[0, 10], [2, 5], [-1, 4]], tier: 'Core' },
+    { kind: 'avgrate', name: 'h', expr: 'x^3', f: x => x * x * x, on: [[0, 2], [1, 3]], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'Find the average rate of change of f(x) = x^2 from 2 to 5.', level: 'Analyse change',
       a: '(25 − 4)/(5 − 2) = 7.',

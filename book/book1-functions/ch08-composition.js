@@ -104,6 +104,13 @@ export default {
         a: 'f(x) = x³ and g(x) = 4x + 1. Both accept every real number, so the domain is all real numbers.' } }
   ],
 
+  drills: [
+    { kind: 'compose', tier: 'Warm-up', fName: 'f', fExpr: 'x^2', f: x => x * x,
+      gName: 'g', gExpr: 'x - 3', g: x => x - 3, at: [5, 1, 0] },
+    { kind: 'compose', fName: 'f', fExpr: '2x', f: x => 2 * x,
+      gName: 'g', gExpr: 'x + 1', g: x => x + 1, at: [3, 0], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'Let f(x) = x^2 and g(x) = x − 3. Find f(g(5)) and g(f(5)).', level: 'Combine',
       a: 'f(g(5)) = 4 and g(f(5)) = 22.',

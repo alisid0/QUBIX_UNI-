@@ -156,6 +156,15 @@ export default {
     { t: 'p', text: 'If any later chapter stops making sense, the question to ask first is always the same: **which two things are being subtracted, and what is being divided by what?**' }
   ],
 
+  drills: [
+    { kind: 'rate', tier: 'Warm-up', what: 'A plant', verb: 'is', unit: 'cm', per: 'days',
+      pairs: [[4, 12, 13, 30], [0, 5, 10, 45], [2, 20, 8, 38]] },
+    { kind: 'rate', what: 'A tank', verb: 'holds', unit: 'litres', per: 'hours',
+      pairs: [[0, 80, 6, 50], [1, 60, 5, 20], [0, 12, 4, 40]], tier: 'Core' },
+    { kind: 'rate', what: 'A car', verb: 'has covered', unit: 'miles', per: 'hours',
+      pairs: [[0, 0, 3, 150], [1, 40, 4, 220]], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'A plant is 12 cm on day 4 and 30 cm on day 13. Find Δh and Δt.', level: 'Calculate',
       a: 'Δh = 30 − 12 = 18 cm, and Δt = 13 − 4 = 9 days.',

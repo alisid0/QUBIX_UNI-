@@ -181,6 +181,12 @@ export default {
         a: 'Yes, provided the room is not empty and no two people are exactly equally tall. A tie forks the output, and an empty room gives no output at all, so both are ways the promise fails.' } }
   ],
 
+  drills: [
+{ kind: 'evaluate', name: 'f', expr: '2x', f: x => 2 * x, at: [0, 1, 3, 5, -2, -4] },
+    { kind: 'evaluate', name: 'g', expr: 'x + 3', f: x => x + 3, at: [0, 2, 7, -3, -8], tier: 'Core' },
+    { kind: 'evaluate', name: 'c', expr: '15x + 40', f: x => 15 * x + 40, at: [0, 2, 6, 10], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'A rule adds 3. Complete: 0 → __, 4 → __, −2 → __.', level: 'Calculate',
       a: '3, 7, 1.',

@@ -140,6 +140,12 @@ export default {
     { t: 'p', text: 'The two totals are now 0.302734 and 0.365234, a gap of 0.0625 where four strips left a gap of 0.25. Quadrupling the strips quartered the gap, and 1/3 still sits between them. That is what it means for the estimates to converge: not that either one becomes right, but that the room left for the answer to hide in shrinks to nothing.' }
   ],
 
+  drills: [
+    { kind: 'avgrate', tier: 'Warm-up', name: 'v', expr: '2t', f: t => 2 * t, on: [[0, 3], [0, 5], [1, 4]] },
+    { kind: 'evaluate', name: 'A', expr: 't^2', f: t => t * t, at: [0, 3, 5, 2], tier: 'Core' },
+    { kind: 'evaluate', name: 'F', expr: 'x^3/3', f: x => x * x * x / 3, at: [0, 1, 3], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'A car travels at a steady 40 mph for 3 hours. Find the distance as an area.', level: 'Analyse change',
       a: '120 miles: a rectangle 40 tall and 3 wide.',

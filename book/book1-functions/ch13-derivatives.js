@@ -117,6 +117,23 @@ export default {
         a: 'At t = 3 seconds, at a height of 90 − 45 = 45 metres.' } }
   ],
 
+  drills: [
+    { kind: 'derivative', tier: 'Warm-up', cases: [
+      { expr: 'x^2', f: x => x * x, d: x => 2 * x, dExpr: '2x', at: 1 },
+      { expr: 'x^2', f: x => x * x, d: x => 2 * x, dExpr: '2x', at: 3 },
+      { expr: 'x^2', f: x => x * x, d: x => 2 * x, dExpr: '2x', at: -2 },
+      { expr: 'x^2', f: x => x * x, d: x => 2 * x, dExpr: '2x', at: 0 }
+    ] },
+    { kind: 'derivative', cases: [
+      { expr: '3x^2', f: x => 3 * x * x, d: x => 6 * x, dExpr: '6x', at: 2 },
+      { expr: '2x^2', f: x => 2 * x * x, d: x => 4 * x, dExpr: '4x', at: 3 },
+      { expr: 'x^3', f: x => x * x * x, d: x => 3 * x * x, dExpr: '3x^2', at: 1 },
+      { expr: 'x^3', f: x => x * x * x, d: x => 3 * x * x, dExpr: '3x^2', at: 2 },
+      { expr: '5x - 2', f: x => 5 * x - 2, d: () => 5, dExpr: '5', at: 4 },
+      { expr: '4x + 1', f: x => 4 * x + 1, d: () => 4, dExpr: '4', at: 1 }
+    ] }
+  ],
+
   practice: [
     { q: "Derive f'(x) for f(x) = x^2 from the definition, showing the h cancel.", level: 'Analyse change',
       a: "The quotient simplifies to 2x + h, which approaches 2x. So f'(x) = 2x.",

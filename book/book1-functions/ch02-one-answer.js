@@ -141,6 +141,12 @@ export default {
         a: 'Answers vary; for example {(1, 7), (2, 7), (3, 9)}. The inputs must all differ; the outputs may repeat freely.' } }
   ],
 
+  drills: [
+{ kind: 'evaluate', name: 'p', expr: 'x^2', f: x => x * x, at: [0, 2, -2, 3, -3, 5] },
+    { kind: 'evaluate', name: 'q', expr: 'x^3', f: x => x * x * x, at: [0, 1, -1, 2, -2], tier: 'Core' },
+    { kind: 'evaluate', name: 'r', expr: '1/x', f: x => 1 / x, at: [1, 2, 4, -1, -4], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'Is {(−1, 2), (0, 2), (1, 2)} a function? Explain.', level: 'Recognise',
       a: 'Yes. No input repeats at all, so no input can have two outputs. The shared output 2 is permitted.',

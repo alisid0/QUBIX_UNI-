@@ -131,6 +131,19 @@ export default {
         a: 'x². The linear rule gives 1, 6, 11, 16, matching at the first and last inputs and failing in between, which is a good reminder that two agreements are not a proof either.' } }
   ],
 
+  drills: [
+    { kind: 'family', tier: 'Warm-up', series: [
+      { f: x => 2 * x + 5, expr: '2x + 5', kind: 'linear' },
+      { f: x => 4 * x - 1, expr: '4x - 1', kind: 'linear' },
+      { f: x => x * x, expr: 'x^2', kind: 'quadratic' },
+      { f: x => x * x + 3 * x, expr: 'x^2 + 3x', kind: 'quadratic' },
+      { f: x => Math.pow(2, x), expr: '2^x', kind: 'exponential' },
+      { f: x => 3 * Math.pow(2, x), expr: '3\u00b72^x', kind: 'exponential' },
+      { f: x => Math.pow(3, x), expr: '3^x', kind: 'exponential', to: 3 },
+      { f: x => 5 * x + 2, expr: '5x + 2', kind: 'linear', tier: 'Core' }
+    ] }
+  ],
+
   practice: [
     { q: 'Classify: y = 4 − 3x, y = 3^x, y = x^2 − 4.', level: 'Recognise',
       a: 'Linear, exponential, quadratic.',

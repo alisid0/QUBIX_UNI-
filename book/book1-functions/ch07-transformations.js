@@ -110,6 +110,23 @@ export default {
         a: '(x + 2)² + 5, with its low point at (−2, 5).' } }
   ],
 
+  drills: [
+    { kind: 'transform', tier: 'Warm-up', cases: [
+      { h: 0, k: 3, expr: 'x^2 + 3' },
+      { h: 0, k: -2, expr: 'x^2 - 2' },
+      { h: 2, k: 0, expr: '(x - 2)^2' },
+      { h: -3, k: 0, expr: '(x + 3)^2' }
+    ] },
+    { kind: 'transform', cases: [
+      { h: 1, k: -4, expr: '(x - 1)^2 - 4' },
+      { h: -2, k: 5, expr: '(x + 2)^2 + 5' },
+      { h: 4, k: 2, expr: '(x - 4)^2 + 2' },
+      { h: -5, k: -1, expr: '(x + 5)^2 - 1' },
+      { h: 3, k: 6, expr: '(x - 3)^2 + 6' },
+      { h: -1, k: 4, expr: '(x + 1)^2 + 4' }
+    ] }
+  ],
+
   practice: [
     { q: 'Describe the change from x^2 to (x + 4)^2 − 1.', level: 'Transform',
       a: 'Left 4 and down 1; the low point moves to (−4, −1).',

@@ -408,6 +408,195 @@ const FIG = {
   }
 };
 
+/* ------------------------------------------------------------------ drills */
+// Practice at volume, without authoring each answer by hand.
+//
+// A chapter declares a skill and the inputs to rehearse it on; the build emits
+// one practice item per input, with the answer COMPUTED from the same function
+// that draws the figure. So a drill answer cannot disagree with its picture,
+// and cannot be wrong unless the rule itself is. That is what makes a large
+// practice set safe: nobody typed the answers.
+//
+// Drills are for mechanical rehearsal. Anything needing judgement stays
+// hand-written above them.
+
+const num = v => {
+  if (!Number.isFinite(v)) return '—';
+  const r = Math.abs(v) < 1e-9 ? 0 : +v.toFixed(4);
+  return String(r).replace('-', '−');
+};
+const win = (f, xs, pad = 1.6) => {
+  const ys = xs.map(f).filter(Number.isFinite);
+  const x0 = Math.min(...xs) - pad, x1 = Math.max(...xs) + pad;
+  const lo = Math.min(...ys, 0), hi = Math.max(...ys, 0);
+  const m = Math.max(1, (hi - lo) * 0.25);
+  return { x0, x1, y0: lo - m, y1: hi + m };
+};
+
+const DRILL = {
+  // Evaluate one rule at many inputs.
+  evaluate({ name = 'f', expr, f, at, view, tier = 'Warm-up' }) {
+    const v = view || win(f, at);
+    return at.map(x => ({
+      q: `For ${name}(x) = ${expr}, find ${name}(${num(x)}).`, level: 'Calculate', tier,
+      a: `${name}(${num(x)}) = ${num(f(x))}.`,
+      show: { kind: 'graph', f, ...v, w: 265, h: 195, marks: [[x, f(x)]],
+        title: 'READ THE HEIGHT', note: `${name}(x)=${expr}`,
+        caption: `Go across to ${num(x)}, then up to the curve. The height there is ${num(f(x))}.` }
+    }));
+  },
+
+  // Two readings of a quantity: both differences, then the quotient.
+  rate({ what = 'The quantity', verb = 'is', unit = '', per = '', pairs, tier = 'Core' }) {
+    // "at 1 hours" reads as a bug because it is one. Generated prose needs the
+    // same care as written prose, so the unit agrees with its number.
+    const one = per.replace(/s$/, '');
+    const plural = n => `${num(n)} ${Math.abs(n) === 1 ? one : per}`;
+    return pairs.map(([xa, ya, xb, yb]) => {
+      const dx = xb - xa, dy = yb - ya, r = dy / dx;
+      const f = t => ya + r * (t - xa);
+      return {
+        q: `${what} ${verb} ${num(ya)}${unit ? ' ' + unit : ''} after ${plural(xa)} and ${num(yb)}${unit ? ' ' + unit : ''} after ${plural(xb)}. Find Δy, Δx, and the rate of change.`,
+        level: 'Calculate', tier,
+        a: `Δy = ${num(yb)} − ${num(ya)} = ${num(dy)}${unit ? ' ' + unit : ''}; Δx = ${plural(dx)}; rate = ${num(dy)}/${num(dx)} = ${num(r)}${unit ? ' ' + unit : ''} per ${one || 'unit'}.`,
+        show: { kind: 'delta', f, a: xa, b: xb, ...win(f, [xa, xb]), w: 275, h: 205,
+          title: 'BOTH DIFFERENCES', note: `${unit || 'y'} against ${per || 'x'}`,
+          caption: `Δx along the bottom, Δy up the side, and the quotient is what one ${one || 'unit'} gets.` }
+      };
+    });
+  },
+
+  // Average rate of a curve over stated intervals.
+  avgrate({ name = 'f', expr, f, on, tier = 'Core' }) {
+    return on.map(([a, b]) => ({
+      q: `Find the average rate of change of ${name}(x) = ${expr} from x = ${num(a)} to x = ${num(b)}.`,
+      level: 'Analyse change', tier,
+      a: `(${num(f(b))} − ${num(f(a))})/(${num(b)} − ${num(a)}) = ${num((f(b) - f(a)) / (b - a))}.`,
+      show: { kind: 'secant', f, a, b, ...win(f, [a, b], 0.8),
+        caption: `The secant through (${num(a)}, ${num(f(a))}) and (${num(b)}, ${num(f(b))}). Its steepness is the average rate over that interval and no other.` }
+    }));
+  },
+
+  // Identify a family from its outputs.
+  family({ series, tier = 'Core' }) {
+    return series.map(({ f, expr, kind, from = 0, to = 4 }) => {
+      const xs = []; for (let x = from; x <= to; x++) xs.push(x);
+      const out = xs.map(f);
+      const d1 = out.slice(1).map((v, i) => v - out[i]);
+      const d2 = d1.slice(1).map((v, i) => v - d1[i]);
+      const ratio = out.slice(1).map((v, i) => v / out[i]);
+      const why = kind === 'linear' ? `the first differences are all ${num(d1[0])}`
+        : kind === 'quadratic' ? `the first differences ${d1.map(num).join(', ')} are not constant but the second differences are all ${num(d2[0])}`
+        : `the differences settle nothing, while the ratios are all ${num(ratio[0])}`;
+      return {
+        q: `Outputs ${out.map(num).join(', ')} for inputs ${xs.join(', ')}. Name the family and the rule.`,
+        level: 'Calculate', tier,
+        a: `${kind[0].toUpperCase() + kind.slice(1)}, and the rule is ${expr}, because ${why}.`,
+        show: { kind: 'steps', f, from, to, ...win(f, xs, 0.7), w: 275, h: 205,
+          title: kind.toUpperCase(), note: expr,
+          caption: `The rises are ${d1.map(num).join(', ')}. ${kind === 'exponential' ? 'Each is the height it started from, which is what multiplying looks like.' : kind === 'quadratic' ? 'They grow by the same amount each time.' : 'They never change.'}` }
+      };
+    });
+  },
+
+  // Locate the moved feature of a transformed parent.
+  transform({ parent = x => x * x, parentName = 'x^2', cases, tier = 'Core' }) {
+    return cases.map(({ h = 0, k = 0, expr }) => {
+      const f = x => parent(x - h) + k;
+      const across = h === 0 ? 'not moved sideways' : h > 0 ? `right ${num(h)}` : `left ${num(-h)}`;
+      const up = k === 0 ? 'not moved vertically' : k > 0 ? `up ${num(k)}` : `down ${num(-k)}`;
+      return {
+        q: `Describe the change from ${parentName} to ${expr}, and give the new low point.`,
+        level: 'Transform', tier,
+        a: `Moved ${across} and ${up}. The low point goes from (0, 0) to (${num(h)}, ${num(k)}).`,
+        show: { kind: 'graph', f, second: { f: parent }, x0: h - 5, x1: h + 5, y0: k - 3, y1: k + 9,
+          w: 275, h: 205, marks: [[h, k], [0, 0]], title: 'PARENT BEHIND', note: expr,
+          caption: `The bracket vanishes at x = ${num(h)}, which is where the feature lands. The number outside sets its height.` }
+      };
+    });
+  },
+
+  // Run a pair of machines in a stated order.
+  compose({ fName, fExpr, f, gName, gExpr, g, at, tier = 'Core' }) {
+    return at.flatMap(x => [
+      { q: `With ${fName}(x) = ${fExpr} and ${gName}(x) = ${gExpr}, find ${fName}(${gName}(${num(x)})).`,
+        level: 'Combine', tier,
+        a: `${gName}(${num(x)}) = ${num(g(x))}, then ${fName}(${num(g(x))}) = ${num(f(g(x)))}.`,
+        show: { kind: 'chain', stages: [`${gName}(x)=${gExpr}`, `${fName}(x)=${fExpr}`], input: num(x), values: [num(g(x)), num(f(g(x)))],
+          caption: `The inner rule runs first, and the number on the wire is ${num(g(x))}.` } },
+      { q: `With the same two rules, find ${gName}(${fName}(${num(x)})).`,
+        level: 'Combine', tier,
+        a: `${fName}(${num(x)}) = ${num(f(x))}, then ${gName}(${num(f(x))}) = ${num(g(f(x)))}.`,
+        show: { kind: 'chain', stages: [`${fName}(x)=${fExpr}`, `${gName}(x)=${gExpr}`], input: num(x), values: [num(f(x)), num(g(f(x)))],
+          caption: `Swapped, the wire carries ${num(f(x))} instead${g(f(x)) === f(g(x)) ? ', and here the answers happen to agree' : ', and the answer differs'}.` } }
+    ]);
+  },
+
+  // Invert a linear rule, and see it mirrored.
+  inverse({ cases, tier = 'Core' }) {
+    return cases.map(({ m, c, expr, invExpr }) => {
+      const f = x => m * x + c, fi = y => (y - c) / m;
+      const a = 2, b = f(a);
+      return {
+        q: `Find the inverse of f(x) = ${expr}, and check it on one value.`,
+        level: 'Combine', tier,
+        a: `f⁻¹(x) = ${invExpr}. Check: f(${num(a)}) = ${num(b)}, and f⁻¹(${num(b)}) = ${num(fi(b))}.`,
+        show: { kind: 'reflect', f, finv: fi, pair: [a, b], w: 280, h: 250,
+          x0: Math.min(a, b) - 5, x1: Math.max(a, b) + 5, y0: Math.min(a, b) - 5, y1: Math.max(a, b) + 5,
+          note: 'mirrors in y = x',
+          caption: `f sends ${num(a)} to ${num(b)}, so the inverse sends ${num(b)} back to ${num(a)}. The two points sit either side of the dashed diagonal.` }
+      };
+    });
+  },
+
+  // A removable hole: factor, cancel, substitute.
+  limit({ cases, tier = 'Core' }) {
+    return cases.map(({ a, other, expr }) => {
+      // (x^2 - a*other ... ) built as (x-a)(x+other)/(x-a) so the limit is a+other
+      const f = x => ((x - a) * (x + other)) / (x - a);
+      const L = a + other;
+      return {
+        q: `Evaluate the limit of ${expr} as x approaches ${num(a)}.`,
+        level: 'Calculate', tier,
+        a: `Substituting gives 0/0, so factor: the expression is x + ${num(other)} for every x except ${num(a)}. The outputs crowd around ${num(L)}.`,
+        show: { kind: 'graph', f, x0: a - 3, x1: a + 3, y0: L - 3, y1: L + 3, w: 270, h: 200,
+          holes: [[a, L]], title: 'A HOLE, AND A LIMIT', note: expr,
+          caption: `The open circle is the point the graph does not contain. The curve reaches its edge from both sides, so the limit is ${num(L)} while the value does not exist.` }
+      };
+    });
+  },
+
+  // Differentiate a power or linear rule from the rule, and read it off.
+  derivative({ cases, tier = 'Core' }) {
+    return cases.map(({ expr, f, d, dExpr, at }) => ({
+      q: `For f(x) = ${expr}, the derivative is f'(x) = ${dExpr}. Find f'(${num(at)}), and say what the curve is doing there.`,
+      level: 'Analyse change', tier,
+      a: `f'(${num(at)}) = ${num(d(at))}, so the curve is ${d(at) > 0 ? 'rising' : d(at) < 0 ? 'falling' : 'flat'} there.`,
+      show: { kind: 'secants', f, a: at, bs: [at + 2, at + 1.2, at + 0.7, at + 0.3],
+        ...win(f, [at - 0.5, at + 2.5], 0.6), w: 290, h: 215,
+        caption: `Secants from x = ${num(at)} closing on the tangent. Their slopes head for ${num(d(at))}, which is what ${dExpr} returns there.` }
+    }));
+  }
+};
+
+// Warm-ups rehearse the worked example on fresh numbers; core is the authored
+// set; stretch is where judgement is needed. Sorting here, once, means the
+// practice list and the answer key can never disagree about the numbering.
+const TIERS = ['Warm-up', 'Core', 'Stretch'];
+const tierOf = q => TIERS.indexOf(q.hard ? 'Stretch' : (q.tier || 'Core'));
+
+export const expandDrills = ch => {
+  const made = (ch.drills || []).flatMap(d => {
+    const g = DRILL[d.kind];
+    if (!g) throw new Error(`ch${ch.id}: unknown drill kind "${d.kind}"`);
+    return g(d);
+  });
+  const all = [...(ch.practice || []), ...made]
+    .map((q, i) => ({ ...q, _i: i }))
+    .sort((a, b) => tierOf(a) - tierOf(b) || a._i - b._i);
+  return { ...ch, practice: all };
+};
+
 /* ------------------------------------------------------- interactive labs */
 // The book is operated, not only read. Two rules keep that from turning into
 // a pile of runtime drawing code:
@@ -539,7 +728,11 @@ const chapterHTML = (ch, i) => {
   <div class="practice">
     <div class="pr-head"><b>Practice</b><span>${prac.length} items${lvl.length ? ' · ' + lvl.join(', ') : ''}</span></div>
     <ol class="pr-list">
-      ${prac.map((q, i) => `<li${q.hard ? ' class="hard"' : ''}>
+      ${prac.map((q, i) => `${i === 0 || tierOf(q) !== tierOf(prac[i - 1])
+        ? `<li class="pr-tier"><b>${esc(TIERS[tierOf(q)])}</b><span>${esc(
+            TIERS[tierOf(q)] === 'Warm-up' ? 'the worked example again, on new numbers'
+            : TIERS[tierOf(q)] === 'Stretch' ? 'these need a decision, not just a method'
+            : 'the standard set')}</span></li>` : ''}<li${q.hard ? ' class="hard"' : ''}>
         <div class="pr-top"><span class="pr-q">${rich(q.q)}</span>${q.level ? `<span class="pr-l">${esc(q.level)}</span>` : ''}</div>
         <details class="pr-sol"><summary>show solution</summary>
           ${q.sol ? `<ol class="pr-steps">${q.sol.map(s => `<li>${rich(s)}</li>`).join('')}</ol>` : ''}
@@ -595,7 +788,7 @@ const answersHTML = chapters => {
 // practice items, which every chapter cleared and which was too low to mean
 // anything: 2.2 examples and 1.8 figures a chapter is a reference card, not a
 // textbook. These are the numbers a chapter needs to teach rather than remind.
-export const GATE = { examples: 4, figures: 4, practice: 12 };
+export const GATE = { examples: 4, figures: 4, practice: 20 };
 
 // One figure is one drawn state, wherever it lives. A lab of four frames is
 // four figures, because four were built; an illustrated answer is one. Counting
@@ -815,8 +1008,13 @@ const page = (meta, chapters) => `<!doctype html>
   .pr-list li { counter-increment:pr; padding:8px 13px 8px 40px; position:relative; font-size:14px;
                 border-bottom:1px solid var(--faint); display:flex; gap:10px; justify-content:space-between; }
   .pr-list li:last-child { border-bottom:0; }
+  .pr-list li.pr-tier { counter-increment:none; padding:9px 13px 6px; background:var(--paper);
+                        display:flex; gap:10px; align-items:baseline; justify-content:flex-start; }
+  .pr-list li.pr-tier::before { content:none; }
+  .pr-list li.pr-tier b { font-family:var(--sans); font-size:11px; letter-spacing:.09em;
+                          text-transform:uppercase; color:var(--teal); }
+  .pr-list li.pr-tier span { font-size:12.5px; color:var(--mute); }
   .pr-list li::before { content:counter(pr) "."; position:absolute; left:13px; color:var(--teal); font-weight:700; }
-  .pr-list li.hard::after { content:"harder"; }
   .pr-l { color:var(--mute); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; padding-top:3px; }
 
   .answers .ans-ch { margin-bottom:26px; }
@@ -939,7 +1137,8 @@ const books = (await readdir(SRC, { withFileTypes: true }))
 if (!existsSync(OUT)) await mkdir(OUT, { recursive: true });
 
 for (const name of books) {
-  const { meta, chapters } = await import(`file://${join(SRC, name, 'index.js')}`);
+  const { meta, chapters: authored } = await import(`file://${join(SRC, name, 'index.js')}`);
+  const chapters = authored.map(expandDrills);   // drills become real practice items here
   const seen = new Set();
   for (const c of chapters) {
     if (seen.has(c.id)) throw new Error(`${name}: two chapters numbered ${c.id}`);
@@ -958,7 +1157,38 @@ for (const name of books) {
   }
   if (dangling.length) throw new Error(`${name}: broken cross-references\n  ` + [...new Set(dangling)].join('\n  '));
 
-  const html = page(meta, chapters);
+  let html = page(meta, chapters);
+
+  // Every practice figure is drawn twice: once in the solution beside the
+  // question, once in the answer key. Both placements earn their keep, but the
+  // two copies are byte-identical, so the second one is stored rather than
+  // drawn again. Identical figures become one <symbol> that each site
+  // references. No script involved, so printing and no-JS reading are
+  // unaffected.
+  {
+    const seen = new Map();
+    const svgs = [...html.matchAll(/<svg class="fig[^"]*" viewBox="([^"]*)" width="(\d+)" height="(\d+)" role="img">([\s\S]*?)<\/svg>/g)];
+    for (const m of svgs) {
+      const body = m[4];
+      if (!seen.has(body)) seen.set(body, { n: seen.size, count: 1, box: m[1] });
+      else seen.get(body).count++;
+    }
+    const shared = [...seen.entries()].filter(([, v]) => v.count > 1);
+    if (shared.length) {
+      const ids = new Map(shared.map(([body, v], i) => [body, { id: `s${i}`, box: v.box }]));
+      html = html.replace(/<svg class="(fig[^"]*)" viewBox="([^"]*)" width="(\d+)" height="(\d+)" role="img">([\s\S]*?)<\/svg>/g,
+        (whole, cls, box, w, h, body) => {
+          const hit = ids.get(body);
+          return hit
+            ? `<svg class="${cls}" viewBox="${box}" width="${w}" height="${h}" role="img"><use href="#${hit.id}"/></svg>`
+            : whole;
+        });
+      const defs = shared.map(([body], i) => `<symbol id="s${i}" viewBox="${ids.get(body).box}">${body}</symbol>`).join('');
+      html = html.replace('<svg width="0" height="0"><defs>', `<svg width="0" height="0" aria-hidden="true">${defs}<defs>`);
+      const saved = shared.reduce((n, [body, v]) => n + body.length * (v.count - 1), 0);
+      console.log(`  ${shared.length} figures drawn more than once, stored once: ${(saved / 1024 / 1024).toFixed(1)} MB saved`);
+    }
+  }
 
   // Unformatted notation must not ship. A stray "2^x" or "sqrt(x)" in the
   // rendered text means the formatter has a gap, and the gap is invisible in

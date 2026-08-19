@@ -115,6 +115,12 @@ export default {
         a: 'f(x) = 3x + 4. Check at x = 2: 6 + 4 = 10.' } }
   ],
 
+  drills: [
+{ kind: 'evaluate', name: 'g', expr: 'x^2 - 3', f: x => x * x - 3, at: [0, 1, 2, -1, -2, 4] },
+    { kind: 'evaluate', name: 'h', expr: '5 - 2x', f: x => 5 - 2 * x, at: [0, 1, 3, -1, -3], tier: 'Core' },
+    { kind: 'evaluate', name: 'p', expr: '3x - 4', f: x => 3 * x - 4, at: [0, 2, 5, -2], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'For g(x) = x^2 − 3, find g(0), g(2), and g(−2).', level: 'Calculate',
       a: 'g(0) = −3, g(2) = 1, g(−2) = 1.',

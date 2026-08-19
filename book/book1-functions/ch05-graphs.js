@@ -122,6 +122,12 @@ export default {
         a: '(0, −9) on the vertical axis, and (−3, 0) and (3, 0) on the horizontal.' } }
   ],
 
+  drills: [
+{ kind: 'evaluate', name: 'f', expr: '2x - 1', f: x => 2 * x - 1, at: [-2, -1, 0, 1, 2, 3] },
+    { kind: 'evaluate', name: 'g', expr: '3 - x', f: x => 3 - x, at: [-1, 0, 2, 4, 6], tier: 'Core' },
+    { kind: 'evaluate', name: 'h', expr: 'x^2 - 4', f: x => x * x - 4, at: [-3, -2, 0, 2, 3], tier: 'Core' }
+  ],
+
   practice: [
     { q: 'Plot y = 2x − 1 for x = −2, −1, 0, 1, 2.', level: 'Represent',
       a: '(−2, −5), (−1, −3), (0, −1), (1, 1), (2, 3), lying on a straight line.',
