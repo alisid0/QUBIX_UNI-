@@ -111,6 +111,15 @@ export const draw = (o = {}) => {
     b.push(`<rect x="${X(bar[0])}" y="${Y(bar[2])}" width="${X(bar[1]) - X(bar[0]) - 1}"
       height="${Y(0) - Y(bar[2])}" fill="#cfe6e1" stroke="${C.tealText}" stroke-width="1"/>`);
 
+  // An arbitrary path of computed points: polar curves, parametric curves,
+  // anything whose shape is easier to generate than to describe.
+  for (const p of s.paths || []) {
+    const d = p.pts.map(([x, y]) => `${X(x).toFixed(1)},${Y(y).toFixed(1)}`).join(' ');
+    b.push(`<${p.close ? 'polygon' : 'polyline'} points="${d}" fill="${p.fill || 'none'}"
+      fill-opacity="${p.fill ? 0.5 : 0}" stroke="${p.c2 || C.teal}" stroke-width="${p.wid || 2}"
+      ${p.dash ? 'stroke-dasharray="4 3"' : ''} stroke-linecap="round" stroke-linejoin="round"/>`);
+  }
+
   // segments, rays, dashed guides
   for (const g of s.segs || []) {
     const [x1, y1, x2, y2, col = C.teal, dash = false, wid = 2.4] = g;
