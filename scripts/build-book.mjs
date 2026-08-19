@@ -117,6 +117,20 @@ const label = (x, y, t, colour = C.mute, size = 9, anchor = 'middle') =>
 const svg = (w, h, body, cls = '') =>
   `<svg class="fig ${cls}" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img">${body}</svg>`;
 
+// Defaults shared by the drawing and the description of a figure. Duplicating
+// them would let the two drift, which is the whole failure mode this file
+// exists to prevent.
+export const FIG_DEFAULTS = {
+  secant: { f: x => 0.42 * x * x - 1.6 * x + 3.4, a: 1.4, b: 5.6, x0: 0, x1: 7, y0: 0, y1: 6 },
+  secants: { f: x => 0.42 * x * x - 1.6 * x + 3.4, a: 1.4, bs: [5.6, 4.4, 3.2, 2.2], x0: 0, x1: 7, y0: 0, y1: 6 },
+  rects: { f: x => 0.16 * x * x + 0.6, n: 8, x0: 0, x1: 6 },
+  riemann: { f: x => x * x, n: 4, x0: 0, x1: 1, side: 'right' },
+  zoom: { spans: [2, 0.5, 0.1] },
+  numberline: { from: -6, to: 6 },
+  graph: { x0: -4, x1: 4 },
+  steps: { from: 0, to: 4 }
+};
+
 const FIG = {
   // A rule that takes something in and settles on something out.
   machine({ rule, input, output, inLabel = '', outLabel = '' }) {
@@ -170,7 +184,8 @@ const FIG = {
   },
 
   // Secant closing on a tangent. The whole bridge to Book 2 in one picture.
-  secant({ f = x => 0.42 * x * x - 1.6 * x + 3.4, a = 1.4, b: bx = 5.6, x0 = 0, x1 = 7, y0 = 0, y1 = 6 }) {
+  secant(o) {
+    const { f, a, b: bx, x0, x1, y0, y1 } = { ...FIG_DEFAULTS.secant, ...o };
     const p = plane({ x0, x1, y0, y1, w: 330, h: 200 });
     const g = [`<rect width="330" height="200" fill="${C.paper}" rx="6"/>`, axes(p), curve(p, f)];
     const m = (f(bx) - f(a)) / (bx - a);
@@ -183,7 +198,8 @@ const FIG = {
   },
 
   // Rectangles under a curve, thinning left to right.
-  rects({ f = x => 0.16 * x * x + 0.6, n = 8, x0 = 0, x1 = 6 }) {
+  rects(o) {
+    const { f, n, x0, x1 } = { ...FIG_DEFAULTS.rects, ...o };
     const p = plane({ x0, x1, y0: 0, y1: 7, w: 330, h: 200 });
     const g = [`<rect width="330" height="200" fill="${C.paper}" rx="6"/>`];
     const dx = (x1 - x0) / n;
@@ -313,7 +329,8 @@ const FIG = {
   },
 
   // Several secants from a fixed point, closing on the tangent.
-  secants({ f = x => 0.42 * x * x - 1.6 * x + 3.4, a = 1.4, bs = [5.6, 4.4, 3.2, 2.2], x0 = 0, x1 = 7, y0 = 0, y1 = 6, w = 340, h = 220 }) {
+  secants(o) {
+    const { f, a, bs, x0, x1, y0, y1, w = 340, h = 220 } = { ...FIG_DEFAULTS.secants, ...o };
     const p = plane({ x0, x1, y0, y1, w, h });
     const g = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p), curve(p, f)];
     const line = (m, colour, width, dash = '') =>
@@ -345,7 +362,8 @@ const FIG = {
 
   // Left and right rectangle sums side by side, so over- and under-estimate
   // are one picture rather than two claims.
-  riemann({ f = x => x * x, n = 4, x0 = 0, x1 = 1, side = 'right', w = 250, h = 190, title }) {
+  riemann(o) {
+    const { f, n, x0, x1, side, w = 250, h = 190, title } = { ...FIG_DEFAULTS.riemann, ...o };
     const top = Math.max(f(x0), f(x1)) * 1.15;
     const p = plane({ x0: x0 - (x1 - x0) * 0.1, x1: x1 + (x1 - x0) * 0.1, y0: 0, y1: top, w, h });
     const g = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p)];
@@ -612,8 +630,7 @@ const LAB = {
   // Step through prepared frames with buttons or a slider.
   frames({ id, label, control = 'buttons', frames, hint }) {
     const body = frames.map((fr, i) => {
-      checkFigure(fr, `lab ${id} frame ${i + 1}`);
-      return `<div class="lab-frame${i ? '' : ' on'}" data-i="${i}">${FIG[fr.kind](fr)}`
+      return `<div class="lab-frame${i ? '' : ' on'}" data-i="${i}">${drawFigure(fr, `lab ${id} frame ${i + 1}`)}`
         + (fr.say ? `<p class="lab-say">${rich(fr.say)}</p>` : '') + `</div>`;
     }).join('');
     const ctrl = control === 'slider'
@@ -652,6 +669,150 @@ export const overInputs = (inputs, make) => inputs.map(make);
 // keeps the worked-example and practice call sites from disagreeing.
 const showType = s => s.frames ? 'lab' : s.items ? 'figures' : 'figure';
 
+/* --------------------------------------------------- accessible names */
+// Every figure carries role="img", which means a screen reader announces it as
+// an image and then says nothing, because none of them had a name. That is a
+// WCAG 1.1.1 failure repeated 939 times, and it is a procurement gate: no
+// university buys courseware that cannot produce a VPAT.
+//
+// A generated name saying "a graph" would satisfy a linter and help nobody.
+// These are computed from the same numbers that draw the figure, so the
+// description cannot drift from the picture any more than the caption can.
+
+// Spoken, not printed. A hyphen is announced as "dash"; the blank glyph is
+// announced as "white square" or skipped entirely. Neither is what is meant.
+const say = v => String(v).replace(/(^|[\s(])-(?=[\d.])/g, '$1−').replace(/⬚/g, 'blank');
+const listOf = (a, join = 'and') => a.length < 2 ? (say(a[0] ?? ''))
+  : `${a.slice(0, -1).map(say).join(', ')} ${join} ${say(a.at(-1))}`;
+const pt = ([x, y]) => `(${num(x)}, ${num(y)})`;
+// Two samples called every symmetric curve "level overall", which describes a
+// parabola as a flat line. Walk the window instead and report the shape.
+const dirOf = (f, x0, x1) => {
+  const n = 40, ys = [];
+  let gaps = 0;
+  for (let i = 0; i <= n; i++) {
+    const y = f(x0 + (i / n) * (x1 - x0));
+    if (Number.isFinite(y)) ys.push(y); else gaps++;
+  }
+  if (ys.length < 3) return 'drawn in pieces, with gaps where it has no value';
+  // A break is not a turn. Walking across an asymptote otherwise reports a
+  // change of direction that the curve never makes.
+  if (gaps) return 'drawn as separate branches, with a break where it has no value';
+  const eps = (Math.max(...ys) - Math.min(...ys)) * 1e-6 || 1e-9;
+  let turns = 0, dir = 0;
+  for (let i = 1; i < ys.length; i++) {
+    const d = ys[i] > ys[i - 1] + eps ? 1 : ys[i] < ys[i - 1] - eps ? -1 : 0;
+    if (d && dir && d !== dir) turns++;
+    if (d) dir = d;
+  }
+  const first = ys[1] > ys[0] ? 'rising' : ys[1] < ys[0] ? 'falling' : 'level';
+  if (turns === 0) return first === 'level' ? 'level throughout' : `${first} throughout`;
+  if (turns === 1) return first === 'rising'
+    ? 'rising to a highest point and then falling'
+    : 'falling to a lowest point and then rising';
+  return `changing direction ${turns} times`;
+};
+
+const DESCRIBE = {
+  machine: ({ rule, input, output }) =>
+    `A function machine. The input ${say(input)} enters a box labelled ${say(rule)}, and the output ${say(output)} leaves it.`,
+
+  mapping: ({ pairs, broken }) => {
+    const arrows = pairs.map(([i, ...os]) => os.length > 1
+      ? `input ${say(i)} has ${os.length} arrows, to ${listOf(os)}`
+      : `input ${say(i)} has one arrow, to ${say(os[0])}`);
+    return `A mapping diagram: ${listOf(arrows)}.`
+      + (broken ? ` The arrows from ${broken} are marked in red, because that input has more than one output.` : '');
+  },
+
+  graph: ({ f, note, title, x0 = -4, x1 = 4, marks = [], holes = [], second }) =>
+    `A graph of ${say(note || title || 'a rule')}, ${dirOf(f, x0, x1)} across the window from x = ${num(x0)} to x = ${num(x1)}.`
+    + (second ? ' A second, fainter curve is drawn behind it for comparison.' : '')
+    + (marks.length ? ` Marked points: ${listOf(marks.map(pt))}.` : '')
+    + (holes.length ? ` An open circle at ${listOf(holes.map(pt))} marks a point the graph does not contain.` : ''),
+
+  delta: ({ f, a, b, note, unit }) => {
+    const dx = b - a, dy = f(b) - f(a);
+    return `A right-angled triangle on a graph of ${say(note || 'a rule')}. The horizontal leg is Δx = ${num(dx)},`
+      + ` the vertical leg is Δy = ${num(dy)}, and the quotient Δy divided by Δx is ${num(dy / dx)}${unit ? ' ' + unit : ''}.`
+      + ` A dashed line joins the two points ${pt([a, f(a)])} and ${pt([b, f(b)])}.`;
+  },
+
+  share: ({ total, parts, each, unit, per }) =>
+    `A bar divided into ${parts} equal ${per || 'parts'}, each holding ${each}${unit ? ' ' + unit : ''},`
+    + ` making ${total}${unit ? ' ' + unit : ''} in all. It shows ${total} divided by ${parts} equals ${each}.`,
+
+  numberline: ({ from, to, spans = [], marks = [] }) =>
+    `A number line from ${num(from)} to ${num(to)}.`
+    + (spans.length ? ` Shaded stretches: ${listOf(spans.map(s =>
+      `${num(s.a ?? from)} to ${num(s.b ?? to)}${s.label ? `, labelled ${s.label}` : ''}${s.tone === 'out' ? ', shown as refused' : ''}`))}.` : '')
+    + (marks.length ? ` Endpoints: ${listOf(marks.map(m =>
+      `${num(m.x)} drawn ${m.open ? 'hollow, so it is excluded' : 'filled, so it is included'}`))}.` : ''),
+
+  chain: ({ stages, input, values = [] }) =>
+    `Two machines wired in series: ${listOf(stages, 'then')}. The input ${say(input)} enters the first,`
+    + (values.length > 1 ? ` the value ${values[0]} passes along the wire between them, and ${values.at(-1)} leaves the second.`
+      : ` and ${values.at(-1) ?? 'a value'} leaves.`),
+
+  blanks: ({ rule, sub, result }) => `The rule ${say(rule)}, with ${sub}, giving ${say(result)}.`,
+
+  linetest: ({ at = [], dir = 'v', note, second }) =>
+    `A graph of ${say(note || 'a rule')} with ${at.length} dashed ${dir === 'v' ? 'vertical' : 'horizontal'} test`
+    + ` ${at.length === 1 ? 'line' : 'lines'} drawn across it at ${listOf(at.map(num))}.`
+    + (second ? ' Two curves are drawn, so each line meets the shape twice and the crossings are marked in red.'
+      : ' Each line meets the curve once, and the crossings are marked.'),
+
+  steps: ({ f, from = 0, to = 4, note }) => {
+    const r = []; for (let x = from; x < to; x++) r.push(num(f(x + 1) - f(x)));
+    return `A staircase drawn on a graph of ${say(note || 'a rule')}, taking ${to - from} steps of one along the input.`
+      + ` The rises are ${listOf(r)}.`;
+  },
+
+  reflect: ({ pair, note }) =>
+    `A graph showing a function and its inverse as two curves mirrored in a dashed diagonal line, y equals x.`
+    + (pair ? ` The point ${pt(pair)} on one curve corresponds to ${pt([pair[1], pair[0]])} on the other.` : '')
+    + (note ? ` Labelled ${note}.` : ''),
+
+  secant: o => { const { f, a, b } = { ...FIG_DEFAULTS.secant, ...o }; return (
+    `A curve with a straight line drawn through the two points ${pt([a, f(a)])} and ${pt([b, f(b)])}.`
+    + ` That secant line has steepness ${num((f(b) - f(a)) / (b - a))}.`); },
+
+  secants: o => { const { f, a, bs } = { ...FIG_DEFAULTS.secants, ...o }; return (
+    `A curve with ${bs.length} secant lines drawn from the fixed point ${pt([a, f(a)])} to points closing in on it.`
+    + ` Their steepnesses are ${listOf(bs.map(b => num((f(b) - f(a)) / (b - a))))}, heading toward the dashed tangent line.`); },
+
+  rects: o => { const { n } = { ...FIG_DEFAULTS.rects, ...o }; return `A curve with ${n} rectangles drawn beneath it, approximating the area under it.`; },
+
+  riemann: o => { const { f, n, x0, x1, side, title } = { ...FIG_DEFAULTS.riemann, ...o };
+    const w = (x1 - x0) / n; let s = 0;
+    for (let i = 0; i < n; i++) s += f(side === 'right' ? x0 + (i + 1) * w : x0 + i * w) * w;
+    return `${n} rectangles beneath a curve between x = ${num(x0)} and x = ${num(x1)}, each taking its height from the`
+      + ` ${side} of its strip, so every rectangle ${side === 'right' ? 'pokes above' : 'sits under'} the curve.`
+      + ` Their total is ${num(s)}.${title ? ` Titled ${title}.` : ''}`;
+  },
+
+  zoom: o => { const { at, spans, holeAt } = { ...FIG_DEFAULTS.zoom, ...o }; return (
+    `${spans.length} views of the same curve around x = ${num(at)}, each more magnified than the last,`
+    + ` in windows of plus or minus ${listOf(spans.map(num))}.`
+    + (holeAt !== null && holeAt !== undefined ? ` An open circle at height ${num(holeAt)} stays open at every magnification.` : '')); },
+
+  table: ({ head, rows }) => `A table of ${rows.length} rows with columns ${listOf(head)}.`
+};
+
+// One place draws a figure, so the name and the picture are produced together
+// and cannot be added to one without the other.
+const drawFigure = (spec, where) => {
+  checkFigure(spec, where);
+  const describe = DESCRIBE[spec.kind];
+  if (!describe) throw new Error(`${where}: figure "${spec.kind}" has no description function, so it would be unreadable to a screen reader`);
+  let name = describe(spec).replace(/\s+/g, ' ').trim();
+  if (!name) throw new Error(`${where}: figure "${spec.kind}" produced an empty description`);
+  // The label lives on the <svg> element, not in a child <title>, because
+  // identical figure bodies are later hoisted into a shared <symbol> and each
+  // use site must keep its own name.
+  return FIG[spec.kind](spec).replace(/<svg class="fig/g, `<svg aria-label="${esc(name)}" class="fig`);
+};
+
 // An option a figure does not read is silent: the figure draws something
 // plausible and the caption describes something else. That has happened twice
 // — `linetest` took its sweep direction in `kind`, which a lab frame overwrote,
@@ -659,8 +820,15 @@ const showType = s => s.frames ? 'lab' : s.items ? 'figures' : 'figure';
 // until someone looked at the picture. So every option is checked against what
 // the figure function actually destructures.
 const ACCEPTS = Object.fromEntries(Object.entries(FIG).map(([name, fn]) => {
-  const m = /^[\w$]+\(\s*\{([\s\S]*?)\}\s*(?:=\s*\{\}\s*)?\)/.exec(fn.toString());
-  const keys = m ? [...m[1].matchAll(/(?:^|,)\s*([A-Za-z_$][\w$]*)/g)].map(x => x[1]) : [];
+  const src = fn.toString();
+  const keys = [];
+  // Options are destructured either in the signature, or -- where a figure
+  // shares its defaults with its description -- from a merge in the first line
+  // of the body. Read both, or the guard silently accepts nothing.
+  const sig = /^[\w$]+\(\s*\{([\s\S]*?)\}\s*(?:=\s*\{\}\s*)?\)/.exec(src);
+  const merged = /const\s*\{([\s\S]*?)\}\s*=\s*\{\s*\.\.\.FIG_DEFAULTS/.exec(src);
+  for (const m of [sig, merged]) if (m) keys.push(...[...m[1].matchAll(/(?:^|,)\s*([A-Za-z_$][\w$]*)/g)].map(x => x[1]));
+  if (!keys.length) throw new Error(`figure "${name}" declares no options; the option guard would accept nothing`);
   return [name, new Set([...keys, 'kind', 'caption', 'pick', 'say', 't', 'id'])];
 }));
 
@@ -683,8 +851,7 @@ const block = (b, ctx) => {
     case 'table': return `<div class="tw"><table class="data"><thead><tr>${b.head.map(h => `<th>${rich(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     case 'callout': return `<aside class="callout ${b.tone || ''}"><b>${rich(b.title)}</b><p>${rich(b.text)}</p></aside>`;
     case 'figure': {
-      checkFigure(b, ctx);
-      return `<figure>${FIG[b.kind](b)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
+      return `<figure>${drawFigure(b, ctx)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
     }
     case 'figures': return `<div class="fig-row">${b.items.map(i => block({ ...i, t: 'figure' }, ctx)).join('')}</div>`;
     case 'lab': {
@@ -869,6 +1036,9 @@ const page = (meta, chapters) => `<!doctype html>
      for A4, and it carries its own ground rather than borrowing the viewer's.
      Hence no dark palette, and an explicit background here. */
   body { margin:0; background:#fff; color:var(--ink); font:16.5px/1.66 var(--serif); }
+  .skip { position:absolute; left:-9999px; top:0; background:var(--ink); color:#fff;
+          padding:10px 16px; z-index:10; font-family:var(--sans); font-size:14px; border-radius:0 0 6px 0; }
+  .skip:focus { left:0; }
   .sheet { max-width: 41rem; margin: 0 auto; padding: 0 22px 80px; }   /* ~72 characters */
   code, .formula { font-family: var(--mono); }
   .kicker, .pr-head, .pr-l, .wk-h, table.data th, .fig-table th, figcaption,
@@ -1061,8 +1231,9 @@ const page = (meta, chapters) => `<!doctype html>
   <p>${esc(meta.blurb)}</p>
   <div class="stamp"><b>${esc(meta.status)}</b>${esc(meta.note)}</div>
 </header>
-<div class="sheet">
-  <nav class="toc"><h2>Contents</h2><ol>
+<a class="skip" href="#contents">Skip to contents</a>
+<main class="sheet">
+  <nav class="toc" id="contents"><h2>Contents</h2><ol>
     ${chapters.map(c => `<li><a href="#ch${c.id}">${rich(c.title)}</a></li>`).join('')}
     <li><a href="#answers">Answers, in full</a></li>
     <li><a href="#gate">What this book still owes its reader</a></li>
@@ -1167,22 +1338,24 @@ for (const name of books) {
   // unaffected.
   {
     const seen = new Map();
-    const svgs = [...html.matchAll(/<svg class="fig[^"]*" viewBox="([^"]*)" width="(\d+)" height="(\d+)" role="img">([\s\S]*?)<\/svg>/g)];
+    // The accessible name sits on the element and differs between copies, so it
+    // is matched separately and left in place; only the drawn body is shared.
+    const TAG = /<svg aria-label="([^"]*)" class="(fig[^"]*)" viewBox="([^"]*)" width="(\d+)" height="(\d+)" role="img">([\s\S]*?)<\/svg>/g;
+    const svgs = [...html.matchAll(TAG)];
     for (const m of svgs) {
-      const body = m[4];
-      if (!seen.has(body)) seen.set(body, { n: seen.size, count: 1, box: m[1] });
+      const body = m[6];
+      if (!seen.has(body)) seen.set(body, { n: seen.size, count: 1, box: m[3] });
       else seen.get(body).count++;
     }
     const shared = [...seen.entries()].filter(([, v]) => v.count > 1);
     if (shared.length) {
       const ids = new Map(shared.map(([body, v], i) => [body, { id: `s${i}`, box: v.box }]));
-      html = html.replace(/<svg class="(fig[^"]*)" viewBox="([^"]*)" width="(\d+)" height="(\d+)" role="img">([\s\S]*?)<\/svg>/g,
-        (whole, cls, box, w, h, body) => {
-          const hit = ids.get(body);
-          return hit
-            ? `<svg class="${cls}" viewBox="${box}" width="${w}" height="${h}" role="img"><use href="#${hit.id}"/></svg>`
-            : whole;
-        });
+      html = html.replace(TAG, (whole, name, cls, box, w, h, body) => {
+        const hit = ids.get(body);
+        return hit
+          ? `<svg aria-label="${name}" class="${cls}" viewBox="${box}" width="${w}" height="${h}" role="img"><use href="#${hit.id}"/></svg>`
+          : whole;
+      });
       const defs = shared.map(([body], i) => `<symbol id="s${i}" viewBox="${ids.get(body).box}">${body}</symbol>`).join('');
       html = html.replace('<svg width="0" height="0"><defs>', `<svg width="0" height="0" aria-hidden="true">${defs}<defs>`);
       const saved = shared.reduce((n, [body, v]) => n + body.length * (v.count - 1), 0);
@@ -1197,6 +1370,16 @@ for (const name of books) {
   const text = html.replace(/<[^>]+>/g, ' ');
   const raw = [...text.matchAll(/.{0,20}(\^|sqrt\(|<=|>=|\binfinity\b).{0,16}/g)].map(m => m[0].replace(/\s+/g, ' ').trim());
   if (raw.length) throw new Error(`${name}: ${raw.length} unformatted notation site(s) in the rendered book:\n  ` + raw.slice(0, 6).join('\n  '));
+
+  // No figure may ship without an accessible name. This is a WCAG 1.1.1
+  // requirement and a procurement gate, so it fails the build rather than a
+  // later audit.
+  {
+    const all = (html.match(/<svg class="fig|<svg aria-label="[^"]*" class="fig/g) || []).length;
+    const named = (html.match(/<svg aria-label="[^"]+" class="fig/g) || []).length;
+    if (named !== all) throw new Error(`${name}: ${all - named} of ${all} figures have no accessible name`);
+    console.log(`  ${named} figures, every one with an accessible name computed from its own data`);
+  }
 
   const file = join(OUT, `${name}.html`);
   await writeFile(file, html, 'utf8');
