@@ -862,7 +862,11 @@ const block = (b, ctx) => {
     case 'h': return `<h3>${rich(b.text)}</h3>`;
     case 'formula': return `<div class="formula">${esc(math(b.text))}</div>`;
     case 'list': return `<${b.ordered ? 'ol' : 'ul'} class="bullets">${b.items.map(i => `<li>${rich(i)}</li>`).join('')}</${b.ordered ? 'ol' : 'ul'}>`;
-    case 'table': return `<div class="tw"><table class="data"><thead><tr>${b.head.map(h => `<th scope="col">${rich(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    case 'table': {
+      const cell = c => `<td${String(c).length <= 16 && !/\s\S+\s\S+\s/.test(String(c)) ? ' class="tight"' : ''}>${rich(c)}</td>`;
+      return `<div class="tw"><table class="data"><thead><tr>${b.head.map(h => `<th scope="col">${rich(h)}</th>`).join('')}</tr></thead>`
+        + `<tbody>${b.rows.map(r => `<tr>${r.map(cell).join('')}</tr>`).join('')}</tbody></table></div>`;
+    }
     case 'callout': return `<aside class="callout ${b.tone || ''}"><b>${rich(b.title)}</b><p>${rich(b.text)}</p></aside>`;
     case 'figure': {
       return `<figure>${drawFigure(b, ctx)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
@@ -894,6 +898,35 @@ const block = (b, ctx) => {
 
 /* ------------------------------------------------------------- the render */
 let labSeq = 0;
+
+// The jacket mark. Two coloured dots said nothing; this is the book's own
+// argument in one picture — secants from a fixed point closing on a tangent —
+// drawn from the same curve the chapters use, on the navy.
+const coverMark = () => {
+  const f = x => 0.42 * x * x - 1.6 * x + 3.4, a = 1.4;
+  const X = x => 18 + (x / 7) * 264, Y = y => 176 - (y / 6.4) * 150;
+  const b = [`<defs><clipPath id="cm"><rect x="18" y="14" width="264" height="162" rx="3"/></clipPath></defs>`,
+             `<rect x="18" y="14" width="264" height="162" rx="3" fill="#132234"/>`, `<g clip-path="url(#cm)">`];
+  for (let gx = 0; gx <= 7; gx++) b.push(`<line x1="${X(gx)}" y1="14" x2="${X(gx)}" y2="176" stroke="#22384f" stroke-width="1"/>`);
+  for (let gy = 0; gy <= 6; gy++) b.push(`<line x1="18" y1="${Y(gy)}" x2="282" y2="${Y(gy)}" stroke="#22384f" stroke-width="1"/>`);
+  [5.9, 4.7, 3.5, 2.5].forEach((bx, i) => {
+    const m = (f(bx) - f(a)) / (bx - a);
+    b.push(`<line x1="${X(0)}" y1="${Y(f(a) + m * (0 - a))}" x2="${X(7)}" y2="${Y(f(a) + m * (7 - a))}"
+      stroke="#e0813a" stroke-width="1" opacity="${0.28 + i * 0.16}"/>`);
+    b.push(`<circle cx="${X(bx)}" cy="${Y(f(bx))}" r="2.6" fill="#e0813a" opacity="${0.4 + i * 0.15}"/>`);
+  });
+  const h = 1e-6, mt = (f(a + h) - f(a - h)) / (2 * h);
+  b.push(`<line x1="${X(0)}" y1="${Y(f(a) + mt * (0 - a))}" x2="${X(7)}" y2="${Y(f(a) + mt * (7 - a))}"
+    stroke="#7fd3c6" stroke-width="1.6" stroke-dasharray="5 4"/>`);
+  // Sampled and cut at the frame, exactly as the chapter figures are.
+  const pts = [];
+  for (let i = 0; i <= 200; i++) { const x = (i / 200) * 7; const y = f(x); if (y >= -0.4 && y <= 6.8) pts.push(`${X(x).toFixed(1)},${Y(y).toFixed(1)}`); }
+  b.push(`<polyline points="${pts.join(' ')}" fill="none" stroke="#7fd3c6" stroke-width="2.4" stroke-linecap="round"/>`);
+  b.push(`<circle cx="${X(a)}" cy="${Y(f(a))}" r="5.5" fill="#fff"/>`);
+  b.push(`</g>`);
+  return `<svg class="cover-mark" viewBox="0 0 300 190" width="300" height="190" role="img"
+    aria-label="The emblem of this book: a curve with four secant lines drawn from one fixed point, each closer than the last, settling on a dashed tangent line at that point.">${b.join('')}</svg>`;
+};
 
 const chapterHTML = (ch, i) => {
   const prac = ch.practice || [];
@@ -1010,18 +1043,23 @@ const gateHTML = chapters => {
   <h2>What this book still owes its reader</h2>
   <p class="stand">A chapter passes when it carries at least ${GATE.examples} worked examples, each followed by a parallel one the reader does; at least ${GATE.figures} figures; an illustrated or operable answer on every worked example; at least ${GATE.practice} practice items with an answer for every one; a named misconception; and a link back to earlier work. This table is counted from the source at build time, so it cannot flatter the book.</p>
   <div class="tw"><table class="data gate">
-    <thead><tr>${['Chapter','Worked','Your turn','Shown','Labs','Figures','Practice','Answered','Mistake','Review','Gate'].map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead>
-    <tbody>${rows.map(r => `<tr class="${r.pass ? 'ok' : 'no'}">
-      <td>${r.c.id}. ${rich(r.c.title)}</td>
-      <td${r.ex < GATE.examples ? ' class="short"' : ''}>${r.ex || '—'}</td>
-      <td${r.turns < r.ex ? ' class="short"' : ''}>${r.turns || '—'}</td>
-      <td${r.shown < r.ex ? ' class="short"' : ''}>${r.shown || '—'}</td>
-      <td>${r.labs || '—'}</td>
-      <td${r.figs < GATE.figures ? ' class="short"' : ''}>${r.figs || '—'}</td>
-      <td${r.p < GATE.practice ? ' class="short"' : ''}>${r.p || '—'}</td>
-      <td>${r.p ? (r.answered === r.p ? 'all' : `${r.answered} of ${r.p}`) : '—'}</td>
-      <td>${r.c.misconception ? 'yes' : '—'}</td><td>${r.c.review ? 'yes' : '—'}</td>
-      <td>${r.pass ? 'PASS' : 'open'}</td></tr>`).join('')}</tbody>
+    <thead><tr>${[['Chapter', ''], ['Requirements met', 'num'], ['Labs', 'num'], ['Figures', 'num'], ['Practice', 'num'], ['', '']]
+      .map(([h, c]) => `<th scope="col"${c ? ` class="${c}"` : ''}>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => {
+      // Six of the eleven columns read the same on every row. They are counted
+      // into one figure, and only what varies is shown.
+      const met = [r.ex >= GATE.examples, r.turns === r.ex, r.shown === r.ex,
+                   r.figs >= GATE.figures, r.p >= GATE.practice, r.answered === r.p,
+                   !!r.c.misconception, !!r.c.review];
+      const n = met.filter(Boolean).length;
+      return `<tr class="${r.pass ? 'ok' : 'no'}">
+      <td class="g-name"><span class="g-num">${r.c.id}</span>${rich(r.c.title)}</td>
+      <td class="num${n < met.length ? ' short' : ''}">${n} of ${met.length}</td>
+      <td class="num">${r.labs || '—'}</td>
+      <td class="num">${r.figs}</td>
+      <td class="num">${r.p}</td>
+      <td><span class="pill ${r.pass ? 'yes' : 'no'}">${r.pass ? 'passes' : 'open'}</span></td></tr>`;
+    }).join('')}</tbody>
   </table></div>
   <p class="gate-sum"><b>${done} of ${chapters.length} chapters</b> meet the gate.
   ${sum('p')} practice items, every one with a solution you can open; ${sum('ex')} worked examples
@@ -1071,24 +1109,42 @@ const page = (meta, chapters) => `<!doctype html>
   .tw { overflow-x: auto; margin: 16px 0; }
   .tw table.data { margin: 0; min-width: 30rem; }
 
-  .cover { background:var(--ink); color:#fff; padding:64px 44px 52px; margin-bottom:44px; border-radius:0 0 18px 18px; }
-  .cover .dots { display:flex; gap:10px; justify-content:flex-end; margin-bottom:34px; }
-  .cover .dots i { width:34px; height:34px; border-radius:50%; display:block; }
-  .cover .series { color:#7fd3c6; font-size:11px; letter-spacing:.14em; font-weight:700; }
-  .cover h1 { font-size:44px; line-height:1.06; margin:16px 0 22px; letter-spacing:-.02em; }
-  .cover h2 { color:#7fd3c6; font-size:19px; margin:0 0 14px; letter-spacing:.02em; }
-  .cover p { color:#b9c6d6; max-width:46ch; margin:0 0 8px; font-size:14px; }
-  .cover .stamp { margin-top:38px; padding-top:18px; border-top:1px solid #33475f; color:#9fb0c4; font-size:12px; }
-  .cover .stamp b { color:#fff; display:block; margin-bottom:6px; letter-spacing:.06em; }
+  .cover { background:var(--ink); color:#fff; margin-bottom:52px; border-radius:0 0 20px 20px;
+           padding:56px 44px 48px; display:grid; gap:34px 48px; align-items:center;
+           grid-template-columns:minmax(0,1fr); max-width:1080px; margin-inline:auto; }
+  @media (min-width:820px) { .cover { grid-template-columns:minmax(0,1fr) 300px; padding:68px 56px 60px; } }
+  .cover-mark { width:100%; height:auto; max-width:320px; justify-self:center; opacity:.95; }
+  /* DOM order is already title, mark, stamp; an order override only pushed
+     the mark past the stamp on narrow screens. */
+  @media (max-width:819px) { .cover-mark { max-width:270px; justify-self:start; margin-top:4px; } }
+  .cover .series { color:#7fd3c6; font-size:11px; letter-spacing:.16em; font-weight:700; }
+  .cover h1 { font-size:clamp(34px,5.4vw,50px); line-height:1.02; margin:14px 0 18px;
+              letter-spacing:-.025em; text-wrap:balance; }
+  .cover-sub { color:#7fd3c6; font-family:var(--sans); font-weight:700; font-size:18px;
+               margin:0 0 16px; letter-spacing:.01em; }
+  .cover-blurb { color:#c2cedd; max-width:44ch; margin:0; font-size:15px; line-height:1.55; }
+  .cover-facts { display:flex; flex-wrap:wrap; gap:10px 34px; margin:30px 0 0; padding:0; }
+  .cover-facts div { margin:0; }
+  .cover-facts dt { font-family:var(--sans); font-size:25px; font-weight:700; color:#fff;
+                    line-height:1; font-variant-numeric:tabular-nums; }
+  .cover-facts dd { margin:5px 0 0; font-size:11.5px; color:#8fa2b8; letter-spacing:.04em;
+                    font-family:var(--sans); max-width:15ch; }
+  .cover .stamp { grid-column:1/-1; margin-top:6px; padding-top:20px; border-top:1px solid #2b405a;
+                  color:#93a5ba; font-size:12px; line-height:1.6; max-width:78ch; }
+  .cover .stamp b { color:#fff; display:block; margin-bottom:6px; letter-spacing:.07em; font-size:11px;
+                    font-family:var(--sans); }
 
   .kicker { color:var(--teal-text); font-size:11px; font-weight:700; letter-spacing:.13em; margin-bottom:6px; }
-  h2 { font-size:29px; line-height:1.16; margin:0 0 12px; letter-spacing:-.015em; }
+  h2 { font-size:30px; line-height:1.14; margin:0 0 14px; letter-spacing:-.018em; text-wrap:balance; }
+  h3 { text-wrap:balance; }
+  p { text-wrap:pretty; }
   h3 { font-size:17px; color:var(--teal-text); margin:26px 0 8px; }
   .stand { font-size:16px; color:var(--mute); margin:0 0 20px; }
   p { margin:0 0 13px; }
   .bullets { margin:0 0 14px; padding-left:20px; } .bullets li { margin-bottom:5px; }
 
-  .chapter { padding:34px 0 8px; border-top:1px solid var(--rule); break-before:page; }
+  .chapter { padding:44px 0 10px; border-top:1px solid var(--rule); break-before:page; }
+  .chapter > h2 + .stand { margin-bottom:26px; }
   .chapter:first-of-type { border-top:0; break-before:auto; }
 
   .formula { background:var(--paper); border-left:3px solid var(--teal); padding:13px 16px;
@@ -1098,9 +1154,20 @@ const page = (meta, chapters) => `<!doctype html>
   table.data th { background:var(--ink); color:#fff; text-align:left; padding:9px 11px; font-size:11px; letter-spacing:.05em; }
   table.data td { padding:9px 11px; border-bottom:1px solid var(--rule); vertical-align:top; }
   table.data tbody tr:nth-child(even) { background:var(--paper); }
-  table.gate tr.ok td:last-child { color:var(--teal-text); font-weight:700; }
-  table.gate tr.no td:last-child { color:var(--orange-text); font-weight:700; }
+  table.data td.tight { white-space:nowrap; }
+  @media (max-width:520px) { table.data td.tight { white-space:normal; } }
+  table.gate { font-size:13px; }
+  table.gate th.num, table.gate td.num { text-align:right; white-space:nowrap; }
+  table.gate td { vertical-align:middle; }
+  .g-name { display:flex; gap:9px; align-items:baseline; }
+  .g-num { flex:0 0 auto; min-width:20px; font-family:var(--sans); font-size:11px; color:var(--mute);
+           font-variant-numeric:tabular-nums; text-align:right; }
   table.gate td.short { color:var(--orange-text); font-weight:700; }
+  .pill { display:inline-block; font-family:var(--sans); font-size:10.5px; letter-spacing:.06em;
+          text-transform:uppercase; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+  /* Tints chosen so the label clears 4.5:1 on them, not by eye. */
+  .pill.yes { background:#e4f3ef; color:var(--teal-text); }
+  .pill.no  { background:#fbf3eb; color:var(--orange-text); }
   .gate-sum { background:var(--paper); padding:12px 15px; border-radius:7px; font-size:14px; }
 
   figure { margin:20px 0; text-align:center; break-inside:avoid; }
@@ -1170,7 +1237,9 @@ const page = (meta, chapters) => `<!doctype html>
                margin-top:-8px; border-radius:50%; background:var(--teal-text); border:1px solid #fff; }
   .lab-range::-moz-range-thumb { width:20px; height:20px; border-radius:50%;
                background:var(--teal-text); border:1px solid #fff; }
-  .lab-hint { font-size:12.5px; color:var(--mute); margin:9px auto 0; max-width:52ch; }
+  .lab-hint { font-size:12.5px; color:var(--mute); margin:11px auto 0; max-width:52ch; }
+  [data-lab="judge"] .lab-hint { text-align:left; margin-left:0; padding-top:11px;
+                                  border-top:1px solid var(--rule); }
 
   .jd { list-style:none; margin:0; padding:0; text-align:left; }
   .jd li { display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center;
@@ -1240,12 +1309,24 @@ const page = (meta, chapters) => `<!doctype html>
   .ans figcaption { font-size:12px; }
   .todo { color:var(--orange-text); }
 
-  nav.toc { background:var(--paper); border-radius:10px; padding:20px 24px; margin-bottom:34px; }
-  nav.toc h2 { font-size:20px; margin-bottom:12px; }
-  nav.toc ol { margin:0; padding-left:20px; columns:2; column-gap:30px; font-size:14px; }
-  nav.toc li { margin-bottom:5px; break-inside:avoid; }
-  nav.toc a { display:inline-block; min-height:24px; padding:3px 0; }
-  nav.toc a { color:var(--ink); text-decoration:none; } nav.toc a:hover { color:var(--teal-text); }
+  nav.toc { background:var(--paper); border-radius:12px; padding:26px 28px 22px; margin-bottom:42px; }
+  nav.toc h2 { font-size:21px; margin:0 0 18px; }
+  .toc-part + .toc-part { margin-top:20px; padding-top:18px; border-top:1px solid var(--rule); }
+  .toc-h { font-family:var(--sans); font-size:10.5px; letter-spacing:.13em; text-transform:uppercase;
+           color:var(--mute); margin-bottom:9px; }
+  nav.toc ol, nav.toc ul { margin:0; padding:0; list-style:none; font-size:14.5px;
+                           columns:2; column-gap:34px; }
+  nav.toc li { margin:0; break-inside:avoid; }
+  nav.toc a { color:var(--ink); text-decoration:none; display:flex; gap:10px; align-items:baseline;
+              min-height:24px; padding:3px 0; }
+  nav.toc a:hover { color:var(--teal-text); }
+  nav.toc a:hover .toc-n { background:var(--teal-text); color:#fff; border-color:var(--teal-text); }
+  .toc-n { flex:0 0 auto; width:22px; height:22px; border-radius:5px; border:1px solid var(--rule);
+           font-family:var(--sans); font-size:11px; font-variant-numeric:tabular-nums;
+           display:inline-flex; align-items:center; justify-content:center; color:var(--mute);
+           background:#fff; }
+  .toc-back a { padding-left:32px; }
+  @media (max-width:640px) { nav.toc ol, nav.toc ul { columns:1; } }
 
   /* Print is still a book: every disclosure opens, the controls go, and each
      lab falls back to its first frame, which is why frame 0 is authored as the
@@ -1263,20 +1344,40 @@ const page = (meta, chapters) => `<!doctype html>
   }
 </style></head><body>
 <header class="cover">
-  <div class="dots"><i style="background:${C.orange}"></i><i style="background:${C.teal}"></i></div>
-  <div class="series">${esc(meta.series)}</div>
-  <h1>${esc(meta.title)}</h1>
-  <h2>${esc(meta.subtitle)}</h2>
-  <p>${esc(meta.blurb)}</p>
+  <div class="cover-body">
+    <div class="series">${esc(meta.series)}</div>
+    <h1>${esc(meta.title)}</h1>
+    <p class="cover-sub">${esc(meta.subtitle)}</p>
+    <p class="cover-blurb">${esc(meta.blurb)}</p>
+    <dl class="cover-facts">
+      ${[[chapters.length, 'chapters'],
+         [chapters.reduce((n, c) => n + c.practice.length, 0), 'practice items, all answered'],
+         [chapters.reduce((n, c) => n + audit(c).figs, 0), 'figures, all computed']]
+        .map(([n, l]) => `<div><dt>${n}</dt><dd>${esc(l)}</dd></div>`).join('')}
+    </dl>
+  </div>
+  ${coverMark()}
   <div class="stamp"><b>${esc(meta.status)}</b>${esc(meta.note)}</div>
 </header>
 <a class="skip" href="#contents">Skip to contents</a>
 <main class="sheet">
-  <nav class="toc" id="contents"><h2>Contents</h2><ol>
-    ${chapters.map(c => `<li><a href="#ch${c.id}">${rich(c.title)}</a></li>`).join('')}
-    <li><a href="#answers">Answers, in full</a></li>
-    <li><a href="#gate">What this book still owes its reader</a></li>
-  </ol></nav>
+  <nav class="toc" id="contents" aria-label="Contents">
+    <h2>Contents</h2>
+    ${[...new Map(chapters.map(c => [c.part || 'PART I - FUNCTIONS', null])).keys()].map(part => `
+      <div class="toc-part">
+        <div class="toc-h">${esc(part.replace(/^PART /, 'Part ').replace(' - ', ': ').toLowerCase()
+          .replace(/(^|: )(\w)/g, (m, a, b) => a + b.toUpperCase()))}</div>
+        <ol>${chapters.filter(c => (c.part || 'PART I - FUNCTIONS') === part)
+          .map(c => `<li><a href="#ch${c.id}"><span class="toc-n">${c.id}</span>${rich(c.title)}</a></li>`).join('')}</ol>
+      </div>`).join('')}
+    <div class="toc-part">
+      <div class="toc-h">At the back</div>
+      <ul class="toc-back">
+        <li><a href="#answers">Answers, shown</a></li>
+        <li><a href="#gate">What this book still owes its reader</a></li>
+      </ul>
+    </div>
+  </nav>
   ${chapters.map(chapterHTML).join('\n')}
   ${answersHTML(chapters)}
   ${gateHTML(chapters)}
