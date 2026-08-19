@@ -3,7 +3,7 @@
 // Draft 1 named the three families and their signatures. What it did not give
 // was a way to tell them apart from data, which is the difference table. That
 // technique is added here because it is the first time a reader computes a
-// change rather than describing one, and chapter 10 simply keeps doing it.
+// change rather than describing one, and chapter 11 simply keeps doing it.
 
 export default {
   id: 6,
@@ -43,7 +43,7 @@ export default {
     ] },
 
     { t: 'callout', title: 'Why this is worth the arithmetic',
-      text: 'A constant second difference is the first evidence a reader ever meets that "the rate of change has its own rate of change". Chapter 12 gives that idea a symbol. The technique here is the whole thing in miniature, done with subtraction.' },
+      text: 'A constant second difference is the first evidence a reader ever meets that "the rate of change has its own rate of change". Chapter 13 gives that idea a symbol. The technique here is the whole thing in miniature, done with subtraction.' },
 
     { t: 'example', n: 1,
       ask: 'A table gives outputs 5, 8, 13, 20, 29 for inputs 0, 1, 2, 3, 4. Which family?',
@@ -67,7 +67,7 @@ export default {
         'Both input steps had size 1, yet the output changes differ by a factor of seven.'
       ],
       answer: 'A change of 1, against a change of 7.',
-      note: 'This is exactly why a single number cannot describe how fast x² grows. Chapter 10 answers by measuring over a stated interval; chapter 12 answers by shrinking the interval to nothing.',
+      note: 'This is exactly why a single number cannot describe how fast x² grows. Chapter 11 answers by measuring over a stated interval; chapter 13 answers by shrinking the interval to nothing.',
       show: { kind: 'steps', f: x => x * x, from: 0, to: 4, title: 'THE SAME STEP, DIFFERENT RISE', note: 'x^2', x0: -0.6, x1: 5.4, y0: -1, y1: 18, w: 300, h: 220,
         caption: 'The first rise is 1 and the fourth is 7, from input steps of the same size. That is why no single number can describe how fast x\u00b2 grows.' },
       turn: { ask: 'For y = x^2, compare the output change from x = 1 to 2 with the change from x = 5 to 6.', a: '3 against 11. Same input step, very different output change.' } },
@@ -169,7 +169,7 @@ export default {
           { kind: 'steps', f: x => 3 * x + 1, from: 0, to: 4, title: 'LINEAR: ONE NUMBER', note: '3x+1', x0: -0.6, x1: 5.4, y0: -1, y1: 15, w: 265, h: 200, pick: 'linear',
             say: 'Every rise is 3, so one number covers every interval.' },
           { kind: 'steps', f: x => x * x, from: 0, to: 4, title: 'QUADRATIC: WHICH INTERVAL?', note: 'x^2', x0: -0.6, x1: 5.4, y0: -1, y1: 18, w: 265, h: 200, pick: 'quadratic',
-            say: 'The rises differ, so any single number would have to say which interval it meant. That question is chapter 10.' }
+            say: 'The rises differ, so any single number would have to say which interval it meant. That question is chapter 11.' }
         ] } },
     { q: 'Which is bigger at x = 3: x^2 or 2^x? Which at x = 10?', level: 'Calculate',
       a: 'At x = 3, x² = 9 beats 2^x = 8. At x = 10, 2^x = 1024 beats x² = 100. They are equal at x = 4.',
@@ -206,5 +206,5 @@ export default {
     why: 'Exponential means the output is multiplied by a fixed factor for each fixed input step, which is a statement about mechanism rather than speed. As the table above shows, 2^x is behind x² at x = 3 and level with it at x = 4. Test by taking ratios, not by looking at the steepness.'
   },
 
-  review: 'Chapter 3 asked you to show that f(x + h) − f(x) = 5h for f(x) = 5x, with no x surviving. The constant first difference in the linear column above is that fact tabulated, and question 7 is the reason it matters for everything after chapter 10.'
+  review: 'Chapter 3 asked you to show that f(x + h) − f(x) = 5h for f(x) = 5x, with no x surviving. The constant first difference in the linear column above is that fact tabulated, and question 7 is the reason it matters for everything after chapter 11.'
 };

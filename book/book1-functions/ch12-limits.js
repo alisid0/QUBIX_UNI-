@@ -5,13 +5,13 @@
 // able to evaluate a simple limit, not merely able to describe one.
 
 export default {
-  id: 11,
+  id: 12,
   part: 'PART II - THE NEXT BOOKS',
   title: 'Limits: what is approached',
   standfirst: 'A limit asks where the outputs are heading, and declines to ask what happens on arrival.',
 
   blocks: [
-    { t: 'p', text: 'Chapter 10 ended with a quotient that behaved well for every h except 0, where it collapsed into 0/0. That is not a defect in the arithmetic. It is the ordinary situation, and limits are the tool built for it.' },
+    { t: 'p', text: 'Chapter 11 ended with a quotient that behaved well for every h except 0, where it collapsed into 0/0. That is not a defect in the arithmetic. It is the ordinary situation, and limits are the tool built for it.' },
     { t: 'p', text: 'Consider the rule below. At x = 1 the denominator is zero, so the expression has no value there at all.' },
     { t: 'formula', text: 'f(x) = (x^2 - 1)/(x - 1)' },
 
@@ -62,7 +62,7 @@ export default {
         a: 'It has no limit either, but for a different reason: both sides climb without bound rather than disagreeing. The two sides agree on the direction and still settle on no number.' } },
 
     { t: 'h', text: 'What Book 2 does with this' },
-    { t: 'p', text: 'Approach from a table, then on a graph, then one side at a time. Then holes and jumps, which is continuity. Then limits that run off to infinity, then the algebraic methods that replace tables. The sequence ends where chapter 12 begins, with the limit that defines a derivative.' },
+    { t: 'p', text: 'Approach from a table, then on a graph, then one side at a time. Then holes and jumps, which is continuity. Then limits that run off to infinity, then the algebraic methods that replace tables. The sequence ends where chapter 13 begins, with the limit that defines a derivative.' },
 
     { t: 'h', text: 'Zooming in' },
     { t: 'p', text: 'A limit is a claim about what happens arbitrarily close to a point, so the honest way to look at one is to keep closing in. Each frame below is the same rule, in a narrower window around x = 1.' },
@@ -153,7 +153,7 @@ export default {
             say: 'Same form again, and now the answer is a half. The form decides nothing, which is why it is called indeterminate rather than wrong.' }
         ] } },
     { q: 'For f(x) = x^2, use the difference quotient at x = 3 to write a limit whose answer is the local rate.', level: 'Analyse change', hard: true,
-      a: 'The limit as h approaches 0 of [(3 + h)² − 9]/h, which simplifies to 6 + h and so approaches 6. Chapter 10 question 7 did the algebra; this writes it as the limit it always was.',
+      a: 'The limit as h approaches 0 of [(3 + h)² − 9]/h, which simplifies to 6 + h and so approaches 6. Chapter 11 question 7 did the algebra; this writes it as the limit it always was.',
       show: { kind: 'secants', f: x => x * x, a: 3, bs: [5, 4.2, 3.6, 3.2], x0: 1, x1: 6, y0: 0, y1: 28, w: 320, h: 230,
         caption: 'The limit as h approaches 0 of [(3 + h)\u00b2 \u2212 9]/h. Each secant is one value of the quotient, and they close on 6.' } },
     { q: 'A function jumps from 3 to 8 at x = 4, with no gradual change. Does it have a limit at 4?', level: 'Analyse change', hard: true,

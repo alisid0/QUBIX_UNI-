@@ -2,10 +2,10 @@
 //
 // The last chapter of Part I, and the one the whole book has been walking
 // toward. The difference quotient is written here in full, with h, so that
-// chapter 12 has nothing left to introduce except the shrinking.
+// chapter 13 has nothing left to introduce except the shrinking.
 
 export default {
-  id: 10,
+  id: 11,
   title: 'Average rate of change',
   standfirst: 'How much the output moved, per unit of input moved. The final chapter of Part I ends at the doorstep of limits.',
 
@@ -13,6 +13,10 @@ export default {
     { t: 'p', text: 'Chapter 6 showed that a quadratic changes by 1 over one interval and by 7 over another of the same width, so no single number describes how fast it grows. The honest response is to stop asking for one number and start asking about a stated interval.' },
     { t: 'formula', text: 'average rate = [f(b) - f(a)] / (b - a)' },
     { t: 'p', text: 'The numerator is how far the output moved. The denominator is how far the input moved. The quotient is the output movement **per unit** of input movement, which is what a rate always means.' },
+    { t: 'p', text: 'Chapter 10 has already given both of those a name, so the same formula can be written in four symbols instead of ten. It is the identical instruction: subtract, subtract, divide.' },
+    { t: 'formula', text: 'average rate = Δy / Δx' },
+    { t: 'callout', title: 'The word average is doing real work here',
+      text: 'Chapter 10 shared a plant\'s 18 cm of growth evenly across nine days and admitted the sharing was a fiction. This is that fiction named: the average rate is the steady rate that would have produced the same change over the same interval, and the curve is under no obligation to have grown that way.' },
 
     { t: 'p', text: 'For f(x) = x² from x = 1 to x = 3, the output goes from 1 to 9 while the input goes up by 2. The average rate is (9 − 1)/(3 − 1) = 4. On the graph this is the steepness of the straight line drawn through the two points, called the **secant** line.' },
 

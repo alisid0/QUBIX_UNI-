@@ -49,7 +49,8 @@ export const math = s => String(s)
   .replace(/\bsqrt\(([^)]*)\)/g, '√($1)')
   .replace(/\^\{([^}]+)\}/g, (_, g) => [...g].map(c => SUP[c] ?? c).join(''))
   .replace(/\^(-?\d+|[a-z])/g, (_, g) => [...g].map(c => SUP[c] ?? c).join(''))
-  .replace(/\bdelta\b/g, 'Δ').replace(/\bDelta\b/g, 'Δ')
+  // No word -> symbol rule here. Converting the word "delta" to Δ would eat
+  // the sentence that tells a reader how to say it. Write Δ directly.
   // Both forms: prose is escaped before formatting, so "->" has already
   // become "-&gt;" by the time it arrives here.
   .replace(/--?&gt;/g, '→').replace(/-->/g, '⟶').replace(/->/g, '→')
@@ -359,6 +360,45 @@ const FIG = {
     if (title) g.push(label(10, 16, title, C.mute, 8, 'start'));
     g.push(`<text x="${w - 10}" y="${h - 7}" text-anchor="end" font-size="10" fill="${C.mute}" font-family="ui-monospace,monospace">${n} strips = ${total.toFixed(4)}</text>`);
     return svg(w, h, g.join(''), 'graph');
+  },
+
+  // The rise-over-run triangle: two points, the horizontal leg, the vertical
+  // leg, and the quotient. This is the one picture the whole of Part II rests
+  // on, so it is drawn from the function rather than sketched.
+  delta({ f, a, b, title, note, x0 = 0, x1 = 6, y0 = 0, y1 = 8, w = 300, h = 225, unit = '', quotient = true }) {
+    const p = plane({ x0, x1, y0, y1, w, h });
+    const ya = f(a), yb = f(b);
+    const g = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p), curve(p, f)];
+    // the two legs
+    g.push(`<line x1="${p.X(a)}" y1="${p.Y(ya)}" x2="${p.X(b)}" y2="${p.Y(ya)}" stroke="${C.orange}" stroke-width="2"/>`);
+    g.push(`<line x1="${p.X(b)}" y1="${p.Y(ya)}" x2="${p.X(b)}" y2="${p.Y(yb)}" stroke="${C.teal}" stroke-width="2"/>`);
+    g.push(`<line x1="${p.X(a)}" y1="${p.Y(ya)}" x2="${p.X(b)}" y2="${p.Y(yb)}" stroke="${C.ink}" stroke-width="1.3" stroke-dasharray="4 3"/>`);
+    g.push(dot(p, a, ya), dot(p, b, yb));
+    const dx = +(b - a).toFixed(4), dy = +(yb - ya).toFixed(4);
+    g.push(label((p.X(a) + p.X(b)) / 2, p.Y(ya) + 15, `Δx = ${dx}`, C.orange, 10));
+    g.push(label(p.X(b) + 7, (p.Y(ya) + p.Y(yb)) / 2 + 3, `Δy = ${dy}`, C.teal, 10, 'start'));
+    if (quotient) g.push(`<text x="${p.X(a) + 6}" y="${p.Y(yb) - 8}" font-size="11" fill="${C.ink}" font-family="ui-monospace,monospace">${esc(math(`Δy/Δx = ${+(dy / dx).toFixed(3)}${unit ? ' ' + unit : ''}`))}</text>`);
+    if (title) g.push(label(10, 16, title, C.mute, 8, 'start'));
+    if (note) g.push(`<text x="${w - 10}" y="${h - 7}" text-anchor="end" font-size="10" fill="${C.mute}" font-family="ui-monospace,monospace">${esc(math(note))}</text>`);
+    return svg(w, h, g.join(''), 'graph');
+  },
+
+  // Division, drawn as sharing a total into equal parts. "Per one" is the
+  // whole content of a rate, and it is worth seeing once as an act.
+  share({ total, parts, each, unit = '', per = '', w = 420 }) {
+    const H = 118, pad = 26, barY = 46, barH = 30;
+    const bw = (w - 2 * pad) / parts;
+    const b = [`<rect width="${w}" height="${H}" fill="${C.paper}" rx="6"/>`];
+    b.push(label(w / 2, 22, `${total}${unit ? ' ' + unit : ''} altogether`, C.ink, 11));
+    for (let i = 0; i < parts; i++) {
+      b.push(`<rect x="${pad + i * bw}" y="${barY}" width="${bw - 2}" height="${barH}" rx="3"
+        fill="${i === 0 ? '#cfe6e1' : C.faint}" stroke="${i === 0 ? C.teal : C.rule}" stroke-width="1"/>`);
+      b.push(label(pad + i * bw + bw / 2 - 1, barY + 20, String(each), i === 0 ? C.teal : C.mute, 10));
+    }
+    b.push(`<line x1="${pad}" y1="${barY + barH + 9}" x2="${w - pad}" y2="${barY + barH + 9}" stroke="${C.mute}" stroke-width="1"/>`);
+    b.push(label(w / 2, barY + barH + 24, `${parts} equal ${per || 'parts'}`, C.mute, 10));
+    b.push(`<text x="${w / 2}" y="${H - 8}" text-anchor="middle" font-size="11" fill="${C.ink}" font-family="ui-monospace,monospace">${esc(math(`${total} ÷ ${parts} = ${each}${unit ? ' ' + unit : ''} each`))}</text>`);
+    return svg(w, H, b.join(''));
   },
 
   // Input/output table drawn as a figure so it sits beside a graph.
@@ -906,6 +946,18 @@ for (const name of books) {
     seen.add(c.id);
     for (const q of c.practice || []) if (!q.q) throw new Error(`${name} ch${c.id}: a practice item has no question`);
   }
+  // Chapters cross-refer constantly, and inserting one shifts every reference
+  // after it. A stale "chapter 12" still reads as a sentence, so nothing but a
+  // check will catch it. Every number mentioned must be a chapter that exists.
+  const ids = new Set(chapters.map(c => c.id));
+  const dangling = [];
+  for (const c of chapters) {
+    const prose = JSON.stringify({ b: c.blocks, p: c.practice, m: c.misconception, r: c.review, s: c.standfirst });
+    for (const m of prose.matchAll(/chapters?\s+(\d+)/gi))
+      if (!ids.has(+m[1])) dangling.push(`ch${c.id} refers to chapter ${m[1]}, which does not exist`);
+  }
+  if (dangling.length) throw new Error(`${name}: broken cross-references\n  ` + [...new Set(dangling)].join('\n  '));
+
   const html = page(meta, chapters);
 
   // Unformatted notation must not ship. A stray "2^x" or "sqrt(x)" in the

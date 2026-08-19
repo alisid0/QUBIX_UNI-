@@ -6,7 +6,7 @@
 // be checked by hand rather than as an announcement.
 
 export default {
-  id: 13,
+  id: 14,
   part: 'PART II - THE NEXT BOOKS',
   title: 'Integrals: how much accumulates',
   standfirst: 'Add up a changing contribution, then let the pieces get thin.',
@@ -33,7 +33,7 @@ export default {
     { t: 'p', text: 'Every one of these totals is too big, because each rectangle is drawn at the height the curve reaches by the end of its strip and the curve is climbing. The overshoot halves as the strips halve, and the totals close on 1/3.' },
 
     { t: 'callout', title: 'The same move, twice',
-      text: 'Chapter 12 shrank an interval to find a rate. This chapter shrinks a strip to find a total. Both are limits, and the fact that these two shrinkings undo one another is the deepest result in the subject.' },
+      text: 'Chapter 13 shrank an interval to find a rate. This chapter shrinks a strip to find a total. Both are limits, and the fact that these two shrinkings undo one another is the deepest result in the subject.' },
 
     { t: 'h', text: 'The Fundamental Theorem, checked by geometry' },
     { t: 'p', text: 'Differentiation measures local change; integration accumulates it. The Fundamental Theorem of Calculus says that, under suitable conditions, each undoes the other. The cleanest way to believe it the first time is to take a case whose answer you already know without any calculus at all.' },
@@ -43,7 +43,7 @@ export default {
       steps: [
         'Draw it. Speed against time is a straight line from (0, 0) up to (3, 6).',
         'The region beneath is a triangle with base 3 and height 6, so its area is (1/2)(3)(6) = 9. No calculus was used.',
-        'Now approach it the other way. Ask which rule has 2t as its derivative: chapter 12 showed that t² does.',
+        'Now approach it the other way. Ask which rule has 2t as its derivative: chapter 13 showed that t² does.',
         'Evaluate that rule at the two ends and subtract: 3² − 0² = 9.'
       ],
       answer: '9 metres, by both routes.',
@@ -204,7 +204,7 @@ export default {
           { kind: 'riemann', f: x => x * x, n: 40, x0: 0, x1: 1, side: 'right', title: '40 STRIPS', w: 255, h: 190, pick: '40',
             say: 'The slivers are almost invisible, and the total is closing on one third.' }
         ] } },
-    { q: 'Chapter 12 found the derivative of x^3/3. What is it, and why does that make example 2 work?', level: 'Analyse change', hard: true,
+    { q: 'Chapter 13 found the derivative of x^3/3. What is it, and why does that make example 2 work?', level: 'Analyse change', hard: true,
       a: 'It is x², by the same method that gave 3x² for x³ and then dividing by 3. Example 2 works because finding an area was converted into finding a rule whose derivative is the curve, which is what the Fundamental Theorem licenses.',
       show: { kind: 'frames', label: 'Down, then back up',
         frames: [
@@ -221,5 +221,5 @@ export default {
     why: 'Area is the picture that makes integration intelligible, not its definition. Regions below the horizontal axis contribute negatively, as question 10 shows, so an integral reports net accumulation and can be negative or zero. When genuine area is wanted regardless of sign, the negative parts must be handled separately, which Book 4 does explicitly.'
   },
 
-  review: 'Chapter 10 divided an output change by an input change to get a rate. This chapter multiplies a rate by an input change to get an output change, strip by strip, and then adds them up. The two operations have been inverse to each other since chapter 10, and the Fundamental Theorem is the statement that they still are in the limit.'
+  review: 'Chapter 11 divided an output change by an input change to get a rate. This chapter multiplies a rate by an input change to get an output change, strip by strip, and then adds them up. The two operations have been inverse to each other since chapter 11, and the Fundamental Theorem is the statement that they still are in the limit.'
 };

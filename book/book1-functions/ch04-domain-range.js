@@ -39,7 +39,7 @@ export default {
       ] },
 
     { t: 'callout', title: 'Why the last row is written in two pieces',
-      text: 'A single interval has no holes in it. Removing one point from the line leaves two separate stretches, so the notation has to name both. Chapter 11 returns to this point: a function can approach a value at a place its domain does not contain.' },
+      text: 'A single interval has no holes in it. Removing one point from the line leaves two separate stretches, so the notation has to name both. Chapter 12 returns to this point: a function can approach a value at a place its domain does not contain.' },
 
     { t: 'h', text: 'Four rules, examined' },
     { t: 'table', head: ['Function', 'Domain', 'Range'],
@@ -86,7 +86,7 @@ export default {
       turn: { ask: 'State the real domain and range of r(x) = sqrt(x - 5).', a: 'Domain [5, infinity); range [0, infinity).' } },
 
     { t: 'callout', title: 'Why calculus cares',
-      text: 'Limits examine what a function does *near* a point, often one its domain excludes. The expression in chapter 11 has a hole at x = 1 and a perfectly definite limit there. Knowing precisely which inputs are missing is what makes that question askable.' },
+      text: 'Limits examine what a function does *near* a point, often one its domain excludes. The expression in chapter 12 has a hole at x = 1 and a perfectly definite limit there. Knowing precisely which inputs are missing is what makes that question askable.' },
 
     { t: 'h', text: 'Domains, drawn' },
     { t: 'p', text: 'Interval notation is a compressed picture, and it is worth decompressing at least once. The line below is every real number; the shaded stretch is what a rule accepts.' },
@@ -101,7 +101,7 @@ export default {
       marks: [{ x: 3, open: true, label: 'removed' }],
       caption: 'The domain of 1/(x − 3). One point is punched out and the line falls into two stretches, which is why the notation needs two brackets joined by "or".' },
 
-    { t: 'p', text: 'Compare the two endpoints. The first is drawn filled, the second hollow, and that is the whole difference between a square bracket and a round one. A hollow endpoint is also exactly the hole that chapter 11 takes a limit at.' },
+    { t: 'p', text: 'Compare the two endpoints. The first is drawn filled, the second hollow, and that is the whole difference between a square bracket and a round one. A hollow endpoint is also exactly the hole that chapter 12 takes a limit at.' },
 
     { t: 'example', n: 3,
       ask: 'State the domain of f(x) = sqrt(x)/(x - 4).',

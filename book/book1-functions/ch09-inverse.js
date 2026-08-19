@@ -96,7 +96,7 @@ export default {
         'Restrict to x at least 2, keeping the rising half only. On that half no output is shared.'
       ],
       answer: 'No inverse over all real numbers. Restricted to [2, infinity) it has one.',
-      note: 'The turning point is always where to cut, because it is the only place a smooth curve turns from falling to rising and so starts repeating outputs. Chapter 12 gives a way to find it without completing the square.',
+      note: 'The turning point is always where to cut, because it is the only place a smooth curve turns from falling to rising and so starts repeating outputs. Chapter 13 gives a way to find it without completing the square.',
       show: { kind: 'frames', label: 'Why it needs cutting, and where',
         frames: [
           { kind: 'linetest', f: x => x * x - 4 * x, at: [0], dir: 'h', title: 'THE WHOLE CURVE', note: 'x^2-4x', x0: -2, x1: 6, y0: -5, y1: 6, w: 275, h: 205, pick: 'as given',

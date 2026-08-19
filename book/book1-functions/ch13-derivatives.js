@@ -1,12 +1,12 @@
 // 12. Derivatives: how fast
 //
 // Everything needed for this chapter was built earlier: f(x+h) in chapter 3,
-// the difference quotient in chapter 10, and the limit in chapter 11. The
+// the difference quotient in chapter 11, and the limit in chapter 12. The
 // derivation of 2x is done in full rather than quoted, because a reader who
 // has watched the h cancel once will believe the power rule later.
 
 export default {
-  id: 12,
+  id: 13,
   part: 'PART II - THE NEXT BOOKS',
   title: 'Derivatives: how fast',
   standfirst: 'The average rate, with the interval shrunk to nothing.',
@@ -17,7 +17,7 @@ export default {
 
     { t: 'p', text: 'The **derivative** of f at x is the limit of the difference quotient as the step shrinks to nothing. It measures the instantaneous rate of change, and equally the steepness of the tangent line.' },
     { t: 'formula', text: "f'(x) = limit as h -> 0 of [f(x + h) - f(x)]/h" },
-    { t: 'p', text: 'Every symbol in that line has already appeared. Chapter 3 built f(x + h); chapter 10 assembled the quotient; chapter 11 explained what the limit is asking. The only new thing is the name.' },
+    { t: 'p', text: 'Every symbol in that line has already appeared. Chapter 3 built f(x + h); chapter 11 assembled the quotient; chapter 12 explained what the limit is asking. The only new thing is the name.' },
 
     { t: 'example', n: 1,
       ask: "Derive f'(x) for f(x) = x^2 from the definition.",
@@ -28,7 +28,7 @@ export default {
         'Take the limit as h shrinks: the term 2x does not involve h and stays; the lone h vanishes.'
       ],
       answer: "f'(x) = 2x.",
-      note: 'Check against chapter 10. At x = 2 the difference quotient simplified to 4 + h and approached 4; here 2x gives 2(2) = 4. At x = 3 it gave 6 + h approaching 6, and 2(3) = 6. The general result agrees with both particular ones.',
+      note: 'Check against chapter 11. At x = 2 the difference quotient simplified to 4 + h and approached 4; here 2x gives 2(2) = 4. At x = 3 it gave 6 + h approaching 6, and 2(3) = 6. The general result agrees with both particular ones.',
       show: { kind: 'frames', label: 'The rule, and its steepness',
         frames: [
           { kind: 'secants', f: x => x * x, a: 2, bs: [4, 3, 2.5, 2.2], x0: 0, x1: 5, y0: 0, y1: 20, w: 300, h: 220, pick: 'at x = 2',
@@ -68,7 +68,7 @@ export default {
         'The limit of a constant is that constant, so the answer is 3 for every x.'
       ],
       answer: "f'(x) = 3.",
-      note: 'Chapter 6 predicted this: a linear rule has constant first differences, so its steepness cannot depend on where you measure. Chapter 10 question 8 found the same 3 without taking any limit, because none was needed.',
+      note: 'Chapter 6 predicted this: a linear rule has constant first differences, so its steepness cannot depend on where you measure. Chapter 11 question 8 found the same 3 without taking any limit, because none was needed.',
       show: { kind: 'graph', f: x => 3 * x + 1, title: 'THE SAME EVERYWHERE', note: 'f(x)=3x+1', x0: -3, x1: 3, y0: -8, y1: 10, w: 275, h: 200, marks: [[-2, -5], [0, 1], [2, 7]],
         caption: 'A straight line has one steepness, and the three marked points are on the same slope. The h cancelled completely because there was nothing for it to depend on.' },
       turn: { ask: "Derive f'(x) for f(x) = 7x - 2 from the definition.", a: '7. The quotient is exactly 7 with no h left, so the limit is 7.' } },
@@ -77,7 +77,7 @@ export default {
     { t: 'p', text: 'Doing every derivative from the definition would be unbearable, so Book 3 establishes rules: the power rule, then constants and sums, then products, quotients and chains. After that come exponential and trigonometric derivatives, motion, and optimisation, which is the business of finding the flat points this chapter learned to recognise.' },
 
     { t: 'h', text: 'Where the number comes from' },
-    { t: 'p', text: 'Chapter 10 watched secants close on a tangent. The same picture now has a name for its destination.' },
+    { t: 'p', text: 'Chapter 11 watched secants close on a tangent. The same picture now has a name for its destination.' },
 
     { t: 'figure', kind: 'secants', f: x => x * x, a: 2, bs: [5, 4, 3, 2.5],
       x0: 0, x1: 6, y0: 0, y1: 30, w: 330, h: 240,
@@ -189,5 +189,5 @@ export default {
     why: "The steepness of x² is different at every input, so no single number can be the answer. The derivative is the rule f'(x) = 2x, and 4 is what that rule returns at the one input 2. The habit of writing f'(2) rather than f' whenever a particular place is meant prevents the error entirely."
   },
 
-  review: 'Chapter 10 left the difference quotient of x² at 4 + h and observed the answers crowding around 4 without reaching it. Chapter 11 named that crowding. This chapter does it once with a general x and gets a rule that reproduces every particular answer computed so far.'
+  review: 'Chapter 11 left the difference quotient of x² at 4 + h and observed the answers crowding around 4 without reaching it. Chapter 12 named that crowding. This chapter does it once with a general x and gets a rule that reproduces every particular answer computed so far.'
 };

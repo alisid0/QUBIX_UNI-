@@ -155,7 +155,7 @@ export default {
         'At 3 miles: 4.20 + 3.20 = £7.40. At 10 miles: 14.00 + 3.20 = £17.20.'
       ],
       answer: '£3.20, £7.40, and £17.20.',
-      note: 'The two numbers in the rule do different jobs. The 1.40 says how fast the fare grows; the 3.20 says where it starts. Chapter 6 names that pair, and chapter 10 shows the 1.40 is the only one a rate of change can see.',
+      note: 'The two numbers in the rule do different jobs. The 1.40 says how fast the fare grows; the 3.20 says where it starts. Chapter 6 names that pair, and chapter 11 shows the 1.40 is the only one a rate of change can see.',
       show: { kind: 'frames', label: 'The three fares',
         frames: [
           { kind: 'machine', rule: '1.40m + 3.20', input: '0', output: '3.20', pick: '0 miles', say: 'The fare is not zero, because the charge to start does not depend on distance.' },

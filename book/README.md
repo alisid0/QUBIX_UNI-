@@ -52,6 +52,14 @@ items. Every chapter cleared it and the book was still a reference card at 2.2
 examples and 1.8 figures a chapter. A gate everything passes measures nothing;
 if the numbers rise again, raise `GATE` with them.
 
+Two more invariants the build enforces, both added after a silent bug got
+through: every figure option is checked against what the figure function
+actually destructures (a `kind` that a lab frame overwrote, and a `caption`
+that fought the real one, both drew plausible pictures that contradicted their
+captions); and every "chapter N" reference must name a chapter that exists,
+because inserting a chapter shifts every reference after it and a stale one
+still reads as a sentence.
+
 `check:book` recomputes the arithmetic the prose asserts: difference tables,
 rectangle sums, average rates, difference quotients, composites, inverses,
 excluded domain points. Prose can claim anything; this fails loudly when a

@@ -70,7 +70,7 @@ export default {
       turn: { ask: 'Write a square function shifted left 2 and down 6.', a: '(x + 2)² − 6.' } },
 
     { t: 'callout', title: 'Where this returns',
-      text: 'A transformation moves a graph without changing its shape, so it cannot change how steep the curve is at corresponding points. Shifting is the reason a derivative in chapter 12 never depends on where the curve sits, only on how it bends.' },
+      text: 'A transformation moves a graph without changing its shape, so it cannot change how steep the curve is at corresponding points. Shifting is the reason a derivative in chapter 13 never depends on where the curve sits, only on how it bends.' },
 
     { t: 'example', n: 3,
       ask: 'The graph of y = f(x) has a low point at (1, 2). Where is the low point of y = f(x + 3) - 4?',
@@ -165,13 +165,13 @@ export default {
             say: 'At x = 5 the rule evaluates f(3), so that height of 9 now appears at 5. The picture moved right, whatever the sign said.' }
         ] } },
     { q: 'Does y = f(x) + 3 change how steep the curve is anywhere? Does y = 3f(x)?', level: 'Transform', hard: true,
-      a: 'The first does not: sliding a curve up leaves every slope untouched. The second does: tripling every height triples every slope. This is the distinction chapter 12 relies on.',
+      a: 'The first does not: sliding a curve up leaves every slope untouched. The second does: tripling every height triples every slope. This is the distinction chapter 13 relies on.',
       show: { kind: 'frames', label: 'Which one changes the steepness?',
         frames: [
           { kind: 'graph', f: x => x * x + 3, second: { f: x => x * x }, title: 'f(x) + 3: NO', note: 'slides only', x0: -3, x1: 3, y0: -1, y1: 12, w: 260, h: 200, marks: [[1, 4]], pick: 'f(x)+3',
             say: 'Sliding a curve up leaves every slope exactly as it was.' },
           { kind: 'graph', f: x => 3 * x * x, second: { f: x => x * x }, title: '3f(x): YES', note: 'slopes triple', x0: -3, x1: 3, y0: -1, y1: 12, w: 260, h: 200, marks: [[1, 3]], pick: '3f(x)',
-            say: 'Tripling every height triples every slope. This is the distinction chapter 12 relies on.' }
+            say: 'Tripling every height triples every slope. This is the distinction chapter 13 relies on.' }
         ] } },
     { q: 'Write the rule for y = x^2 squeezed horizontally to half width and moved up 1. Then expand it.', level: 'Transform', hard: true,
       a: 'y = (2x)² + 1, which expands to 4x² + 1. Note that a horizontal squeeze on a parabola is indistinguishable from a vertical stretch, which is a peculiarity of this parent and not a general rule.',

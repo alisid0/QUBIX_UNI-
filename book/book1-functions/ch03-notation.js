@@ -1,6 +1,6 @@
 // 3. Function notation
 //
-// The chapter that pays for chapter 12. If a reader cannot substitute x+h into
+// The chapter that pays for chapter 13. If a reader cannot substitute x+h into
 // a rule without hesitating, the difference quotient is unreachable, so the
 // substitution drill is placed here rather than deferred to the derivative.
 
@@ -70,9 +70,9 @@ export default {
     ] },
 
     { t: 'formula', text: 'f(x) = 2x + 1     so     f(a) = 2a + 1     and     f(x + h) = 2(x + h) + 1' },
-    { t: 'p', text: 'That last one is the single most useful substitution in this book. Chapter 10 divides by it, and chapter 12 takes a limit of the result. A reader who can produce f(x + h) without pausing has already done the hard part of the derivative.' },
+    { t: 'p', text: 'That last one is the single most useful substitution in this book. Chapter 11 divides by it, and chapter 13 takes a limit of the result. A reader who can produce f(x + h) without pausing has already done the hard part of the derivative.' },
     { t: 'callout', title: 'The brackets are not optional',
-      text: 'Writing f(x + h) = 2x + h + 1 loses the bracket and doubles only part of the input. The blank swallowed the whole expression, so the whole expression must be doubled: 2(x + h). Almost every error in chapter 12 traces back to this one line.' },
+      text: 'Writing f(x + h) = 2x + h + 1 loses the bracket and doubles only part of the input. The blank swallowed the whole expression, so the whole expression must be doubled: 2(x + h). Almost every error in chapter 13 traces back to this one line.' },
 
     { t: 'example', n: 3,
       ask: 'For f(x) = x^2, write f(x + h) and simplify f(x + h) − f(x).',
@@ -83,9 +83,9 @@ export default {
         'The x² terms cancel, leaving 2xh + h².'
       ],
       answer: 'f(x + h) = x² + 2xh + h², and f(x + h) − f(x) = 2xh + h².',
-      note: 'Every term that survives has an h in it. That is not a coincidence, and chapter 12 depends on it.',
+      note: 'Every term that survives has an h in it. That is not a coincidence, and chapter 13 depends on it.',
       show: { kind: 'blanks', rule: 'f(\u2b1a) = \u2b1a\u00b2', sub: 'the input is the whole expression x + h', result: '(x+h)\u00b2 = x\u00b2 + 2xh + h\u00b2',
-        caption: 'The bracket is what makes the middle term appear. Writing x\u00b2 + h\u00b2 loses 2xh, and with it the whole of chapter 12.' },
+        caption: 'The bracket is what makes the middle term appear. Writing x\u00b2 + h\u00b2 loses 2xh, and with it the whole of chapter 13.' },
       turn: { ask: 'For f(x) = x^2 + 1, write f(x + h) and simplify f(x + h) - f(x).', a: 'f(x + h) = x² + 2xh + h² + 1, and the difference is 2xh + h². The constant cancels, so the answer matches the plain square.' } },
 
     { t: 'h', text: 'Four ways to hold the same function' },
@@ -165,7 +165,7 @@ export default {
     { q: 'For f(x) = x^2, expand f(x + h) and simplify f(x + h) − f(x).', level: 'Calculate', hard: true,
       a: 'f(x + h) = x² + 2xh + h²; the difference is 2xh + h².',
       show: { kind: 'blanks', rule: 'f(⬚) = ⬚²', sub: 'subtract f(x) = x² from the expansion', result: '(x+h)² - x² = 2xh + h²',
-        caption: 'Every surviving term carries an h. Chapter 10 divides by that h, which is only possible because of it.' } },
+        caption: 'Every surviving term carries an h. Chapter 11 divides by that h, which is only possible because of it.' } },
     { q: 'For f(x) = 5x, show that f(x + h) − f(x) does not depend on x.', level: 'Calculate', hard: true,
       a: 'f(x + h) = 5x + 5h, so the difference is 5h. No x survives, which is why a straight line has the same steepness everywhere. Chapter 6 names this family.',
       show: { kind: 'steps', f: x => 5 * x, from: 0, to: 4, title: 'THE SAME RISE EVERYWHERE', note: 'f(x)=5x', x0: -0.6, x1: 5.2, y0: -1, y1: 24, w: 285, h: 210,
