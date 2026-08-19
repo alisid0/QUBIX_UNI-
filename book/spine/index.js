@@ -129,7 +129,7 @@ export const stages = [
       'power model', 'logistic model', 'curve fitting', 'goodness of fit', 'time series',
       'histogram', 'frequency (of a value)', 'cumulative frequency', 'box plot', 'quartile', 'median',
       'mean', 'standard deviation', 'normal curve', 'area as probability', 'z-score',
-      'probability density', 'cumulative distribution']
+      'probability density', 'cumulative distribution', 'sampling', 'sample size']
   },
   {
     n: 9, title: 'Change, and the bridge to limits',

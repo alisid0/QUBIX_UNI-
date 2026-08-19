@@ -13,6 +13,7 @@ import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const { meta, stages } = await import(`file://${join(ROOT, 'book', 'spine', 'index.js')}`);
+const { HOW, LEGEND } = await import(`file://${join(ROOT, 'book', 'spine', 'drawable.js')}`);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -27,6 +28,16 @@ for (const st of stages) for (const t of st.terms) {
 if (dupes.length) throw new Error('duplicate terms in the spine:\n  ' + dupes.join('\n  '));
 
 const total = stages.reduce((n, s) => n + s.terms.length, 0);
+
+/* Anything the classification does not mention is drawable as itself. A name
+   in HOW that matches no term would be a silent lie about coverage. */
+const stray = Object.keys(HOW).filter(k => !seen.has(k.toLowerCase()));
+if (stray.length) throw new Error('classified terms that are not in the spine:\n  ' + stray.join('\n  '));
+
+const how = t => HOW[t] || 'direct';
+const tally = ks => Object.fromEntries(LEGEND.map(([k]) => [k, ks.filter(x => x === k).length]));
+const overall = tally(stages.flatMap(s => s.terms.map(how)));
+const drawableAtAll = total - overall.none;
 const C = { ink: '#16283f', teal: '#12897c', tealText: '#10796e', paper: '#faf7f0',
   rule: '#d8d3c7', mute: '#5d6b7d', edge: '#918d85' };
 
@@ -70,6 +81,29 @@ const html = `<!doctype html>
   ol.terms li span { position:absolute; left:0; top:3px; width:28px; text-align:right;
                      font-family:var(--sans); font-size:10.5px; color:var(--mute);
                      font-variant-numeric:tabular-nums; }
+  .key { background:var(--paper); border-radius:12px; padding:24px 26px 20px; margin-bottom:36px; }
+  .key h2 { font-size:22px; margin:0 0 10px; }
+  .key-lead { font-size:14.5px; color:var(--mute); margin:0 0 18px; max-width:66ch; }
+  .key table { width:100%; border-collapse:collapse; font-size:14px; }
+  .key th { text-align:left; font-family:var(--sans); font-size:10.5px; letter-spacing:.09em;
+            text-transform:uppercase; color:var(--mute); padding:0 10px 7px 0;
+            border-bottom:1px solid var(--rule); }
+  .key td { padding:9px 10px 9px 0; border-bottom:1px solid var(--rule); vertical-align:top; }
+  .key .n { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .key .why { color:var(--mute); font-size:13.5px; }
+  .key-note { font-size:14.5px; margin:16px 0 0; max-width:70ch; }
+  .chip { display:inline-block; font-family:var(--sans); font-size:10.5px; letter-spacing:.06em;
+          text-transform:uppercase; padding:3px 9px; border-radius:999px; }
+  /* The same four colours mark the terms themselves, so a stage can be read
+     at a glance for how much of it a picture can carry. */
+  .h-direct   { background:#e4f3ef; color:#0d6b61; }
+  .h-frames   { background:#e8eef7; color:#2f4d78; }
+  .h-instance { background:#fbf3eb; color:#8c5024; }
+  .h-none     { background:#f8e9e8; color:#9c3f3c; }
+  ol.terms li.h-frames   { color:#2f4d78; }
+  ol.terms li.h-instance { color:#8c5024; }
+  ol.terms li.h-none     { color:#9c3f3c; text-decoration:underline; text-decoration-style:dotted;
+                           text-underline-offset:3px; }
   footer { margin-top:40px; padding:16px 18px; background:var(--paper); border-radius:9px;
            font-size:14px; color:var(--mute); }
   @media print { .stage { break-inside:auto; } ol.terms { columns:2; } }
@@ -81,18 +115,36 @@ const html = `<!doctype html>
   <div class="counts">
     <div><b>${total}</b><span>concepts</span></div>
     <div><b>${stages.length}</b><span>stages</span></div>
-    <div><b>${stages[0].terms.length}</b><span>before a curve appears</span></div>
-    <div><b>${stages.at(-1).terms.length}</b><span>for saying where it fails</span></div>
+    <div><b>${drawableAtAll}</b><span>can be drawn, ${Math.round(drawableAtAll / total * 100)}%</span></div>
+    <div><b>${overall.none}</b><span>cannot be drawn at all</span></div>
   </div>
 </header>
 <div class="wrap">
+<section class="key">
+  <h2>How much of this can be drawn?</h2>
+  <p class="key-lead">Every concept is classified by what a picture can honestly do for it. The counts
+    below are computed from that classification, and the build refuses to run if it names a concept
+    the spine does not contain.</p>
+  <table>
+    <thead><tr><th scope="col">Verdict</th><th scope="col" class="n">Concepts</th><th scope="col" class="n">Share</th><th scope="col">What it means</th></tr></thead>
+    <tbody>${LEGEND.map(([k, why]) => `<tr>
+      <td><span class="chip h-${k}">${k}</span></td>
+      <td class="n">${overall[k]}</td>
+      <td class="n">${Math.round(overall[k] / total * 100)}%</td>
+      <td class="why">${esc(why)}</td></tr>`).join('')}</tbody>
+  </table>
+  <p class="key-note"><b>${drawableAtAll} of ${total}</b> concepts can be shown by some picture, and
+    <b>${overall.direct}</b> of those are a picture in themselves. The remaining <b>${overall.none}</b> cannot be
+    drawn at all, and ${Math.round(tally(stages.at(-1).terms.map(how)).none / overall.none * 100)}% of those
+    sit in the last stage — which is the argument for having a last stage.</p>
+</section>
 ${stages.map(st => {
   let i = stages.slice(0, st.n - 1).reduce((n, s) => n + s.terms.length, 0);
   return `<section class="stage">
     <div class="stage-h"><span class="stage-n">${st.n}</span><h2>${esc(st.title)}</h2>
-      <span class="stage-c">${st.terms.length} concepts</span></div>
+      <span class="stage-c">${st.terms.length} concepts · ${st.terms.length - tally(st.terms.map(how)).none} drawable</span></div>
     <p class="can"><b>By the end</b>${esc(st.can)}</p>
-    <ol class="terms">${st.terms.map(t => `<li><span>${++i}</span>${esc(t)}</li>`).join('')}</ol>
+    <ol class="terms">${st.terms.map(t => `<li class="h-${how(t)}"><span>${++i}</span>${esc(t)}</li>`).join('')}</ol>
   </section>`;
 }).join('\n')}
 <footer>${esc(meta.note)} Every term is listed once: the build refuses to run if two stages claim the same concept.</footer>
