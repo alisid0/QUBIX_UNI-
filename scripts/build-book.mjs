@@ -1041,6 +1041,9 @@ const page = (meta, chapters) => `<!doctype html>
           /* Graphics need 3:1 and keep the identity hues above. Text needs
              4.5:1, so anything a person reads uses these instead. */
           --teal-text:#10796e; --orange-text:#a25d2a; --rose-text:#b84d4a;
+          /* --rule is a decorative hairline and has no contrast requirement.
+             The edge of a control does: 3:1 (WCAG 1.4.11). */
+          --edge:#918d85;
           /* Three roles. Running text is a book and gets a serif; the apparatus
              around it (eyebrows, table headers, figure labels, practice tags) is
              machinery and gets the sans; formulas get the mono. All system faces,
@@ -1053,9 +1056,11 @@ const page = (meta, chapters) => `<!doctype html>
      for A4, and it carries its own ground rather than borrowing the viewer's.
      Hence no dark palette, and an explicit background here. */
   body { margin:0; background:#fff; color:var(--ink); font:16.5px/1.66 var(--serif); }
-  .skip { position:absolute; left:-9999px; top:0; background:var(--ink); color:#fff;
-          padding:10px 16px; z-index:10; font-family:var(--sans); font-size:14px; border-radius:0 0 6px 0; }
-  .skip:focus { left:0; }
+  .skip { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);
+          white-space:nowrap; background:var(--ink); color:#fff; z-index:10;
+          font-family:var(--sans); font-size:14px; border-radius:0 0 6px 0; }
+  .skip:focus { position:fixed; left:0; top:0; width:auto; height:auto; clip:auto;
+                padding:10px 16px; min-height:24px; }
   .sheet { max-width: 41rem; margin: 0 auto; padding: 0 22px 80px; }   /* ~72 characters */
   code, .formula { font-family: var(--mono); }
   .kicker, .pr-head, .pr-l, .wk-h, table.data th, .fig-table th, figcaption,
@@ -1128,7 +1133,8 @@ const page = (meta, chapters) => `<!doctype html>
               text-transform:uppercase; display:inline; margin-right:5px; }
   .turn details { margin-top:6px; }
   .turn summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11.5px;
-                  letter-spacing:.04em; width:max-content; }
+                  letter-spacing:.04em; width:max-content;
+                  display:inline-flex; align-items:center; min-height:24px; padding:2px 0; }
   .turn summary:focus-visible { outline:2px solid var(--teal); outline-offset:3px; border-radius:3px; }
   .turn details[open] summary { margin-bottom:4px; }
   .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0;
@@ -1146,13 +1152,24 @@ const page = (meta, chapters) => `<!doctype html>
   .lab-frame.on { display:block; }
   .lab-say { font-size:13.5px; margin:8px auto 2px; max-width:46ch; min-height:2.9em; }
   .lab-btns { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
-  .lab-b, .jd-c button { font:600 13px/1 var(--sans); padding:7px 13px; border-radius:6px; cursor:pointer;
-          border:1px solid var(--rule); background:#fff; color:var(--ink); }
+  .lab-b, .jd-c button { font:600 13px/1 var(--sans); min-height:24px; padding:7px 13px; border-radius:6px;
+          cursor:pointer; border:1px solid var(--edge); background:#fff; color:var(--ink); }
   .lab-b:hover, .jd-c button:hover { border-color:var(--teal); }
   .lab-b.on { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
   .lab-b:focus-visible, .jd-c button:focus-visible, .lab-range:focus-visible,
   .pr-sol summary:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
-  .lab-range { width:min(100%,300px); margin-top:12px; accent-color:var(--teal); }
+  /* 2.5.8 wants 24px of target; a bare range input renders about 16px tall.
+     The track and thumb are given explicit colours so the control has a
+     visible boundary against the panel behind it (1.4.11). */
+  .lab-range { width:min(100%,300px); height:24px; margin-top:10px; accent-color:var(--teal-text);
+               background:transparent; -webkit-appearance:none; appearance:none; }
+  .lab-range::-webkit-slider-runnable-track { height:6px; border-radius:3px;
+               background:#fff; border:1px solid var(--edge); }
+  .lab-range::-moz-range-track { height:6px; border-radius:3px; background:#fff; border:1px solid var(--edge); }
+  .lab-range::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:20px; height:20px;
+               margin-top:-8px; border-radius:50%; background:var(--teal-text); border:1px solid #fff; }
+  .lab-range::-moz-range-thumb { width:20px; height:20px; border-radius:50%;
+               background:var(--teal-text); border:1px solid #fff; }
   .lab-hint { font-size:12.5px; color:var(--mute); margin:9px auto 0; max-width:52ch; }
 
   .jd { list-style:none; margin:0; padding:0; text-align:left; }
@@ -1171,10 +1188,12 @@ const page = (meta, chapters) => `<!doctype html>
 
   /* ---- practice solutions ---- */
   .pr-list li { display:block; }
-  .pr-top { display:flex; gap:10px; justify-content:space-between; }
+  .pr-top { display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; }
+  .pr-q { min-width:0; overflow-wrap:anywhere; }
   .pr-sol { margin-top:6px; }
   .pr-sol summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11px;
-                    letter-spacing:.05em; text-transform:uppercase; width:max-content; }
+                    letter-spacing:.05em; text-transform:uppercase; width:max-content;
+                    display:inline-flex; align-items:center; min-height:24px; padding:2px 0; }
   .pr-sol[open] summary { margin-bottom:6px; }
   .pr-steps { margin:0 0 6px; padding-left:19px; font-size:13.5px; color:#33445c; }
   .pr-steps li { display:list-item; padding:0; border:0; margin-bottom:3px; }
@@ -1208,7 +1227,7 @@ const page = (meta, chapters) => `<!doctype html>
 
   .answers .ans-ch { margin-bottom:26px; }
   .answers h3 { margin:22px 0 10px; padding-bottom:5px; border-bottom:1px solid var(--rule); }
-  .answers h3 a { color:var(--teal-text); text-decoration:none; }
+  .answers h3 a { color:var(--teal-text); text-decoration:none; display:inline-block; min-height:24px; padding:2px 0; }
   .ans { display:grid; grid-template-columns:26px 1fr; gap:0 10px; padding:9px 0;
          border-bottom:1px solid var(--faint); break-inside:avoid; }
   .ans:last-child { border-bottom:0; }
@@ -1225,6 +1244,7 @@ const page = (meta, chapters) => `<!doctype html>
   nav.toc h2 { font-size:20px; margin-bottom:12px; }
   nav.toc ol { margin:0; padding-left:20px; columns:2; column-gap:30px; font-size:14px; }
   nav.toc li { margin-bottom:5px; break-inside:avoid; }
+  nav.toc a { display:inline-block; min-height:24px; padding:3px 0; }
   nav.toc a { color:var(--ink); text-decoration:none; } nav.toc a:hover { color:var(--teal-text); }
 
   /* Print is still a book: every disclosure opens, the controls go, and each
