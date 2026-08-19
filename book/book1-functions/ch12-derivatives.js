@@ -28,7 +28,8 @@ export default {
         'Take the limit as h shrinks: the term 2x does not involve h and stays; the lone h vanishes.'
       ],
       answer: "f'(x) = 2x.",
-      note: 'Check against chapter 10. At x = 2 the difference quotient simplified to 4 + h and approached 4; here 2x gives 2(2) = 4. At x = 3 it gave 6 + h approaching 6, and 2(3) = 6. The general result agrees with both particular ones.' },
+      note: 'Check against chapter 10. At x = 2 the difference quotient simplified to 4 + h and approached 4; here 2x gives 2(2) = 4. At x = 3 it gave 6 + h approaching 6, and 2(3) = 6. The general result agrees with both particular ones.',
+      turn: { ask: "Use f'(x) = 2x to find the steepness of x^2 at x = 5, then check it against the difference quotient 10 + h.", a: '10, and the quotient approaches 10 as h shrinks. They agree.' } },
 
     { t: 'callout', title: 'The derivative is a function, not a number',
       text: "f'(x) = 2x is a rule: hand it an input and it returns the steepness there. The number 4 is not the derivative of x²; it is the derivative of x² *at x = 2*, written f'(2). Keeping that distinction is what makes the rest of Book 3 readable." },
@@ -60,10 +61,44 @@ export default {
         'The limit of a constant is that constant, so the answer is 3 for every x.'
       ],
       answer: "f'(x) = 3.",
-      note: 'Chapter 6 predicted this: a linear rule has constant first differences, so its steepness cannot depend on where you measure. Chapter 10 question 8 found the same 3 without taking any limit, because none was needed.' },
+      note: 'Chapter 6 predicted this: a linear rule has constant first differences, so its steepness cannot depend on where you measure. Chapter 10 question 8 found the same 3 without taking any limit, because none was needed.',
+      turn: { ask: "Derive f'(x) for f(x) = 7x - 2 from the definition.", a: '7. The quotient is exactly 7 with no h left, so the limit is 7.' } },
 
     { t: 'h', text: 'What Book 3 does with this' },
-    { t: 'p', text: 'Doing every derivative from the definition would be unbearable, so Book 3 establishes rules: the power rule, then constants and sums, then products, quotients and chains. After that come exponential and trigonometric derivatives, motion, and optimisation, which is the business of finding the flat points this chapter learned to recognise.' }
+    { t: 'p', text: 'Doing every derivative from the definition would be unbearable, so Book 3 establishes rules: the power rule, then constants and sums, then products, quotients and chains. After that come exponential and trigonometric derivatives, motion, and optimisation, which is the business of finding the flat points this chapter learned to recognise.' },
+
+    { t: 'h', text: 'Where the number comes from' },
+    { t: 'p', text: 'Chapter 10 watched secants close on a tangent. The same picture now has a name for its destination.' },
+
+    { t: 'figure', kind: 'secants', f: x => x * x, a: 2, bs: [5, 4, 3, 2.5],
+      x0: 0, x1: 6, y0: 0, y1: 30, w: 330, h: 240,
+      caption: 'Average rates of 7, 6, 5 and 4.5 over shrinking intervals from x = 2. The dashed tangent has steepness 4, and the rule 2x returns 4 at x = 2. The picture and the algebra produce the same number by different routes.' },
+
+    { t: 'example', n: 3,
+      ask: "For f(x) = x^2, find where f'(x) = 0, and say what is happening on the graph there.",
+      steps: [
+        "The derivative is 2x, so solve 2x = 0.",
+        'The only solution is x = 0.',
+        'At x = 0 the tangent has steepness 0, which is a horizontal line.',
+        'On the graph that is the low point of the parabola, the one place it is flat.'
+      ],
+      answer: "f'(x) = 0 only at x = 0, the lowest point of the curve.",
+      note: 'This is the beginning of optimisation. Highest and lowest points are flat, so they are found by setting the derivative to zero, which turns a question about shape into an equation.',
+      turn: { ask: "For f(x) = x^2 - 6x, the derivative is 2x - 6. Where is the curve flat?",
+        a: 'At x = 3. That matches chapter 9 example 4, where completing the square put the low point of x² − 4x at x = 2 by the same logic.' } },
+
+    { t: 'example', n: 4,
+      ask: "A ball's height is h(t) = 20t - 5t^2 metres after t seconds, and its derivative is h'(t) = 20 - 10t. When is the ball at its highest, and how high?",
+      steps: [
+        'At the highest point the ball is momentarily neither rising nor falling, so its rate of change of height is 0.',
+        'Solve 20 − 10t = 0, giving t = 2 seconds.',
+        'Find the height there: h(2) = 40 − 20 = 20 metres.',
+        'Check the sign either side: at t = 1 the rate is +10, rising; at t = 3 it is −10, falling. So t = 2 really is the top.'
+      ],
+      answer: 'Highest at 2 seconds, at a height of 20 metres.',
+      note: 'The check either side matters. Setting a derivative to zero finds flat points, and a flat point can be a maximum, a minimum, or neither, so the sign on both sides is what decides which.',
+      turn: { ask: "For h(t) = 30t - 5t^2 with h'(t) = 30 - 10t, when is the ball highest and how high?",
+        a: 'At t = 3 seconds, at a height of 90 − 45 = 45 metres.' } }
   ],
 
   practice: [

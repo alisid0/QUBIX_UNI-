@@ -36,7 +36,8 @@ export default {
         'Plot each point, going across by the first number and up by the second. Negative outputs go below the horizontal axis.',
         'The five points lie on a straight line, which is what the family in chapter 6 predicts.'
       ],
-      answer: '(−2, −5), (−1, −3), (0, −1), (1, 1), (2, 3).' },
+      answer: '(−2, −5), (−1, −3), (0, −1), (1, 1), (2, 3).',
+      turn: { ask: 'Plot y = 3x + 2 for x = -2, 0, 2.', a: '(−2, −4), (0, 2), (2, 8), lying on a straight line.' } },
 
     { t: 'figure', kind: 'graph', f: x => 2 * x - 1, title: 'THE FIVE POINTS', note: 'y=2x-1', x0: -3, x1: 3, y0: -6, y1: 4, w: 250, h: 195,
       marks: [[-2, -5], [-1, -3], [0, -1], [1, 1], [2, 3]],
@@ -63,7 +64,47 @@ export default {
         'Far out in either direction it climbs without bound, and symmetrically, because (−x)² = x².'
       ],
       answer: 'A single lowest point at the origin, symmetric about the vertical axis, unbounded above and bounded below by 0.',
-      note: 'That last sentence is the range from chapter 4, read off the picture instead of argued from the formula.' }
+      note: 'That last sentence is the range from chapter 4, read off the picture instead of argued from the formula.',
+      turn: { ask: 'Read the behaviour of f(x) = 2x - 1 the same way: where does it rise, where is it flat, where does it cross the axes?',
+        a: 'It rises everywhere and is flat nowhere. It crosses the vertical axis at (0, −1) and the horizontal axis at (0.5, 0).' } },
+
+    { t: 'h', text: 'The test, performed' },
+    { t: 'p', text: 'Rather than take the vertical line test on trust, sweep it. Below, three lines cross a rule that passes and a curve that fails, with every hit marked.' },
+
+    { t: 'figures', items: [
+      { kind: 'linetest', f: x => 0.6 * x * x - 1, at: [-2, 0, 2], title: 'PASSES', note: 'one hit per line',
+        x0: -3.5, x1: 3.5, y0: -3, y1: 5, w: 245, h: 190,
+        caption: 'Each line meets the curve once, so each input has exactly one output.' },
+      { kind: 'linetest', f: x => Math.sqrt(Math.max(0, 9 - x * x)), second: x => -Math.sqrt(Math.max(0, 9 - x * x)),
+        at: [-2, 0, 2], title: 'FAILS', note: 'two hits per line', x0: -4, x1: 4, y0: -4, y1: 4, w: 245, h: 190,
+        caption: 'Each line meets the circle twice, and the marks turn red where an input has been handed two outputs.' }
+    ] },
+
+    { t: 'example', n: 3,
+      ask: 'A graph passes through (1, 4) and (1, 7). What can you conclude without seeing the rest of it?',
+      steps: [
+        'Both points share the first coordinate 1, so both describe the same input.',
+        'They give that input the outputs 4 and 7.',
+        'The vertical line at x = 1 therefore meets the graph at least twice.',
+        'That is the fork chapter 2 ruled out, and nothing elsewhere on the graph can undo it.'
+      ],
+      answer: 'It cannot be the graph of a function.',
+      note: 'One pair of points settles it. Proving a graph is a function needs every vertical line; proving it is not needs only one.',
+      turn: { ask: 'A graph passes through (2, 5) and (4, 5). What can you conclude?',
+        a: 'Nothing against it: two inputs sharing an output is allowed. It does show the rule is not one-to-one, which chapter 9 will care about.' } },
+
+    { t: 'example', n: 4,
+      ask: 'From the graph of y = x^2 - 4, state the intercepts and the lowest point.',
+      steps: [
+        'The vertical intercept is the output at x = 0, which is 0 − 4 = −4, giving the point (0, −4).',
+        'The horizontal intercepts are the inputs giving output 0: x² − 4 = 0, so x² = 4 and x is 2 or −2.',
+        'That is two crossings, at (−2, 0) and (2, 0). Two inputs sharing the output 0 is permitted.',
+        'The lowest point is where the parent x² was flat, moved down 4: (0, −4).'
+      ],
+      answer: 'Intercepts (0, −4), (−2, 0) and (2, 0); lowest point (0, −4).',
+      note: 'Here the vertical intercept and the lowest point happen to coincide. That is a feature of this rule, not a general fact.',
+      turn: { ask: 'State the intercepts of y = x^2 - 9.',
+        a: '(0, −9) on the vertical axis, and (−3, 0) and (3, 0) on the horizontal.' } }
   ],
 
   practice: [

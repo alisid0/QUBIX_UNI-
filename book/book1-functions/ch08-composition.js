@@ -38,7 +38,8 @@ export default {
         'Hand 25 to g: g(25) = 25 − 3 = 22.'
       ],
       answer: 'f(g(5)) = 4 and g(f(5)) = 22.',
-      note: 'The gap between 4 and 22 is a useful shock. Squaring after subtracting is a very different instruction from subtracting after squaring.' },
+      note: 'The gap between 4 and 22 is a useful shock. Squaring after subtracting is a very different instruction from subtracting after squaring.',
+      turn: { ask: 'With the same f and g, find f(g(1)) and g(f(1)).', a: 'f(g(1)) = f(−2) = 4; g(f(1)) = g(1) = −2.' } },
 
     { t: 'example', n: 2,
       ask: 'For the same f and g, write formulas for f(g(x)) and g(f(x)).',
@@ -48,7 +49,8 @@ export default {
         'Check at x = 5 against the previous example: (5 − 3)² = 4, and 5² − 3 = 22. Both agree.'
       ],
       answer: 'f(g(x)) = (x − 3)² and g(f(x)) = x² − 3.',
-      note: 'Chapter 7 met (x − 3)² as a shift of the parent x². It is the same expression, now arrived at from a different direction.' },
+      note: 'Chapter 7 met (x − 3)² as a shift of the parent x². It is the same expression, now arrived at from a different direction.',
+      turn: { ask: 'For f(x) = x + 4 and g(x) = 2x, write f(g(x)) and g(f(x)).', a: 'f(g(x)) = 2x + 4; g(f(x)) = 2x + 8.' } },
 
     { t: 'h', text: 'The domain of a composite' },
     { t: 'p', text: 'An input is allowed into f(g(x)) only if it clears two gates. It must be acceptable to g, and the value g produces must then be acceptable to f. A composite can therefore refuse inputs that neither rule would refuse on its own.' },
@@ -62,7 +64,31 @@ export default {
         'Sanity check with x = 1: g(1) = −3, and f cannot take −3. Correctly refused.'
       ],
       answer: 'x at least 4, that is [4, infinity).',
-      note: 'Neither rule alone bars x = 1. The chain does. This is why the domain of a composite must be worked out from the chain, not inherited from either link.' }
+      note: 'Neither rule alone bars x = 1. The chain does. This is why the domain of a composite must be worked out from the chain, not inherited from either link.',
+      turn: { ask: 'For f(x) = sqrt(x) and g(x) = x + 7, what inputs are allowed for f(g(x))?', a: '[−7, infinity), since x + 7 must be non-negative.' } },
+
+    { t: 'h', text: 'The chain, drawn as one machine' },
+    { t: 'p', text: 'Two machines wired in series behave as a single machine, and the composite is nothing more than the name for that single machine. Below is the same pair run in each order.' },
+
+    { t: 'figure', kind: 'chain', stages: ['g(x)=x+1', 'f(x)=2x'], input: '3', values: [4, 8],
+      caption: 'f(g(3)): the 3 meets g first, becomes 4, and that 4 is what f doubles.' },
+    { t: 'figure', kind: 'chain', stages: ['f(x)=2x', 'g(x)=x+1'], input: '3', values: [6, 7],
+      caption: 'g(f(3)): the same two machines, swapped. The value on the wire between them differs, and so does the answer.' },
+
+    { t: 'p', text: 'The number on the wire is the part worth watching. It is an output and an input at the same moment, and every question about the domain of a composite is a question about whether the second machine will accept it.' },
+
+    { t: 'example', n: 4,
+      ask: 'Write h(x) = sqrt(3x - 5) as f(g(x)) with two simpler rules, then find its domain.',
+      steps: [
+        'Ask what is done last. The square root is applied to everything else, so f is the root.',
+        'Ask what is done first. The expression 3x − 5 is built before the root sees it, so g(x) = 3x − 5.',
+        'Check: f(g(x)) = sqrt(3x − 5), which is h.',
+        'For the domain, g accepts everything but f needs a non-negative input, so demand 3x − 5 at least 0, giving x at least 5/3.'
+      ],
+      answer: 'f(x) = sqrt(x) and g(x) = 3x − 5, with domain [5/3, infinity).',
+      note: 'Decomposing like this, outer rule and inner rule, is the exact preparation the chain rule needs in Book 3. There the question is always "what is the outer function, and what is the inner one?"',
+      turn: { ask: 'Write h(x) = (4x + 1)^3 as f(g(x)) and state its domain.',
+        a: 'f(x) = x³ and g(x) = 4x + 1. Both accept every real number, so the domain is all real numbers.' } }
   ],
 
   practice: [

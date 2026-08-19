@@ -36,7 +36,9 @@ export default {
         'Check for a repeat. There is none, so no input can possibly have two outputs.',
         'The outputs 1 and 1 repeat, but they belong to the different inputs 4 and 6.'
       ],
-      answer: 'Yes. A repeated output is not a defect.' },
+      answer: 'Yes. A repeated output is not a defect.',
+      turn: { ask: 'Is {(2, 8), (3, 9), (2, 7)} a function?',
+        a: 'No. The first entry 2 appears twice, with 8 and with 7.' } },
 
     { t: 'h', text: 'Two rules that look like counterexamples' },
     { t: 'p', text: 'Two familiar rules are usually offered as objections, and both survive on close reading.' },
@@ -58,7 +60,42 @@ export default {
         '"A square root of x": give it 9 and it returns 3, or −3, without deciding.',
         'One input, two candidate outputs, no rule to choose between them.'
       ],
-      answer: 'Squaring is a function. "A square root of x" is not, unless the principal root is specified, at which point it becomes sqrt(x) and is.' }
+      answer: 'Squaring is a function. "A square root of x" is not, unless the principal root is specified, at which point it becomes sqrt(x) and is.',
+      turn: { ask: 'Does "the cube of x" define a function? Does "a cube root of x" over the real numbers?',
+        a: 'Both do. Cubing gives one answer, and over the real numbers a number has exactly one cube root, because cubing preserves sign. The ambiguity that spoils square roots simply does not arise.' } },
+
+    { t: 'h', text: 'A third way to fail' },
+    { t: 'p', text: 'So far a rule has failed by forking. It can also fail by staying silent. If some input in the stated set of inputs gets no output at all, the first demand of chapter 1 is broken rather than the second.' },
+
+    { t: 'figure', kind: 'mapping', pairs: [['1', '4'], ['2', '5'], ['3', '3']],
+      caption: 'Every input served exactly once. Compare this with a diagram in which the input 3 has no arrow at all: that is not a fork, but it is still not a function on this set of inputs.' },
+    { t: 'p', text: 'The usual repair for silence is not to change the rule but to change the stated inputs. Chapter 4 does exactly that, and calls the surviving set the domain. So of the two ways to fail, one is fatal and one is bookkeeping.' },
+
+    { t: 'example', n: 3,
+      ask: 'A rule pairs each pupil in a class with a sport they play. Is it a function?',
+      steps: [
+        'Ask whether any pupil could be paired with two sports. A pupil who plays both hockey and tennis has two outputs.',
+        'Ask whether any pupil could be paired with none. A pupil who plays no sport has no output.',
+        'Both failures are available, and which one occurs depends on the class rather than on the wording.',
+        'The rule is only a function if every pupil plays exactly one sport.'
+      ],
+      answer: 'Not in general. It is a function only when each pupil plays exactly one sport.',
+      note: 'Rules stated in English very often hide this. "A sport they play" quietly assumes there is exactly one, and the assumption is doing all the work.',
+      turn: { ask: 'Repair the rule so it is a function whatever the class turns out to be.',
+        a: 'Answers vary. "The number of sports the pupil plays" works: every pupil has exactly one such number, and a pupil who plays none has the perfectly good output 0.' } },
+
+    { t: 'example', n: 4,
+      ask: 'Two students disagree. One says {(1, 5), (2, 5), (3, 5)} cannot be a function because the outputs are all identical. Settle it.',
+      steps: [
+        'Check the demand that actually exists: does any single input have two outputs?',
+        'Input 1 has only 5. Input 2 has only 5. Input 3 has only 5.',
+        'No input forks, so the rule is a function.',
+        'What the student has noticed is that it is not one-to-one, which is a real property with real consequences, but a different one.'
+      ],
+      answer: 'It is a function. The student has confused sharing with splitting.',
+      note: 'The property they were reaching for matters in chapter 9: a rule whose outputs are shared cannot be run backwards. So the observation was worth making and the conclusion was wrong.',
+      turn: { ask: 'Give a set of three pairs that is a function but has only two different outputs.',
+        a: 'Answers vary; for example {(1, 7), (2, 7), (3, 9)}. The inputs must all differ; the outputs may repeat freely.' } }
   ],
 
   practice: [

@@ -191,6 +191,173 @@ const FIG = {
     return svg(330, 200, g.join(''), 'graph');
   },
 
+  // A number line with shaded stretches and open/closed endpoints. Interval
+  // notation is unteachable without one, and Draft 2 introduced the notation
+  // with no picture anywhere in the chapter.
+  numberline({ from = -6, to = 6, spans = [], marks = [], w = 420, ticks = true }) {
+    const pad = 26, y = 46;
+    const X = v => pad + ((v - from) / (to - from)) * (w - 2 * pad);
+    const b = [`<rect width="${w}" height="76" fill="${C.paper}" rx="6"/>`];
+    spans.forEach(s => {
+      const a = X(Math.max(s.a ?? from, from)), z = X(Math.min(s.b ?? to, to));
+      b.push(`<rect x="${a}" y="${y - 7}" width="${Math.max(0, z - a)}" height="14" fill="${s.tone === 'out' ? '#f6dfd2' : '#cfe6e1'}"/>`);
+      if (s.label) b.push(label((a + z) / 2, y - 15, s.label, s.tone === 'out' ? '#a85a1d' : C.teal, 9));
+    });
+    b.push(`<line x1="${pad - 12}" y1="${y}" x2="${w - pad + 12}" y2="${y}" stroke="${C.ink}" stroke-width="1.3" marker-end="url(#ar)"/>`);
+    if (ticks) for (let v = Math.ceil(from); v <= to; v++) {
+      b.push(`<line x1="${X(v)}" y1="${y - 4}" x2="${X(v)}" y2="${y + 4}" stroke="${C.mute}" stroke-width="1"/>`);
+      b.push(label(X(v), y + 17, String(v), C.mute, 9));
+    }
+    marks.forEach(m => {
+      b.push(m.open
+        ? `<circle cx="${X(m.x)}" cy="${y}" r="5.5" fill="${C.paper}" stroke="${C.rose}" stroke-width="2"/>`
+        : `<circle cx="${X(m.x)}" cy="${y}" r="5.5" fill="${C.teal}"/>`);
+      if (m.label) b.push(label(X(m.x), y - 13, m.label, m.open ? C.rose : C.teal, 9));
+    });
+    return svg(w, 76, b.join(''));
+  },
+
+  // Machines wired in series, which is what a composite actually is.
+  chain({ stages, input, values, w = 460 }) {
+    const b = [];
+    const boxW = 96, gap = 34, x0 = 46;
+    b.push(`<circle cx="22" cy="52" r="19" fill="${C.orange}"/>`, label(22, 57, input, '#fff', 13));
+    stages.forEach((s, i) => {
+      const x = x0 + i * (boxW + gap);
+      b.push(`<path d="M${x - gap + 4} 52 h${gap - 10}" stroke="${C.ink}" stroke-width="1.5" marker-end="url(#ar)"/>`);
+      b.push(`<rect x="${x}" y="26" width="${boxW}" height="52" rx="9" fill="#eef6f4" stroke="${C.teal}" stroke-width="1.5"/>`);
+      b.push(`<text x="${x + boxW / 2}" y="${57}" text-anchor="middle" font-size="12" fill="${C.teal}" font-family="ui-monospace,monospace">${esc(math(s))}</text>`);
+      if (values && values[i] !== undefined) {
+        const vx = x + boxW + gap / 2;
+        b.push(`<path d="M${x + boxW + 4} 52 h${gap - 10}" stroke="${C.ink}" stroke-width="1.5" marker-end="url(#ar)"/>`);
+        b.push(label(vx, 42, String(values[i]), C.ink, 12));
+      }
+    });
+    const last = x0 + stages.length * (boxW + gap);
+    b.push(`<circle cx="${last + 4}" cy="52" r="19" fill="${C.teal}"/>`, label(last + 4, 57, String(values?.at(-1) ?? ''), '#fff', 13));
+    return svg(w, 92, b.join(''));
+  },
+
+  // The rule written with a blank, so substitution is a physical act.
+  blanks({ rule, sub, result, w = 420 }) {
+    const b = [`<rect width="${w}" height="96" fill="${C.paper}" rx="6"/>`];
+    b.push(`<text x="${w / 2}" y="40" text-anchor="middle" font-size="17" fill="${C.ink}" font-family="ui-monospace,monospace">${esc(math(rule))}</text>`);
+    b.push(`<text x="${w / 2}" y="70" text-anchor="middle" font-size="17" fill="${C.teal}" font-family="ui-monospace,monospace">${esc(math(result))}</text>`);
+    b.push(label(w / 2, 88, sub, C.mute, 9));
+    return svg(w, 96, b.join(''));
+  },
+
+  // Several test lines swept across a graph, with every hit marked.
+  linetest({ f, second = null, at = [], kind = 'v', title, note, x0 = -4, x1 = 4, y0 = -3, y1 = 6, w = 280, h = 210 }) {
+    const p = plane({ x0, x1, y0, y1, w, h });
+    const b = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p)];
+    b.push(curve(p, f));
+    if (second) b.push(curve(p, second, C.teal));
+    at.forEach(v => {
+      const hits = [];
+      if (kind === 'v') {
+        b.push(`<line x1="${p.X(v)}" y1="${p.pad.t}" x2="${p.X(v)}" y2="${p.pad.t + p.ih}" stroke="${C.orange}" stroke-width="1.2" stroke-dasharray="3 3"/>`);
+        for (const g of [f, second].filter(Boolean)) { const y = g(v); if (Number.isFinite(y) && y >= y0 && y <= y1) hits.push([v, y]); }
+      } else {
+        b.push(`<line x1="${p.pad.l}" y1="${p.Y(v)}" x2="${p.pad.l + p.iw}" y2="${p.Y(v)}" stroke="${C.orange}" stroke-width="1.2" stroke-dasharray="3 3"/>`);
+        for (let i = 0; i <= 600; i++) {
+          const x = x0 + (i / 600) * (x1 - x0), y = f(x);
+          if (Number.isFinite(y) && Math.abs(y - v) < (y1 - y0) / 300) { if (!hits.some(k => Math.abs(k[0] - x) < 0.25)) hits.push([x, y]); }
+        }
+      }
+      hits.forEach(([hx, hy]) => b.push(dot(p, hx, hy, hits.length > 1 ? C.rose : C.teal, 4)));
+    });
+    if (title) b.push(label(10, 16, title, C.mute, 8, 'start'));
+    if (note) b.push(`<text x="${w - 10}" y="${h - 7}" text-anchor="end" font-size="10" fill="${C.mute}" font-family="ui-monospace,monospace">${esc(math(note))}</text>`);
+    return svg(w, h, b.join(''), 'graph');
+  },
+
+  // A staircase of equal input steps, showing what each one does to the output.
+  steps({ f, from = 0, to = 4, title, note, x0 = -1, x1 = 5, y0 = -1, y1 = 18, w = 280, h = 210 }) {
+    const p = plane({ x0, x1, y0, y1, w, h });
+    const b = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p), curve(p, f)];
+    for (let x = from; x < to; x++) {
+      const ya = f(x), yb = f(x + 1);
+      b.push(`<line x1="${p.X(x)}" y1="${p.Y(ya)}" x2="${p.X(x + 1)}" y2="${p.Y(ya)}" stroke="${C.mute}" stroke-width="1.1" stroke-dasharray="2 2"/>`);
+      b.push(`<line x1="${p.X(x + 1)}" y1="${p.Y(ya)}" x2="${p.X(x + 1)}" y2="${p.Y(yb)}" stroke="${C.orange}" stroke-width="2"/>`);
+      b.push(label(p.X(x + 1) + 12, (p.Y(ya) + p.Y(yb)) / 2 + 3, `+${+(yb - ya).toFixed(2)}`, C.orange, 9, 'start'));
+      b.push(dot(p, x, ya, C.ink, 3));
+    }
+    b.push(dot(p, to, f(to), C.ink, 3));
+    if (title) b.push(label(10, 16, title, C.mute, 8, 'start'));
+    if (note) b.push(`<text x="${w - 10}" y="${h - 7}" text-anchor="end" font-size="10" fill="${C.mute}" font-family="ui-monospace,monospace">${esc(math(note))}</text>`);
+    return svg(w, h, b.join(''), 'graph');
+  },
+
+  // A function, its inverse, the diagonal they mirror in, and one pair joined.
+  reflect({ f, finv, pair, x0 = -6, x1 = 8, y0 = -6, y1 = 8, w = 300, h = 260, note }) {
+    const p = plane({ x0, x1, y0, y1, w, h });
+    const b = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p)];
+    b.push(`<line x1="${p.X(Math.max(x0, y0))}" y1="${p.Y(Math.max(x0, y0))}" x2="${p.X(Math.min(x1, y1))}" y2="${p.Y(Math.min(x1, y1))}" stroke="${C.mute}" stroke-width="1.2" stroke-dasharray="4 3"/>`);
+    b.push(label(p.X(Math.min(x1, y1)) - 6, p.Y(Math.min(x1, y1)) - 6, 'y = x', C.mute, 9, 'end'));
+    b.push(curve(p, f, C.teal));
+    b.push(curve(p, finv, C.orange));
+    if (pair) {
+      const [a, c] = pair;
+      b.push(`<line x1="${p.X(a)}" y1="${p.Y(c)}" x2="${p.X(c)}" y2="${p.Y(a)}" stroke="${C.rose}" stroke-width="1.1" stroke-dasharray="2 2"/>`);
+      b.push(dot(p, a, c, C.teal), dot(p, c, a, C.orange));
+      b.push(label(p.X(a), p.Y(c) - 10, `(${a}, ${c})`, C.teal, 9));
+      b.push(label(p.X(c) + 8, p.Y(a) + 4, `(${c}, ${a})`, C.orange, 9, 'start'));
+    }
+    if (note) b.push(`<text x="${w - 10}" y="${h - 7}" text-anchor="end" font-size="10" fill="${C.mute}" font-family="ui-monospace,monospace">${esc(math(note))}</text>`);
+    return svg(w, h, b.join(''), 'graph');
+  },
+
+  // Several secants from a fixed point, closing on the tangent.
+  secants({ f = x => 0.42 * x * x - 1.6 * x + 3.4, a = 1.4, bs = [5.6, 4.4, 3.2, 2.2], x0 = 0, x1 = 7, y0 = 0, y1 = 6, w = 340, h = 220 }) {
+    const p = plane({ x0, x1, y0, y1, w, h });
+    const g = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p), curve(p, f)];
+    const line = (m, colour, width, dash = '') =>
+      `<line x1="${p.X(x0)}" y1="${p.Y(f(a) + m * (x0 - a))}" x2="${p.X(x1)}" y2="${p.Y(f(a) + m * (x1 - a))}" stroke="${colour}" stroke-width="${width}"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`;
+    bs.forEach((bx, i) => {
+      const m = (f(bx) - f(a)) / (bx - a);
+      g.push(line(m, C.orange, 1.1 + i * 0.12));
+      g.push(dot(p, bx, f(bx), C.orange, 3.2));
+      g.push(label(p.X(bx), p.Y(f(bx)) - 9, m.toFixed(2), C.orange, 8));
+    });
+    const h0 = 1e-6, mt = (f(a + h0) - f(a - h0)) / (2 * h0);
+    g.push(line(mt, C.teal, 2, '5 3'));
+    g.push(dot(p, a, f(a), C.ink, 4.5));
+    g.push(label(p.X(a), p.Y(f(a)) + 20, `tangent ${mt.toFixed(2)}`, C.teal, 9));
+    return svg(w, h, g.join(''), 'graph');
+  },
+
+  // Zooming in on one input, three times, so a limit becomes a thing you watch.
+  zoom({ f, at, holeAt = null, spans = [2, 0.5, 0.1], w = 165, h = 150 }) {
+    return `<span class="zoom-row">` + spans.map(s => {
+      const y = f(at + s / 3);
+      const p = plane({ x0: at - s, x1: at + s, y0: y - s * 1.2, y1: y + s * 1.2, w, h });
+      const b = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p), curve(p, f)];
+      if (holeAt !== null) b.push(hole(p, at, holeAt));
+      b.push(label(w / 2, h - 8, `window ±${s}`, C.mute, 9));
+      return svg(w, h, b.join(''), 'graph');
+    }).join('') + `</span>`;
+  },
+
+  // Left and right rectangle sums side by side, so over- and under-estimate
+  // are one picture rather than two claims.
+  riemann({ f = x => x * x, n = 4, x0 = 0, x1 = 1, side = 'right', w = 250, h = 190, title }) {
+    const top = Math.max(f(x0), f(x1)) * 1.15;
+    const p = plane({ x0: x0 - (x1 - x0) * 0.1, x1: x1 + (x1 - x0) * 0.1, y0: 0, y1: top, w, h });
+    const g = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p)];
+    const dx = (x1 - x0) / n;
+    let total = 0;
+    for (let i = 0; i < n; i++) {
+      const xa = x0 + i * dx, hgt = f(side === 'right' ? xa + dx : xa);
+      total += hgt * dx;
+      g.push(`<rect x="${p.X(xa)}" y="${p.Y(hgt)}" width="${Math.max(0, p.X(xa + dx) - p.X(xa) - 0.5)}" height="${Math.max(0, p.Y(0) - p.Y(hgt))}" fill="${side === 'right' ? '#d9ebe7' : '#f6e3d4'}" stroke="${side === 'right' ? C.teal : C.orange}" stroke-width=".8"/>`);
+    }
+    g.push(curve(p, f, C.ink, 1.8));
+    if (title) g.push(label(10, 16, title, C.mute, 8, 'start'));
+    g.push(`<text x="${w - 10}" y="${h - 7}" text-anchor="end" font-size="10" fill="${C.mute}" font-family="ui-monospace,monospace">${n} strips = ${total.toFixed(4)}</text>`);
+    return svg(w, h, g.join(''), 'graph');
+  },
+
   // Input/output table drawn as a figure so it sits beside a graph.
   table({ head, rows }) {
     return `<table class="fig-table"><thead><tr>${head.map(h => `<th>${rich(h)}</th>`).join('')}</tr></thead>`
@@ -213,10 +380,16 @@ const block = (b, ctx) => {
       return `<figure>${f(b)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
     }
     case 'figures': return `<div class="fig-row">${b.items.map(i => block({ ...i, t: 'figure' }, ctx)).join('')}</div>`;
+    // A worked example is only half a teaching move. The parallel item that
+    // follows it, answered on the spot, is where the reader finds out whether
+    // they actually followed the steps or merely read them.
     case 'example': return `<div class="worked"><b class="wk-h">Worked example ${b.n}</b><p class="wk-q">${rich(b.ask)}</p>`
       + `<ol class="wk-steps">${b.steps.map(s => `<li>${rich(s)}</li>`).join('')}</ol>`
       + `<p class="wk-a"><b>Answer.</b> ${rich(b.answer)}</p>`
-      + (b.note ? `<p class="wk-n">${rich(b.note)}</p>` : '') + `</div>`;
+      + (b.note ? `<p class="wk-n">${rich(b.note)}</p>` : '')
+      + (b.turn ? `<div class="turn"><b>Your turn.</b> <span>${rich(b.turn.ask)}</span>`
+        + `<details><summary>answer</summary><span>${rich(b.turn.a)}</span></details></div>` : '')
+      + `</div>`;
     default: throw new Error(`${ctx}: unknown block "${b.t}"`);
   }
 };
@@ -269,33 +442,48 @@ const answersHTML = chapters => `
 // The book measures itself against its own completion gate and prints the
 // result. An unfinished chapter says so in the book rather than in a note
 // someone has to remember to read.
+// The bar a chapter has to clear. Draft 2 set it at one worked example and six
+// practice items, which every chapter cleared and which was too low to mean
+// anything: 2.2 examples and 1.8 figures a chapter is a reference card, not a
+// textbook. These are the numbers a chapter needs to teach rather than remind.
+export const GATE = { examples: 4, figures: 4, practice: 12 };
+
+export const audit = c => {
+  const p = (c.practice || []).length;
+  const answered = (c.practice || []).filter(x => x.a).length;
+  const exs = (c.blocks || []).filter(b => b.t === 'example');
+  const turns = exs.filter(b => b.turn).length;
+  const figs = (c.blocks || []).reduce((n, b) =>
+    n + (b.t === 'figures' ? b.items.length : b.t === 'figure' ? (b.kind === 'zoom' ? (b.spans || [0, 0, 0]).length : 1) : 0), 0);
+  const pass = exs.length >= GATE.examples && figs >= GATE.figures && p >= GATE.practice
+    && answered === p && turns === exs.length && !!c.misconception && !!c.review;
+  return { c, p, answered, ex: exs.length, turns, figs, pass };
+};
+
 const gateHTML = chapters => {
-  const rows = chapters.map(c => {
-    const p = (c.practice || []).length;
-    const answered = (c.practice || []).filter(x => x.a).length;
-    const ex = (c.blocks || []).filter(b => b.t === 'example').length;
-    const pass = ex >= 1 && p >= 6 && answered === p && !!c.misconception && !!c.review;
-    return { c, p, answered, ex, pass };
-  });
+  const rows = chapters.map(audit);
   const done = rows.filter(r => r.pass).length;
+  const sum = k => rows.reduce((n, r) => n + r[k], 0);
   return `
 <section class="chapter" id="gate">
   <div class="kicker">COMPLETION</div>
   <h2>What this book still owes its reader</h2>
-  <p class="stand">The gate below is the standard set in Draft 1: every chapter needs a worked example, at least six practice items, an answer for every one of them, a named misconception, and a link back to earlier work. This table is generated from the source at build time, so it cannot flatter the book.</p>
+  <p class="stand">A chapter passes when it carries at least ${GATE.examples} worked examples, each followed by a parallel one the reader does; at least ${GATE.figures} figures; at least ${GATE.practice} practice items with an answer for every one; a named misconception; and a link back to earlier work. This table is counted from the source at build time, so it cannot flatter the book.</p>
   <div class="tw"><table class="data gate">
-    <thead><tr><th>Chapter</th><th>Worked</th><th>Practice</th><th>Answered</th><th>Mistake</th><th>Review</th><th>Gate</th></tr></thead>
+    <thead><tr><th>Chapter</th><th>Worked</th><th>Your turn</th><th>Figures</th><th>Practice</th><th>Answered</th><th>Mistake</th><th>Review</th><th>Gate</th></tr></thead>
     <tbody>${rows.map(r => `<tr class="${r.pass ? 'ok' : 'no'}">
       <td>${r.c.id}. ${rich(r.c.title)}</td>
-      <td>${r.ex || '—'}</td><td>${r.p || '—'}</td>
+      <td${r.ex < GATE.examples ? ' class="short"' : ''}>${r.ex || '—'}</td>
+      <td${r.turns < r.ex ? ' class="short"' : ''}>${r.turns || '—'}</td>
+      <td${r.figs < GATE.figures ? ' class="short"' : ''}>${r.figs || '—'}</td>
+      <td${r.p < GATE.practice ? ' class="short"' : ''}>${r.p || '—'}</td>
       <td>${r.p ? (r.answered === r.p ? 'all' : `${r.answered} of ${r.p}`) : '—'}</td>
       <td>${r.c.misconception ? 'yes' : '—'}</td><td>${r.c.review ? 'yes' : '—'}</td>
       <td>${r.pass ? 'PASS' : 'open'}</td></tr>`).join('')}</tbody>
   </table></div>
   <p class="gate-sum"><b>${done} of ${chapters.length} chapters</b> meet the gate.
-  ${chapters.reduce((n, c) => n + (c.practice || []).length, 0)} practice items,
-  ${chapters.reduce((n, c) => n + (c.blocks || []).filter(b => b.t === 'example').length, 0)} worked examples,
-  ${chapters.reduce((n, c) => n + (c.blocks || []).filter(b => b.t === 'figure' || b.t === 'figures').length, 0)} figures.</p>
+  ${sum('p')} practice items, ${sum('ex')} worked examples with ${sum('turns')} parallel exercises,
+  and ${sum('figs')} figures, every one computed from the formula printed beside it.</p>
 </section>`;
 };
 
@@ -358,6 +546,7 @@ const page = (meta, chapters) => `<!doctype html>
   table.data tbody tr:nth-child(even) { background:var(--paper); }
   table.gate tr.ok td:last-child { color:var(--teal); font-weight:700; }
   table.gate tr.no td:last-child { color:var(--orange); font-weight:700; }
+  table.gate td.short { color:var(--orange); font-weight:700; }
   .gate-sum { background:var(--paper); padding:12px 15px; border-radius:7px; font-size:14px; }
 
   figure { margin:20px 0; text-align:center; break-inside:avoid; }
@@ -384,6 +573,18 @@ const page = (meta, chapters) => `<!doctype html>
   .wk-steps { margin:0 0 10px; padding-left:20px; font-size:14px; } .wk-steps li { margin-bottom:5px; }
   .wk-a { margin:0; padding-top:9px; border-top:1px solid var(--rule); font-size:14px; }
   .wk-n { margin:8px 0 0; font-size:13px; color:var(--mute); }
+  .turn { margin:11px -16px -14px; padding:10px 16px; background:var(--paper);
+          border-top:1px solid var(--rule); border-radius:0 0 8px 0; font-size:13.5px; }
+  .turn > b { color:var(--teal); font-family:var(--sans); font-size:11px; letter-spacing:.07em;
+              text-transform:uppercase; display:inline; margin-right:5px; }
+  .turn details { margin-top:6px; }
+  .turn summary { cursor:pointer; color:var(--teal); font-family:var(--sans); font-size:11.5px;
+                  letter-spacing:.04em; width:max-content; }
+  .turn summary:focus-visible { outline:2px solid var(--teal); outline-offset:3px; border-radius:3px; }
+  .turn details[open] summary { margin-bottom:4px; }
+  .zoom-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  @media print { .turn details { display:block; } .turn summary { display:none; }
+                 .turn details::before { content:"Answer. "; font-weight:700; } }
 
   .practice { margin:24px 0 6px; break-inside:avoid; }
   .pr-head { background:var(--ink); color:#fff; padding:8px 13px; border-radius:7px 7px 0 0;
@@ -461,8 +662,7 @@ for (const name of books) {
   const file = join(OUT, `${name}.html`);
   await writeFile(file, html, 'utf8');
   const words = chapters.reduce((n, c) => n + JSON.stringify(c).split(/\s+/).length, 0);
-  const gated = chapters.filter(c => (c.blocks || []).some(b => b.t === 'example')
-    && (c.practice || []).length >= 6 && (c.practice || []).every(p => p.a) && c.misconception && c.review).length;
+  const gated = chapters.filter(c => audit(c).pass).length;
   console.log(`${name}
   ${chapters.length} chapters, ${chapters.reduce((n, c) => n + (c.practice || []).length, 0)} practice items, ~${words} words
   ${gated} of ${chapters.length} chapters meet the completion gate

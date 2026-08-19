@@ -54,7 +54,8 @@ export default {
         'The constant second difference is 2, and for x² the second difference is also 2, so the rule is x² plus something linear. At x = 0 the output is 5, and the pattern fits x² + 2x + 5.'
       ],
       answer: 'Quadratic. The rule is x² + 2x + 5.',
-      note: 'Check one row that was not used to build it: at x = 3, 9 + 6 + 5 = 20. It agrees.' },
+      note: 'Check one row that was not used to build it: at x = 3, 9 + 6 + 5 = 20. It agrees.',
+      turn: { ask: 'A table gives 3, 6, 11, 18, 27 for inputs 0 to 4. Which family, and what is the rule?', a: 'Second differences are all 2, so quadratic; the rule is x² + 2x + 3.' } },
 
     { t: 'example', n: 2,
       ask: 'For y = x^2, compare the output change from x = 0 to 1 with the change from x = 3 to 4.',
@@ -64,13 +65,57 @@ export default {
         'Both input steps had size 1, yet the output changes differ by a factor of seven.'
       ],
       answer: 'A change of 1, against a change of 7.',
-      note: 'This is exactly why a single number cannot describe how fast x² grows. Chapter 10 answers by measuring over a stated interval; chapter 12 answers by shrinking the interval to nothing.' },
+      note: 'This is exactly why a single number cannot describe how fast x² grows. Chapter 10 answers by measuring over a stated interval; chapter 12 answers by shrinking the interval to nothing.',
+      turn: { ask: 'For y = x^2, compare the output change from x = 1 to 2 with the change from x = 5 to 6.', a: '3 against 11. Same input step, very different output change.' } },
 
     { t: 'h', text: 'A warning about the word "exponential"' },
     { t: 'p', text: 'In ordinary speech "exponential" means dramatic. In mathematics it means multiplicative, and for small inputs it is often the slowest of the three. Compare 2^x with x^2:' },
     { t: 'table', head: ['x', '2', '3', '4', '5', '10'],
       rows: [['x^2', '4', '9', '16', '25', '100'], ['2^x', '4', '8', '16', '32', '1024']] },
-    { t: 'p', text: 'At x = 3 the squaring rule is ahead. They tie at x = 4. After that the exponential pulls away and never looks back, and by x = 10 it is ten times larger. Exponential growth is not about being fast early; it is about the factor never letting up.' }
+    { t: 'p', text: 'At x = 3 the squaring rule is ahead. They tie at x = 4. After that the exponential pulls away and never looks back, and by x = 10 it is ten times larger. Exponential growth is not about being fast early; it is about the factor never letting up.' },
+
+    { t: 'h', text: 'The three families, stepped' },
+    { t: 'p', text: 'The difference table above is a list of numbers. Below it is a picture: each panel takes the same four steps of size one along the input and marks what the output did.' },
+
+    { t: 'figures', items: [
+      { kind: 'steps', f: x => 3 * x + 1, from: 0, to: 4, title: 'LINEAR', note: '3x+1',
+        x0: -0.6, x1: 5.4, y0: -1, y1: 15, w: 245, h: 195,
+        caption: 'Every rise is +3. The steps form a staircase with identical treads.' },
+      { kind: 'steps', f: x => x * x, from: 0, to: 4, title: 'QUADRATIC', note: 'x^2',
+        x0: -0.6, x1: 5.4, y0: -1, y1: 18, w: 245, h: 195,
+        caption: 'The rises are +1, +3, +5, +7. They grow, and they grow by the same 2 each time.' },
+      { kind: 'steps', f: x => Math.pow(2, x), from: 0, to: 4, title: 'EXPONENTIAL', note: '2^x',
+        x0: -0.6, x1: 5.4, y0: -1, y1: 18, w: 245, h: 195,
+        caption: 'The rises are +1, +2, +4, +8. Each is the whole height so far, which is what doubling means.' }
+    ] },
+
+    { t: 'p', text: 'The third caption is the one to keep. For an exponential rule the amount added *is* the amount already there, which is why growth of this kind is described as tied to current size, and why it cannot be slowed by starting small.' },
+
+    { t: 'example', n: 3,
+      ask: 'A table gives outputs 4, 12, 36, 108 for inputs 0, 1, 2, 3. Identify the family and the rule.',
+      steps: [
+        'First differences: 8, 24, 72. Not constant, so not linear.',
+        'Second differences: 16, 48. Not constant either, so not quadratic.',
+        'Ratios: 12/4 = 3, 36/12 = 3, 108/36 = 3. Constant, so exponential.',
+        'The constant factor is 3 and the output at x = 0 is 4, so the rule is 4 × 3^x.'
+      ],
+      answer: 'Exponential, with the rule 4·3^x.',
+      note: 'Check a row not used to build it: at x = 2, 4 × 9 = 36. It agrees. The value at x = 0 is always the multiplier, because 3 to the power 0 is 1.',
+      turn: { ask: 'Identify the family and rule for outputs 5, 10, 20, 40 at inputs 0, 1, 2, 3.',
+        a: 'Exponential, ratio 2, so 5·2^x.' } },
+
+    { t: 'example', n: 4,
+      ask: 'Two rules are proposed for the same data: 2x + 1 and 2^x. Test both against the outputs 1, 2, 4, 8 at inputs 0, 1, 2, 3.',
+      steps: [
+        'Test 2x + 1: at x = 0 it gives 1, which matches. At x = 1 it gives 3, and the data says 2.',
+        'One disagreement is enough to reject it.',
+        'Test 2^x: 1, 2, 4, 8. All four match.',
+        'Confirm by mechanism rather than by luck: the ratios of the data are 2, 2, 2, which is what an exponential rule with base 2 must produce.'
+      ],
+      answer: 'The data is 2^x. The linear rule fails at the second point.',
+      note: 'Matching one point proves nothing, which is why the first test was abandoned as soon as a second point disagreed. Any rule can be made to pass through a single point.',
+      turn: { ask: 'Do the outputs 1, 4, 9, 16 at inputs 1, 2, 3, 4 fit x^2 or 5x - 4? Test both.',
+        a: 'x². The linear rule gives 1, 6, 11, 16, matching at the first and last inputs and failing in between, which is a good reminder that two agreements are not a proof either.' } }
   ],
 
   practice: [

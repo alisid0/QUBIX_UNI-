@@ -51,7 +51,8 @@ export default {
         'The − 1 is outside, so it moves vertically and does what it says: one down.',
         'Check with a point. The parent has its low point at (0, 0). The new rule has its low point where the bracket is zero, at x = −4, with height −1.'
       ],
-      answer: 'Left 4, and down 1. The low point moves from (0, 0) to (−4, −1).' },
+      answer: 'Left 4, and down 1. The low point moves from (0, 0) to (−4, −1).',
+      turn: { ask: 'Describe the change from x^2 to (x - 5)^2 + 3.', a: 'Right 5 and up 3; the low point moves to (5, 3).' } },
 
     { t: 'example', n: 2,
       ask: 'Write a square function shifted right 3 and up 5.',
@@ -61,10 +62,37 @@ export default {
         'Assemble: (x − 3)² + 5.',
         'Check: at x = 3 the bracket is 0 and the height is 5, so the low point sits at (3, 5), which is three right and five up from the origin.'
       ],
-      answer: '(x − 3)² + 5.' },
+      answer: '(x − 3)² + 5.',
+      turn: { ask: 'Write a square function shifted left 2 and down 6.', a: '(x + 2)² − 6.' } },
 
     { t: 'callout', title: 'Where this returns',
-      text: 'A transformation moves a graph without changing its shape, so it cannot change how steep the curve is at corresponding points. Shifting is the reason a derivative in chapter 12 never depends on where the curve sits, only on how it bends.' }
+      text: 'A transformation moves a graph without changing its shape, so it cannot change how steep the curve is at corresponding points. Shifting is the reason a derivative in chapter 12 never depends on where the curve sits, only on how it bends.' },
+
+    { t: 'example', n: 3,
+      ask: 'The graph of y = f(x) has a low point at (1, 2). Where is the low point of y = f(x + 3) - 4?',
+      steps: [
+        'Deal with the inside first: + 3 inside the bracket moves the picture three to the left, against its sign.',
+        'The low point moves from x = 1 to x = 1 − 3 = −2.',
+        'Now the outside: − 4 lowers every height by 4.',
+        'The height moves from 2 to 2 − 4 = −2.'
+      ],
+      answer: '(−2, −2).',
+      note: 'Notice that this was answered without knowing what f is. A transformation acts on the picture, so any named feature of the parent can be tracked without the formula.',
+      turn: { ask: 'The graph of y = f(x) has a high point at (4, 7). Where is the high point of y = f(x - 1) + 2?',
+        a: '(5, 9).' } },
+
+    { t: 'example', n: 4,
+      ask: 'Write y = x^2 - 6x + 11 in the shifted form, and read off its low point.',
+      steps: [
+        'Aim for the shape (x − h)² + k, because that form states the low point directly.',
+        'Take half the coefficient of x, which is −3, and square it to get 9.',
+        'Write x² − 6x + 9 as (x − 3)², so the rule is (x − 3)² + 11 − 9.',
+        'That is (x − 3)² + 2, a parent parabola moved right 3 and up 2.'
+      ],
+      answer: '(x − 3)² + 2, with its low point at (3, 2).',
+      note: 'This is completing the square, arriving as a chapter 7 question rather than an algebra exercise. Its purpose here is to expose the shift that was hidden by the expansion.',
+      turn: { ask: 'Write y = x^2 + 4x + 9 in shifted form and state its low point.',
+        a: '(x + 2)² + 5, with its low point at (−2, 5).' } }
   ],
 
   practice: [

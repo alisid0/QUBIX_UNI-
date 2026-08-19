@@ -41,7 +41,8 @@ export default {
         'Now the outputs plainly crowd around 2 + 2 = 4.'
       ],
       answer: '4.',
-      note: 'The expression still has no value at x = 2. The limit is 4 regardless, and that gap between value and limit is the whole subject.' },
+      note: 'The expression still has no value at x = 2. The limit is 4 regardless, and that gap between value and limit is the whole subject.',
+      turn: { ask: 'Evaluate the limit of (x^2 - 25)/(x - 5) as x approaches 5.', a: '10, by factoring to (x − 5)(x + 5) and cancelling.' } },
 
     { t: 'example', n: 2,
       ask: 'Does 1/x have a limit as x approaches 0?',
@@ -52,10 +53,47 @@ export default {
         'So there is no limit. Saying "the limit is infinity" would be a description of the failure, not a value.'
       ],
       answer: 'No limit exists at 0.',
-      note: 'Compare with the first example. Both expressions are undefined at the point in question; one has a limit there and the other has none. Being undefined settles nothing.' },
+      note: 'Compare with the first example. Both expressions are undefined at the point in question; one has a limit there and the other has none. Being undefined settles nothing.',
+      turn: { ask: 'Does 1/x^2 have a limit as x approaches 0? How does it differ from 1/x?',
+        a: 'It has no limit either, but for a different reason: both sides climb without bound rather than disagreeing. The two sides agree on the direction and still settle on no number.' } },
 
     { t: 'h', text: 'What Book 2 does with this' },
-    { t: 'p', text: 'Approach from a table, then on a graph, then one side at a time. Then holes and jumps, which is continuity. Then limits that run off to infinity, then the algebraic methods that replace tables. The sequence ends where chapter 12 begins, with the limit that defines a derivative.' }
+    { t: 'p', text: 'Approach from a table, then on a graph, then one side at a time. Then holes and jumps, which is continuity. Then limits that run off to infinity, then the algebraic methods that replace tables. The sequence ends where chapter 12 begins, with the limit that defines a derivative.' },
+
+    { t: 'h', text: 'Zooming in' },
+    { t: 'p', text: 'A limit is a claim about what happens arbitrarily close to a point, so the honest way to look at one is to keep closing in. Each frame below is the same rule, in a narrower window around x = 1.' },
+
+    { t: 'figure', kind: 'zoom', f: x => (x * x - 1) / (x - 1), at: 1, holeAt: 2, spans: [2, 0.5, 0.1],
+      caption: 'The window narrows from ±2 to ±0.1 and the hole never fills. What does happen is that the curve either side of it becomes indistinguishable from the height 2, which is exactly what "the limit is 2" asserts.' },
+
+    { t: 'callout', title: 'What zooming can and cannot show',
+      text: 'Zooming builds the right intuition and proves nothing. However far you go, you have looked at finitely many windows, and a limit is a claim about all of them. Book 2 replaces the picture with a definition that settles it.' },
+
+    { t: 'example', n: 3,
+      ask: 'Evaluate the limit of (x^2 + 3x)/x as x approaches 0.',
+      steps: [
+        'Substitute to classify: (0 + 0)/0 = 0/0, so more work is needed.',
+        'Factor the numerator: x² + 3x = x(x + 3).',
+        'Cancel the x, legally, because x is near 0 but never equal to it: the expression is x + 3.',
+        'The outputs crowd around 0 + 3 = 3.'
+      ],
+      answer: '3.',
+      note: 'The rule still has no value at 0. The graph is the line x + 3 with a hole punched at (0, 3).',
+      turn: { ask: 'Evaluate the limit of (x^2 - 5x)/x as x approaches 0.',
+        a: '−5. Factor to x(x − 5), cancel the x, and the outputs crowd around −5.' } },
+
+    { t: 'example', n: 4,
+      ask: 'A function is defined as f(x) = x + 1 for every x except x = 3, where f(3) = 10. Find the limit at 3, and the value at 3.',
+      steps: [
+        'For the limit, look only at inputs near 3 and not at 3 itself.',
+        'Near 3 the rule is x + 1, so the outputs crowd around 4.',
+        'For the value, read the definition: it says f(3) = 10.',
+        'Both exist, and they disagree.'
+      ],
+      answer: 'The limit is 4; the value is 10.',
+      note: 'This is a function with a single point lifted out of place. It has a limit everywhere, a value everywhere, and one point where the two differ, which is precisely what discontinuity at a point means.',
+      turn: { ask: 'g(x) = 2x for every x except x = 5, where g(5) = 0. What is the limit at 5, and the value?',
+        a: 'The limit is 10 and the value is 0. The definition at the point cannot affect the limit.' } }
   ],
 
   practice: [

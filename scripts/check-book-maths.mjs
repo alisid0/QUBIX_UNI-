@@ -149,11 +149,97 @@ eq('x^2+3 never returns less than 3', Math.min(...[-3, -1, 0, 1, 3].map(x => x *
 eq('sqrt(x)/(x-4): 4 is refused, 0 is allowed', [Number.isFinite(Math.sqrt(4) / (4 - 4)) ? 1 : 0, Math.sqrt(0) / (0 - 4)], [0, -0], 1e-9);
 eq('1/sqrt(x-1) refuses 1 itself, not merely below it', Number.isFinite(1 / Math.sqrt(1 - 1)) ? 1 : 0, 0);
 
+/* ---- the expansion: worked examples and their parallel exercises ------- */
+console.log('\nch1/3  contextual rules and recovered formulas');
+eq('taxi 3.20 + 1.40 a mile, at 0, 3, 10', [0, 3, 10].map(m => +(3.20 + 1.40 * m).toFixed(2)), [3.20, 7.40, 17.20]);
+eq('plumber 60 + 45 an hour, at 0, 2, 4', [0, 2, 4].map(h => 60 + 45 * h), [60, 150, 240]);
+eq('table 1,3,5 is recovered as 2x+1', [0, 1, 2].map(x => 2 * x + 1), [1, 3, 5]);
+eq('table 4,7,10 is recovered as 3x+4', [0, 1, 2].map(x => 3 * x + 4), [4, 7, 10]);
+eq('g(1), g(-1), g(4) for x^2-3', [1, -1, 4].map(x => x * x - 3), [-2, -2, 13]);
+eq('h(t)=5-2t solved at 11 gives t=-3', 5 - 2 * -3, 11);
+
+console.log('\nch4  the harder domains and the ranges');
+eq('sqrt(x)/(x-4): 4 refused, 0 and 5 allowed', [Number.isFinite(Math.sqrt(4) / 0) ? 1 : 0, Number.isFinite(Math.sqrt(5) / 1) ? 1 : 0], [0, 1]);
+eq('sqrt(x+1)/(x-2): -1 allowed, -1.1 and 2 refused',
+  [Number.isFinite(Math.sqrt(0) / -3) ? 1 : 0, Number.isNaN(Math.sqrt(-0.1)) ? 1 : 0, Number.isFinite(Math.sqrt(3) / 0) ? 1 : 0], [1, 1, 0]);
+eq('1/x reaches 5 at x=1/5 but never reaches 0', [1 / (1 / 5), [0.001, 1e6, -1e6].some(x => 1 / x === 0) ? 1 : 0], [5, 0]);
+eq('range of x^2+1 starts at 1, reached at x=0', [0 * 0 + 1, Math.min(...[-2, -1, 0, 1, 2].map(x => x * x + 1))], [1, 1]);
+
+console.log('\nch5/6  plots and the family tests');
+eq('y=3x+2 at -2, 0, 2', [-2, 0, 2].map(x => 3 * x + 2), [-4, 2, 8]);
+eq('x^2-9 crosses at -3 and 3, and at (0,-9)', [(-3) ** 2 - 9, 3 ** 2 - 9, 0 - 9], [0, 0, -9]);
+eq('4,12,36,108 is 4·3^x', [0, 1, 2, 3].map(x => 4 * 3 ** x), [4, 12, 36, 108]);
+eq('5,10,20,40 is 5·2^x', [0, 1, 2, 3].map(x => 5 * 2 ** x), [5, 10, 20, 40]);
+eq('3,6,11,18,27 is x^2+2x+3', [0, 1, 2, 3, 4].map(x => x * x + 2 * x + 3), [3, 6, 11, 18, 27]);
+eq('   with constant second difference 2', diffs(diffs([0, 1, 2, 3, 4].map(x => x * x + 2 * x + 3))), [2, 2, 2]);
+eq('5x-4 matches x^2 at 1 and 4 only, as the turn claims', [1, 2, 3, 4].map(x => 5 * x - 4), [1, 6, 11, 16]);
+eq('   against the real squares', [1, 2, 3, 4].map(x => x * x), [1, 4, 9, 16]);
+eq('x^2 change 1->2 against 5->6', [2 ** 2 - 1 ** 2, 6 ** 2 - 5 ** 2], [3, 11]);
+eq('exponential steps are the running total: 2^x rises 1,2,4,8', diffs([0, 1, 2, 3, 4].map(x => 2 ** x)), [1, 2, 4, 8]);
+eq('   and each rise equals the height it started from', [0, 1, 2, 3].map(x => 2 ** x), [1, 2, 4, 8]);
+
+console.log('\nch7/9  completing the square, and restricting for an inverse');
+eq('x^2-6x+11 equals (x-3)^2+2 everywhere tested', [-2, 0, 3, 5].map(x => x * x - 6 * x + 11), [-2, 0, 3, 5].map(x => (x - 3) ** 2 + 2));
+eq('   with its low point at (3, 2)', (3 - 3) ** 2 + 2, 2);
+eq('x^2+4x+9 equals (x+2)^2+5', [-4, 0, 2].map(x => x * x + 4 * x + 9), [-4, 0, 2].map(x => (x + 2) ** 2 + 5));
+eq('f(x+3)-4 moves a feature at (1,2) to (-2,-2)', [1 - 3, 2 - 4], [-2, -2]);
+eq('f(x-1)+2 moves a feature at (4,7) to (5,9)', [4 + 1, 7 + 2], [5, 9]);
+eq('x^2-4x shares the output 0 at x=0 and x=4', [0 * 0 - 4 * 0, 4 * 4 - 4 * 4], [0, 0]);
+eq('   and turns at x=2, where (x-2)^2-4 bottoms out', (2 - 2) ** 2 - 4, -4);
+eq('x^2+6x turns at x=-3', (-3 + 3) ** 2 - 9, -9);
+const i95 = x => (5 * x - 1) / 2, f95 = x => (2 * x + 1) / 5;
+eq('(2x+1)/5 and (5x-1)/2 compose to x both ways', [i95(f95(7)), f95(i95(7))], [7, 7]);
+eq('   and the quoted check value holds', [f95(2), i95(1)], [1, 2]);
+
+console.log('\nch8/10  composites, and rates over stated intervals');
+eq('f(g(1)) and g(f(1)) for x^2 and x-3', [(1 - 3) ** 2, 1 ** 2 - 3], [4, -2]);
+eq('sqrt(3x-5) needs x at least 5/3', [Number.isNaN(Math.sqrt(3 * 1.6 - 5)) ? 1 : 0, Math.sqrt(3 * (5 / 3) - 5)], [1, 0]);
+eq('x^2 from 1 to 4 averages 5', avg(x => x * x, 1, 4), 5);
+eq('25t averages 25 over any interval', [avg(t => 25 * t, 2, 6), avg(t => 25 * t, 0, 1)], [25, 25]);
+eq('tank t^2: first 3 minutes, then the third minute alone', [avg(t => t * t, 0, 3), avg(t => t * t, 2, 3)], [3, 5]);
+eq('   the first minute and the fifth', [avg(t => t * t, 0, 1), avg(t => t * t, 4, 5)], [1, 9]);
+for (const h of [1, 0.1, 0.01]) eq(`[f(5+h)-f(5)]/h = 10+h at h=${h}`, dq(x => x * x, 5, h), 10 + h, 1e-8);
+eq('x^2 rises 5, 7, 9 across 2->5, totalling 21', diffs([2, 3, 4, 5].map(x => x * x)), [5, 7, 9]);
+eq('   so the average over three steps is 7', diffs([2, 3, 4, 5].map(x => x * x)).reduce((a, b) => a + b) / 3, 7);
+eq('the four secants from x=2 have slopes 7, 6, 5, 4.5', [5, 4, 3, 2.5].map(b => avg(x => x * x, 2, b)), [7, 6, 5, 4.5]);
+eq('   heading for the tangent slope 4', 2 * 2, 4);
+eq('3x+1 rises 3 every step, so every interval averages 3', diffs([0, 1, 2, 3, 4].map(x => 3 * x + 1)), [3, 3, 3, 3]);
+
+console.log('\nch11/12  limits, flat points, and the thrown ball');
+eq('(x^2+3x)/x approaches 3', Number((((0.0001) ** 2 + 3 * 0.0001) / 0.0001).toFixed(4)), 3, 1e-3);
+eq('(x^2-5x)/x approaches -5', Number((((0.0001) ** 2 - 5 * 0.0001) / 0.0001).toFixed(4)), -5, 1e-3);
+eq('(x^2-25)/(x-5) approaches 10', Number((((5.0001) ** 2 - 25) / 0.0001).toFixed(3)), 10, 1e-2);
+eq('1/x^2 climbs on both sides, unlike 1/x', [1 / 0.001 ** 2 > 1e5 ? 1 : 0, 1 / (-0.001) ** 2 > 1e5 ? 1 : 0], [1, 1]);
+eq('a point moved out of place leaves the limit alone', [3 + 1, 10], [4, 10]);
+eq('x^2-6x is flat where 2x-6=0, at x=3', 2 * 3 - 6, 0);
+eq("   and the derivative check via a tiny step agrees", dq(x => x * x - 6 * x, 3, 1e-6), 0, 1e-4);
+eq('ball 20t-5t^2 is flat at t=2, at height 20', [20 - 10 * 2, 20 * 2 - 5 * 4], [0, 20]);
+eq('   rising before it and falling after', [20 - 10 * 1 > 0 ? 1 : 0, 20 - 10 * 3 < 0 ? 1 : 0], [1, 1]);
+eq('ball 30t-5t^2 is flat at t=3, at height 45', [30 - 10 * 3, 30 * 3 - 5 * 9], [0, 45]);
+eq('7x-2 has derivative 7 with no h surviving', [dq(x => 7 * x - 2, 4, 1), dq(x => 7 * x - 2, 4, 1e-6)], [7, 7], 1e-6);
+
+console.log('\nch13  trapping the answer, and two routes to the same area');
+const leftSum = (f, a, b, n) => { const w = (b - a) / n; let s = 0; for (let i = 0; i < n; i++) s += f(a + i * w) * w; return s; };
+eq('4 strips trap 1/3 between', [Number(leftSum(x => x * x, 0, 1, 4).toFixed(5)), Number(rightSum(x => x * x, 0, 1, 4).toFixed(5))], [0.21875, 0.46875]);
+eq('16 strips trap it more tightly', [Number(leftSum(x => x * x, 0, 1, 16).toFixed(6)), Number(rightSum(x => x * x, 0, 1, 16).toFixed(6))], [0.302734, 0.365234]);
+eq('the gap quarters when the strips quadruple', [
+  Number((rightSum(x => x * x, 0, 1, 4) - leftSum(x => x * x, 0, 1, 4)).toFixed(4)),
+  Number((rightSum(x => x * x, 0, 1, 16) - leftSum(x => x * x, 0, 1, 16)).toFixed(4))], [0.25, 0.0625]);
+eq('and 1/3 sits inside both pairs', [4, 16].every(n => leftSum(x => x * x, 0, 1, n) < 1 / 3 && 1 / 3 < rightSum(x => x * x, 0, 1, n)) ? 1 : 0, 1);
+eq('tap rising 0 to 6 over 4 minutes delivers 12', 0.5 * 4 * 6, 12);
+eq('tap rising 0 to 10 over 6 minutes delivers 30', 0.5 * 6 * 10, 30);
+eq('2x+1 from 0 to 3: trapezium and antiderivative', [((1 + 7) / 2) * 3, (3 ** 2 + 3) - 0], [12, 12]);
+eq('4x+2 from 0 to 2: trapezium and antiderivative', [((2 + 10) / 2) * 2, (2 * 4 + 2 * 2) - 0], [12, 12]);
+eq('v(t)=4t to t=3: triangle and antiderivative', [0.5 * 3 * 12, 2 * 9 - 0], [18, 18]);
+eq('x^2 from 0 to 3 via x^3/3', 27 / 3 - 0, 9);
+
 /* ---- every practice item is answered ----------------------------------- */
 console.log('\nsource  every practice item carries an answer');
 const { chapters } = await import(`file://${join(ROOT, 'book', 'book1-functions', 'index.js')}`);
 for (const c of chapters) {
   const missing = (c.practice || []).filter(p => !p.a).length;
+  const noAns = (c.blocks || []).filter(b => b.t === 'example' && b.turn && !b.turn.a).length;
+  if (noAns) { bad++; console.log(`  **FAIL**  ch${c.id} has ${noAns} your-turn item(s) with no answer`); }
   n++;
   if (missing) { bad++; console.log(`  **FAIL**  ch${c.id} has ${missing} unanswered`); }
 }

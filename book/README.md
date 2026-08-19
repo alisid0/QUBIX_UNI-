@@ -39,11 +39,18 @@ caption. This is the project media rule: technical visuals are deterministic,
 never raster.
 
 **The book counts its own gaps.** The completion table at the back is
-generated at build time from these files against the standard set in Draft 1 —
-a worked example, at least six practice items, an answer for every one, a
-named misconception, and a link back to earlier work. An unfinished chapter
-says so inside the book rather than in a note someone has to remember to read.
-Do not hand-write that table.
+generated at build time from these files. A chapter passes when it carries at
+least 4 worked examples, each with a `turn` (the parallel exercise the reader
+does immediately, answer folded away); at least 4 figures; at least 12 practice
+items with an answer for every one; a named misconception; and a link back to
+earlier work. The bar lives in `GATE` in `scripts/build-book.mjs`. An
+unfinished chapter says so inside the book rather than in a note someone has to
+remember to read. Do not hand-write that table.
+
+The first version of this gate asked for one worked example and six practice
+items. Every chapter cleared it and the book was still a reference card at 2.2
+examples and 1.8 figures a chapter. A gate everything passes measures nothing;
+if the numbers rise again, raise `GATE` with them.
 
 `check:book` recomputes the arithmetic the prose asserts: difference tables,
 rectangle sums, average rates, difference quotients, composites, inverses,

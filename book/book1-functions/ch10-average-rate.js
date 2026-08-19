@@ -37,7 +37,8 @@ export default {
         'Divide: 21/3 = 7.'
       ],
       answer: '7.',
-      note: 'The curve is not climbing at 7 anywhere near x = 2, and is climbing faster than 7 by x = 5. Seven is the steady rate that would have covered the same ground in the same interval.' },
+      note: 'The curve is not climbing at 7 anywhere near x = 2, and is climbing faster than 7 by x = 5. Seven is the steady rate that would have covered the same ground in the same interval.',
+      turn: { ask: 'Find the average rate of change of f(x) = x^2 from x = 1 to x = 4.', a: '(16 − 1)/3 = 5.' } },
 
     { t: 'example', n: 2,
       ask: 'Find the average rate of change of g(t) = 60t from t = 1 to t = 4, and interpret the units.',
@@ -48,7 +49,8 @@ export default {
         'Any other interval gives the same answer, because the rule is linear and chapter 6 showed its differences are constant.'
       ],
       answer: '60 distance-units per time-unit.',
-      note: 'For a linear rule, the average rate over every interval is the same number: the m in mx + c. This is the one family where a single number really does describe the whole rule.' },
+      note: 'For a linear rule, the average rate over every interval is the same number: the m in mx + c. This is the one family where a single number really does describe the whole rule.',
+      turn: { ask: 'Find the average rate of change of g(t) = 25t from t = 2 to t = 6, and state the units if t is hours and g is kilometres.', a: '25 kilometres per hour, the same as over any other interval.' } },
 
     { t: 'h', text: 'The same question, written with h' },
     { t: 'p', text: 'Instead of naming two endpoints, name one endpoint and the width of the step. Put a at the start and let the interval have width h, so the far end is a + h. The formula becomes:' },
@@ -64,10 +66,46 @@ export default {
         'Read the result. At h = 1 the average rate is 5; at h = 0.1 it is 4.1; at h = 0.01 it is 4.01.'
       ],
       answer: '4 + h.',
-      note: 'The answers are crowding around 4 as h shrinks, without ever being 4. That crowding is a limit, and 4 is the derivative of x² at x = 2. Book 2 makes the crowding precise; Book 3 makes it routine.' },
+      note: 'The answers are crowding around 4 as h shrinks, without ever being 4. That crowding is a limit, and 4 is the derivative of x² at x = 2. Book 2 makes the crowding precise; Book 3 makes it routine.',
+      turn: { ask: 'For f(x) = x^2, calculate [f(5 + h) - f(5)]/h and simplify. What is it approaching?', a: '10 + h, approaching 10.' } },
 
     { t: 'callout', title: 'Where Part I ends',
-      text: 'Move B toward A and the interval shrinks. The secant pivots, and settles toward a line touching the curve at a single point. The average rate settles toward a local rate. That settling is a limit; the local rate is a derivative; and everything after this chapter is those two sentences made exact.' }
+      text: 'Move B toward A and the interval shrinks. The secant pivots, and settles toward a line touching the curve at a single point. The average rate settles toward a local rate. That settling is a limit; the local rate is a derivative; and everything after this chapter is those two sentences made exact.' },
+
+    { t: 'h', text: 'The average, and what it averages' },
+    { t: 'p', text: 'Example 1 found an average rate of 7 for x² between 2 and 5. The staircase below shows what the curve actually did over those three unit steps.' },
+
+    { t: 'figure', kind: 'steps', f: x => x * x, from: 2, to: 5, title: 'x^2 FROM 2 TO 5', note: 'rises 5, 7, 9',
+      x0: 1.4, x1: 6, y0: 0, y1: 30, w: 300, h: 220,
+      caption: 'The three rises are 5, 7 and 9, totalling 21 over three steps. The average of 7 is the middle one here, which happens because the rises grow evenly; for most curves the average matches no individual step at all.' },
+
+    { t: 'h', text: 'Letting B close on A' },
+    { t: 'p', text: 'Fix the left endpoint and bring the right one in. Each new interval gives a new secant and a new average rate, and the numbers do something worth watching.' },
+
+    { t: 'figure', kind: 'secants', f: x => x * x, a: 2, bs: [5, 4, 3, 2.5],
+      x0: 0, x1: 6, y0: 0, y1: 30, w: 330, h: 240,
+      caption: 'Secants from x = 2 to x = 5, 4, 3 and 2.5, with the average rate written at each far endpoint: 7, 6, 5, then 4.5. The dashed line is where they are heading. Its steepness is 4, which is what the algebra of example 3 produces as h shrinks.' },
+
+    { t: 'p', text: 'Nothing in this picture is new. Each line is an ordinary secant and each number an ordinary average rate. What is new is watching them as a sequence rather than one at a time, and noticing that the sequence has a destination.' },
+
+    { t: 'example', n: 4,
+      ask: 'A tank holds V(t) = t^2 litres after t minutes. Find the average filling rate over the first 3 minutes, and over the third minute alone.',
+      steps: [
+        'Over the first 3 minutes: V(0) = 0 and V(3) = 9, so the rate is (9 − 0)/3 = 3 litres per minute.',
+        'Over the third minute alone the interval is from t = 2 to t = 3.',
+        'V(2) = 4 and V(3) = 9, so the rate is (9 − 4)/1 = 5 litres per minute.',
+        'The second figure is larger because the tank fills faster as time goes on, and the first has been diluted by the slow early minutes.'
+      ],
+      answer: '3 litres per minute overall; 5 litres per minute during the third.',
+      note: 'Both are correct answers to different questions. Whenever an average rate is quoted, the interval is part of the answer, and an average rate with no interval attached means nothing.',
+      turn: { ask: 'For the same tank, find the average rate over the first minute and over the fifth minute.',
+        a: '1 litre per minute for the first, and (25 − 16)/1 = 9 for the fifth.' } },
+
+    { t: 'p', text: 'A linear rule makes the same picture boring, and the boredom is the point.' },
+
+    { t: 'figure', kind: 'steps', f: x => 3 * x + 1, from: 0, to: 4, title: 'A LINEAR RULE, STEPPED', note: '3x+1',
+      x0: -0.6, x1: 5.4, y0: -1, y1: 15, w: 300, h: 215,
+      caption: 'Every rise is +3, so every average rate is 3 whichever interval is chosen. Compare the staircase above, where the rises were 5, 7 and 9 and the answer depended entirely on which interval was named.' }
   ],
 
   practice: [

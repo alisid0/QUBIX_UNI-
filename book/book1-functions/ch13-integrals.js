@@ -47,7 +47,9 @@ export default {
         'Evaluate that rule at the two ends and subtract: 3² − 0² = 9.'
       ],
       answer: '9 metres, by both routes.',
-      note: 'The triangle knew nothing about derivatives, and the antiderivative knew nothing about area, and they agree. That agreement is the Fundamental Theorem doing its work in a case simple enough to check.' },
+      note: 'The triangle knew nothing about derivatives, and the antiderivative knew nothing about area, and they agree. That agreement is the Fundamental Theorem doing its work in a case simple enough to check.',
+      turn: { ask: 'A car\'s speed is v(t) = 4t metres per second from t = 0 to t = 3. Find the distance by triangle and by antiderivative.',
+        a: '18 metres. The triangle has base 3 and height 12; the antiderivative 2t² gives 18 − 0.' } },
 
     { t: 'example', n: 2,
       ask: 'Use the same idea to find the area under f(x) = x^2 from 0 to 1.',
@@ -58,7 +60,8 @@ export default {
         'Compare with the table above, where the rectangle totals were closing on exactly that.'
       ],
       answer: '1/3.',
-      note: 'The rectangles took a hundred strips to get within 0.005. The antiderivative took one line. That saving is why Book 4 exists.' },
+      note: 'The rectangles took a hundred strips to get within 0.005. The antiderivative took one line. That saving is why Book 4 exists.',
+      turn: { ask: 'Find the area under f(x) = x^2 from 0 to 3 using the antiderivative x^3/3.', a: '27/3 − 0 = 9.' } },
 
     { t: 'table', head: ['Question', 'Integral of', 'Interpretation'],
       rows: [
@@ -68,7 +71,56 @@ export default {
       ] },
 
     { t: 'h', text: 'What Book 4 does with this' },
-    { t: 'p', text: 'Accumulation from rectangles, then the definite integral written properly, then antiderivatives, then the Fundamental Theorem stated and proved, then substitution, areas between curves, and applications to motion. At which point the four books close on each other: functions describe what changes, limits describe what is approached, derivatives measure change, and integrals put it back together.' }
+    { t: 'p', text: 'Accumulation from rectangles, then the definite integral written properly, then antiderivatives, then the Fundamental Theorem stated and proved, then substitution, areas between curves, and applications to motion. At which point the four books close on each other: functions describe what changes, limits describe what is approached, derivatives measure change, and integrals put it back together.' },
+
+    { t: 'h', text: 'Trapping the answer between two estimates' },
+    { t: 'p', text: 'Taking each rectangle at the right of its strip overshoots a rising curve. Taking it at the left undershoots. Doing both traps the true answer between two numbers you can compute.' },
+
+    { t: 'figures', items: [
+      { kind: 'riemann', f: x => x * x, n: 4, x0: 0, x1: 1, side: 'left', title: 'LEFT HEIGHTS: TOO SMALL', w: 245, h: 190,
+        caption: 'Every rectangle sits under the curve, so the total is below the truth.' },
+      { kind: 'riemann', f: x => x * x, n: 4, x0: 0, x1: 1, side: 'right', title: 'RIGHT HEIGHTS: TOO BIG', w: 245, h: 190,
+        caption: 'Every rectangle pokes above the curve, so the total is above the truth.' }
+    ] },
+
+    { t: 'p', text: 'With four strips the two totals are 0.21875 and 0.46875, so the area lies somewhere between them. The gap is 0.25, which is nothing to boast about, but it is a guarantee rather than a guess. Doubling the strips halves the gap, and the true value 1/3 sits inside every such pair.' },
+
+    { t: 'example', n: 3,
+      ask: 'A tap runs at a rate that rises steadily from 0 to 6 litres per minute over 4 minutes. How much water is delivered?',
+      steps: [
+        'Draw rate against time. It is a straight line from (0, 0) to (4, 6).',
+        'The region beneath is a triangle with base 4 and height 6.',
+        'Its area is (1/2)(4)(6) = 12.',
+        'Check the units: litres per minute multiplied by minutes gives litres, so the answer is a volume rather than a rate.'
+      ],
+      answer: '12 litres.',
+      note: 'Checking units is the fastest way to know whether an integral has been set up correctly. The area under a rate graph always has the units of the quantity that rate was changing.',
+      turn: { ask: 'A tap rises steadily from 0 to 10 litres per minute over 6 minutes. How much is delivered?',
+        a: '30 litres, the area of a triangle with base 6 and height 10.' } },
+
+    { t: 'example', n: 4,
+      ask: 'Find the area under f(x) = 2x + 1 from x = 0 to x = 3, by geometry and by antiderivative.',
+      steps: [
+        'By geometry: the region is a trapezium with parallel sides f(0) = 1 and f(3) = 7, and width 3.',
+        'Its area is the average of the parallel sides times the width: ((1 + 7)/2)(3) = 12.',
+        'By antiderivative: something whose derivative is 2x + 1. The x² gives 2x and the x gives 1, so try x² + x.',
+        'Evaluate at the ends and subtract: (9 + 3) − (0 + 0) = 12.'
+      ],
+      answer: '12, by both routes.',
+      note: 'The trapezium formula and the antiderivative have nothing in common as procedures, and they agree exactly. Every such agreement is another instance of the Fundamental Theorem, which is why it is worth checking against geometry whenever the geometry is available.',
+      turn: { ask: 'Find the area under f(x) = 4x + 2 from x = 0 to x = 2, both ways.',
+        a: '12. The trapezium has parallel sides 2 and 10 over a width of 2; the antiderivative 2x² + 2x gives (8 + 4) − 0 = 12.' } },
+
+    { t: 'p', text: 'Sixteen strips instead of four, on the same curve and the same interval:' },
+
+    { t: 'figures', items: [
+      { kind: 'riemann', f: x => x * x, n: 16, x0: 0, x1: 1, side: 'left', title: 'LEFT, 16 STRIPS', w: 245, h: 190,
+        caption: 'Still below the truth, but by far less.' },
+      { kind: 'riemann', f: x => x * x, n: 16, x0: 0, x1: 1, side: 'right', title: 'RIGHT, 16 STRIPS', w: 245, h: 190,
+        caption: 'Still above it, and by the same far less.' }
+    ] },
+
+    { t: 'p', text: 'The two totals are now 0.302734 and 0.365234, a gap of 0.0625 where four strips left a gap of 0.25. Quadrupling the strips quartered the gap, and 1/3 still sits between them. That is what it means for the estimates to converge: not that either one becomes right, but that the room left for the answer to hide in shrinks to nothing.' }
   ],
 
   practice: [

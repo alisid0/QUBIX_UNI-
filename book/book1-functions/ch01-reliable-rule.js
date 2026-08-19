@@ -55,7 +55,12 @@ export default {
         'Put −2 in the blank: −2 + 3 = 1. Adding a positive to a negative moves it toward zero and past it.'
       ],
       answer: '0 → 3, 4 → 7, −2 → 1.',
-      note: 'Notice that the rule never asked whether the input was positive. A function accepts whatever its domain allows, and −2 is allowed here.' },
+      note: 'Notice that the rule never asked whether the input was positive. A function accepts whatever its domain allows, and −2 is allowed here.',
+      turn: { ask: 'A rule subtracts 4. Build the table for the inputs 0, 4, and −2.',
+        a: '0 → −4, 4 → 0, −2 → −6.' } },
+
+    { t: 'figure', kind: 'blanks', rule: 'take the ⬚, add 3', sub: 'the blank is where the input goes', result: '⬚ + 3',
+      caption: 'Reading a rule with a blank in it. Whatever arrives goes in every blank, and nothing else changes. This is a habit worth forming now, because chapter 3 will put an entire expression into the blank.' },
 
     { t: 'example', n: 2,
       ask: 'A vending machine has given three different snacks for slot B4 this week. Has it broken the promise?',
@@ -65,7 +70,41 @@ export default {
         'One input, three outputs. The promise is broken.'
       ],
       answer: 'Yes. The machine is not computing a function of the slot code.',
-      note: 'A working engineer would say the machine is stocked wrong. A mathematician says the same thing differently: the output depends on something the input does not record, so the true input is not the slot code alone.' }
+      note: 'A working engineer would say the machine is stocked wrong. A mathematician says the same thing differently: the output depends on something the input does not record, so the true input is not the slot code alone.',
+      turn: { ask: 'A lift button marked 3 has taken you to floor 3 every time for a year. Is that a function of the button pressed?',
+        a: 'Yes. One input, one settled output, every time. Reliability over a year is evidence for the promise, though strictly the promise is a claim about every press rather than the ones observed so far.' } },
+
+    { t: 'h', text: 'A function that is not made of numbers' },
+    { t: 'p', text: 'It is worth drawing one, because a reader who has only ever seen numeric examples quietly starts believing that numbers are required. The rule below takes a country and returns its capital city.' },
+
+    { t: 'figure', kind: 'mapping', pairs: [['FR', 'Paris'], ['JP', 'Tokyo'], ['PE', 'Lima']],
+      caption: 'A perfectly ordinary function. Nothing here can be added or multiplied, and none of that matters: each input has exactly one arrow leaving it.' },
+
+    { t: 'example', n: 3,
+      ask: 'A taxi charges £3.20 to start, then £1.40 for each mile. Write the rule in words and find the fare for 0, 3, and 10 miles.',
+      steps: [
+        'Identify the input and the output. The input is the number of miles; the output is the fare.',
+        'Write the rule with a blank: multiply the ⬚ by 1.40, then add 3.20.',
+        'At 0 miles: 0 × 1.40 + 3.20 = £3.20. The fare is not zero, because the charge to start does not depend on distance.',
+        'At 3 miles: 4.20 + 3.20 = £7.40. At 10 miles: 14.00 + 3.20 = £17.20.'
+      ],
+      answer: '£3.20, £7.40, and £17.20.',
+      note: 'The two numbers in the rule do different jobs. The 1.40 says how fast the fare grows; the 3.20 says where it starts. Chapter 6 names that pair, and chapter 10 shows the 1.40 is the only one a rate of change can see.',
+      turn: { ask: 'A plumber charges £60 to attend plus £45 an hour. Find the cost for 0, 2, and 4 hours.',
+        a: '£60, £150, and £240.' } },
+
+    { t: 'example', n: 4,
+      ask: 'Which of these are functions of the stated input? (a) the price of a fixed-price ticket, given the day. (b) the winning lottery number, given the day. (c) the day of the week, given a date.',
+      steps: [
+        '(a) Each day has one price, and the price is fixed in advance. One input, one settled output.',
+        '(b) Each day has one winning number once it is drawn, so it is a function of the day. But it cannot be predicted, which is a different complaint from being ill-defined.',
+        '(c) Each date falls on exactly one weekday. One input, one output.',
+        'All three qualify. Being unpredictable, or uninteresting, or non-numerical does not disqualify a rule.'
+      ],
+      answer: 'All three are functions.',
+      note: 'Part (b) is the one that catches people. A function must be *settled*, not *guessable*. If you had asked instead for "a number that might win", the answer would have forked, and that would have failed.',
+      turn: { ask: 'Is "the tallest person in this room" a function of the room? What would break it?',
+        a: 'Yes, provided the room is not empty and no two people are exactly equally tall. A tie forks the output, and an empty room gives no output at all, so both are ways the promise fails.' } }
   ],
 
   practice: [

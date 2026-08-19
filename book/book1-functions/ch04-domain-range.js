@@ -67,7 +67,8 @@ export default {
         'That input, and only that input, must go.'
       ],
       answer: 'All real numbers except 3, written (−infinity, 3) and (3, infinity).',
-      note: 'The numerator plays no part. A common slip is to answer "x is not 0", which is where the denominator would vanish if it read x rather than x − 3.' },
+      note: 'The numerator plays no part. A common slip is to answer "x is not 0", which is where the denominator would vanish if it read x rather than x − 3.',
+      turn: { ask: 'State the domain of f(x) = 1/(x + 6).', a: 'All real x except −6.' } },
 
     { t: 'example', n: 2,
       ask: 'State the real domain and range of r(x) = sqrt(x + 2).',
@@ -77,10 +78,50 @@ export default {
         'For the range, the square root returns non-negative values only, and as x runs upward from −2 the inside runs upward from 0.',
         'So the outputs start at sqrt(0) = 0 and rise without bound.'
       ],
-      answer: 'Domain [−2, infinity). Range [0, infinity).' },
+      answer: 'Domain [−2, infinity). Range [0, infinity).',
+      turn: { ask: 'State the real domain and range of r(x) = sqrt(x - 5).', a: 'Domain [5, infinity); range [0, infinity).' } },
 
     { t: 'callout', title: 'Why calculus cares',
-      text: 'Limits examine what a function does *near* a point, often one its domain excludes. The expression in chapter 11 has a hole at x = 1 and a perfectly definite limit there. Knowing precisely which inputs are missing is what makes that question askable.' }
+      text: 'Limits examine what a function does *near* a point, often one its domain excludes. The expression in chapter 11 has a hole at x = 1 and a perfectly definite limit there. Knowing precisely which inputs are missing is what makes that question askable.' },
+
+    { t: 'h', text: 'Domains, drawn' },
+    { t: 'p', text: 'Interval notation is a compressed picture, and it is worth decompressing at least once. The line below is every real number; the shaded stretch is what a rule accepts.' },
+
+    { t: 'figure', kind: 'numberline', from: -6, to: 6,
+      spans: [{ a: -2, b: 6, label: 'accepted' }, { a: -6, b: -2, tone: 'out', label: 'refused' }],
+      marks: [{ x: -2, label: 'included' }],
+      caption: 'The domain of sqrt(x + 2), which is [−2, infinity). The endpoint is filled because −2 is accepted: the square root of 0 is 0, which is a perfectly good output.' },
+
+    { t: 'figure', kind: 'numberline', from: -6, to: 6,
+      spans: [{ a: -6, b: 3 }, { a: 3, b: 6 }],
+      marks: [{ x: 3, open: true, label: 'removed' }],
+      caption: 'The domain of 1/(x − 3). One point is punched out and the line falls into two stretches, which is why the notation needs two brackets joined by "or".' },
+
+    { t: 'p', text: 'Compare the two endpoints. The first is drawn filled, the second hollow, and that is the whole difference between a square bracket and a round one. A hollow endpoint is also exactly the hole that chapter 11 takes a limit at.' },
+
+    { t: 'example', n: 3,
+      ask: 'State the domain of f(x) = sqrt(x)/(x - 4).',
+      steps: [
+        'Two causes are present at once, so check both rather than stopping at the first.',
+        'The square root demands x at least 0.',
+        'The denominator forbids x − 4 = 0, so x = 4 must go.',
+        'Combine: start from [0, infinity) and remove the single point 4.'
+      ],
+      answer: '[0, 4) and (4, infinity).',
+      note: 'The endpoint 0 survives because the root accepts it and the denominator there is −4, which is harmless. Each cause has to be checked against the whole expression, not against the letter x.',
+      turn: { ask: 'State the domain of f(x) = sqrt(x + 1)/(x - 2).', a: '[−1, 2) and (2, infinity).' } },
+
+    { t: 'example', n: 4,
+      ask: 'Find the range of f(x) = 1/x.',
+      steps: [
+        'Ask which outputs are actually produced. Try to hit the output 5: solve 1/x = 5, giving x = 1/5, which is allowed.',
+        'The same works for any non-zero target y, because x = 1/y is then an allowed input.',
+        'Now try to hit 0: solve 1/x = 0. Nothing divided into 1 gives nothing.',
+        'So every output except 0 is produced, and 0 is not.'
+      ],
+      answer: '(−infinity, 0) and (0, infinity).',
+      note: 'Notice the method. To find a range, set the rule equal to a general output and ask which targets can be solved for. That is a chapter 3 solving question, asked once for every possible answer at the same time.',
+      turn: { ask: 'Find the range of f(x) = x^2 + 1.', a: '[1, infinity). Solving x² + 1 = y needs x² = y − 1, which has a real solution exactly when y is at least 1.' } }
   ],
 
   practice: [
