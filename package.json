@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/build-pilot.mjs",
+    "prebuild": "npm run build:library && node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -19,7 +19,8 @@
     "deploy": "node scripts/deploy.mjs",
     "build:book": "node scripts/build-book.mjs",
     "check:book": "node scripts/check-book-maths.mjs",
-    "build:spine": "node scripts/build-spine.mjs"
+    "build:spine": "node scripts/build-spine.mjs",
+    "build:library": "npm run build:book && npm run build:spine && node scripts/publish-library.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

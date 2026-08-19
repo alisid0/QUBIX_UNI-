@@ -25,3 +25,9 @@ supabase/
 # Local only.
 .playwright-session/
 *.log
+
+# book/dist is the self-contained build, kept for sending as single files.
+# What the site serves is public/library, produced from it by
+# scripts/publish-library.mjs during prebuild. Shipping both would double
+# roughly 7 MB for no reason.
+book/dist/

@@ -1456,13 +1456,21 @@ const page = (meta, chapters) => `<!doctype html>
 </body></html>`;
 
 /* -------------------------------------------------------------------- run */
-const books = (await readdir(SRC, { withFileTypes: true }))
+// book/ also holds reference material that is not a book -- the spine, for one
+// -- so a directory qualifies by exporting chapters, not by sitting here.
+const candidates = (await readdir(SRC, { withFileTypes: true }))
   .filter(d => d.isDirectory() && d.name !== 'dist').map(d => d.name);
+const books = [];
+for (const name of candidates) {
+  const mod = await import(`file://${join(SRC, name, 'index.js')}`);
+  if (Array.isArray(mod.chapters)) books.push({ name, mod });
+  else console.log(`  ${name}: not a book (exports no chapters), skipped`);
+}
 
 if (!existsSync(OUT)) await mkdir(OUT, { recursive: true });
 
-for (const name of books) {
-  const { meta, chapters: authored } = await import(`file://${join(SRC, name, 'index.js')}`);
+for (const { name, mod } of books) {
+  const { meta, chapters: authored } = mod;
   const chapters = authored.map(expandDrills);   // drills become real practice items here
   const seen = new Set();
   for (const c of chapters) {

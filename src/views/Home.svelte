@@ -150,6 +150,14 @@
       {/each}
     </section>
 
+    <!-- The reference shelf. Generated from source and rebuilt on every
+         deploy, so these can never drift from what the repo says. -->
+    <a class="library-link" href="/library/">
+      <span class="library-kick">The Library</span>
+      <span class="library-title">Calculus From The Ground Up, and The Big Sheet of Graphs</span>
+      <span class="library-sub">Two reference volumes. 681 concepts drawn, every figure computed.</span>
+    </a>
+
     <p class="draft-note">
       Curriculum in draft. Nothing here is approved, and every subtopic is
       based on a recorded public-domain or openly licensed source.
@@ -267,6 +275,35 @@
   .section-list small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--qx-text-faint); font-size: 10px; }
   .section-list i { color: var(--qx-accent-text); font-style: normal; font-weight: 900; }
   .modal-primary { width: 100%; min-height: 50px; margin-top: 16px; border: 0; border-radius: 14px; background: var(--qx-accent); color: #fffaf2; font-size: 15px; font-weight: 900; cursor: pointer; }
+
+  /* The reference shelf, sitting with the curriculum rather than hidden in a menu. */
+
+  .library-link {
+
+    display: block; margin: 28px auto 0; max-width: 46rem; text-decoration: none;
+
+    border: 1px solid var(--qx-border, #d8d3c7); border-radius: 12px;
+
+    padding: 18px 20px; background: var(--qx-surface-2, #faf7f0); color: inherit;
+
+  }
+
+  .library-link:hover { border-color: #10796e; }
+
+  .library-link:focus-visible { outline: 2px solid #10796e; outline-offset: 3px; }
+
+  .library-kick {
+
+    display: block; font-size: 11px; letter-spacing: .13em; text-transform: uppercase;
+
+    color: #10796e; font-weight: 700; margin-bottom: 6px;
+
+  }
+
+  .library-title { display: block; font-size: 16px; font-weight: 600; line-height: 1.35; }
+
+  .library-sub { display: block; font-size: 13.5px; opacity: .72; margin-top: 5px; }
+
 
   .draft-note { color: var(--qx-text-faint); font-size: 11.5px; line-height: 1.55; border-top: 1px solid var(--qx-border); padding-top: 14px; }
   @media (max-width: 600px) {

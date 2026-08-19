@@ -10,8 +10,8 @@
 // where pictures stop working, and those terms are the vocabulary for saying it.
 
 export const meta = {
-  title: 'The Coordinate Spine',
-  standfirst: 'Every concept reachable from the origin, if the plane is the organising object.',
+  title: 'The Big Sheet of Graphs',
+  standfirst: 'Every idea in mathematics that can be reached from the origin, drawn.',
   note: 'Ordered from the most primitive idea outward. Counts are computed from the list itself.'
 };
 
