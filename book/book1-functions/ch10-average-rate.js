@@ -38,6 +38,8 @@ export default {
       ],
       answer: '7.',
       note: 'The curve is not climbing at 7 anywhere near x = 2, and is climbing faster than 7 by x = 5. Seven is the steady rate that would have covered the same ground in the same interval.',
+      show: { kind: 'secant', f: x => x * x, a: 2, b: 5, x0: 0, x1: 6, y0: 0, y1: 30,
+        caption: 'The secant through (2, 4) and (5, 25). Its steepness is the 21 divided by 3, and the curve is shallower than it early on and steeper than it later.' },
       turn: { ask: 'Find the average rate of change of f(x) = x^2 from x = 1 to x = 4.', a: '(16 − 1)/3 = 5.' } },
 
     { t: 'example', n: 2,
@@ -50,6 +52,8 @@ export default {
       ],
       answer: '60 distance-units per time-unit.',
       note: 'For a linear rule, the average rate over every interval is the same number: the m in mx + c. This is the one family where a single number really does describe the whole rule.',
+      show: { kind: 'steps', f: x => 60 * x, from: 1, to: 4, title: 'A LINEAR RULE', note: 'g(t)=60t', x0: 0.4, x1: 4.6, y0: 0, y1: 270, w: 300, h: 215,
+        caption: 'Every rise is 60, so every interval gives the same average. This is the one family where a single number describes the whole rule.' },
       turn: { ask: 'Find the average rate of change of g(t) = 25t from t = 2 to t = 6, and state the units if t is hours and g is kilometres.', a: '25 kilometres per hour, the same as over any other interval.' } },
 
     { t: 'h', text: 'The same question, written with h' },
@@ -67,6 +71,8 @@ export default {
       ],
       answer: '4 + h.',
       note: 'The answers are crowding around 4 as h shrinks, without ever being 4. That crowding is a limit, and 4 is the derivative of x² at x = 2. Book 2 makes the crowding precise; Book 3 makes it routine.',
+      show: { kind: 'secants', f: x => x * x, a: 2, bs: [4, 3, 2.5, 2.2], x0: 0, x1: 5, y0: 0, y1: 20, w: 320, h: 230,
+        caption: 'The quotient 4 + h, drawn. At h = 2 the slope is 6, at h = 1 it is 5, at h = 0.5 it is 4.5, at h = 0.2 it is 4.2. The dashed line is where they are going.' },
       turn: { ask: 'For f(x) = x^2, calculate [f(5 + h) - f(5)]/h and simplify. What is it approaching?', a: '10 + h, approaching 10.' } },
 
     { t: 'callout', title: 'Where Part I ends',
@@ -98,6 +104,13 @@ export default {
       ],
       answer: '3 litres per minute overall; 5 litres per minute during the third.',
       note: 'Both are correct answers to different questions. Whenever an average rate is quoted, the interval is part of the answer, and an average rate with no interval attached means nothing.',
+      show: { kind: 'frames', label: 'Two intervals, one tank',
+        frames: [
+          { kind: 'secant', f: x => x * x, a: 0, b: 3, x0: 0, x1: 4, y0: 0, y1: 12, pick: 'first 3 minutes',
+            say: 'From 0 to 3 the average is 3 litres a minute, diluted by the slow early minutes.' },
+          { kind: 'secant', f: x => x * x, a: 2, b: 3, x0: 0, x1: 4, y0: 0, y1: 12, pick: 'the third minute',
+            say: 'From 2 to 3 alone the average is 5 litres a minute. Both are right; they answer different questions.' }
+        ] },
       turn: { ask: 'For the same tank, find the average rate over the first minute and over the fifth minute.',
         a: '1 litre per minute for the first, and (25 − 16)/1 = 9 for the fifth.' } },
 

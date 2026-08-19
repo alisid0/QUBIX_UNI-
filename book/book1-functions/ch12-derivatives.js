@@ -29,6 +29,13 @@ export default {
       ],
       answer: "f'(x) = 2x.",
       note: 'Check against chapter 10. At x = 2 the difference quotient simplified to 4 + h and approached 4; here 2x gives 2(2) = 4. At x = 3 it gave 6 + h approaching 6, and 2(3) = 6. The general result agrees with both particular ones.',
+      show: { kind: 'frames', label: 'The rule, and its steepness',
+        frames: [
+          { kind: 'secants', f: x => x * x, a: 2, bs: [4, 3, 2.5, 2.2], x0: 0, x1: 5, y0: 0, y1: 20, w: 300, h: 220, pick: 'at x = 2',
+            say: 'The secants close on a tangent of steepness 4, and 2x gives 4 at x = 2.' },
+          { kind: 'secants', f: x => x * x, a: 3, bs: [5, 4.2, 3.6, 3.2], x0: 0, x1: 6, y0: 0, y1: 28, w: 300, h: 220, pick: 'at x = 3',
+            say: 'Move the point and the answer moves with it: the tangent here has steepness 6, and 2x gives 6. The derivative is a rule, not a number.' }
+        ] },
       turn: { ask: "Use f'(x) = 2x to find the steepness of x^2 at x = 5, then check it against the difference quotient 10 + h.", a: '10, and the quotient approaches 10 as h shrinks. They agree.' } },
 
     { t: 'callout', title: 'The derivative is a function, not a number',
@@ -62,6 +69,8 @@ export default {
       ],
       answer: "f'(x) = 3.",
       note: 'Chapter 6 predicted this: a linear rule has constant first differences, so its steepness cannot depend on where you measure. Chapter 10 question 8 found the same 3 without taking any limit, because none was needed.',
+      show: { kind: 'graph', f: x => 3 * x + 1, title: 'THE SAME EVERYWHERE', note: 'f(x)=3x+1', x0: -3, x1: 3, y0: -8, y1: 10, w: 275, h: 200, marks: [[-2, -5], [0, 1], [2, 7]],
+        caption: 'A straight line has one steepness, and the three marked points are on the same slope. The h cancelled completely because there was nothing for it to depend on.' },
       turn: { ask: "Derive f'(x) for f(x) = 7x - 2 from the definition.", a: '7. The quotient is exactly 7 with no h left, so the limit is 7.' } },
 
     { t: 'h', text: 'What Book 3 does with this' },
@@ -84,6 +93,11 @@ export default {
       ],
       answer: "f'(x) = 0 only at x = 0, the lowest point of the curve.",
       note: 'This is the beginning of optimisation. Highest and lowest points are flat, so they are found by setting the derivative to zero, which turns a question about shape into an equation.',
+      show: { items: [
+        { kind: 'graph', f: x => x * x, title: 'THE CURVE IS FLAT AT 0', note: 'f(x)=x^2', x0: -3, x1: 3, y0: -2, y1: 8, w: 245, h: 185, marks: [[0, 0]] },
+        { kind: 'graph', f: x => 2 * x, title: 'THE DERIVATIVE CROSSES 0', note: "f'(x)=2x", x0: -3, x1: 3, y0: -6, y1: 6, w: 245, h: 185, marks: [[0, 0]] }
+      ],
+        caption: 'A flat point on the rule is a zero of its derivative. Reading the two together is how optimisation works.' },
       turn: { ask: "For f(x) = x^2 - 6x, the derivative is 2x - 6. Where is the curve flat?",
         a: 'At x = 3. That matches chapter 9 example 4, where completing the square put the low point of x² − 4x at x = 2 by the same logic.' } },
 
@@ -97,6 +111,8 @@ export default {
       ],
       answer: 'Highest at 2 seconds, at a height of 20 metres.',
       note: 'The check either side matters. Setting a derivative to zero finds flat points, and a flat point can be a maximum, a minimum, or neither, so the sign on both sides is what decides which.',
+      show: { kind: 'graph', f: t => 20 * t - 5 * t * t, title: 'THE FLIGHT', note: 'h(t)=20t-5t^2', x0: 0, x1: 4.4, y0: 0, y1: 24, w: 290, h: 210, marks: [[2, 20], [1, 15], [3, 15]],
+        caption: 'The top is marked, with a point either side at equal height. Rising before it and falling after, so the flat point really is a maximum.' },
       turn: { ask: "For h(t) = 30t - 5t^2 with h'(t) = 30 - 10t, when is the ball highest and how high?",
         a: 'At t = 3 seconds, at a height of 90 − 45 = 45 metres.' } }
   ],

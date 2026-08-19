@@ -44,6 +44,8 @@ export default {
         'So y = (x + 5)/3.'
       ],
       answer: 'f⁻¹(x) = (x + 5)/3.',
+      show: { kind: 'reflect', f: x => 3 * x - 5, finv: x => (x + 5) / 3, pair: [3, 4], note: 'f and f-1', x0: -7, x1: 8, y0: -7, y1: 8, w: 300, h: 265,
+        caption: 'f sends 3 to 4, so the inverse sends 4 back to 3. The two marked points sit either side of the dashed diagonal at equal distance, which is what swapping coordinates does.' },
       turn: { ask: 'Find the inverse of f(x) = 4x + 8.', a: 'f⁻¹(x) = (x − 8)/4.' } },
 
     { t: 'example', n: 2,
@@ -56,6 +58,8 @@ export default {
       ],
       answer: 'Both compositions return x, so the inverse is correct.',
       note: 'Chapter 8 question 11 predicted this: a pair of rules composing to x in both directions is precisely a function and its inverse.',
+      show: { kind: 'chain', stages: ['f(x)=3x-5', 'f-1(x)=(x+5)/3'], input: '4', values: [7, 4],
+        caption: 'Composed in one direction: 4 goes in, 4 comes out. The pair returns you to where you started, which is the entire specification.' },
       turn: { ask: 'Verify that f(x) = 4x + 8 and your inverse from the previous turn compose to x both ways.',
         a: 'f⁻¹(f(x)) = (4x + 8 − 8)/4 = x, and f(f⁻¹(x)) = 4(x − 8)/4 + 8 = x.' } },
 
@@ -78,6 +82,8 @@ export default {
       ],
       answer: 'f⁻¹(x) = (5x − 1)/2.',
       note: 'Check with one value rather than trusting the algebra. f(2) = 5/5 = 1, and f⁻¹(1) = (5 − 1)/2 = 2. It returns.',
+      show: { kind: 'reflect', f: x => (2 * x + 1) / 5, finv: x => (5 * x - 1) / 2, pair: [2, 1], note: 'mirrors in y = x', x0: -4, x1: 6, y0: -4, y1: 6, w: 300, h: 265,
+        caption: 'The check value drawn: f sends 2 to 1, and the inverse sends 1 back to 2.' },
       turn: { ask: 'Find the inverse of f(x) = (3x - 6)/4 and check one value.',
         a: 'f⁻¹(x) = (4x + 6)/3. Check: f(2) = 0 and f⁻¹(0) = 2.' } },
 
@@ -91,6 +97,13 @@ export default {
       ],
       answer: 'No inverse over all real numbers. Restricted to [2, infinity) it has one.',
       note: 'The turning point is always where to cut, because it is the only place a smooth curve turns from falling to rising and so starts repeating outputs. Chapter 12 gives a way to find it without completing the square.',
+      show: { kind: 'frames', label: 'Why it needs cutting, and where',
+        frames: [
+          { kind: 'linetest', f: x => x * x - 4 * x, at: [0], dir: 'h', title: 'THE WHOLE CURVE', note: 'x^2-4x', x0: -2, x1: 6, y0: -5, y1: 6, w: 275, h: 205, pick: 'as given',
+            say: 'The height 0 is reached at x = 0 and again at x = 4, so the reverse direction cannot choose.' },
+          { kind: 'graph', f: x => x >= 2 ? x * x - 4 * x : NaN, title: 'RESTRICTED TO x AT LEAST 2', note: 'domain [2, infinity)', x0: -2, x1: 6, y0: -5, y1: 6, w: 275, h: 205, marks: [[2, -4]], pick: 'restricted',
+            say: 'Cut at the turning point and only the rising half survives. No output is shared, so an inverse exists.' }
+        ] },
       turn: { ask: 'Where would you restrict f(x) = x^2 + 6x so that it has an inverse?',
         a: 'The rule is (x + 3)² − 9 with its low point at x = −3, so restrict to [−3, infinity), or to (−infinity, −3] if you prefer the falling half.' } }
   ],

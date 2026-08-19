@@ -68,6 +68,8 @@ export default {
       ],
       answer: 'All real numbers except 3, written (−infinity, 3) and (3, infinity).',
       note: 'The numerator plays no part. A common slip is to answer "x is not 0", which is where the denominator would vanish if it read x rather than x − 3.',
+      show: { kind: 'numberline', from: -3, to: 8, spans: [{ a: -3, b: 3 }, { a: 3, b: 8 }], marks: [{ x: 3, open: true, label: 'refused' }],
+        caption: 'One point removed, two stretches left. The numerator played no part in deciding which point.' },
       turn: { ask: 'State the domain of f(x) = 1/(x + 6).', a: 'All real x except −6.' } },
 
     { t: 'example', n: 2,
@@ -79,6 +81,8 @@ export default {
         'So the outputs start at sqrt(0) = 0 and rise without bound.'
       ],
       answer: 'Domain [−2, infinity). Range [0, infinity).',
+      show: { kind: 'numberline', from: -6, to: 6, spans: [{ a: -6, b: -2, tone: 'out', label: 'refused' }, { a: -2, b: 6, label: 'domain' }], marks: [{ x: -2, label: 'included' }],
+        caption: 'The condition landed on x + 2, not on x, which is why the boundary sits at \u22122 rather than at 0.' },
       turn: { ask: 'State the real domain and range of r(x) = sqrt(x - 5).', a: 'Domain [5, infinity); range [0, infinity).' } },
 
     { t: 'callout', title: 'Why calculus cares',
@@ -109,6 +113,9 @@ export default {
       ],
       answer: '[0, 4) and (4, infinity).',
       note: 'The endpoint 0 survives because the root accepts it and the denominator there is −4, which is harmless. Each cause has to be checked against the whole expression, not against the letter x.',
+      show: { kind: 'numberline', from: -2, to: 8, spans: [{ a: -2, b: 0, tone: 'out', label: 'root refuses' }, { a: 0, b: 4 }, { a: 4, b: 8 }],
+        marks: [{ x: 0, label: 'kept' }, { x: 4, open: true, label: 'removed' }],
+        caption: 'Two causes, two marks. The root closes the left end and the denominator punches a hole at 4.' },
       turn: { ask: 'State the domain of f(x) = sqrt(x + 1)/(x - 2).', a: '[−1, 2) and (2, infinity).' } },
 
     { t: 'example', n: 4,
@@ -121,6 +128,8 @@ export default {
       ],
       answer: '(−infinity, 0) and (0, infinity).',
       note: 'Notice the method. To find a range, set the rule equal to a general output and ask which targets can be solved for. That is a chapter 3 solving question, asked once for every possible answer at the same time.',
+      show: { kind: 'graph', f: x => 1 / x, title: 'EVERY HEIGHT BUT ONE', note: 'g(x)=1/x', x0: -5, x1: 5, y0: -5, y1: 5, w: 270, h: 210,
+        caption: 'Sweep a horizontal line up the page. It meets the curve at every height except zero, where it runs along the axis forever without touching. That is the range, read off the picture.' },
       turn: { ask: 'Find the range of f(x) = x^2 + 1.', a: '[1, infinity). Solving x² + 1 = y needs x² = y − 1, which has a real solution exactly when y is at least 1.' } }
   ],
 

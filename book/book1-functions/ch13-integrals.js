@@ -48,6 +48,8 @@ export default {
       ],
       answer: '9 metres, by both routes.',
       note: 'The triangle knew nothing about derivatives, and the antiderivative knew nothing about area, and they agree. That agreement is the Fundamental Theorem doing its work in a case simple enough to check.',
+      show: { kind: 'graph', f: t => 2 * t, title: 'SPEED AGAINST TIME', note: 'v(t)=2t', x0: 0, x1: 3.6, y0: 0, y1: 7, w: 285, h: 205, marks: [[3, 6], [0, 0]],
+        caption: 'The region beneath the line, from 0 to 3, is a triangle of base 3 and height 6. Its area is 9, and the antiderivative gives 9, and neither knew about the other.' },
       turn: { ask: 'A car\'s speed is v(t) = 4t metres per second from t = 0 to t = 3. Find the distance by triangle and by antiderivative.',
         a: '18 metres. The triangle has base 3 and height 12; the antiderivative 2t² gives 18 − 0.' } },
 
@@ -61,6 +63,17 @@ export default {
       ],
       answer: '1/3.',
       note: 'The rectangles took a hundred strips to get within 0.005. The antiderivative took one line. That saving is why Book 4 exists.',
+      show: { kind: 'frames', label: 'Watch the strips close in', control: 'slider',
+        frames: [
+          { kind: 'riemann', f: x => x * x, n: 2, x0: 0, x1: 1, side: 'right', title: '2 STRIPS', w: 265, h: 195, pick: '2',
+            say: 'Total 0.625, against a true value of one third.' },
+          { kind: 'riemann', f: x => x * x, n: 4, x0: 0, x1: 1, side: 'right', title: '4 STRIPS', w: 265, h: 195, pick: '4',
+            say: 'Total 0.46875. The overshoot has roughly halved.' },
+          { kind: 'riemann', f: x => x * x, n: 8, x0: 0, x1: 1, side: 'right', title: '8 STRIPS', w: 265, h: 195, pick: '8',
+            say: 'Total 0.3984. Halved again.' },
+          { kind: 'riemann', f: x => x * x, n: 24, x0: 0, x1: 1, side: 'right', title: '24 STRIPS', w: 265, h: 195, pick: '24',
+            say: 'Total 0.3542, closing on one third. The antiderivative reached it in a single line.' }
+        ] },
       turn: { ask: 'Find the area under f(x) = x^2 from 0 to 3 using the antiderivative x^3/3.', a: '27/3 − 0 = 9.' } },
 
     { t: 'table', head: ['Question', 'Integral of', 'Interpretation'],
@@ -95,6 +108,8 @@ export default {
       ],
       answer: '12 litres.',
       note: 'Checking units is the fastest way to know whether an integral has been set up correctly. The area under a rate graph always has the units of the quantity that rate was changing.',
+      show: { kind: 'graph', f: t => 1.5 * t, title: 'A RISING FLOW', note: 'rate against time', x0: 0, x1: 4.6, y0: 0, y1: 7, w: 285, h: 205, marks: [[4, 6], [0, 0]],
+        caption: 'Litres per minute up, minutes across, so the area beneath carries the units litres. Checking units is the fastest way to know an integral is set up right.' },
       turn: { ask: 'A tap rises steadily from 0 to 10 litres per minute over 6 minutes. How much is delivered?',
         a: '30 litres, the area of a triangle with base 6 and height 10.' } },
 
@@ -108,6 +123,8 @@ export default {
       ],
       answer: '12, by both routes.',
       note: 'The trapezium formula and the antiderivative have nothing in common as procedures, and they agree exactly. Every such agreement is another instance of the Fundamental Theorem, which is why it is worth checking against geometry whenever the geometry is available.',
+      show: { kind: 'graph', f: x => 2 * x + 1, title: 'A TRAPEZIUM', note: 'f(x)=2x+1', x0: 0, x1: 3.6, y0: 0, y1: 8, w: 285, h: 205, marks: [[0, 1], [3, 7]],
+        caption: 'The two parallel sides are 1 and 7, over a width of 3. The trapezium formula and the antiderivative x\u00b2 + x have nothing in common as procedures, and both give 12.' },
       turn: { ask: 'Find the area under f(x) = 4x + 2 from x = 0 to x = 2, both ways.',
         a: '12. The trapezium has parallel sides 2 and 10 over a width of 2; the antiderivative 2x² + 2x gives (8 + 4) − 0 = 12.' } },
 

@@ -248,14 +248,14 @@ const FIG = {
   },
 
   // Several test lines swept across a graph, with every hit marked.
-  linetest({ f, second = null, at = [], kind = 'v', title, note, x0 = -4, x1 = 4, y0 = -3, y1 = 6, w = 280, h = 210 }) {
+  linetest({ f, second = null, at = [], dir = 'v', title, note, x0 = -4, x1 = 4, y0 = -3, y1 = 6, w = 280, h = 210 }) {
     const p = plane({ x0, x1, y0, y1, w, h });
     const b = [`<rect width="${w}" height="${h}" fill="${C.paper}" rx="6"/>`, axes(p)];
     b.push(curve(p, f));
     if (second) b.push(curve(p, second, C.teal));
     at.forEach(v => {
       const hits = [];
-      if (kind === 'v') {
+      if (dir === 'v') {
         b.push(`<line x1="${p.X(v)}" y1="${p.pad.t}" x2="${p.X(v)}" y2="${p.pad.t + p.ih}" stroke="${C.orange}" stroke-width="1.2" stroke-dasharray="3 3"/>`);
         for (const g of [f, second].filter(Boolean)) { const y = g(v); if (Number.isFinite(y) && y >= y0 && y <= y1) hits.push([v, y]); }
       } else {
@@ -365,6 +365,62 @@ const FIG = {
   }
 };
 
+/* ------------------------------------------------------- interactive labs */
+// The book is operated, not only read. Two rules keep that from turning into
+// a pile of runtime drawing code:
+//
+//   1. Every state a lab can show is BUILT HERE, as a figure, from the same
+//      formulas as every other figure. The browser only switches between
+//      prepared frames. So an interactive figure cannot drift from a static
+//      one, and nothing is computed twice in two languages.
+//   2. Frame 0 is the printable state. Printing shows it and hides the
+//      controls, so the PDF is still a book.
+
+const LAB = {
+  // Step through prepared frames with buttons or a slider.
+  frames({ id, label, control = 'buttons', frames, hint }) {
+    const body = frames.map((fr, i) => {
+      const f = FIG[fr.kind];
+      if (!f) throw new Error(`lab ${id}: unknown figure kind "${fr.kind}"`);
+      return `<div class="lab-frame${i ? '' : ' on'}" data-i="${i}">${f(fr)}`
+        + (fr.say ? `<p class="lab-say">${rich(fr.say)}</p>` : '') + `</div>`;
+    }).join('');
+    const ctrl = control === 'slider'
+      ? `<input type="range" class="lab-range" min="0" max="${frames.length - 1}" value="0" step="1"
+           aria-label="${esc(label || 'step')}">`
+      : `<div class="lab-btns" role="group" aria-label="${esc(label || 'choose')}">`
+        + frames.map((fr, i) => `<button type="button" class="lab-b${i ? '' : ' on'}" data-i="${i}">${rich(fr.pick ?? String(i))}</button>`).join('')
+        + `</div>`;
+    return `<div class="lab" data-lab="frames" id="${id}">`
+      + (label ? `<div class="lab-h">${rich(label)}</div>` : '')
+      + `<div class="lab-stage">${body}</div>${ctrl}`
+      + (hint ? `<p class="lab-hint">${rich(hint)}</p>` : '') + `</div>`;
+  },
+
+  // Judge each candidate, and be told why. The answer is only revealed by
+  // committing to one, which is the whole point of asking.
+  judge({ id, label, ask = 'Does this rule keep the promise?', yes = 'reliable', no = 'not reliable', items, hint }) {
+    return `<div class="lab" data-lab="judge" id="${id}">`
+      + (label ? `<div class="lab-h">${rich(label)}</div>` : '')
+      + `<p class="lab-ask">${rich(ask)}</p><ul class="jd">`
+      + items.map((it, i) => `<li data-ok="${it.ok ? 1 : 0}">
+          <span class="jd-t">${rich(it.t)}</span>
+          <span class="jd-c"><button type="button" data-v="1">${esc(yes)}</button><button type="button" data-v="0">${esc(no)}</button></span>
+          <span class="jd-w" hidden>${rich(it.why)}</span></li>`).join('')
+      + `</ul><p class="lab-score" aria-live="polite"></p>`
+      + (hint ? `<p class="lab-hint">${rich(hint)}</p>` : '') + `</div>`;
+  }
+};
+
+// Build frames by mapping a list of inputs through a real function, so the
+// numbers a reader sees are produced by the rule the caption names.
+export const overInputs = (inputs, make) => inputs.map(make);
+
+// An attached `show` is a lab if it steps through frames, a figure row if it
+// carries several, and a single figure otherwise. Deciding this in one place
+// keeps the worked-example and practice call sites from disagreeing.
+const showType = s => s.frames ? 'lab' : s.items ? 'figures' : 'figure';
+
 /* ------------------------------------------------------------ block render */
 const block = (b, ctx) => {
   switch (b.t) {
@@ -380,12 +436,22 @@ const block = (b, ctx) => {
       return `<figure>${f(b)}${b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : ''}</figure>`;
     }
     case 'figures': return `<div class="fig-row">${b.items.map(i => block({ ...i, t: 'figure' }, ctx)).join('')}</div>`;
+    case 'lab': {
+      const l = LAB[b.kind];
+      if (!l) throw new Error(`${ctx}: unknown lab kind "${b.kind}"`);
+      return `<figure class="lab-wrap">${l({ ...b, id: b.id || `${ctx}-lab${labSeq++}` })}`
+        + (b.caption ? `<figcaption>${rich(b.caption)}</figcaption>` : '') + `</figure>`;
+    }
     // A worked example is only half a teaching move. The parallel item that
     // follows it, answered on the spot, is where the reader finds out whether
     // they actually followed the steps or merely read them.
+    // An answer stated in words is an assertion. The `show` block makes the
+    // answer visible, and where it is a lab, operable: the reader can move the
+    // thing the answer is about and watch the claim hold.
     case 'example': return `<div class="worked"><b class="wk-h">Worked example ${b.n}</b><p class="wk-q">${rich(b.ask)}</p>`
       + `<ol class="wk-steps">${b.steps.map(s => `<li>${rich(s)}</li>`).join('')}</ol>`
       + `<p class="wk-a"><b>Answer.</b> ${rich(b.answer)}</p>`
+      + (b.show ? `<div class="wk-show">${block({ ...b.show, t: showType(b.show) }, ctx)}</div>` : '')
       + (b.note ? `<p class="wk-n">${rich(b.note)}</p>` : '')
       + (b.turn ? `<div class="turn"><b>Your turn.</b> <span>${rich(b.turn.ask)}</span>`
         + `<details><summary>answer</summary><span>${rich(b.turn.a)}</span></details></div>` : '')
@@ -395,7 +461,7 @@ const block = (b, ctx) => {
 };
 
 /* ------------------------------------------------------------- the render */
-const LEVELS = ['Recognise', 'Represent', 'Calculate', 'Transform', 'Combine', 'Analyse change'];
+let labSeq = 0;
 
 const chapterHTML = (ch, i) => {
   const prac = ch.practice || [];
@@ -411,7 +477,13 @@ const chapterHTML = (ch, i) => {
   <div class="practice">
     <div class="pr-head"><b>Practice</b><span>${prac.length} items${lvl.length ? ' · ' + lvl.join(', ') : ''}</span></div>
     <ol class="pr-list">
-      ${prac.map(q => `<li${q.hard ? ' class="hard"' : ''}><span class="pr-q">${rich(q.q)}</span>${q.level ? `<span class="pr-l">${esc(q.level)}</span>` : ''}</li>`).join('\n      ')}
+      ${prac.map((q, i) => `<li${q.hard ? ' class="hard"' : ''}>
+        <div class="pr-top"><span class="pr-q">${rich(q.q)}</span>${q.level ? `<span class="pr-l">${esc(q.level)}</span>` : ''}</div>
+        <details class="pr-sol"><summary>show solution</summary>
+          ${q.sol ? `<ol class="pr-steps">${q.sol.map(s => `<li>${rich(s)}</li>`).join('')}</ol>` : ''}
+          <p class="pr-a">${rich(q.a || '')}</p>
+          ${q.show ? block({ ...q.show, t: showType(q.show), id: `ch${ch.id}-p${i}` }, `ch${ch.id} practice ${i + 1}`) : ''}
+        </details></li>`).join('\n      ')}
     </ol>
   </div>` : ''}
 
@@ -448,16 +520,33 @@ const answersHTML = chapters => `
 // textbook. These are the numbers a chapter needs to teach rather than remind.
 export const GATE = { examples: 4, figures: 4, practice: 12 };
 
+// One figure is one drawn state, wherever it lives. A lab of four frames is
+// four figures, because four were built; an illustrated answer is one. Counting
+// any other way would penalise turning a static figure into an operable one,
+// which is exactly the move the book is making.
+const countFigs = b => {
+  if (!b) return 0;
+  if (b.t === 'figures' || b.items) return b.items.length;
+  if (b.t === 'lab' || b.frames) return b.kind === 'judge' ? 1 : b.frames.length;
+  if (b.t === 'figure' || b.kind) return b.kind === 'zoom' ? (b.spans || [0, 0, 0]).length : 1;
+  return 0;
+};
+
 export const audit = c => {
   const p = (c.practice || []).length;
   const answered = (c.practice || []).filter(x => x.a).length;
   const exs = (c.blocks || []).filter(b => b.t === 'example');
   const turns = exs.filter(b => b.turn).length;
-  const figs = (c.blocks || []).reduce((n, b) =>
-    n + (b.t === 'figures' ? b.items.length : b.t === 'figure' ? (b.kind === 'zoom' ? (b.spans || [0, 0, 0]).length : 1) : 0), 0);
+  const shown = exs.filter(b => b.show).length;
+  const figs = (c.blocks || []).reduce((n, b) => n + countFigs(b) + countFigs(b.show), 0)
+    + (c.practice || []).reduce((n, q) => n + countFigs(q.show), 0);
+  const labs = (c.blocks || []).filter(b => b.t === 'lab').length
+    + exs.filter(b => b.show && (b.show.frames || b.show.items)).length
+    + (c.practice || []).filter(q => q.show && q.show.frames).length;
   const pass = exs.length >= GATE.examples && figs >= GATE.figures && p >= GATE.practice
-    && answered === p && turns === exs.length && !!c.misconception && !!c.review;
-  return { c, p, answered, ex: exs.length, turns, figs, pass };
+    && answered === p && turns === exs.length && shown === exs.length
+    && !!c.misconception && !!c.review;
+  return { c, p, answered, ex: exs.length, turns, shown, figs, labs, pass };
 };
 
 const gateHTML = chapters => {
@@ -468,13 +557,15 @@ const gateHTML = chapters => {
 <section class="chapter" id="gate">
   <div class="kicker">COMPLETION</div>
   <h2>What this book still owes its reader</h2>
-  <p class="stand">A chapter passes when it carries at least ${GATE.examples} worked examples, each followed by a parallel one the reader does; at least ${GATE.figures} figures; at least ${GATE.practice} practice items with an answer for every one; a named misconception; and a link back to earlier work. This table is counted from the source at build time, so it cannot flatter the book.</p>
+  <p class="stand">A chapter passes when it carries at least ${GATE.examples} worked examples, each followed by a parallel one the reader does; at least ${GATE.figures} figures; an illustrated or operable answer on every worked example; at least ${GATE.practice} practice items with an answer for every one; a named misconception; and a link back to earlier work. This table is counted from the source at build time, so it cannot flatter the book.</p>
   <div class="tw"><table class="data gate">
-    <thead><tr><th>Chapter</th><th>Worked</th><th>Your turn</th><th>Figures</th><th>Practice</th><th>Answered</th><th>Mistake</th><th>Review</th><th>Gate</th></tr></thead>
+    <thead><tr><th>Chapter</th><th>Worked</th><th>Your turn</th><th>Shown</th><th>Labs</th><th>Figures</th><th>Practice</th><th>Answered</th><th>Mistake</th><th>Review</th><th>Gate</th></tr></thead>
     <tbody>${rows.map(r => `<tr class="${r.pass ? 'ok' : 'no'}">
       <td>${r.c.id}. ${rich(r.c.title)}</td>
       <td${r.ex < GATE.examples ? ' class="short"' : ''}>${r.ex || '—'}</td>
       <td${r.turns < r.ex ? ' class="short"' : ''}>${r.turns || '—'}</td>
+      <td${r.shown < r.ex ? ' class="short"' : ''}>${r.shown || '—'}</td>
+      <td>${r.labs || '—'}</td>
       <td${r.figs < GATE.figures ? ' class="short"' : ''}>${r.figs || '—'}</td>
       <td${r.p < GATE.practice ? ' class="short"' : ''}>${r.p || '—'}</td>
       <td>${r.p ? (r.answered === r.p ? 'all' : `${r.answered} of ${r.p}`) : '—'}</td>
@@ -482,8 +573,9 @@ const gateHTML = chapters => {
       <td>${r.pass ? 'PASS' : 'open'}</td></tr>`).join('')}</tbody>
   </table></div>
   <p class="gate-sum"><b>${done} of ${chapters.length} chapters</b> meet the gate.
-  ${sum('p')} practice items, ${sum('ex')} worked examples with ${sum('turns')} parallel exercises,
-  and ${sum('figs')} figures, every one computed from the formula printed beside it.</p>
+  ${sum('p')} practice items, every one with a solution you can open; ${sum('ex')} worked examples
+  carrying ${sum('turns')} parallel exercises and ${sum('shown')} illustrated answers; ${sum('labs')} interactive labs;
+  and ${sum('figs')} figures, every one computed at build time from the formula printed beside it.</p>
 </section>`;
 };
 
@@ -583,6 +675,57 @@ const page = (meta, chapters) => `<!doctype html>
   .turn summary:focus-visible { outline:2px solid var(--teal); outline-offset:3px; border-radius:3px; }
   .turn details[open] summary { margin-bottom:4px; }
   .zoom-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+
+  /* ---- interactive labs ---- */
+  .lab-wrap { margin:20px 0; break-inside:avoid; }
+  .lab { border:1px solid var(--rule); border-radius:9px; background:var(--paper);
+         padding:13px 14px 12px; text-align:center; }
+  .lab-h { font-family:var(--sans); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+           color:var(--teal); margin-bottom:9px; text-align:left; }
+  .lab-stage { min-height:1px; }
+  .lab-frame { display:none; }
+  .lab-frame.on { display:block; }
+  .lab-say { font-size:13.5px; margin:8px auto 2px; max-width:46ch; min-height:2.9em; }
+  .lab-btns { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
+  .lab-b, .jd-c button { font:600 13px/1 var(--sans); padding:7px 13px; border-radius:6px; cursor:pointer;
+          border:1px solid var(--rule); background:#fff; color:var(--ink); }
+  .lab-b:hover, .jd-c button:hover { border-color:var(--teal); }
+  .lab-b.on { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .lab-b:focus-visible, .jd-c button:focus-visible, .lab-range:focus-visible,
+  .pr-sol summary:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+  .lab-range { width:min(100%,300px); margin-top:12px; accent-color:var(--teal); }
+  .lab-hint { font-size:12.5px; color:var(--mute); margin:9px auto 0; max-width:52ch; }
+
+  .jd { list-style:none; margin:0; padding:0; text-align:left; }
+  .jd li { display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center;
+           padding:9px 0; border-bottom:1px solid var(--rule); }
+  .jd li:last-child { border-bottom:0; }
+  .jd-t { font-size:14px; }
+  .jd-c { display:flex; gap:6px; }
+  .jd-w { grid-column:1 / -1; font-size:13px; color:var(--mute); padding:2px 0 1px; }
+  .jd li.right .jd-w { color:var(--teal); }
+  .jd li.wrong .jd-w { color:#a85a1d; }
+  .jd li.right .jd-c button.picked { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .jd li.wrong .jd-c button.picked { background:#a85a1d; border-color:#a85a1d; color:#fff; }
+  .lab-ask { font-size:13.5px; color:var(--mute); text-align:left; margin:0 0 4px; }
+  .lab-score { font-family:var(--sans); font-size:12px; color:var(--teal); margin:10px 0 0; text-align:left; min-height:1.2em; }
+
+  /* ---- practice solutions ---- */
+  .pr-list li { display:block; }
+  .pr-top { display:flex; gap:10px; justify-content:space-between; }
+  .pr-sol { margin-top:6px; }
+  .pr-sol summary { cursor:pointer; color:var(--teal); font-family:var(--sans); font-size:11px;
+                    letter-spacing:.05em; text-transform:uppercase; width:max-content; }
+  .pr-sol[open] summary { margin-bottom:6px; }
+  .pr-steps { margin:0 0 6px; padding-left:19px; font-size:13.5px; color:#33445c; }
+  .pr-steps li { display:list-item; padding:0; border:0; margin-bottom:3px; }
+  .pr-steps li::before { content:none; }
+  .pr-a { font-size:13.5px; margin:0; }
+  .pr-sol .lab-wrap, .pr-sol figure { margin:10px 0 2px; }
+  .wk-show { margin:12px 0 4px; }
+  .wk-show figure, .wk-show .lab-wrap { margin:0; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
   @media print { .turn details { display:block; } .turn summary { display:none; }
                  .turn details::before { content:"Answer. "; font-weight:700; } }
 
@@ -611,7 +754,20 @@ const page = (meta, chapters) => `<!doctype html>
   nav.toc li { margin-bottom:5px; break-inside:avoid; }
   nav.toc a { color:var(--ink); text-decoration:none; } nav.toc a:hover { color:var(--teal); }
 
-  @media print { .chapter { break-before:page; } nav.toc ol { columns:2; } a { color:inherit; } }
+  /* Print is still a book: every disclosure opens, the controls go, and each
+     lab falls back to its first frame, which is why frame 0 is authored as the
+     one that stands alone. */
+  @media print {
+    .chapter { break-before:page; } nav.toc ol { columns:2; } a { color:inherit; }
+    .pr-sol, .turn details { display:block; }
+    .pr-sol summary { display:none; }
+    .pr-sol::before { content:"Solution."; font-family:var(--sans); font-size:11px;
+                      letter-spacing:.05em; text-transform:uppercase; color:var(--teal); }
+    .lab-btns, .lab-range, .lab-hint, .jd-c { display:none; }
+    .lab-frame { display:none !important; }
+    .lab-frame[data-i="0"] { display:block !important; }
+    .jd-w { display:block; color:var(--mute) !important; }
+  }
 </style></head><body>
 <header class="cover">
   <div class="dots"><i style="background:${C.orange}"></i><i style="background:${C.teal}"></i></div>
@@ -633,6 +789,61 @@ const page = (meta, chapters) => `<!doctype html>
 </div>
 <svg width="0" height="0"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5"
   markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="${C.ink}"/></marker></defs></svg>
+<script>
+/* The whole runtime. It switches between frames that were drawn at build
+   time and marks answers right or wrong. It computes no mathematics, which
+   is why an interactive figure here can never disagree with a printed one. */
+(function () {
+  var show = function (lab, i) {
+    var fr = lab.querySelectorAll('.lab-frame');
+    for (var k = 0; k < fr.length; k++) fr[k].classList.toggle('on', k === i);
+    var bs = lab.querySelectorAll('.lab-b');
+    for (var k = 0; k < bs.length; k++) {
+      var on = +bs[k].dataset.i === i;
+      bs[k].classList.toggle('on', on);
+      bs[k].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+  };
+
+  var labs = document.querySelectorAll('[data-lab="frames"]');
+  for (var n = 0; n < labs.length; n++) (function (lab) {
+    lab.addEventListener('click', function (e) {
+      var b = e.target.closest('.lab-b');
+      if (b) show(lab, +b.dataset.i);
+    });
+    var r = lab.querySelector('.lab-range');
+    if (r) r.addEventListener('input', function () { show(lab, +r.value); });
+    show(lab, 0);
+  })(labs[n]);
+
+  var judges = document.querySelectorAll('[data-lab="judge"]');
+  for (var n = 0; n < judges.length; n++) (function (lab) {
+    var rows = lab.querySelectorAll('.jd li');
+    var score = lab.querySelector('.lab-score');
+    var tally = function () {
+      var done = 0, right = 0;
+      for (var k = 0; k < rows.length; k++) {
+        if (rows[k].dataset.done) { done++; if (rows[k].classList.contains('right')) right++; }
+      }
+      score.textContent = done ? right + ' of ' + done + ' judged correctly'
+        + (done === rows.length ? '.' : ', ' + (rows.length - done) + ' to go.') : '';
+    };
+    lab.addEventListener('click', function (e) {
+      var b = e.target.closest('.jd-c button');
+      if (!b) return;
+      var li = b.closest('li');
+      var ok = b.dataset.v === li.dataset.ok;
+      li.classList.remove('right', 'wrong');
+      li.classList.add(ok ? 'right' : 'wrong');
+      li.dataset.done = '1';
+      var picked = li.querySelectorAll('.jd-c button');
+      for (var k = 0; k < picked.length; k++) picked[k].classList.toggle('picked', picked[k] === b);
+      li.querySelector('.jd-w').hidden = false;
+      tally();
+    });
+  })(judges[n]);
+})();
+</script>
 </body></html>`;
 
 /* -------------------------------------------------------------------- run */

@@ -37,6 +37,12 @@ export default {
       ],
       answer: 'g(0) = −3, g(2) = 1, g(−2) = 1.',
       note: 'Written without brackets, −2² means −(2²) = −4 and the answer would come out as −7. The brackets are not decoration.',
+      show: { kind: 'frames', label: 'Each input, put through the rule',
+        frames: [
+          { kind: 'machine', rule: 'x^2 - 3', input: '0', output: '-3', pick: 'g(0)', say: '0 squared is 0, then subtract 3.' },
+          { kind: 'machine', rule: 'x^2 - 3', input: '2', output: '1', pick: 'g(2)', say: '2 squared is 4, then subtract 3.' },
+          { kind: 'machine', rule: 'x^2 - 3', input: '-2', output: '1', pick: 'g(-2)', say: 'Minus two squared is also 4. The brackets matter: it is the input that is squared, so the minus is squared with it.' }
+        ] },
       turn: { ask: 'For g(x) = x^2 - 3, find g(1), g(-1), and g(4).', a: 'g(1) = −2, g(−1) = −2, g(4) = 13.' } },
 
     { t: 'example', n: 2,
@@ -49,6 +55,8 @@ export default {
       ],
       answer: 't = 3.',
       note: 'Checking an inverse question by running the rule forwards costs one line and catches nearly every sign error.',
+      show: { kind: 'machine', rule: '5 - 2t', input: '3', output: '-1', inLabel: 'the input we solved for', outLabel: 'the output we were given',
+        caption: 'Solving ran the arrow backwards; this checks it forwards. Both directions agree, which costs one line and catches nearly every sign error.' },
       turn: { ask: 'For h(t) = 5 - 2t, solve h(t) = 11.', a: 't = −3, since 5 − 2t = 11 gives −2t = 6. Check: 5 − 2(−3) = 11.' } },
 
     { t: 'h', text: 'Substituting something that is not a number' },
@@ -76,6 +84,8 @@ export default {
       ],
       answer: 'f(x + h) = x² + 2xh + h², and f(x + h) − f(x) = 2xh + h².',
       note: 'Every term that survives has an h in it. That is not a coincidence, and chapter 12 depends on it.',
+      show: { kind: 'blanks', rule: 'f(\u2b1a) = \u2b1a\u00b2', sub: 'the input is the whole expression x + h', result: '(x+h)\u00b2 = x\u00b2 + 2xh + h\u00b2',
+        caption: 'The bracket is what makes the middle term appear. Writing x\u00b2 + h\u00b2 loses 2xh, and with it the whole of chapter 12.' },
       turn: { ask: 'For f(x) = x^2 + 1, write f(x + h) and simplify f(x + h) - f(x).', a: 'f(x + h) = x² + 2xh + h² + 1, and the difference is 2xh + h². The constant cancels, so the answer matches the plain square.' } },
 
     { t: 'h', text: 'Four ways to hold the same function' },
@@ -98,6 +108,9 @@ export default {
       ],
       answer: 'f(x) = 2x + 1; "double the input, then add one"; the points (0, 1), (1, 3), (2, 5).',
       note: 'Three representations of one rule, and the fourth is the graph beside them. The table was the given form and the formula was recovered, which is the direction textbooks drill least and applications need most.',
+      show: { kind: 'graph', f: x => 2 * x + 1, title: 'THE RECOVERED RULE', note: 'f(x)=2x+1', x0: -2, x1: 4, y0: -3, y1: 9,
+        marks: [[0, 1], [1, 3], [2, 5]], w: 280, h: 200,
+        caption: 'The three given rows marked, and the rule that fits them drawn through. Infinitely many curves pass through three points; this is the simplest, and the table alone cannot prove it is the right one.' },
       turn: { ask: 'A table gives f(0) = 4, f(1) = 7, f(2) = 10. Write the formula and check it on a row you did not use.',
         a: 'f(x) = 3x + 4. Check at x = 2: 6 + 4 = 10.' } }
   ],

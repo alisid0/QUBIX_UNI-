@@ -39,6 +39,13 @@ export default {
       ],
       answer: 'f(g(5)) = 4 and g(f(5)) = 22.',
       note: 'The gap between 4 and 22 is a useful shock. Squaring after subtracting is a very different instruction from subtracting after squaring.',
+      show: { kind: 'frames', label: 'Run the pair in each order',
+        frames: [
+          { kind: 'chain', stages: ['g(x)=x-3', 'f(x)=x^2'], input: '5', values: [2, 4], pick: 'f(g(5))',
+            say: 'Subtract first, then square: 5 becomes 2, and 2 squared is 4.' },
+          { kind: 'chain', stages: ['f(x)=x^2', 'g(x)=x-3'], input: '5', values: [25, 22], pick: 'g(f(5))',
+            say: 'Square first, then subtract: 5 becomes 25, and 25 minus 3 is 22. Watch the number on the wire.' }
+        ] },
       turn: { ask: 'With the same f and g, find f(g(1)) and g(f(1)).', a: 'f(g(1)) = f(−2) = 4; g(f(1)) = g(1) = −2.' } },
 
     { t: 'example', n: 2,
@@ -50,6 +57,8 @@ export default {
       ],
       answer: 'f(g(x)) = (x − 3)² and g(f(x)) = x² − 3.',
       note: 'Chapter 7 met (x − 3)² as a shift of the parent x². It is the same expression, now arrived at from a different direction.',
+      show: { kind: 'graph', f: x => (x - 3) * (x - 3), second: { f: x => x * x - 3 }, title: 'THE TWO COMPOSITES', note: '(x-3)^2 and x^2-3', x0: -3, x1: 7, y0: -5, y1: 10, w: 290, h: 215,
+        caption: 'Same two rules, opposite orders, and plainly different curves. The teal one is (x \u2212 3)\u00b2, which chapter 7 would call the parent shifted right 3.' },
       turn: { ask: 'For f(x) = x + 4 and g(x) = 2x, write f(g(x)) and g(f(x)).', a: 'f(g(x)) = 2x + 4; g(f(x)) = 2x + 8.' } },
 
     { t: 'h', text: 'The domain of a composite' },
@@ -65,6 +74,8 @@ export default {
       ],
       answer: 'x at least 4, that is [4, infinity).',
       note: 'Neither rule alone bars x = 1. The chain does. This is why the domain of a composite must be worked out from the chain, not inherited from either link.',
+      show: { kind: 'numberline', from: -2, to: 10, spans: [{ a: -2, b: 4, tone: 'out', label: 'g gives f a negative' }, { a: 4, b: 10, label: 'allowed' }], marks: [{ x: 4, label: 'included' }],
+        caption: 'Neither rule alone refuses x = 1. The chain does, because g hands f the number \u22123 and f will not take it.' },
       turn: { ask: 'For f(x) = sqrt(x) and g(x) = x + 7, what inputs are allowed for f(g(x))?', a: '[−7, infinity), since x + 7 must be non-negative.' } },
 
     { t: 'h', text: 'The chain, drawn as one machine' },
@@ -87,6 +98,8 @@ export default {
       ],
       answer: 'f(x) = sqrt(x) and g(x) = 3x − 5, with domain [5/3, infinity).',
       note: 'Decomposing like this, outer rule and inner rule, is the exact preparation the chain rule needs in Book 3. There the question is always "what is the outer function, and what is the inner one?"',
+      show: { kind: 'chain', stages: ['g(x)=3x-5', 'f(x)=sqrt(x)'], input: '7', values: [16, 4],
+        caption: 'The decomposition, run on one input. Recognising an outer rule and an inner rule like this is the whole preparation for the chain rule in Book 3.' },
       turn: { ask: 'Write h(x) = (4x + 1)^3 as f(g(x)) and state its domain.',
         a: 'f(x) = x³ and g(x) = 4x + 1. Both accept every real number, so the domain is all real numbers.' } }
   ],

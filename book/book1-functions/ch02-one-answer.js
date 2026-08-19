@@ -16,6 +16,21 @@ export default {
       { kind: 'mapping', pairs: [['1', '3'], ['2', '4', '9'], ['3', '5']], broken: '2', caption: 'not a function' }
     ] },
 
+{ t: 'lab', kind: 'frames', id: 'fork',
+      label: 'Add one arrow and watch it break',
+      frames: [
+        { kind: 'mapping', pairs: [['1', '3'], ['2', '4'], ['3', '5']], pick: 'one each',
+          say: 'Every input has exactly one arrow leaving it. This is a function.' },
+        { kind: 'mapping', pairs: [['1', '7'], ['2', '7'], ['3', '7']], pick: 'all share',
+          say: 'Three inputs, one shared output, and nothing broken. This is the rule "ignore the input and say 7". Sharing is allowed.' },
+        { kind: 'mapping', pairs: [['1', '3'], ['2', '4', '9'], ['3', '5']], broken: '2', pick: 'add a fork',
+          say: 'One extra arrow, and it is no longer a function. Ask it for its value at 2 and it offers a choice.' },
+        { kind: 'mapping', pairs: [['1', '3'], ['3', '5']], pick: 'remove an input',
+          say: 'The fork is gone, repaired by refusing the input 2 rather than by changing the arrows. Chapter 4 calls the surviving set the domain.' }
+      ],
+      hint: 'Only the third frame fails, and it fails for a reason no other frame shares: one input, two arrows.',
+      caption: 'Four relations. Compare the second with the third: repeated outputs are harmless, a repeated input is fatal.' },
+
     { t: 'p', text: 'On the left, every input has exactly one arrow leaving it. On the right, the input 2 points at both 4 and 9. Ask that rule for its value at 2 and it offers you a choice, which is precisely what a function may never do.' },
 
     { t: 'p', text: 'Now change the left picture so that 1, 2, and 3 all point at 7. Nothing breaks. Every input still has one arrow, so it is still a function, and a very ordinary one: it is the rule "ignore the input and say 7". Repetition among outputs is not a fault. **Only a fork among the outputs of a single input is a fault.**' },
@@ -37,6 +52,8 @@ export default {
         'The outputs 1 and 1 repeat, but they belong to the different inputs 4 and 6.'
       ],
       answer: 'Yes. A repeated output is not a defect.',
+      show: { kind: 'mapping', pairs: [['4', '1'], ['5', '2'], ['6', '1'], ['7', '3']],
+        caption: 'The set drawn. The output 1 arrives twice, from 4 and from 6, and no input has more than one arrow leaving it.' },
       turn: { ask: 'Is {(2, 8), (3, 9), (2, 7)} a function?',
         a: 'No. The first entry 2 appears twice, with 8 and with 7.' } },
 
@@ -48,6 +65,21 @@ export default {
         ['1/x', 'It has no value at x = 0, so it cannot be a function.', 'Zero is simply not an allowed input. A function is entitled to refuse inputs; it is not entitled to give two answers to one it accepts.'],
         ['sqrt(x)', 'The square roots of 9 are 3 and −3, so it forks.', 'The symbol sqrt(x) is defined to mean the *principal*, non-negative root. sqrt(9) is 3 and nothing else. The rule "a square root of x" does fork, and is not a function; the rule sqrt(x) does not.']
       ] },
+
+{ t: 'lab', kind: 'frames', id: 'squarer',
+      label: 'Squaring, and trying to undo it',
+      frames: [
+        { kind: 'mapping', pairs: [['3', '9']], pick: 'square 3',
+          say: 'Three goes in, nine comes out. One answer.' },
+        { kind: 'mapping', pairs: [['3', '9'], ['-3', '9']], pick: 'square −3 too',
+          say: 'Minus three also gives nine. Two inputs, one shared output, and the promise is intact: ask either input and you get one answer.' },
+        { kind: 'mapping', pairs: [['9', '3', '-3']], broken: '9', pick: 'now reverse it',
+          say: '"A square root of 9" points at both 3 and −3. Read backwards, the sharing has become a fork, and this is not a function.' },
+        { kind: 'mapping', pairs: [['9', '3'], ['4', '2'], ['1', '1']], pick: 'principal root',
+          say: 'The symbol sqrt(x) is defined to take the non-negative root only. One arrow each, and it is a function again.' }
+      ],
+      hint: 'Frames 2 and 3 are the same two facts read in opposite directions. Which direction you read decides whether there is a fault.',
+      caption: 'Why "the square of x" is a function and "a square root of x" is not, in four presses. Chapter 9 turns frame 3 into a general rule about reversing.' },
 
     { t: 'callout', title: 'The edge case worth remembering',
       text: 'Refusing an input is legal. Giving an accepted input two answers is not. Chapter 4 gives the refused inputs a name: they lie outside the domain.' },
@@ -61,6 +93,13 @@ export default {
         'One input, two candidate outputs, no rule to choose between them.'
       ],
       answer: 'Squaring is a function. "A square root of x" is not, unless the principal root is specified, at which point it becomes sqrt(x) and is.',
+      show: { kind: 'frames', label: 'The two rules, side by side',
+        frames: [
+          { kind: 'mapping', pairs: [['3', '9'], ['-3', '9']], pick: 'the square of x',
+            say: 'Each input has one arrow. A function.' },
+          { kind: 'mapping', pairs: [['9', '3', '-3']], broken: '9', pick: 'a square root of x',
+            say: 'One input, two arrows. Not a function, until the principal root is specified.' }
+        ] },
       turn: { ask: 'Does "the cube of x" define a function? Does "a cube root of x" over the real numbers?',
         a: 'Both do. Cubing gives one answer, and over the real numbers a number has exactly one cube root, because cubing preserves sign. The ambiguity that spoils square roots simply does not arise.' } },
 
@@ -81,6 +120,8 @@ export default {
       ],
       answer: 'Not in general. It is a function only when each pupil plays exactly one sport.',
       note: 'Rules stated in English very often hide this. "A sport they play" quietly assumes there is exactly one, and the assumption is doing all the work.',
+      show: { kind: 'mapping', pairs: [['Ann', 'hockey', 'tennis'], ['Ben', 'chess']], broken: 'Ann',
+        caption: 'Ann plays two sports, so the rule forks at her. The repair in the turn below changes what is being asked, not who plays what.' },
       turn: { ask: 'Repair the rule so it is a function whatever the class turns out to be.',
         a: 'Answers vary. "The number of sports the pupil plays" works: every pupil has exactly one such number, and a pupil who plays none has the perfectly good output 0.' } },
 
@@ -94,6 +135,8 @@ export default {
       ],
       answer: 'It is a function. The student has confused sharing with splitting.',
       note: 'The property they were reaching for matters in chapter 9: a rule whose outputs are shared cannot be run backwards. So the observation was worth making and the conclusion was wrong.',
+      show: { kind: 'mapping', pairs: [['1', '5'], ['2', '5'], ['3', '5']],
+        caption: 'Every input served once, by the same output. A function, and a very ordinary one: the rule is "say 5".' },
       turn: { ask: 'Give a set of three pairs that is a function but has only two different outputs.',
         a: 'Answers vary; for example {(1, 7), (2, 7), (3, 9)}. The inputs must all differ; the outputs may repeat freely.' } }
   ],

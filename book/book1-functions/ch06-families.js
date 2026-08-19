@@ -55,6 +55,8 @@ export default {
       ],
       answer: 'Quadratic. The rule is x² + 2x + 5.',
       note: 'Check one row that was not used to build it: at x = 3, 9 + 6 + 5 = 20. It agrees.',
+      show: { kind: 'steps', f: x => x * x + 2 * x + 5, from: 0, to: 4, title: 'THE RECOVERED RULE', note: 'x^2+2x+5', x0: -0.6, x1: 5.4, y0: 0, y1: 32, w: 300, h: 220,
+        caption: 'The rises are 3, 5, 7 and 9, each 2 more than the last. A constant second difference is what made this quadratic rather than exponential.' },
       turn: { ask: 'A table gives 3, 6, 11, 18, 27 for inputs 0 to 4. Which family, and what is the rule?', a: 'Second differences are all 2, so quadratic; the rule is x² + 2x + 3.' } },
 
     { t: 'example', n: 2,
@@ -66,6 +68,8 @@ export default {
       ],
       answer: 'A change of 1, against a change of 7.',
       note: 'This is exactly why a single number cannot describe how fast x² grows. Chapter 10 answers by measuring over a stated interval; chapter 12 answers by shrinking the interval to nothing.',
+      show: { kind: 'steps', f: x => x * x, from: 0, to: 4, title: 'THE SAME STEP, DIFFERENT RISE', note: 'x^2', x0: -0.6, x1: 5.4, y0: -1, y1: 18, w: 300, h: 220,
+        caption: 'The first rise is 1 and the fourth is 7, from input steps of the same size. That is why no single number can describe how fast x\u00b2 grows.' },
       turn: { ask: 'For y = x^2, compare the output change from x = 1 to 2 with the change from x = 5 to 6.', a: '3 against 11. Same input step, very different output change.' } },
 
     { t: 'h', text: 'A warning about the word "exponential"' },
@@ -101,6 +105,8 @@ export default {
       ],
       answer: 'Exponential, with the rule 4·3^x.',
       note: 'Check a row not used to build it: at x = 2, 4 × 9 = 36. It agrees. The value at x = 0 is always the multiplier, because 3 to the power 0 is 1.',
+      show: { kind: 'steps', f: x => 4 * Math.pow(3, x), from: 0, to: 3, title: 'RATIOS, NOT DIFFERENCES', note: '4\u00b73^x', x0: -0.5, x1: 4, y0: -6, y1: 120, w: 300, h: 220,
+        caption: 'The rises 8, 24 and 72 look hopeless until you divide instead of subtract: each output is three times the last.' },
       turn: { ask: 'Identify the family and rule for outputs 5, 10, 20, 40 at inputs 0, 1, 2, 3.',
         a: 'Exponential, ratio 2, so 5·2^x.' } },
 
@@ -114,6 +120,13 @@ export default {
       ],
       answer: 'The data is 2^x. The linear rule fails at the second point.',
       note: 'Matching one point proves nothing, which is why the first test was abandoned as soon as a second point disagreed. Any rule can be made to pass through a single point.',
+      show: { kind: 'frames', label: 'Test each candidate against the data',
+        frames: [
+          { kind: 'graph', f: x => Math.pow(2, x), title: 'THE DATA: 1, 2, 4, 8', note: '2^x', x0: -0.5, x1: 3.5, y0: -1, y1: 9, w: 265, h: 195, marks: [[0, 1], [1, 2], [2, 4], [3, 8]], pick: '2^x fits',
+            say: 'All four points sit on the curve.' },
+          { kind: 'graph', f: x => 2 * x + 1, title: 'THE LINEAR CANDIDATE', note: '2x+1', x0: -0.5, x1: 3.5, y0: -1, y1: 9, w: 265, h: 195, marks: [[0, 1], [1, 2], [2, 4], [3, 8]], pick: '2x+1 fails',
+            say: 'It passes through the first point and misses the other three. One disagreement is enough to reject it.' }
+        ] },
       turn: { ask: 'Do the outputs 1, 4, 9, 16 at inputs 1, 2, 3, 4 fit x^2 or 5x - 4? Test both.',
         a: 'x². The linear rule gives 1, 6, 11, 16, matching at the first and last inputs and failing in between, which is a good reminder that two agreements are not a proof either.' } }
   ],

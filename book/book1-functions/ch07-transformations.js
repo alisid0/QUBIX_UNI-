@@ -52,6 +52,8 @@ export default {
         'Check with a point. The parent has its low point at (0, 0). The new rule has its low point where the bracket is zero, at x = −4, with height −1.'
       ],
       answer: 'Left 4, and down 1. The low point moves from (0, 0) to (−4, −1).',
+      show: { kind: 'graph', f: x => (x + 4) * (x + 4) - 1, second: { f: x => x * x }, title: 'LEFT 4, DOWN 1', note: '(x+4)^2-1', x0: -8, x1: 4, y0: -3, y1: 9, w: 290, h: 210, marks: [[-4, -1], [0, 0]],
+        caption: 'The parent faint behind, and both low points marked. The feature moved from (0, 0) to (\u22124, \u22121) exactly as the two signs predicted.' },
       turn: { ask: 'Describe the change from x^2 to (x - 5)^2 + 3.', a: 'Right 5 and up 3; the low point moves to (5, 3).' } },
 
     { t: 'example', n: 2,
@@ -63,6 +65,8 @@ export default {
         'Check: at x = 3 the bracket is 0 and the height is 5, so the low point sits at (3, 5), which is three right and five up from the origin.'
       ],
       answer: '(x − 3)² + 5.',
+      show: { kind: 'graph', f: x => (x - 3) * (x - 3) + 5, second: { f: x => x * x }, title: 'RIGHT 3, UP 5', note: '(x-3)^2+5', x0: -4, x1: 8, y0: -1, y1: 13, w: 290, h: 210, marks: [[3, 5], [0, 0]],
+        caption: 'Built rather than described. The bracket is zero at x = 3, which is where the low point lands.' },
       turn: { ask: 'Write a square function shifted left 2 and down 6.', a: '(x + 2)² − 6.' } },
 
     { t: 'callout', title: 'Where this returns',
@@ -78,6 +82,15 @@ export default {
       ],
       answer: '(−2, −2).',
       note: 'Notice that this was answered without knowing what f is. A transformation acts on the picture, so any named feature of the parent can be tracked without the formula.',
+      show: { kind: 'frames', label: 'One move at a time',
+        frames: [
+          { kind: 'graph', f: x => (x - 1) * (x - 1) + 2, title: 'THE PARENT, WITH ITS LOW POINT', note: 'y=f(x)', x0: -5, x1: 5, y0: -4, y1: 8, w: 275, h: 200, marks: [[1, 2]], pick: 'start',
+            say: 'A curve with a low point at (1, 2). What the rule is does not matter.' },
+          { kind: 'graph', f: x => (x + 2) * (x + 2) + 2, second: { f: x => (x - 1) * (x - 1) + 2 }, title: 'INSIDE: LEFT 3', note: 'f(x+3)', x0: -5, x1: 5, y0: -4, y1: 8, w: 275, h: 200, marks: [[-2, 2]], pick: 'f(x+3)',
+            say: 'Plus three inside moves the picture three to the left, against its sign. The low point is at x = \u22122.' },
+          { kind: 'graph', f: x => (x + 2) * (x + 2) - 2, second: { f: x => (x + 2) * (x + 2) + 2 }, title: 'OUTSIDE: DOWN 4', note: 'f(x+3)-4', x0: -5, x1: 5, y0: -4, y1: 8, w: 275, h: 200, marks: [[-2, -2]], pick: 'then -4',
+            say: 'Minus four outside lowers every height by four, and does what it says. The low point is at (\u22122, \u22122).' }
+        ] },
       turn: { ask: 'The graph of y = f(x) has a high point at (4, 7). Where is the high point of y = f(x - 1) + 2?',
         a: '(5, 9).' } },
 
@@ -91,6 +104,8 @@ export default {
       ],
       answer: '(x − 3)² + 2, with its low point at (3, 2).',
       note: 'This is completing the square, arriving as a chapter 7 question rather than an algebra exercise. Its purpose here is to expose the shift that was hidden by the expansion.',
+      show: { kind: 'graph', f: x => x * x - 6 * x + 11, second: { f: x => x * x }, title: 'THE HIDDEN SHIFT', note: '(x-3)^2+2', x0: -2, x1: 8, y0: -1, y1: 12, w: 290, h: 210, marks: [[3, 2], [0, 0]],
+        caption: 'Expanded, the shift was invisible. Completing the square put it back: the same parabola, moved right 3 and up 2.' },
       turn: { ask: 'Write y = x^2 + 4x + 9 in shifted form and state its low point.',
         a: '(x + 2)² + 5, with its low point at (−2, 5).' } }
   ],

@@ -42,6 +42,8 @@ export default {
       ],
       answer: '4.',
       note: 'The expression still has no value at x = 2. The limit is 4 regardless, and that gap between value and limit is the whole subject.',
+      show: { kind: 'graph', f: x => (x * x - 4) / (x - 2), title: 'A HOLE AT x = 2', note: '(x^2-4)/(x-2)', x0: -1, x1: 5, y0: 0, y1: 8, w: 280, h: 205, holes: [[2, 4]],
+        caption: 'The line x + 2 with one point punched out. The curve arrives at the edge of the hole from both sides, which is why the limit is 4 although the value does not exist.' },
       turn: { ask: 'Evaluate the limit of (x^2 - 25)/(x - 5) as x approaches 5.', a: '10, by factoring to (x − 5)(x + 5) and cancelling.' } },
 
     { t: 'example', n: 2,
@@ -54,6 +56,8 @@ export default {
       ],
       answer: 'No limit exists at 0.',
       note: 'Compare with the first example. Both expressions are undefined at the point in question; one has a limit there and the other has none. Being undefined settles nothing.',
+      show: { kind: 'graph', f: x => 1 / x, title: 'THE TWO SIDES DISAGREE', note: '1/x', x0: -3, x1: 3, y0: -8, y1: 8, w: 280, h: 215,
+        caption: 'Approaching zero from the right the curve climbs off the top; from the left it falls off the bottom. There is no number both sides are heading for.' },
       turn: { ask: 'Does 1/x^2 have a limit as x approaches 0? How does it differ from 1/x?',
         a: 'It has no limit either, but for a different reason: both sides climb without bound rather than disagreeing. The two sides agree on the direction and still settle on no number.' } },
 
@@ -79,6 +83,8 @@ export default {
       ],
       answer: '3.',
       note: 'The rule still has no value at 0. The graph is the line x + 3 with a hole punched at (0, 3).',
+      show: { kind: 'graph', f: x => (x * x + 3 * x) / x, title: 'A HOLE AT x = 0', note: '(x^2+3x)/x', x0: -4, x1: 4, y0: -2, y1: 8, w: 280, h: 205, holes: [[0, 3]],
+        caption: 'The line x + 3, missing exactly one point. Cancelling the x was legal everywhere except at the point the cancellation removed.' },
       turn: { ask: 'Evaluate the limit of (x^2 - 5x)/x as x approaches 0.',
         a: '−5. Factor to x(x − 5), cancel the x, and the outputs crowd around −5.' } },
 
@@ -92,6 +98,8 @@ export default {
       ],
       answer: 'The limit is 4; the value is 10.',
       note: 'This is a function with a single point lifted out of place. It has a limit everywhere, a value everywhere, and one point where the two differ, which is precisely what discontinuity at a point means.',
+      show: { kind: 'graph', f: x => x + 1, title: 'LIMIT 4, VALUE 10', note: 'lifted at x = 3', x0: 0, x1: 6, y0: 0, y1: 11, w: 280, h: 210, holes: [[3, 4]], marks: [[3, 10]],
+        caption: 'The hollow circle is where the curve is heading; the solid one is where the function actually is. Both exist and they disagree, which is what discontinuity at a point looks like.' },
       turn: { ask: 'g(x) = 2x for every x except x = 5, where g(5) = 0. What is the limit at 5, and the value?',
         a: 'The limit is 10 and the value is 0. The definition at the point cannot affect the limit.' } }
   ],

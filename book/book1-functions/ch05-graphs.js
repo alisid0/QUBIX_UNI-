@@ -37,6 +37,9 @@ export default {
         'The five points lie on a straight line, which is what the family in chapter 6 predicts.'
       ],
       answer: '(−2, −5), (−1, −3), (0, −1), (1, 1), (2, 3).',
+      show: { kind: 'graph', f: x => 2 * x - 1, title: 'THE FIVE PAIRS', note: 'y=2x-1', x0: -3, x1: 3, y0: -6, y1: 4, w: 270, h: 200,
+        marks: [[-2, -5], [-1, -3], [0, -1], [1, 1], [2, 3]],
+        caption: 'Input across, output up, in that order. The line is what every other input would have given.' },
       turn: { ask: 'Plot y = 3x + 2 for x = -2, 0, 2.', a: '(−2, −4), (0, 2), (2, 8), lying on a straight line.' } },
 
     { t: 'figure', kind: 'graph', f: x => 2 * x - 1, title: 'THE FIVE POINTS', note: 'y=2x-1', x0: -3, x1: 3, y0: -6, y1: 4, w: 250, h: 195,
@@ -65,6 +68,8 @@ export default {
       ],
       answer: 'A single lowest point at the origin, symmetric about the vertical axis, unbounded above and bounded below by 0.',
       note: 'That last sentence is the range from chapter 4, read off the picture instead of argued from the formula.',
+      show: { kind: 'graph', f: x => x * x, title: 'FALLS, FLATTENS, RISES', note: 'g(x)=x^2', x0: -3, x1: 3, y0: -1, y1: 8, w: 270, h: 200, marks: [[0, 0]],
+        caption: 'The single flat point is marked. Everything to its left falls and everything to its right rises, which is the whole reading in one picture.' },
       turn: { ask: 'Read the behaviour of f(x) = 2x - 1 the same way: where does it rise, where is it flat, where does it cross the axes?',
         a: 'It rises everywhere and is flat nowhere. It crosses the vertical axis at (0, −1) and the horizontal axis at (0.5, 0).' } },
 
@@ -90,6 +95,13 @@ export default {
       ],
       answer: 'It cannot be the graph of a function.',
       note: 'One pair of points settles it. Proving a graph is a function needs every vertical line; proving it is not needs only one.',
+      show: { kind: 'frames', label: 'Sweep the line',
+        frames: [
+          { kind: 'linetest', f: x => 2 * x - 1, at: [1], title: 'ONE HIT: A FUNCTION', x0: -2, x1: 4, y0: -4, y1: 8, w: 265, h: 200, pick: 'one output',
+            say: 'The line at x = 1 meets the graph once. That input has one output, as required.' },
+          { kind: 'linetest', f: x => Math.sqrt(Math.max(0, 9 - (x - 1) * (x - 1))) + 4, second: x => -Math.sqrt(Math.max(0, 9 - (x - 1) * (x - 1))) + 6, at: [1], title: 'TWO HITS: NOT A FUNCTION', x0: -2, x1: 4, y0: -4, y1: 8, w: 265, h: 200, pick: 'two outputs',
+            say: 'The line at x = 1 meets it twice, at heights 4 and 7. One pair of points is enough to settle it.' }
+        ] },
       turn: { ask: 'A graph passes through (2, 5) and (4, 5). What can you conclude?',
         a: 'Nothing against it: two inputs sharing an output is allowed. It does show the rule is not one-to-one, which chapter 9 will care about.' } },
 
@@ -103,6 +115,9 @@ export default {
       ],
       answer: 'Intercepts (0, −4), (−2, 0) and (2, 0); lowest point (0, −4).',
       note: 'Here the vertical intercept and the lowest point happen to coincide. That is a feature of this rule, not a general fact.',
+      show: { kind: 'graph', f: x => x * x - 4, title: 'THREE CROSSINGS', note: 'y=x^2-4', x0: -4, x1: 4, y0: -6, y1: 6, w: 270, h: 210,
+        marks: [[0, -4], [-2, 0], [2, 0]],
+        caption: 'Two inputs share the output 0, which is permitted, and the vertical intercept happens to coincide with the lowest point.' },
       turn: { ask: 'State the intercepts of y = x^2 - 9.',
         a: '(0, −9) on the vertical axis, and (−3, 0) and (3, 0) on the horizontal.' } }
   ],
