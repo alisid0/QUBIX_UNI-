@@ -14,7 +14,9 @@ import { dirname, join } from 'node:path';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const { meta, stages } = await import(`file://${join(ROOT, 'book', 'spine', 'index.js')}`);
 const { HOW, LEGEND } = await import(`file://${join(ROOT, 'book', 'spine', 'drawable.js')}`);
-const { ATLAS } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-1-2.js')}`);
+const { ATLAS: A12 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-1-2.js')}`);
+const { ATLAS_3_5 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-3-5.js')}`);
+const ATLAS = { ...A12, ...ATLAS_3_5 };
 const { draw, line1d } = await import(`file://${join(ROOT, 'scripts', 'atlas-figures.mjs')}`);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

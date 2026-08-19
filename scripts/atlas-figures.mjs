@@ -90,6 +90,27 @@ export const draw = (o = {}) => {
       b.push(`<polyline points="${r.join(' ')}" fill="none" stroke="${cu.c2 || C.teal}" stroke-width="2" stroke-linecap="round"/>`));
   }
 
+  // closed shapes, circles and conics
+  for (const p of s.polys || []) {
+    const d = p.pts.map(([x, y]) => `${X(x)},${Y(y)}`).join(' ');
+    b.push(`<polygon points="${d}" fill="${p.fill || '#cfe6e1'}" fill-opacity="${p.fill === 'none' ? 0 : 0.65}"
+      stroke="${p.stroke || C.tealText}" stroke-width="${p.wid || 2}"${p.dash ? ' stroke-dasharray="4 3"' : ''}/>`);
+  }
+  for (const c of s.circles || [])
+    b.push(`<circle cx="${X(c.cx)}" cy="${Y(c.cy)}" r="${Math.abs(X(c.cx + c.r) - X(c.cx))}"
+      fill="${c.fill || 'none'}" fill-opacity="${c.fill ? 0.55 : 0}" stroke="${c.stroke || C.teal}"
+      stroke-width="${c.wid || 2}"${c.dash ? ' stroke-dasharray="4 3"' : ''}/>`);
+  for (const e of s.ellipses || [])
+    b.push(`<ellipse cx="${X(e.cx)}" cy="${Y(e.cy)}" rx="${Math.abs(X(e.cx + e.rx) - X(e.cx))}"
+      ry="${Math.abs(Y(e.cy + e.ry) - Y(e.cy))}" fill="${e.fill || 'none'}" fill-opacity="${e.fill ? 0.5 : 0}"
+      stroke="${e.stroke || C.teal}" stroke-width="2"${e.dash ? ' stroke-dasharray="4 3"' : ''}/>`);
+  // measured data, drawn small so a cloud reads as a cloud
+  for (const [x, y] of s.scatter || [])
+    b.push(`<circle cx="${X(x)}" cy="${Y(y)}" r="2.6" fill="${C.ink}" opacity=".72"/>`);
+  for (const bar of s.bars || [])
+    b.push(`<rect x="${X(bar[0])}" y="${Y(bar[2])}" width="${X(bar[1]) - X(bar[0]) - 1}"
+      height="${Y(0) - Y(bar[2])}" fill="#cfe6e1" stroke="${C.tealText}" stroke-width="1"/>`);
+
   // segments, rays, dashed guides
   for (const g of s.segs || []) {
     const [x1, y1, x2, y2, col = C.teal, dash = false, wid = 2.4] = g;
