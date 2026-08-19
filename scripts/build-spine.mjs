@@ -14,6 +14,8 @@ import { dirname, join } from 'node:path';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const { meta, stages } = await import(`file://${join(ROOT, 'book', 'spine', 'index.js')}`);
 const { HOW, LEGEND } = await import(`file://${join(ROOT, 'book', 'spine', 'drawable.js')}`);
+const { ATLAS } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-1-2.js')}`);
+const { draw, line1d } = await import(`file://${join(ROOT, 'scripts', 'atlas-figures.mjs')}`);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -34,7 +36,18 @@ const total = stages.reduce((n, s) => n + s.terms.length, 0);
 const stray = Object.keys(HOW).filter(k => !seen.has(k.toLowerCase()));
 if (stray.length) throw new Error('classified terms that are not in the spine:\n  ' + stray.join('\n  '));
 
+/* Every drawn entry must name a concept that exists, for the same reason the
+   classification must. */
+const strayFig = Object.keys(ATLAS).filter(k => !seen.has(k.toLowerCase()));
+if (strayFig.length) throw new Error('atlas figures for concepts not in the spine:\n  ' + strayFig.join('\n  '));
+
 const how = t => HOW[t] || 'direct';
+const figure = t => {
+  const spec = ATLAS[t];
+  if (!spec) return '';
+  return spec.line ? line1d(spec) : draw(spec);
+};
+const drawn = stages.flatMap(s => s.terms).filter(t => ATLAS[t]).length;
 const tally = ks => Object.fromEntries(LEGEND.map(([k]) => [k, ks.filter(x => x === k).length]));
 const overall = tally(stages.flatMap(s => s.terms.map(how)));
 const drawableAtAll = total - overall.none;
@@ -104,10 +117,21 @@ const html = `<!doctype html>
   ol.terms li.h-instance { color:#8c5024; }
   ol.terms li.h-none     { color:#9c3f3c; text-decoration:underline; text-decoration-style:dotted;
                            text-underline-offset:3px; }
+  .plates { display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); }
+  .plate { margin:0; position:relative; }
+  .plate svg.af { width:100%; height:auto; display:block; border:1px solid var(--rule);
+                  border-radius:7px; }
+  .plate-n { position:absolute; top:6px; left:8px; font-family:var(--sans); font-size:9.5px;
+             color:var(--mute); font-variant-numeric:tabular-nums; }
+  .plate figcaption { font-family:var(--sans); font-size:12px; margin-top:6px; color:var(--ink);
+                      line-height:1.35; }
   footer { margin-top:40px; padding:16px 18px; background:var(--paper); border-radius:9px;
            font-size:14px; color:var(--mute); }
   @media print { .stage { break-inside:auto; } ol.terms { columns:2; } }
+  @media print { .plates { grid-template-columns:repeat(3,1fr); } }
 </style></head><body>
+<svg width="0" height="0" aria-hidden="true"><defs><marker id="atip" viewBox="0 0 10 10" refX="9" refY="5"
+  markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16283f"/></marker></defs></svg>
 <header class="top">
   <div class="kick">QUBIX UNIVERSITY · CURRICULUM SOURCE</div>
   <h1>${esc(meta.title)}</h1>
@@ -116,7 +140,7 @@ const html = `<!doctype html>
     <div><b>${total}</b><span>concepts</span></div>
     <div><b>${stages.length}</b><span>stages</span></div>
     <div><b>${drawableAtAll}</b><span>can be drawn, ${Math.round(drawableAtAll / total * 100)}%</span></div>
-    <div><b>${overall.none}</b><span>cannot be drawn at all</span></div>
+    <div><b>${drawn}</b><span>drawn so far</span></div>
   </div>
 </header>
 <div class="wrap">
@@ -144,7 +168,11 @@ ${stages.map(st => {
     <div class="stage-h"><span class="stage-n">${st.n}</span><h2>${esc(st.title)}</h2>
       <span class="stage-c">${st.terms.length} concepts · ${st.terms.length - tally(st.terms.map(how)).none} drawable</span></div>
     <p class="can"><b>By the end</b>${esc(st.can)}</p>
-    <ol class="terms">${st.terms.map(t => `<li class="h-${how(t)}"><span>${++i}</span>${esc(t)}</li>`).join('')}</ol>
+    ${st.terms.some(t => ATLAS[t]) ? `<div class="plates">${st.terms.map(t => {
+      const j = ++i;
+      return ATLAS[t] ? `<figure class="plate"><div class="plate-n">${j}</div>${figure(t)}
+        <figcaption>${esc(t)}</figcaption></figure>` : '';
+    }).join('')}</div>` : `<ol class="terms">${st.terms.map(t => `<li class="h-${how(t)}"><span>${++i}</span>${esc(t)}</li>`).join('')}</ol>`}
   </section>`;
 }).join('\n')}
 <footer>${esc(meta.note)} Every term is listed once: the build refuses to run if two stages claim the same concept.</footer>
