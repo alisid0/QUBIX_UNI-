@@ -65,6 +65,10 @@ const figure = (t, id) => {
   const LAYOUT = ['w', 'h', 'x0', 'x1', 'y0', 'y1', 'grid', 'ticks', 'axes',
                   'arrowheads', 'line', 'from', 'to', 'labels'];
   const base = Object.fromEntries(LAYOUT.filter(k => k in spec).map(k => [k, spec[k]]));
+  // If any one frame draws a circle, every frame gets the squared-up window it
+  // forces, so pressing through a plate does not shift the axes underfoot.
+  if (spec.frames.some(f => (f.circles || []).length) && !spec.keepScale) base.roundBox = true;
+  if (spec.keepScale) base.keepScale = true;
   return `<div class="afr" id="${id}">`
     + spec.frames.map((f, i) => `<div class="afr-f${i ? '' : ' on'}" data-i="${i}">${one({ alt: spec.alt, ...base, ...f })}</div>`).join('')
     + `<div class="afr-b">${spec.frames.map((f, i) =>

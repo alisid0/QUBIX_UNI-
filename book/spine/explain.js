@@ -37,6 +37,28 @@ const cur = (f, behind) => ({ curves: behind ? [{ f: behind, c2: FAINT }, { f }]
 const arrows = (pairs, colour = '#16283f') => pairs.map(([a, b]) => [-2.2, a, 2.2, b, colour]);
 const col = (ys, x, colour) => ys.map(y => [x, y, '', colour]);
 
+// A curve given in polar form, sampled into plane points. Broken into separate
+// strokes wherever the radius runs away, so a hyperbola draws as two branches
+// rather than one stroke flung across the page.
+const polar = (r, o = {}) => {
+  const { a0 = 0, a1 = 2 * Math.PI, n = 480, lim = 14, ...rest } = o;
+  const runs = [[]];
+  for (let i = 0; i <= n; i++) {
+    const t = a0 + (i / n) * (a1 - a0), R = r(t);
+    if (!Number.isFinite(R) || Math.abs(R) > lim) { if (runs.at(-1).length) runs.push([]); continue; }
+    runs.at(-1).push([R * Math.cos(t), R * Math.sin(t)]);
+  }
+  return runs.filter(u => u.length > 1).map(pts => ({ pts, ...rest }));
+};
+// The focus-directrix family, in one parameter. e = 0 is a circle, e < 1 an
+// ellipse, e = 1 a parabola, e > 1 a hyperbola, and the focus stays at the
+// origin throughout, which is the whole point of defining them this way.
+const conic = (e, o = {}) => polar(t => 2 / (1 + e * Math.cos(t)), o);
+// x and y each computed from the same t.
+const param = (fx, fy, t0, t1, o = {}) => [{
+  pts: Array.from({ length: 241 }, (_, i) => { const t = t0 + (i / 240) * (t1 - t0); return [fx(t), fy(t)]; }), ...o }];
+const CIRC = { grid: 'lines', ticks: true, roundBox: true, x0: -4, x1: 4, y0: -4, y1: 4 };
+
 export const EXPLAIN = {
   /* ------------------------------------------------ 1. the plane itself ---- */
   'point': {
@@ -294,6 +316,9 @@ export const EXPLAIN = {
   },
   'distorted scaling': {
     say: 'Axes with different steps. Legal and often useful, but shape can no longer be trusted: circles turn into ovals and steepness lies.',
+    // The one plate whose subject is distortion, so its window is left crooked
+    // on purpose while every other circle plate is squared up.
+    keepScale: true,
     frames: [
       { pick: 'the square', ...P, y0: -12, y1: 12, bands: [[1, 1, 3, 3]], note: 'now a strip' },
       { pick: 'the circle', ...P, y0: -12, y1: 12, circles: [{ cx: 0, cy: 0, r: 3 }], note: 'now an oval' }
@@ -2195,6 +2220,346 @@ export const EXPLAIN = {
     frames: [
       { pick: 'a rectangle', ...P, x0: -4.5, x1: 4.5, y0: -3, y1: 3.5, ...shape([[-2, 0], [1, 0], [1, 2], [-2, 2]], { fill: 'none' }) },
       { pick: 'sheared', ...P, x0: -4.5, x1: 4.5, y0: -3, y1: 3.5, polys: [{ pts: [[-2, 0], [1, 0], [1, 2], [-2, 2]], fill: 'none', c2: FAINT }, { pts: [[-2, 0], [1, 0], [3, 2], [0, 2]], fill: 'none' }], note: 'the base stayed, the top slid' }
+    ]
+  },
+
+  /* ------------------------------- 7. conics, loci and other coordinates ---- */
+  'locus': {
+    say: 'The set of every point obeying some condition, and nothing else. Curves stop being shapes you draw and become answers to a question.',
+    frames: [
+      { pick: 'a few that qualify', ...CIRC, pts: [[2.5, 0], [0, 2.5], [-1.77, 1.77], [1.77, -1.77]], note: 'each is 2.5 from the origin' },
+      { pick: 'more', ...CIRC, pts: [[2.5, 0], [0, 2.5], [-1.77, 1.77], [1.77, -1.77], [-2.5, 0], [0, -2.5], [2.17, 1.25], [-2.17, -1.25]] },
+      { pick: 'all of them', ...CIRC, paths: polar(() => 2.5), note: 'the condition drew the circle' }
+    ]
+  },
+  'circle': {
+    say: 'Every point the same distance from one point. The condition is short enough to check on any point you like.',
+    frames: [
+      { pick: 'one point', ...CIRC, paths: polar(() => 2.5), pts: [[0, 0], [2.17, 1.25]], segs: [[0, 0, 2.17, 1.25, IN, false, 2]] },
+      { pick: 'another', ...CIRC, paths: polar(() => 2.5), pts: [[0, 0], [-1.25, 2.17]], segs: [[0, 0, -1.25, 2.17, IN, false, 2]], note: 'the same distance' }
+    ]
+  },
+  'centre': {
+    say: 'The point every distance is measured from. Move it and the whole circle goes with it, unchanged in size.',
+    frames: [
+      { pick: 'at the origin', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2 }], pts: [[0, 0, '(0, 0)', IN]] },
+      { pick: 'moved', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2, dash: true, stroke: FAINT }, { cx: 1.5, cy: -1, r: 2 }], pts: [[1.5, -1, '(1.5, −1)', IN]] }
+    ]
+  },
+  'radius': {
+    say: 'The fixed distance in the condition. It is the only thing that decides how big the circle is.',
+    frames: [
+      { pick: 'r = 1.5', ...CIRC, circles: [{ cx: 0, cy: 0, r: 1.5 }], segs: [[0, 0, 1.5, 0, IN, false, 2.2]], pts: [[0, 0]] },
+      { pick: 'r = 3', ...CIRC, circles: [{ cx: 0, cy: 0, r: 1.5, dash: true, stroke: FAINT }, { cx: 0, cy: 0, r: 3 }], segs: [[0, 0, 3, 0, IN, false, 2.2]], pts: [[0, 0]] }
+    ]
+  },
+  'equation of a circle': {
+    say: 'Pythagoras applied to the condition: the squared distance from the centre equals the squared radius.',
+    frames: [
+      { pick: 'the condition', ...B, text: [[0, 0.6, '(x − a)² + (y − b)² = r²', '#16283f', 14]] },
+      { pick: 'what it draws', ...CIRC, circles: [{ cx: 1, cy: -0.5, r: 2.2 }], pts: [[1, -0.5, '(1, −0.5)', IN]], note: 'a = 1, b = −0.5, r = 2.2' }
+    ]
+  },
+  'general form of a circle': {
+    say: 'The same circle multiplied out, with the centre hidden. Completing the square in both letters puts it back.',
+    frames: [
+      { pick: 'as given', ...B, text: [[0, 0.6, 'x² + y² − 2x + y − 4 = 0', '#16283f', 13]] },
+      { pick: 'rearranged', ...B, text: [[0, 0.6, '(x − 1)² + (y + 0.5)² = 5.25', '#16283f', 13]] },
+      { pick: 'the circle', ...CIRC, circles: [{ cx: 1, cy: -0.5, r: 2.29 }], pts: [[1, -0.5, '', IN]] }
+    ]
+  },
+  'diameter': {
+    say: 'A chord that passes through the centre, and the longest one there is. It is twice the radius.',
+    frames: [
+      { pick: 'a chord', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[-2.37, 0.79, 1.25, 2.17, IN, false, 2.2]] },
+      { pick: 'through the centre', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[-2.5, 0, 2.5, 0, IN, false, 2.2]], pts: [[0, 0]], note: 'no chord is longer' }
+    ]
+  },
+  'chord': {
+    say: 'A straight segment joining two points on the circle. It cuts the circle into two pieces.',
+    frames: [
+      { pick: 'a short one', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[1.77, 1.77, 2.5, 0, IN, false, 2.2]], pts: [[1.77, 1.77], [2.5, 0]] },
+      { pick: 'a longer one', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[-1.77, 1.77, 2.5, 0, IN, false, 2.2]], pts: [[-1.77, 1.77], [2.5, 0]] }
+    ]
+  },
+  'arc': {
+    say: 'A stretch of the circle itself, rather than of the plane inside it. Two points cut off a short one and a long one.',
+    frames: [
+      { pick: 'the minor arc', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5, stroke: FAINT }], paths: polar(() => 2.5, { a0: 0, a1: 1.9, wid: 3.2, c2: IN }), pts: [[2.5, 0], [-0.81, 2.37]] },
+      { pick: 'the major arc', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5, stroke: FAINT }], paths: polar(() => 2.5, { a0: 1.9, a1: 2 * Math.PI, wid: 3.2, c2: IN }), pts: [[2.5, 0], [-0.81, 2.37]], note: 'the rest of the way round' }
+    ]
+  },
+  'sector': {
+    say: 'The slice between two radii, arc included. A pie piece, and its area is the fraction of the turn it takes up.',
+    frames: [
+      { pick: 'a quarter', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5, stroke: FAINT }], paths: [{ pts: [[0, 0], ...polar(() => 2.5, { a0: 0, a1: Math.PI / 2, n: 60 })[0].pts], close: true, fill: '#cfe6e1' }], note: 'a quarter turn, a quarter of the area' },
+      { pick: 'a third', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5, stroke: FAINT }], paths: [{ pts: [[0, 0], ...polar(() => 2.5, { a0: 0, a1: 2 * Math.PI / 3, n: 80 })[0].pts], close: true, fill: '#cfe6e1' }] }
+    ]
+  },
+  'segment of a circle': {
+    say: 'The region a chord cuts off, without the centre. What is left of a sector once the triangle is removed.',
+    frames: [
+      { pick: 'a small one', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5, stroke: FAINT }], paths: [{ pts: polar(() => 2.5, { a0: -0.9, a1: 0.9, n: 80 })[0].pts, close: true, fill: '#cfe6e1' }] },
+      { pick: 'a larger one', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5, stroke: FAINT }], paths: [{ pts: polar(() => 2.5, { a0: -2.1, a1: 2.1, n: 120 })[0].pts, close: true, fill: '#cfe6e1' }], note: 'the chord moved in' }
+    ]
+  },
+  'tangent to a circle': {
+    say: 'A line touching at exactly one point. It always meets the radius there at a right angle, which is the fact everything else is built on.',
+    frames: [
+      { pick: 'it touches', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[2.5, -3, 2.5, 3, IN, false, 2.2]], pts: [[2.5, 0]] },
+      { pick: 'the right angle', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[2.5, -3, 2.5, 3, IN, false, 2.2], [0, 0, 2.5, 0, OUT, false, 2.2]], pts: [[2.5, 0], [0, 0]], right: [2.5, 0, -1, 1] }
+    ]
+  },
+  'secant to a circle': {
+    say: 'A line cutting the circle twice. Slide it outwards and the two crossings meet; at that moment it is a tangent.',
+    frames: [
+      { pick: 'two crossings', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[1, -3, 1, 3, IN, false, 2.2]], pts: [[1, 2.29], [1, -2.29]] },
+      { pick: 'closer', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[2.1, -3, 2.1, 3, IN, false, 2.2]], pts: [[2.1, 1.36], [2.1, -1.36]] },
+      { pick: 'they meet', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[2.5, -3, 2.5, 3, IN, false, 2.2]], pts: [[2.5, 0]], note: 'now a tangent' }
+    ]
+  },
+  'point of contact': {
+    say: 'The single point a tangent shares with the curve. It is where the two crossings of a secant have collapsed together.',
+    frames: [
+      { pick: 'two points', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[1.8, -3, 1.8, 3, FAINT, false, 2]], pts: [[1.8, 1.73], [1.8, -1.73]] },
+      { pick: 'one point', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], segs: [[2.5, -3, 2.5, 3, IN, false, 2.2]], pts: [[2.5, 0, '', IN]] }
+    ]
+  },
+  'conic section': {
+    say: 'The curves a flat cut through a cone can produce. Tilt the cut further and one becomes the next.',
+    frames: [
+      { pick: 'circle', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(0), pts: [[0, 0, '', IN]] },
+      { pick: 'ellipse', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(0.6), pts: [[0, 0, '', IN]] },
+      { pick: 'parabola', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(1), pts: [[0, 0, '', IN]] },
+      { pick: 'hyperbola', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(1.6), pts: [[0, 0, '', IN]], note: 'the focus never moved' }
+    ]
+  },
+  'ellipse': {
+    say: 'The distances to two fixed points always add to the same total. A loop of string round two pins draws one.',
+    frames: [
+      { pick: 'one point', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 2 }], pts: [[2.236, 0], [-2.236, 0], [3, 0]], segs: [[2.236, 0, 3, 0, IN, false, 2], [-2.236, 0, 3, 0, OUT, false, 2]], note: '0.76 + 5.24 = 6' },
+      { pick: 'another', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 2 }], pts: [[2.236, 0], [-2.236, 0], [0, 2]], segs: [[2.236, 0, 0, 2, IN, false, 2], [-2.236, 0, 0, 2, OUT, false, 2]], note: '3 + 3 = 6, the same total' }
+    ]
+  },
+  'major axis': {
+    say: 'The longest way across, through both foci. Half of it is the number that fixes the total distance.',
+    frames: [
+      { pick: 'the long way', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 2 }], segs: [[-3, 0, 3, 0, IN, false, 2.4]], pts: [[-3, 0], [3, 0]] },
+      { pick: 'with the foci', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 2 }], segs: [[-3, 0, 3, 0, IN, false, 2.4]], pts: [[-2.236, 0, '', OUT], [2.236, 0, '', OUT]], note: 'both foci lie on it' }
+    ]
+  },
+  'minor axis': {
+    say: 'The shortest way across, at right angles to the major axis. It decides how round or how flat the ellipse looks.',
+    frames: [
+      { pick: 'the short way', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 2 }], segs: [[0, -2, 0, 2, IN, false, 2.4]], pts: [[0, -2], [0, 2]] },
+      { pick: 'flatter', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 2, dash: true, stroke: FAINT }, { cx: 0, cy: 0, rx: 3, ry: 0.9 }], segs: [[0, -0.9, 0, 0.9, IN, false, 2.4]] }
+    ]
+  },
+  'focus': {
+    say: 'A point the curve is defined in terms of rather than drawn around. Light from it reflects off the curve in a single direction.',
+    frames: [
+      { pick: 'in a parabola', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -2, y1: 5, ...cur(x => sq(x) / 4), pts: [[0, 1, 'focus', IN]], lines: [{ y: -1, dash: true, c2: OUT }] },
+      { pick: 'rays come back parallel', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -2, y1: 5, ...cur(x => sq(x) / 4), pts: [[0, 1, '', IN]], segs: [[0, 1, 2, 1, IN, false, 1.6], [0, 1, -2, 1, IN, false, 1.6], [2, 1, 2, 4.6, OUT, false, 1.6], [-2, 1, -2, 4.6, OUT, false, 1.6]] }
+    ]
+  },
+  'foci': {
+    say: 'Two of them, for an ellipse and for a hyperbola. Slide them together and the ellipse becomes a circle.',
+    frames: [
+      { pick: 'far apart', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 1.1 }], pts: [[-2.79, 0, '', IN], [2.79, 0, '', IN]] },
+      { pick: 'closer', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, ellipses: [{ cx: 0, cy: 0, rx: 3, ry: 2.2 }], pts: [[-2.04, 0, '', IN], [2.04, 0, '', IN]] },
+      { pick: 'together', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -3.4, y1: 3.4, circles: [{ cx: 0, cy: 0, r: 3 }], pts: [[0, 0, '', IN]], note: 'one point, so a circle' }
+    ]
+  },
+  'eccentricity': {
+    say: 'One number saying how far from circular the curve is. Zero is a circle, below one an ellipse, exactly one a parabola, above one a hyperbola.',
+    frames: [
+      { pick: 'e = 0', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(0), pts: [[0, 0, '', IN]] },
+      { pick: 'e = 0.6', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(0.6), pts: [[0, 0, '', IN]] },
+      { pick: 'e = 1', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(1), pts: [[0, 0, '', IN]], note: 'the loop has just opened' },
+      { pick: 'e = 1.6', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(1.6), pts: [[0, 0, '', IN]], note: 'two branches now' }
+    ]
+  },
+  'directrix': {
+    say: 'A fixed line the curve is measured against. Distance to the focus divided by distance to this line is the eccentricity, at every point.',
+    frames: [
+      { pick: 'the line', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -2, y1: 5, ...cur(x => sq(x) / 4), pts: [[0, 1, 'focus', IN]], lines: [{ y: -1, dash: true, c2: OUT }] },
+      { pick: 'equal distances', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -2, y1: 5, ...cur(x => sq(x) / 4), pts: [[0, 1, '', IN], [3, 2.25]], lines: [{ y: -1, dash: true, c2: OUT }], segs: [[0, 1, 3, 2.25, IN, false, 2], [3, 2.25, 3, -1, OUT, false, 2]], note: 'both 3.25, so e = 1' }
+    ]
+  },
+  'parabola as a conic': {
+    say: 'The single case where the two distances are equal. It is the boundary between the closed curves and the open ones.',
+    frames: [
+      { pick: 'still closed', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(0.9), pts: [[0, 0, '', IN]], note: 'e = 0.9' },
+      { pick: 'open', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: conic(1), pts: [[0, 0, '', IN]], note: 'e = 1, it never closes' }
+    ]
+  },
+  'latus rectum': {
+    say: 'The chord through the focus, parallel to the directrix. It is a quick measure of how wide the curve opens.',
+    frames: [
+      { pick: 'the focus', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -2, y1: 5, ...cur(x => sq(x) / 4), pts: [[0, 1, '', IN]] },
+      { pick: 'the chord', ...P, roundBox: true, x0: -4.5, x1: 4.5, y0: -2, y1: 5, ...cur(x => sq(x) / 4), pts: [[0, 1, '', IN], [2, 1], [-2, 1]], segs: [[-2, 1, 2, 1, IN, false, 2.4]], note: 'width 4, and 4a = 4' }
+    ]
+  },
+  'hyperbola': {
+    say: 'The distances to two fixed points always differ by the same amount. That gives two separate branches, one round each focus.',
+    frames: [
+      { pick: 'one branch', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: param(t => 2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7), pts: [[2.5, 0, '', IN]] },
+      { pick: 'both', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: [...param(t => 2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7), ...param(t => -2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7)], pts: [[2.5, 0, '', IN], [-2.5, 0, '', IN]] }
+    ]
+  },
+  'transverse axis': {
+    say: 'The line through both vertices and both foci. It is the direction the branches open away from.',
+    frames: [
+      { pick: 'the branches', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: [...param(t => 2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7), ...param(t => -2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7)] },
+      { pick: 'the axis', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: [...param(t => 2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7), ...param(t => -2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7)], segs: [[-2, 0, 2, 0, IN, false, 2.4]], pts: [[2, 0], [-2, 0]] }
+    ]
+  },
+  'conjugate axis': {
+    say: 'The perpendicular direction, which the curve never crosses. Its length still sets how steeply the branches spread.',
+    frames: [
+      { pick: 'the axis', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: [...param(t => 2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7), ...param(t => -2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7)], segs: [[0, -1.5, 0, 1.5, IN, false, 2.4]], note: 'nothing is drawn here' },
+      { pick: 'made longer', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: [...param(t => 2 * Math.cosh(t), t => 2.6 * Math.sinh(t), -1.5, 1.5), ...param(t => -2 * Math.cosh(t), t => 2.6 * Math.sinh(t), -1.5, 1.5)], segs: [[0, -2.6, 0, 2.6, IN, false, 2.4]], note: 'the branches spread faster' }
+    ]
+  },
+  'asymptotes of a hyperbola': {
+    say: 'Two crossing lines the branches settle onto. Far enough out, a hyperbola is indistinguishable from them.',
+    frames: [
+      { pick: 'near', ...P, roundBox: true, x0: -6, x1: 6, y0: -4.5, y1: 4.5, paths: [...param(t => 2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7), ...param(t => -2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -1.7, 1.7)], lines: [{ m: 0.75, c: 0, dash: true, c2: BAD }, { m: -0.75, c: 0, dash: true, c2: BAD }] },
+      { pick: 'further out', ...P, roundBox: true, x0: -18, x1: 18, y0: -13.5, y1: 13.5, paths: [...param(t => 2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -2.9, 2.9), ...param(t => -2 * Math.cosh(t), t => 1.5 * Math.sinh(t), -2.9, 2.9)], lines: [{ m: 0.75, c: 0, dash: true, c2: BAD }, { m: -0.75, c: 0, dash: true, c2: BAD }], note: 'the gap has closed' }
+    ]
+  },
+  'degenerate conic': {
+    say: 'What the cut gives when it passes through the tip of the cone: a single point, one line, or a crossing pair.',
+    frames: [
+      { pick: 'a point', ...P, roundBox: true, x0: -4, x1: 4, y0: -3, y1: 3, pts: [[0, 0, '', IN]] },
+      { pick: 'a line', ...P, roundBox: true, x0: -4, x1: 4, y0: -3, y1: 3, lines: [{ m: 0.6, c: 0 }] },
+      { pick: 'two lines', ...P, roundBox: true, x0: -4, x1: 4, y0: -3, y1: 3, lines: [{ m: 0.6, c: 0 }, { m: -0.6, c: 0 }], pts: [[0, 0, '', IN]], note: 'a hyperbola with nothing left of it' }
+    ]
+  },
+  'parametric equation': {
+    say: 'x and y each given separately in terms of a third quantity. The curve becomes a journey rather than a condition.',
+    frames: [
+      { pick: 'a quarter of the way', ...CIRC, paths: param(t => 2.5 * Math.cos(t), t => 2.5 * Math.sin(t), 0, Math.PI / 2), pts: [[0, 2.5, 't = π/2', IN]] },
+      { pick: 'half', ...CIRC, paths: param(t => 2.5 * Math.cos(t), t => 2.5 * Math.sin(t), 0, Math.PI), pts: [[-2.5, 0, 't = π', IN]] },
+      { pick: 'all the way', ...CIRC, paths: param(t => 2.5 * Math.cos(t), t => 2.5 * Math.sin(t), 0, 2 * Math.PI), pts: [[2.5, 0, 't = 2π', IN]] }
+    ]
+  },
+  'parameter': {
+    say: 'The third quantity doing the driving, often standing for time. It appears in the working and not in the picture.',
+    frames: [
+      { pick: 't = 0.6', ...P, x0: -1, x1: 8, y0: -1, y1: 5, paths: param(t => 2 * t, t => 4 * t - 4.9 * sq(t) / 2, 0, 3.4, { c2: FAINT }), pts: [[1.2, 1.52, 't = 0.6', IN]] },
+      { pick: 't = 1.2', ...P, x0: -1, x1: 8, y0: -1, y1: 5, paths: param(t => 2 * t, t => 4 * t - 4.9 * sq(t) / 2, 0, 3.4, { c2: FAINT }), pts: [[2.4, 1.27, 't = 1.2', IN]] },
+      { pick: 't = 1.6', ...P, x0: -1, x1: 8, y0: -1, y1: 5, paths: param(t => 2 * t, t => 4 * t - 4.9 * sq(t) / 2, 0, 3.4, { c2: FAINT }), pts: [[3.2, 0.13, 't = 1.6', IN]], note: 'about to land' }
+    ]
+  },
+  'parametrisation': {
+    say: 'A choice of how to travel along a curve. The same path can be walked at different speeds, and neither is more correct.',
+    frames: [
+      { pick: 'even pace', ...CIRC, paths: param(t => 2.5 * Math.cos(t), t => 2.5 * Math.sin(t), 0, 2 * Math.PI), pts: [[2.5, 0], [0, 2.5], [-2.5, 0], [0, -2.5]], note: 'equal times, equal arcs' },
+      { pick: 'uneven pace', ...CIRC, paths: param(t => 2.5 * Math.cos(sq(t)), t => 2.5 * Math.sin(sq(t)), 0, Math.sqrt(2 * Math.PI)), pts: [[2.5 * Math.cos(0.39), 2.5 * Math.sin(0.39)], [2.5 * Math.cos(1.57), 2.5 * Math.sin(1.57)], [2.5 * Math.cos(3.53), 2.5 * Math.sin(3.53)]], note: 'same circle, faster later' }
+    ]
+  },
+  'eliminating the parameter': {
+    say: 'Getting rid of t to leave a relation between x and y alone. What survives is the shape, with the timing thrown away.',
+    frames: [
+      { pick: 'as a journey', ...CIRC, paths: param(t => 2.5 * Math.cos(t), t => 2.5 * Math.sin(t), 0, 2 * Math.PI), note: 'x = 2.5 cos t, y = 2.5 sin t' },
+      { pick: 'as a condition', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.5 }], note: 'x² + y² = 6.25' }
+    ]
+  },
+  'polar coordinates': {
+    say: 'Locating a point by how far and in what direction, instead of by two sideways steps. Anything built around a centre is simpler this way.',
+    frames: [
+      { pick: 'how far', ...CIRC, segs: [[0, 0, 2.12, 2.12, IN, false, 2.4]], pts: [[2.12, 2.12]], note: 'r = 3' },
+      { pick: 'and which way', ...CIRC, segs: [[0, 0, 2.12, 2.12, IN, false, 2.4], [0, 0, 3.4, 0, OUT, false, 1.6]], paths: polar(() => 0.9, { a0: 0, a1: Math.PI / 4, n: 40, c2: OUT }), pts: [[2.12, 2.12]], note: 'θ = 45°' }
+    ]
+  },
+  'pole': {
+    say: 'The point everything is measured from, the polar version of the origin. Every direction starts here.',
+    frames: [
+      { pick: 'the pole', ...CIRC, pts: [[0, 0, 'pole', IN]] },
+      { pick: 'rays from it', ...CIRC, pts: [[0, 0, '', IN]], segs: [[0, 0, 3.4, 0, FAINT, false, 1.6], [0, 0, 2.4, 2.4, FAINT, false, 1.6], [0, 0, 0, 3.4, FAINT, false, 1.6], [0, 0, -2.4, 2.4, FAINT, false, 1.6], [0, 0, -3.4, 0, FAINT, false, 1.6]] }
+    ]
+  },
+  'polar axis': {
+    say: 'The ray angles are measured from, usually pointing right. It plays the part the positive x-axis plays elsewhere.',
+    frames: [
+      { pick: 'the axis', ...CIRC, segs: [[0, 0, 3.4, 0, IN, false, 2.4]], pts: [[0, 0]] },
+      { pick: 'an angle from it', ...CIRC, segs: [[0, 0, 3.4, 0, IN, false, 2.4], [0, 0, -1.5, 2.6, OUT, false, 2.4]], paths: polar(() => 0.9, { a0: 0, a1: 2.09, n: 60, c2: OUT }), note: 'θ = 120°' }
+    ]
+  },
+  'radial coordinate': {
+    say: 'The distance out from the pole, written r. Changing it alone moves the point straight in or straight out.',
+    frames: [
+      { pick: 'r = 1.4', ...CIRC, segs: [[0, 0, 0.99, 0.99, IN, false, 2.4]], pts: [[0.99, 0.99]], circles: [{ cx: 0, cy: 0, r: 1.4, dash: true, stroke: FAINT }] },
+      { pick: 'r = 3', ...CIRC, segs: [[0, 0, 2.12, 2.12, IN, false, 2.4]], pts: [[2.12, 2.12]], circles: [{ cx: 0, cy: 0, r: 3, dash: true, stroke: FAINT }], note: 'same direction, further out' }
+    ]
+  },
+  'angular coordinate': {
+    say: 'The direction, written θ. Changing it alone swings the point round a circle of fixed size.',
+    frames: [
+      { pick: 'θ = 30°', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.6, dash: true, stroke: FAINT }], segs: [[0, 0, 2.25, 1.3, IN, false, 2.4]], pts: [[2.25, 1.3]] },
+      { pick: 'θ = 110°', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.6, dash: true, stroke: FAINT }], segs: [[0, 0, -0.89, 2.44, IN, false, 2.4]], pts: [[-0.89, 2.44]] },
+      { pick: 'θ = 250°', ...CIRC, circles: [{ cx: 0, cy: 0, r: 2.6, dash: true, stroke: FAINT }], segs: [[0, 0, -0.89, -2.44, IN, false, 2.4]], pts: [[-0.89, -2.44]], note: 'the distance never changed' }
+    ]
+  },
+  'polar to Cartesian conversion': {
+    say: 'x is r cos θ and y is r sin θ. It is one right-angled triangle, with the distance as its hypotenuse.',
+    frames: [
+      { pick: 'the point', ...CIRC, segs: [[0, 0, 2.6, 1.5, IN, false, 2.4]], pts: [[2.6, 1.5]], note: 'r = 3, θ = 30°' },
+      { pick: 'the triangle', ...CIRC, segs: [[0, 0, 2.6, 1.5, IN, false, 2.4], [0, 0, 2.6, 0, OUT, false, 2.2], [2.6, 0, 2.6, 1.5, OUT, false, 2.2]], pts: [[2.6, 1.5]], right: [2.6, 0, -1, 1], note: 'x = 2.6, y = 1.5' }
+    ]
+  },
+  'polar curve': {
+    say: 'A rule giving the distance for each direction. Sweep the direction all the way round and the rule draws the shape.',
+    frames: [
+      { pick: 'a quarter turn', ...CIRC, paths: polar(t => 1.2 + Math.cos(t), { a1: Math.PI / 2 }) },
+      { pick: 'half', ...CIRC, paths: polar(t => 1.2 + Math.cos(t), { a1: Math.PI }) },
+      { pick: 'all the way', ...CIRC, paths: polar(t => 1.2 + Math.cos(t)) }
+    ]
+  },
+  'circle in polar form': {
+    say: 'A circle round the pole needs only r = a. One passing through the pole needs the angle, and comes out as r = 2a cos θ.',
+    frames: [
+      { pick: 'r = 2.5', ...CIRC, paths: polar(() => 2.5), pts: [[0, 0, '', IN]] },
+      { pick: 'r = 4 cos θ', ...CIRC, paths: polar(t => 4 * Math.cos(t), { a0: -Math.PI / 2, a1: Math.PI / 2 }), pts: [[0, 0, '', IN]], note: 'the pole is on it now' }
+    ]
+  },
+  'rose curve': {
+    say: 'Petals, from r = cos kθ. An odd k gives k petals, an even k gives twice as many, which surprises everyone the first time.',
+    frames: [
+      { pick: 'k = 3', ...CIRC, paths: polar(t => 3 * Math.cos(3 * t)), note: '3 petals' },
+      { pick: 'k = 4', ...CIRC, paths: polar(t => 3 * Math.cos(4 * t)), note: '8 petals' },
+      { pick: 'k = 5', ...CIRC, paths: polar(t => 3 * Math.cos(5 * t)), note: '5 petals' }
+    ]
+  },
+  'cardioid': {
+    say: 'A heart shape, from r = a(1 + cos θ). The distance drops to nothing at one direction, which makes the dimple.',
+    frames: [
+      { pick: 'halfway round', ...CIRC, paths: polar(t => 1.7 * (1 + Math.cos(t)), { a1: Math.PI }) },
+      { pick: 'complete', ...CIRC, paths: polar(t => 1.7 * (1 + Math.cos(t))), pts: [[0, 0, '', IN]], note: 'r = 0 at θ = 180°' }
+    ]
+  },
+  'limaçon': {
+    say: 'r = b + a cos θ. When b is smaller than a the distance goes negative for a while, and the curve tucks an inner loop inside itself.',
+    frames: [
+      { pick: 'b > a', ...CIRC, paths: polar(t => 2.6 + 1.2 * Math.cos(t)), note: 'a plain dimple' },
+      { pick: 'b = a', ...CIRC, paths: polar(t => 1.7 + 1.7 * Math.cos(t)), note: 'a cardioid, the boundary case' },
+      { pick: 'b < a', ...CIRC, paths: polar(t => 1 + 2.4 * Math.cos(t)), note: 'an inner loop' }
+    ]
+  },
+  'Archimedean spiral': {
+    say: 'r = aθ, so the distance grows evenly with the angle. Every turn is the same width apart, unlike a shell.',
+    frames: [
+      { pick: 'one turn', ...CIRC, paths: polar(t => 0.5 * t, { a1: 2 * Math.PI }) },
+      { pick: 'two', ...CIRC, paths: polar(t => 0.5 * t, { a1: 4 * Math.PI }) },
+      { pick: 'three', ...CIRC, paths: polar(t => 0.4 * t, { a1: 6 * Math.PI }), note: 'the gaps stay equal' }
+    ]
+  },
+  'lemniscate': {
+    say: 'A figure eight, from r² = a² cos 2θ. It exists only where the right-hand side is positive, so two lobes appear and the rest is empty.',
+    frames: [
+      { pick: 'one lobe', ...CIRC, paths: polar(t => Math.cos(2 * t) >= 0 ? 3 * Math.sqrt(Math.cos(2 * t)) : NaN, { a0: -Math.PI / 4, a1: Math.PI / 4 }) },
+      { pick: 'both', ...CIRC, paths: [...polar(t => Math.cos(2 * t) >= 0 ? 3 * Math.sqrt(Math.cos(2 * t)) : NaN, { a0: -Math.PI / 4, a1: Math.PI / 4 }), ...polar(t => Math.cos(2 * t) >= 0 ? -3 * Math.sqrt(Math.cos(2 * t)) : NaN, { a0: -Math.PI / 4, a1: Math.PI / 4 })], pts: [[0, 0, '', IN]], note: 'nothing between them' }
     ]
   }
 };

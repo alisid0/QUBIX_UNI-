@@ -22,6 +22,20 @@ export const draw = (o = {}) => {
   const s = { w: 210, h: 160, x0: -5, x1: 5, y0: -5, y1: 5, grid: 'lines', ...o };
   const pad = { l: 9, r: 9, t: 9, b: 9 };
   const iw = s.w - pad.l - pad.r, ih = s.h - pad.t - pad.b;
+
+  // A circle has to be round, and it has to agree with the axes drawn under it.
+  // The plate is wider than it is tall, so equal data ranges give unequal pixels
+  // per unit, and anything circular comes out oval. Widen whichever window is
+  // short, about its centre, until the two scales match: the picture only ever
+  // gains room, so nothing is clipped. `keepScale` opts out, for the one plate
+  // whose subject is what distortion does.
+  if ((s.roundBox || (s.circles || []).length) && !s.keepScale) {
+    const sx = iw / (s.x1 - s.x0), sy = ih / (s.y1 - s.y0);
+    const grow = (a, z, want) => { const m = (a + z) / 2; return [m - want / 2, m + want / 2]; };
+    if (sx > sy) [s.x0, s.x1] = grow(s.x0, s.x1, iw / sy);
+    else if (sy > sx) [s.y0, s.y1] = grow(s.y0, s.y1, ih / sx);
+  }
+
   const X = x => pad.l + ((x - s.x0) / (s.x1 - s.x0)) * iw;
   const Y = y => pad.t + ih - ((y - s.y0) / (s.y1 - s.y0)) * ih;
   const b = [`<rect width="${s.w}" height="${s.h}" rx="6" fill="${C.paper}"/>`];
@@ -96,8 +110,13 @@ export const draw = (o = {}) => {
     b.push(`<polygon points="${d}" fill="${p.fill || '#cfe6e1'}" fill-opacity="${p.fill === 'none' ? 0 : 0.65}"
       stroke="${p.stroke || C.tealText}" stroke-width="${p.wid || 2}"${p.dash ? ' stroke-dasharray="4 3"' : ''}/>`);
   }
+  // Drawn through both scales rather than the horizontal one alone, so a circle
+  // on distorted axes shows the oval it actually is.
+  // Marked, so a check can tell a circle that came out oval from an ellipse
+  // that was asked for.
   for (const c of s.circles || [])
-    b.push(`<circle cx="${X(c.cx)}" cy="${Y(c.cy)}" r="${Math.abs(X(c.cx + c.r) - X(c.cx))}"
+    b.push(`<ellipse class="afc" cx="${X(c.cx)}" cy="${Y(c.cy)}" rx="${Math.abs(X(c.cx + c.r) - X(c.cx))}"
+      ry="${Math.abs(Y(c.cy + c.r) - Y(c.cy))}"
       fill="${c.fill || 'none'}" fill-opacity="${c.fill ? 0.55 : 0}" stroke="${c.stroke || C.teal}"
       stroke-width="${c.wid || 2}"${c.dash ? ' stroke-dasharray="4 3"' : ''}/>`);
   for (const e of s.ellipses || [])
