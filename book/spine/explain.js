@@ -29,6 +29,10 @@ const TRI = [[-3, -2], [3, -2], [0, 3]];
 // rather than position, so most of it is drawn as arrows between two columns.
 const B = { grid: 'none', ticks: false, axes: false, arrowheads: false, x0: -5, x1: 5, y0: -4, y1: 4 };
 const IN = '#e0813a', OUT = '#12897c', BAD = '#c0504d';
+const FAINT = '#d8d3c7';
+const sq = x => x * x;
+// A curve, optionally with a fainter one behind it for comparison.
+const cur = (f, behind) => ({ curves: behind ? [{ f: behind, c2: FAINT }, { f }] : [{ f }] });
 // Arrows from a left column to a right one, given as [fromY, toY] pairs.
 const arrows = (pairs, colour = '#16283f') => pairs.map(([a, b]) => [-2.2, a, 2.2, b, colour]);
 const col = (ys, x, colour) => ys.map(y => [x, y, '', colour]);
@@ -1472,6 +1476,494 @@ export const EXPLAIN = {
     frames: [
       { pick: 'the condition', ...B, text: [[0, 0.6, '{ x : x > 2 }', '#16283f', 16], [0, -1.2, 'every x more than 2']] },
       { pick: 'on the line', line: true, spans: [[2, 5]], marks: [{ x: 2, open: true }], note: 'the same set' }
+    ]
+  },
+
+  /* ---------------------------------------------- 5. families of curves ---- */
+  'constant function': {
+    say: 'The same output whatever goes in. Flat, and the only rule whose graph a horizontal line test fails everywhere.',
+    frames: [
+      { pick: 'y = 2', ...P, ...cur(() => 2), pts: [[-3, 2], [0, 2], [3, 2]] },
+      { pick: 'y = −1', ...P, ...cur(() => -1), note: 'still flat' }
+    ]
+  },
+  'identity function': {
+    say: 'Gives back exactly what it was handed. It is the diagonal, and the mirror every inverse is reflected in.',
+    frames: [
+      { pick: 'the line', ...P, ...cur(x => x), pts: [[2, 2], [-3, -3]] },
+      { pick: 'as a mirror', ...P, ...cur(x => x), lines: [{ m: 2, c: 1, c2: OUT }, { m: 0.5, c: -0.5, c2: IN }], note: 'a rule and its inverse' }
+    ]
+  },
+  'linear function': {
+    say: 'One steepness, everywhere. Equal steps in give equal steps out, which is what makes it the simplest kind of change.',
+    frames: [
+      { pick: 'gentle', ...P, ...cur(x => 0.4 * x + 1) },
+      { pick: 'steeper', ...P, ...cur(x => 1.4 * x + 1, x => 0.4 * x + 1) },
+      { pick: 'falling', ...P, ...cur(x => -0.9 * x + 1, x => 0.4 * x + 1) }
+    ]
+  },
+  'affine function': {
+    say: 'A line that need not pass through the origin. Strictly, only lines through the origin are linear; the rest are affine.',
+    frames: [
+      { pick: 'through 0', ...P, ...cur(x => 0.8 * x), pts: [[0, 0]] },
+      { pick: 'lifted', ...P, ...cur(x => 0.8 * x + 2, x => 0.8 * x), pts: [[0, 2]], note: 'same slope, new intercept' }
+    ]
+  },
+  'quadratic function': {
+    say: 'A squared term is enough to bend it. One turning point, and a mirror through it.',
+    frames: [
+      { pick: 'opening up', ...P, ...cur(x => 0.5 * sq(x) - 2) },
+      { pick: 'opening down', ...P, ...cur(x => -0.5 * sq(x) + 2) },
+      { pick: 'narrower', ...P, ...cur(x => 1.4 * sq(x) - 2, x => 0.5 * sq(x) - 2) }
+    ]
+  },
+  'parabola': {
+    say: 'The curve a quadratic draws. Every point on it is equally far from a fixed point and a fixed line, which is the other way to define it.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 0.5 * sq(x) - 2) },
+      { pick: 'its symmetry', ...P, ...cur(x => 0.5 * sq(x) - 2), lines: [{ x: 0, dash: true, c2: IN }], pts: [[2, 0], [-2, 0]] }
+    ]
+  },
+  'vertex of a parabola': {
+    say: 'The single turning point, and the only place the curve is flat. Everything about a quadratic is easiest to read from here.',
+    frames: [
+      { pick: 'at the origin', ...P, ...cur(x => 0.5 * sq(x)), pts: [[0, 0, '(0, 0)', IN]] },
+      { pick: 'moved', ...P, ...cur(x => 0.5 * sq(x - 2) - 2, x => 0.5 * sq(x)), pts: [[2, -2, '(2, −2)', IN]] }
+    ]
+  },
+  'axis of symmetry': {
+    say: 'The vertical line the curve folds onto itself along. It always runs through the vertex.',
+    frames: [
+      { pick: 'at x = 0', ...P, ...cur(x => 0.5 * sq(x) - 2), lines: [{ x: 0, dash: true, c2: IN }] },
+      { pick: 'at x = 2', ...P, ...cur(x => 0.5 * sq(x - 2) - 2), lines: [{ x: 2, dash: true, c2: IN }], note: 'it follows the vertex' }
+    ]
+  },
+  'completing the square': {
+    say: 'Rewriting a quadratic so the vertex can be read straight off. The curve does not change; only the way it is written does.',
+    frames: [
+      { pick: 'expanded', ...P, ...cur(x => sq(x) - 2 * x - 2), note: 'x² − 2x − 2' },
+      { pick: 'completed', ...P, ...cur(x => sq(x - 1) - 3), pts: [[1, -3, '(1, −3)', IN]], note: '(x − 1)² − 3' }
+    ]
+  },
+  'vertex form': {
+    say: 'a(x − h)² + k. The two numbers h and k are exactly where the vertex is, so no work is needed to find it.',
+    frames: [
+      { pick: 'change h', ...P, ...cur(x => sq(x - 2) - 1, x => sq(x) - 1), pts: [[2, -1, '', IN]], note: 'slides sideways' },
+      { pick: 'change k', ...P, ...cur(x => sq(x) + 2, x => sq(x) - 1), pts: [[0, 2, '', IN]], note: 'slides up' },
+      { pick: 'change a', ...P, ...cur(x => -0.6 * sq(x) - 1, x => sq(x) - 1), pts: [[0, -1, '', IN]], note: 'flips and flattens' }
+    ]
+  },
+  'factored form': {
+    say: 'Written as a product, so the roots are visible. Each bracket vanishing gives one crossing.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 0.6 * (x + 2) * (x - 3)) },
+      { pick: 'its roots', ...P, ...cur(x => 0.6 * (x + 2) * (x - 3)), pts: [[-2, 0, '', IN], [3, 0, '', IN]], note: '0.6(x + 2)(x − 3)' }
+    ]
+  },
+  'root': {
+    say: 'An input that makes the output zero. On a graph it is a crossing of the horizontal axis.',
+    frames: [
+      { pick: 'two roots', ...P, ...cur(x => 0.6 * (x + 2) * (x - 3)), pts: [[-2, 0, '', IN], [3, 0, '', IN]] },
+      { pick: 'one root', ...P, ...cur(x => 0.6 * sq(x - 1)), pts: [[1, 0, '', IN]] },
+      { pick: 'none', ...P, ...cur(x => 0.6 * sq(x) + 1), note: 'never reaches zero' }
+    ]
+  },
+  'zero of a function': {
+    say: 'The same thing as a root, under the name used when the rule is not a polynomial.',
+    frames: [
+      { pick: 'a quadratic', ...P, ...cur(x => 0.6 * (x + 2) * (x - 3)), pts: [[-2, 0, '', IN], [3, 0, '', IN]] },
+      { pick: 'a wave', ...P, x0: -6.5, x1: 6.5, y0: -2.5, y1: 2.5, ...cur(Math.sin), pts: [[0, 0, '', IN], [Math.PI, 0, '', IN], [-Math.PI, 0, '', IN]], note: 'infinitely many' }
+    ]
+  },
+  'discriminant': {
+    say: 'One number that says how many roots there are before you find any. Positive gives two, zero gives one, negative gives none.',
+    frames: [
+      { pick: 'two roots', ...P, ...cur(x => 0.5 * sq(x) - 2), pts: [[-2, 0, '', IN], [2, 0, '', IN]], note: 'b² − 4ac > 0' },
+      { pick: 'one', ...P, ...cur(x => 0.5 * sq(x)), pts: [[0, 0, '', IN]], note: 'b² − 4ac = 0' },
+      { pick: 'none', ...P, ...cur(x => 0.5 * sq(x) + 1.5), note: 'b² − 4ac < 0' }
+    ]
+  },
+  'repeated root': {
+    say: 'The curve touches the axis and turns back instead of crossing. Two roots that have landed on the same place.',
+    frames: [
+      { pick: 'two, apart', ...P, ...cur(x => 0.6 * (x + 1.5) * (x - 1.5)), pts: [[-1.5, 0, '', IN], [1.5, 0, '', IN]] },
+      { pick: 'closer', ...P, ...cur(x => 0.6 * (x + 0.6) * (x - 0.6)), pts: [[-0.6, 0, '', IN], [0.6, 0, '', IN]] },
+      { pick: 'together', ...P, ...cur(x => 0.6 * sq(x)), pts: [[0, 0, '', IN]], note: 'touches, does not cross' }
+    ]
+  },
+  'cubic function': {
+    say: 'A third power allows two turns. Both ends head opposite ways, so it always crosses the axis at least once.',
+    frames: [
+      { pick: 'two turns', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x) },
+      { pick: 'none', ...P, ...cur(x => 0.12 * x * sq(x) + 0.6 * x), note: 'up to two, not always two' }
+    ]
+  },
+  'quartic function': {
+    say: 'A fourth power allows three turns, and both ends go the same way. That is why it can have a W shape.',
+    frames: [
+      { pick: 'a W', ...P, ...cur(x => 0.06 * sq(sq(x)) - 0.8 * sq(x) + 1) },
+      { pick: 'a U', ...P, ...cur(x => 0.06 * sq(sq(x)) + 0.3 * sq(x) - 2), note: 'still quartic' }
+    ]
+  },
+  'polynomial': {
+    say: 'Sums of whole-number powers. Smooth everywhere, defined everywhere, and with no breaks or corners anywhere.',
+    frames: [
+      { pick: 'degree 1', ...P, ...cur(x => 0.8 * x) },
+      { pick: 'degree 2', ...P, ...cur(x => 0.4 * sq(x) - 2) },
+      { pick: 'degree 3', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x) }
+    ]
+  },
+  'degree': {
+    say: 'The highest power present. It caps the number of turns at one less, and decides what the ends do.',
+    frames: [
+      { pick: '1: no turns', ...P, ...cur(x => 0.8 * x) },
+      { pick: '2: one turn', ...P, ...cur(x => 0.4 * sq(x) - 2) },
+      { pick: '3: two turns', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x) },
+      { pick: '4: three', ...P, ...cur(x => 0.06 * sq(sq(x)) - 0.8 * sq(x) + 1) }
+    ]
+  },
+  'leading coefficient': {
+    say: 'The number on the highest power. Its sign alone decides which way the far ends of the curve point.',
+    frames: [
+      { pick: 'positive', ...P, ...cur(x => 0.5 * sq(x) - 2), note: 'both ends up' },
+      { pick: 'negative', ...P, ...cur(x => -0.5 * sq(x) + 2), note: 'both ends down' },
+      { pick: 'odd degree', ...P, ...cur(x => 0.12 * x * sq(x)), note: 'ends disagree' }
+    ]
+  },
+  'end behaviour': {
+    say: 'What happens far from the origin, where the highest power drowns out everything else.',
+    frames: [
+      { pick: 'near', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x) },
+      { pick: 'further out', ...P, x0: -12, x1: 12, y0: -10, y1: 10, ...cur(x => 0.12 * x * sq(x) - 0.9 * x), note: 'the turns become invisible' }
+    ]
+  },
+  'turning point': {
+    say: 'Where the curve stops rising and starts falling, or the reverse. Momentarily flat.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x) },
+      { pick: 'both turns', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x), pts: [[-1.58, 0.95, '', IN], [1.58, -0.95, '', IN]], lines: [{ y: 0.95, dash: true, c2: FAINT }, { y: -0.95, dash: true, c2: FAINT }] }
+    ]
+  },
+  'local maximum': {
+    say: 'Higher than everything immediately around it, though possibly not the highest anywhere.',
+    frames: [
+      { pick: 'the peak', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x), pts: [[-1.58, 0.95, '', IN]] },
+      { pick: 'not the highest', ...P, x0: -5, x1: 5, y0: -5, y1: 8, ...cur(x => 0.12 * x * sq(x) - 0.9 * x), pts: [[-1.58, 0.95, 'local', IN], [4.5, 6.9, 'higher', BAD]] }
+    ]
+  },
+  'local minimum': {
+    say: 'Lower than everything immediately around it. The dip a ball would settle in, if the curve were a track.',
+    frames: [
+      { pick: 'the dip', ...P, ...cur(x => 0.12 * x * sq(x) - 0.9 * x), pts: [[1.58, -0.95, '', IN]] },
+      { pick: 'not the lowest', ...P, x0: -5, x1: 5, y0: -8, y1: 5, ...cur(x => 0.12 * x * sq(x) - 0.9 * x), pts: [[1.58, -0.95, 'local', IN], [-4.5, -6.9, 'lower', BAD]] }
+    ]
+  },
+  'global maximum': {
+    say: 'The highest the rule ever gets, anywhere in its domain. A rule may have none at all.',
+    frames: [
+      { pick: 'it has one', ...P, ...cur(x => -0.4 * sq(x) + 3), pts: [[0, 3, '', IN]] },
+      { pick: 'it has none', ...P, ...cur(x => 0.4 * sq(x) - 3), note: 'climbs without limit' }
+    ]
+  },
+  'global minimum': {
+    say: 'The lowest it ever gets. On a closed interval a continuous rule always has one; on an open one it may not.',
+    frames: [
+      { pick: 'it has one', ...P, ...cur(x => 0.4 * sq(x) - 3), pts: [[0, -3, '', IN]] },
+      { pick: 'it has none', ...P, ...cur(x => -0.4 * sq(x) + 3), note: 'falls without limit' }
+    ]
+  },
+  'rational function': {
+    say: 'One polynomial divided by another. Wherever the bottom vanishes the rule has nothing to give, so the curve breaks.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 1 / (x - 1)) },
+      { pick: 'where it breaks', ...P, ...cur(x => 1 / (x - 1)), lines: [{ x: 1, dash: true, c2: BAD }], note: 'the denominator is zero at 1' }
+    ]
+  },
+  'asymptote': {
+    say: 'A line the curve gets arbitrarily close to and never reaches. It is a statement about forever, not about the visible part.',
+    frames: [
+      { pick: 'near', ...P, ...cur(x => 2 + 3 / x), lines: [{ y: 2, dash: true, c2: FAINT }] },
+      { pick: 'further', ...P, x0: -4, x1: 20, y0: -2, y1: 8, ...cur(x => 2 + 3 / x), lines: [{ y: 2, dash: true, c2: FAINT }] },
+      { pick: 'far out', ...P, x0: -10, x1: 120, y0: -2, y1: 8, ...cur(x => 2 + 3 / x), lines: [{ y: 2, dash: true, c2: BAD }], note: 'closer, never touching' }
+    ]
+  },
+  'vertical asymptote': {
+    say: 'An upright line the curve runs alongside without limit. It marks an input the rule refuses.',
+    frames: [
+      { pick: 'the break', ...P, ...cur(x => 1 / (x - 1)), lines: [{ x: 1, dash: true, c2: BAD }] },
+      { pick: 'closer in', ...P, x0: 0.2, x1: 1.8, y0: -20, y1: 20, ...cur(x => 1 / (x - 1)), lines: [{ x: 1, dash: true, c2: BAD }], note: 'no bound either side' }
+    ]
+  },
+  'horizontal asymptote': {
+    say: 'A level the curve settles toward far out. It answers what happens in the long run.',
+    frames: [
+      { pick: 'near', ...P, ...cur(x => 2 + 3 / x), lines: [{ y: 2, dash: true, c2: FAINT }] },
+      { pick: 'far out', ...P, x0: -10, x1: 120, y0: -2, y1: 8, ...cur(x => 2 + 3 / x), lines: [{ y: 2, dash: true, c2: BAD }], note: 'settles at 2' }
+    ]
+  },
+  'oblique asymptote': {
+    say: 'A slanted line approached at both ends. It appears when the top of a fraction outgrows the bottom by exactly one power.',
+    frames: [
+      { pick: 'near', ...P, ...cur(x => x + 1 / x), lines: [{ m: 1, c: 0, dash: true, c2: FAINT }] },
+      { pick: 'further', ...P, x0: -12, x1: 12, y0: -12, y1: 12, ...cur(x => x + 1 / x), lines: [{ m: 1, c: 0, dash: true, c2: BAD }], note: 'the gap closes' }
+    ]
+  },
+  'hole in a graph': {
+    say: 'A single point missing from an otherwise unbroken curve. It happens when a factor cancels, which is illegal at exactly one input.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => x === 1 ? NaN : x + 1), open: [[1, 2]] },
+      { pick: 'why', ...B, text: [[0, 1, '(x² − 1) ÷ (x − 1)', '#16283f', 14], [0, -0.3, '= x + 1, except at x = 1', OUT, 13]] }
+    ]
+  },
+  'reciprocal function': {
+    say: 'One over the input. Two branches, each hugging both axes, and nothing at all at zero.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 1 / x) },
+      { pick: 'both asymptotes', ...P, ...cur(x => 1 / x), lines: [{ x: 0, dash: true, c2: BAD }, { y: 0, dash: true, c2: BAD }] }
+    ]
+  },
+  'hyperbola (rectangular)': {
+    say: 'The curve whose two coordinates always multiply to the same number. Double one and the other halves.',
+    frames: [
+      { pick: 'xy = 2', ...P, ...cur(x => 2 / x), pts: [[1, 2], [2, 1]] },
+      { pick: 'xy = 4', ...P, ...cur(x => 4 / x, x => 2 / x), pts: [[2, 2], [4, 1]] }
+    ]
+  },
+  'square root function': {
+    say: 'Undoes squaring, but only for inputs that are not negative. It starts at the origin and flattens as it climbs.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 2 * Math.sqrt(x)), pts: [[0, 0], [1, 2], [4, 4]] },
+      { pick: 'its parent', ...P, ...cur(x => 2 * Math.sqrt(x), x => x >= 0 ? sq(x) / 2 : NaN), lines: [{ m: 1, c: 0, dash: true, c2: FAINT }], note: 'squaring, mirrored' }
+    ]
+  },
+  'radical function': {
+    say: 'Any rule with a root in it. Shifting what is under the root moves where the curve is allowed to start.',
+    frames: [
+      { pick: 'from 0', ...P, ...cur(x => 2 * Math.sqrt(x)), pts: [[0, 0, '', IN]] },
+      { pick: 'from −3', ...P, ...cur(x => 2 * Math.sqrt(x + 3) - 1), pts: [[-3, -1, '', IN]], note: 'the restriction moved with it' }
+    ]
+  },
+  'cube root function': {
+    say: 'Undoes cubing, and unlike the square root it accepts negatives, because cubing keeps the sign.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 2 * Math.cbrt(x)), pts: [[-8, -4], [8, 4]] },
+      { pick: 'against a square root', ...P, ...cur(x => 2 * Math.cbrt(x), x => 2 * Math.sqrt(x)), note: 'one accepts negatives, one does not' }
+    ]
+  },
+  'absolute value function': {
+    say: 'Distance from zero, so the sign is thrown away. Two straight pieces meeting at a corner.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => Math.abs(x) - 1), pts: [[0, -1, 'corner', IN]] },
+      { pick: 'what it does', ...P, ...cur(x => Math.abs(x) - 1, x => x - 1), note: 'the negative half folded up' }
+    ]
+  },
+  'piecewise function': {
+    say: 'Different rules on different stretches. One function, described in parts, which is how most real quantities behave.',
+    frames: [
+      { pick: 'the pieces', ...P, ...cur(x => x < 0 ? -1 : 0.8 * x), open: [[0, -1]], pts: [[0, 0]] },
+      { pick: 'joined up', ...P, ...cur(x => x < 0 ? 0 : 0.8 * x), pts: [[0, 0]], note: 'a join is possible, not required' }
+    ]
+  },
+  'step function': {
+    say: 'Constant, then it jumps, then constant again. Postage and parking charges work exactly like this.',
+    frames: [
+      { pick: 'the steps', ...P, ...cur(x => Math.floor(x)) },
+      { pick: 'wider steps', ...P, ...cur(x => 2 * Math.floor(x / 2)), note: 'jumps every two' }
+    ]
+  },
+  'floor function': {
+    say: 'The whole number at or below the input. It rounds down, including for negatives, where that surprises people.',
+    frames: [
+      { pick: 'rounding down', ...P, ...cur(x => Math.floor(x)), pts: [[2.7, 2, '', IN]] },
+      { pick: 'a negative', ...P, ...cur(x => Math.floor(x)), pts: [[-1.3, -2, '', IN]], note: '−1.3 goes to −2' }
+    ]
+  },
+  'ceiling function': {
+    say: 'The whole number at or above the input. It rounds up, always.',
+    frames: [
+      { pick: 'rounding up', ...P, ...cur(x => Math.ceil(x)), pts: [[2.2, 3, '', IN]] },
+      { pick: 'against the floor', ...P, ...cur(x => Math.ceil(x), x => Math.floor(x)), note: 'one step apart, except at whole numbers' }
+    ]
+  },
+  'signum function': {
+    say: 'Reports only the sign: minus one, nothing, or one. It throws away everything except direction.',
+    frames: [
+      { pick: 'the three values', ...P, ...cur(x => Math.sign(x) * 2), open: [[0, 2], [0, -2]], pts: [[0, 0]] },
+      { pick: 'what it keeps', ...P, ...cur(x => Math.sign(x) * 2, x => 0.6 * x), note: 'the size is gone, the sign remains' }
+    ]
+  },
+  'exponential function': {
+    say: 'Equal steps in multiply the output by a fixed factor. That is why it eventually outruns any power, however large.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => Math.pow(2, x) - 2) },
+      { pick: 'against a square', ...P, x0: -1, x1: 6, y0: -2, y1: 34, ...cur(x => Math.pow(2, x), x => sq(x)), pts: [[4, 16, '', IN]], note: 'level at 4, then it pulls away' }
+    ]
+  },
+  'base': {
+    say: 'The factor each step multiplies by. Bigger than one and it grows; between zero and one and it decays.',
+    frames: [
+      { pick: 'base 2', ...P, ...cur(x => Math.pow(2, x) - 2) },
+      { pick: 'base 3', ...P, ...cur(x => Math.pow(3, x) - 2, x => Math.pow(2, x) - 2), note: 'steeper' },
+      { pick: 'base 0.5', ...P, ...cur(x => Math.pow(0.5, x) - 2, x => Math.pow(2, x) - 2), note: 'now decaying' }
+    ]
+  },
+  'exponential growth': {
+    say: 'The amount added depends on how much there already is. Slow at first, and then not.',
+    frames: [
+      { pick: 'early', ...P, x0: -0.5, x1: 5, y0: -0.5, y1: 9, ...cur(x => Math.pow(1.7, x)), note: 'looks gentle' },
+      { pick: 'later', ...P, x0: -1, x1: 14, y0: -5, y1: 90, ...cur(x => Math.pow(1.7, x)), note: 'the same rule' }
+    ]
+  },
+  'exponential decay': {
+    say: 'A fixed fraction lost each step, so it approaches nothing without ever arriving.',
+    frames: [
+      { pick: 'the curve', ...P, x0: -0.5, x1: 8, y0: -0.5, y1: 9, ...cur(x => 8 * Math.pow(0.6, x)) },
+      { pick: 'the floor it never meets', ...P, x0: -0.5, x1: 20, y0: -0.5, y1: 9, ...cur(x => 8 * Math.pow(0.6, x)), lines: [{ y: 0, dash: true, c2: BAD }] }
+    ]
+  },
+  'doubling time': {
+    say: 'How long growth takes to double. For an exponential it is the same however much there already is, which is the surprising part.',
+    frames: [
+      { pick: 'first double', ...P, x0: -1, x1: 10, y0: -1, y1: 10, ...cur(x => Math.pow(2, x / 3)), pts: [[0, 1], [3, 2, '', IN]] },
+      { pick: 'and again', ...P, x0: -1, x1: 10, y0: -1, y1: 10, ...cur(x => Math.pow(2, x / 3)), pts: [[0, 1], [3, 2], [6, 4, '', IN]], note: 'another 3 units' },
+      { pick: 'and again', ...P, x0: -1, x1: 10, y0: -1, y1: 10, ...cur(x => Math.pow(2, x / 3)), pts: [[0, 1], [3, 2], [6, 4], [9, 8, '', IN]], note: 'always 3' }
+    ]
+  },
+  'half-life': {
+    say: 'How long decay takes to halve. Like doubling time, it does not depend on where you start.',
+    frames: [
+      { pick: 'first half', ...P, x0: -1, x1: 10, y0: -1, y1: 10, ...cur(x => 8 * Math.pow(0.5, x / 3)), pts: [[0, 8], [3, 4, '', IN]] },
+      { pick: 'and again', ...P, x0: -1, x1: 10, y0: -1, y1: 10, ...cur(x => 8 * Math.pow(0.5, x / 3)), pts: [[0, 8], [3, 4], [6, 2, '', IN]], note: 'always 3' }
+    ]
+  },
+  'the number e': {
+    say: 'The one base whose steepness equals its own height everywhere. About 2.718, and it is not a coincidence that calculus keeps finding it.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => Math.exp(x) - 2), note: 'e ≈ 2.718' },
+      { pick: 'height and slope', ...P, ...cur(x => Math.exp(x) - 2), pts: [[1, Math.E - 2]], lines: [{ m: Math.E, c: Math.E - 2 - Math.E, c2: IN }], note: 'height 2.718, slope 2.718' }
+    ]
+  },
+  'logarithm': {
+    say: 'Asks what power gives this number. It is the exponential run backwards, so it undoes it.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => Math.log2(x)), pts: [[1, 0], [2, 1], [4, 2]] },
+      { pick: 'as an inverse', ...P, ...cur(x => Math.log2(x), x => Math.pow(2, x)), lines: [{ m: 1, c: 0, dash: true, c2: FAINT }], note: 'mirrored in y = x' }
+    ]
+  },
+  'logarithmic function': {
+    say: 'Defined only for positive inputs, and it climbs ever more slowly. It never stops climbing, which is easy to miss.',
+    frames: [
+      { pick: 'near', ...P, ...cur(x => Math.log2(x)), lines: [{ x: 0, dash: true, c2: BAD }] },
+      { pick: 'far out', ...P, x0: -2, x1: 70, y0: -4, y1: 8, ...cur(x => Math.log2(x)), note: 'still rising, very slowly' }
+    ]
+  },
+  'natural logarithm': {
+    say: 'The logarithm to base e. It is the one whose slope at x is exactly one over x, which is why calculus prefers it.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => Math.log(x)), pts: [[1, 0], [Math.E, 1, 'at e, 1']] },
+      { pick: 'its slope', ...P, ...cur(x => Math.log(x), x => 1 / x), note: 'ln x above, 1/x below' }
+    ]
+  },
+  'common logarithm': {
+    say: 'The logarithm to base ten. It counts digits, which is why it is the one used for scales like pH and decibels.',
+    frames: [
+      { pick: 'the curve', ...P, x0: -2, x1: 12, y0: -2, y1: 3, ...cur(x => Math.log10(x)), pts: [[1, 0], [10, 1]] },
+      { pick: 'counting digits', ...P, x0: -20, x1: 120, y0: -2, y1: 3, ...cur(x => Math.log10(x)), pts: [[1, 0], [10, 1], [100, 2]], note: 'each digit is one step' }
+    ]
+  },
+  'log laws': {
+    say: 'They turn multiplying into adding. That is what made logarithms worth inventing, three centuries before calculators.',
+    frames: [
+      { pick: 'products', ...B, text: [[0, 0.6, 'log(ab) = log a + log b', '#16283f', 14]] },
+      { pick: 'quotients', ...B, text: [[0, 0.6, 'log(a/b) = log a − log b', '#16283f', 14]] },
+      { pick: 'powers', ...B, text: [[0, 0.6, 'log(aⁿ) = n log a', '#16283f', 15]] }
+    ]
+  },
+  'sine': {
+    say: 'The height of a point going round a circle, plotted against the angle. It repeats forever because the circle does.',
+    frames: [
+      { pick: 'one cycle', ...P, x0: -0.5, x1: 6.8, y0: -2, y1: 2, ...cur(Math.sin) },
+      { pick: 'and on', ...P, x0: -0.5, x1: 20, y0: -2, y1: 2, ...cur(Math.sin), note: 'repeating' }
+    ]
+  },
+  'cosine': {
+    say: 'The across-ness of the same circling point. The identical wave, started a quarter turn earlier.',
+    frames: [
+      { pick: 'cosine', ...P, x0: -6.5, x1: 6.5, y0: -2, y1: 2, ...cur(Math.cos) },
+      { pick: 'against sine', ...P, x0: -6.5, x1: 6.5, y0: -2, y1: 2, ...cur(Math.cos, Math.sin), note: 'a quarter turn apart' }
+    ]
+  },
+  'tangent function': {
+    say: 'Sine divided by cosine. Wherever cosine is zero it has nothing to give, so it breaks and starts again.',
+    frames: [
+      { pick: 'one branch', ...P, x0: -1.4, x1: 1.4, y0: -5, y1: 5, ...cur(Math.tan) },
+      { pick: 'repeating', ...P, x0: -4.7, x1: 4.7, y0: -4, y1: 4, ...cur(Math.tan), lines: [{ x: Math.PI / 2, dash: true, c2: BAD }, { x: -Math.PI / 2, dash: true, c2: BAD }] }
+    ]
+  },
+  'amplitude': {
+    say: 'How far the wave reaches from its centre line. It changes the height and nothing else.',
+    frames: [
+      { pick: '1', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(Math.sin) },
+      { pick: '2.5', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(x => 2.5 * Math.sin(x), Math.sin), note: 'taller, same timing' }
+    ]
+  },
+  'period': {
+    say: 'The horizontal length of one full repeat. Changing it stretches the wave sideways without changing its height.',
+    frames: [
+      { pick: 'one repeat', ...P, x0: -0.5, x1: 13, y0: -2, y1: 2, ...cur(Math.sin), segs: [[0, -1.6, 2 * Math.PI, -1.6, IN, false, 3]] },
+      { pick: 'half as long', ...P, x0: -0.5, x1: 13, y0: -2, y1: 2, ...cur(x => Math.sin(2 * x), Math.sin), segs: [[0, -1.6, Math.PI, -1.6, IN, false, 3]], note: 'twice as often' }
+    ]
+  },
+  'phase shift': {
+    say: 'The wave slid sideways. Nothing about its shape changes; only where it starts.',
+    frames: [
+      { pick: 'unshifted', ...P, x0: -6.5, x1: 6.5, y0: -2, y1: 2, ...cur(Math.sin) },
+      { pick: 'shifted', ...P, x0: -6.5, x1: 6.5, y0: -2, y1: 2, ...cur(x => Math.sin(x - 1.2), Math.sin), note: 'same wave, later' }
+    ]
+  },
+  'frequency (of a wave)': {
+    say: 'How many repeats fit into a given stretch. It is the period turned upside down.',
+    frames: [
+      { pick: 'once', ...P, x0: -0.5, x1: 13, y0: -2, y1: 2, ...cur(Math.sin) },
+      { pick: 'twice as often', ...P, x0: -0.5, x1: 13, y0: -2, y1: 2, ...cur(x => Math.sin(2 * x), Math.sin) },
+      { pick: 'three times', ...P, x0: -0.5, x1: 13, y0: -2, y1: 2, ...cur(x => Math.sin(3 * x), Math.sin) }
+    ]
+  },
+  'radian measure': {
+    say: 'Angle measured by the arc it cuts, in units of the radius. It is the measure that makes calculus of waves come out clean.',
+    frames: [
+      { pick: 'one radian', ...P, x0: -2.2, x1: 2.2, y0: -2.2, y1: 2.2, circles: [{ cx: 0, cy: 0, r: 1.5 }], segs: [[0, 0, 1.5, 0, '#5d6b7d', false, 1.6], [0, 0, 0.81, 1.26, IN, false, 2]], note: 'arc = radius' },
+      { pick: 'a half turn', ...P, x0: -2.2, x1: 2.2, y0: -2.2, y1: 2.2, circles: [{ cx: 0, cy: 0, r: 1.5 }], segs: [[0, 0, 1.5, 0, '#5d6b7d', false, 1.6], [0, 0, -1.5, 0, IN, false, 2]], note: 'π radians' }
+    ]
+  },
+  'degree measure': {
+    say: 'A full turn cut into 360 parts. Older, more familiar, and arbitrary: 360 was chosen because it divides neatly.',
+    frames: [
+      { pick: '90°', ...P, x0: -2.2, x1: 2.2, y0: -2.2, y1: 2.2, circles: [{ cx: 0, cy: 0, r: 1.5 }], segs: [[0, 0, 1.5, 0, '#5d6b7d', false, 1.6], [0, 0, 0, 1.5, IN, false, 2]] },
+      { pick: '180°', ...P, x0: -2.2, x1: 2.2, y0: -2.2, y1: 2.2, circles: [{ cx: 0, cy: 0, r: 1.5 }], segs: [[0, 0, 1.5, 0, '#5d6b7d', false, 1.6], [0, 0, -1.5, 0, IN, false, 2]], note: 'the same as π radians' }
+    ]
+  },
+  'unit circle': {
+    say: 'The circle of radius one. Every point on it hands you a cosine and a sine at once, which is where both come from.',
+    frames: [
+      { pick: 'at 45°', ...P, x0: -2, x1: 2, y0: -2, y1: 2, circles: [{ cx: 0, cy: 0, r: 1 }], pts: [[0.707, 0.707, '(cos, sin)']], segs: [[0, 0, 0.707, 0.707, IN, false, 1.6]] },
+      { pick: 'at 120°', ...P, x0: -2, x1: 2, y0: -2, y1: 2, circles: [{ cx: 0, cy: 0, r: 1 }], pts: [[-0.5, 0.866, '(cos, sin)']], segs: [[0, 0, -0.5, 0.866, IN, false, 1.6]], note: 'cosine has gone negative' }
+    ]
+  },
+  'periodicity': {
+    say: 'Repeating the same shape at fixed intervals, forever. Knowing one cycle is knowing all of them.',
+    frames: [
+      { pick: 'one cycle', ...P, x0: -0.5, x1: 7, y0: -2, y1: 2, ...cur(Math.sin) },
+      { pick: 'three', ...P, x0: -0.5, x1: 20, y0: -2, y1: 2, ...cur(Math.sin), lines: [{ x: 2 * Math.PI, dash: true, c2: IN }, { x: 4 * Math.PI, dash: true, c2: IN }], note: 'identical each time' }
+    ]
+  },
+  'sinusoid': {
+    say: 'Any wave of this shape, whatever its height, length and starting point. Sound, light and alternating current are all made of these.',
+    frames: [
+      { pick: 'plain', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(Math.sin) },
+      { pick: 'taller', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(x => 2.4 * Math.sin(x), Math.sin) },
+      { pick: 'and faster', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(x => 2.4 * Math.sin(1.8 * x), Math.sin) },
+      { pick: 'and shifted', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(x => 2.4 * Math.sin(1.8 * x + 1), Math.sin) }
     ]
   }
 };
