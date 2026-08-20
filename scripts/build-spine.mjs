@@ -18,7 +18,11 @@ const { ATLAS: A12 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas
 const { ATLAS_3_5 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-3-5.js')}`);
 const { ATLAS_6_8 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-6-8.js')}`);
 const { ATLAS_9_10 } = await import(`file://${join(ROOT, 'book', 'spine', 'atlas-9-10.js')}`);
-const ATLAS = { ...A12, ...ATLAS_3_5, ...ATLAS_6_8, ...ATLAS_9_10 };
+const { EXPLAIN } = await import(`file://${join(ROOT, 'book', 'spine', 'explain.js')}`);
+const BASE = { ...A12, ...ATLAS_3_5, ...ATLAS_6_8, ...ATLAS_9_10 };
+// Merged, not replaced: the explanation layer adds prose and motion to a figure
+// that already exists, so a concept can gain either without losing the other.
+const ATLAS = Object.fromEntries(Object.entries(BASE).map(([k, v]) => [k, EXPLAIN[k] ? { ...v, ...EXPLAIN[k] } : v]));
 const { draw, line1d } = await import(`file://${join(ROOT, 'scripts', 'atlas-figures.mjs')}`);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -44,6 +48,9 @@ if (stray.length) throw new Error('classified terms that are not in the spine:\n
    classification must. */
 const strayFig = Object.keys(ATLAS).filter(k => !seen.has(k.toLowerCase()));
 if (strayFig.length) throw new Error('atlas figures for concepts not in the spine:\n  ' + strayFig.join('\n  '));
+
+const strayEx = Object.keys(EXPLAIN).filter(k => !BASE[k]);
+if (strayEx.length) throw new Error('explanations for concepts with no figure:\n  ' + strayEx.join('\n  '));
 
 const how = t => HOW[t] || 'direct';
 const one = spec => spec.line ? line1d(spec) : draw(spec);
@@ -132,9 +139,12 @@ const html = `<!doctype html>
                   border-radius:7px; }
   .plate-n { position:absolute; top:6px; left:8px; font-family:var(--sans); font-size:9.5px;
              color:var(--mute); font-variant-numeric:tabular-nums; }
-  .plate figcaption { font-family:var(--sans); font-size:12px; margin-top:6px; color:var(--ink);
-                      line-height:1.35; }
-  .plate.moving figcaption::after { content:" · press to run"; color:var(--mute); font-size:10.5px; }
+  .plate figcaption { margin-top:7px; line-height:1.4; }
+  .plate figcaption b { font-family:var(--sans); font-size:12.5px; color:var(--ink); display:block; }
+  .plate figcaption span { display:block; margin-top:3px; font-size:13px; color:#33445c; }
+  .plate.moving figcaption b::after { content:" \u00b7 press to run"; color:var(--mute); font-size:10px;
+                                      font-weight:400; letter-spacing:.02em; }
+  .plates { align-items:start; }
   .afr-f { display:none; } .afr-f.on { display:block; }
   .afr-b { display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; }
   .afr-x { font:600 10.5px/1 var(--sans); min-height:24px; padding:5px 8px; border-radius:5px;
@@ -188,8 +198,10 @@ ${stages.map(st => {
     <p class="can"><b>By the end</b>${esc(st.can)}</p>
     ${st.terms.some(t => ATLAS[t]) ? `<div class="plates">${st.terms.map(t => {
       const j = ++i;
-      return ATLAS[t] ? `<figure class="plate${ATLAS[t].frames ? ' moving' : ''}"><div class="plate-n">${j}</div>${figure(t, `f${j}`)}
-        <figcaption>${esc(t)}</figcaption></figure>` : '';
+      if (!ATLAS[t]) return '';
+      const say = ATLAS[t].say;
+      return `<figure class="plate${ATLAS[t].frames ? ' moving' : ''}"><div class="plate-n">${j}</div>${figure(t, `f${j}`)}
+        <figcaption><b>${esc(t)}</b>${say ? `<span>${esc(say)}</span>` : ''}</figcaption></figure>`;
     }).join('')}</div>` : `<ol class="terms">${st.terms.map(t => `<li class="h-${how(t)}"><span>${++i}</span>${esc(t)}</li>`).join('')}</ol>`}
   </section>`;
 }).join('\n')}
