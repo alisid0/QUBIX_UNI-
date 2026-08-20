@@ -1965,5 +1965,236 @@ export const EXPLAIN = {
       { pick: 'and faster', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(x => 2.4 * Math.sin(1.8 * x), Math.sin) },
       { pick: 'and shifted', ...P, x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, ...cur(x => 2.4 * Math.sin(1.8 * x + 1), Math.sin) }
     ]
+  },
+
+  /* --------------------------------------------------- 6. moving a curve ---- */
+  'parent function': {
+    say: 'The plainest member of a family, before anything is done to it. Every other member is this one moved, stretched or flipped.',
+    frames: [
+      { pick: 'the parent', ...P, ...cur(sq) },
+      { pick: 'a relative', ...P, ...cur(x => -0.6 * sq(x - 1.5) + 2, sq), note: 'same family' }
+    ]
+  },
+  'transformation': {
+    say: 'A rule applied to a whole curve at once. The shape is carried somewhere else rather than redrawn.',
+    frames: [
+      { pick: 'before', ...P, ...cur(sq) },
+      { pick: 'shifted', ...P, ...cur(x => sq(x - 2), sq) },
+      { pick: 'and flipped', ...P, ...cur(x => -sq(x - 2) + 3, sq) }
+    ]
+  },
+  'translation': {
+    say: 'Sliding without turning or resizing. Every point moves the same distance in the same direction.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(sq), pts: [[1, 1], [-1, 1]] },
+      { pick: 'slid', ...P, ...cur(x => sq(x - 2) - 1, sq), pts: [[3, 0], [1, 0]], note: 'every point moved 2 right, 1 down' }
+    ]
+  },
+  'horizontal shift': {
+    say: 'Moving sideways. It is done inside the bracket, and it moves the opposite way to the sign you write.',
+    frames: [
+      { pick: 'unmoved', ...P, ...cur(sq), pts: [[0, 0, '', IN]] },
+      { pick: 'f(x − 2)', ...P, ...cur(x => sq(x - 2), sq), pts: [[2, 0, '', IN]], note: 'minus, so it went right' },
+      { pick: 'f(x + 2)', ...P, ...cur(x => sq(x + 2), sq), pts: [[-2, 0, '', IN]], note: 'plus, so it went left' }
+    ]
+  },
+  'vertical shift': {
+    say: 'Moving up or down. It is done outside the bracket, and it moves the way the sign says.',
+    frames: [
+      { pick: 'unmoved', ...P, ...cur(x => sq(x) - 1), pts: [[0, -1, '', IN]] },
+      { pick: 'f(x) + 2', ...P, ...cur(x => sq(x) + 1, x => sq(x) - 1), pts: [[0, 1, '', IN]], note: 'plus, so it went up' },
+      { pick: 'f(x) − 2', ...P, ...cur(x => sq(x) - 3, x => sq(x) - 1), pts: [[0, -3, '', IN]], note: 'no surprise here' }
+    ]
+  },
+  'inside the bracket': {
+    say: 'Changes made to the input, before the rule runs. They act sideways, and they act backwards.',
+    frames: [
+      { pick: 'the parent', ...P, ...cur(x => Math.abs(x)) },
+      { pick: 'f(x − 2)', ...P, ...cur(x => Math.abs(x - 2), x => Math.abs(x)), note: 'sideways' },
+      { pick: 'f(2x)', ...P, ...cur(x => Math.abs(2 * x), x => Math.abs(x)), note: 'sideways again, squeezed' }
+    ]
+  },
+  'outside the bracket': {
+    say: 'Changes made to the answer, after the rule has run. They act vertically, and they behave as written.',
+    frames: [
+      { pick: 'the parent', ...P, ...cur(x => Math.abs(x) - 1) },
+      { pick: 'f(x) + 2', ...P, ...cur(x => Math.abs(x) + 1, x => Math.abs(x) - 1), note: 'up' },
+      { pick: '2f(x)', ...P, ...cur(x => 2 * (Math.abs(x) - 1), x => Math.abs(x) - 1), note: 'taller' }
+    ]
+  },
+  'shift against the sign': {
+    say: 'x − 2 sends the curve right, not left. The bracket asks what to feed the rule, so to get the old answer you must arrive two later.',
+    frames: [
+      { pick: 'f(0) = 0', ...P, ...cur(sq), pts: [[0, 0, 'x = 0', IN]] },
+      { pick: 'f(x − 2)', ...P, ...cur(x => sq(x - 2), sq), pts: [[2, 0, 'now at x = 2', IN]], note: 'x − 2 must equal 0, so x = 2' }
+    ]
+  },
+  'reflection': {
+    say: 'Flipping the curve across a line, as a mirror would. Distances to the mirror are preserved; sides are swapped.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 0.5 * sq(x) - 2) },
+      { pick: 'in the x-axis', ...P, ...cur(x => -(0.5 * sq(x) - 2), x => 0.5 * sq(x) - 2), lines: [{ y: 0, dash: true, c2: IN }] }
+    ]
+  },
+  'reflection in the x-axis': {
+    say: 'Negate the answer, and the curve turns upside down. Anything sitting on the axis does not move.',
+    frames: [
+      { pick: 'before', ...P, ...cur(x => 0.4 * x * sq(x) - 1) },
+      { pick: '−f(x)', ...P, ...cur(x => -(0.4 * x * sq(x) - 1), x => 0.4 * x * sq(x) - 1), lines: [{ y: 0, dash: true, c2: IN }], note: 'heights reversed' }
+    ]
+  },
+  'reflection in the y-axis': {
+    say: 'Negate the input, and left swaps with right. For an even curve nothing appears to happen at all.',
+    frames: [
+      { pick: 'before', ...P, ...cur(x => Math.sqrt(x + 3) * 1.6 - 2) },
+      { pick: 'f(−x)', ...P, ...cur(x => Math.sqrt(-x + 3) * 1.6 - 2, x => Math.sqrt(x + 3) * 1.6 - 2), lines: [{ x: 0, dash: true, c2: IN }] }
+    ]
+  },
+  'reflection in y = x': {
+    say: 'Swap the two coordinates and the diagonal becomes the mirror. This is exactly what taking an inverse does.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => x >= 0 ? sq(x) / 2 : NaN), lines: [{ m: 1, c: 0, dash: true, c2: FAINT }] },
+      { pick: 'mirrored', ...P, ...cur(x => Math.sqrt(2 * x), x => x >= 0 ? sq(x) / 2 : NaN), lines: [{ m: 1, c: 0, dash: true, c2: IN }], pts: [[2, 2, '', IN]], note: 'the inverse' }
+    ]
+  },
+  'stretch': {
+    say: 'Pulling the curve away from a line, so distances from it are multiplied. The line itself stays put.',
+    frames: [
+      { pick: 'before', ...P, ...cur(Math.sin), x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5 },
+      { pick: 'x 2.5', ...P, ...cur(x => 2.5 * Math.sin(x), Math.sin), x0: -6.5, x1: 6.5, y0: -3.5, y1: 3.5, lines: [{ y: 0, dash: true, c2: IN }], note: 'the axis did not move' }
+    ]
+  },
+  'compression': {
+    say: 'The same operation with a factor under one: everything is pulled toward the line rather than away from it.',
+    frames: [
+      { pick: 'before', ...P, ...cur(Math.sin), x0: -6.5, x1: 6.5, y0: -2.5, y1: 2.5 },
+      { pick: 'x 0.35', ...P, ...cur(x => 0.35 * Math.sin(x), Math.sin), x0: -6.5, x1: 6.5, y0: -2.5, y1: 2.5, lines: [{ y: 0, dash: true, c2: IN }] }
+    ]
+  },
+  'vertical stretch': {
+    say: 'Multiply the answer and every height scales. It happens outside the bracket, so the factor means what it says.',
+    frames: [
+      { pick: 'f(x)', ...P, ...cur(x => sq(x) - 2), pts: [[2, 2, '', IN]] },
+      { pick: '2f(x)', ...P, ...cur(x => 2 * (sq(x) - 2), x => sq(x) - 2), pts: [[2, 4, '', IN]], note: 'height doubled' }
+    ]
+  },
+  'horizontal stretch': {
+    say: 'Multiply the input and the curve squeezes sideways by the reciprocal. Feed it 2x and it finishes in half the distance.',
+    frames: [
+      { pick: 'f(x)', ...P, ...cur(x => Math.sin(x)), x0: -0.5, x1: 13, y0: -2, y1: 2, pts: [[Math.PI / 2, 1, '', IN]] },
+      { pick: 'f(2x)', ...P, ...cur(x => Math.sin(2 * x), Math.sin), x0: -0.5, x1: 13, y0: -2, y1: 2, pts: [[Math.PI / 4, 1, '', IN]], note: 'factor 2 in, half the width out' },
+      { pick: 'f(x/2)', ...P, ...cur(x => Math.sin(x / 2), Math.sin), x0: -0.5, x1: 13, y0: -2, y1: 2, note: 'and the other way' }
+    ]
+  },
+  'scale factor': {
+    say: 'The number every distance is multiplied by. Above one it grows, below one it shrinks, and negative flips as well as scales.',
+    frames: [
+      { pick: 'x 1', ...P, ...cur(x => Math.abs(x) - 1) },
+      { pick: 'x 2', ...P, ...cur(x => 2 * (Math.abs(x) - 1), x => Math.abs(x) - 1) },
+      { pick: 'x 0.4', ...P, ...cur(x => 0.4 * (Math.abs(x) - 1), x => Math.abs(x) - 1) },
+      { pick: 'x −1', ...P, ...cur(x => -(Math.abs(x) - 1), x => Math.abs(x) - 1), note: 'flipped as well' }
+    ]
+  },
+  'dilation': {
+    say: 'A stretch about a fixed centre. Every point moves along the line joining it to that centre.',
+    frames: [
+      { pick: 'the shape', ...P, ...shape(TRI, { fill: 'none' }), pts: [[0, 0, 'centre', IN]] },
+      { pick: 'x 1.5', ...P, ...shape(TRI.map(([x, y]) => [x * 1.5, y * 1.5]), { fill: 'none' }), polys: [{ pts: TRI, fill: 'none', c2: FAINT }, { pts: TRI.map(([x, y]) => [x * 1.5, y * 1.5]), fill: 'none' }], pts: [[0, 0, 'centre', IN]], note: 'away from the centre' }
+    ]
+  },
+  'invariant point': {
+    say: 'A point a transformation leaves exactly where it was. It is the anchor the rest of the picture turns around.',
+    frames: [
+      { pick: 'stretched vertically', ...P, ...cur(x => 2 * (sq(x) - 1), x => sq(x) - 1), pts: [[1, 0, '', IN], [-1, 0, '', IN]], note: 'the crossings did not move' },
+      { pick: 'reflected in x', ...P, ...cur(x => -(sq(x) - 1), x => sq(x) - 1), pts: [[1, 0, '', IN], [-1, 0, '', IN]], note: 'the same two points' }
+    ]
+  },
+  'order of transformations': {
+    say: 'Doing them in a different order gives a different curve. Stretch then shift is not shift then stretch.',
+    frames: [
+      { pick: 'the parent', ...P, ...cur(sq) },
+      { pick: 'stretch, then shift', ...P, ...cur(x => 2 * sq(x) - 3, sq), pts: [[0, -3, '', IN]], note: '2x², then down 3' },
+      { pick: 'shift, then stretch', ...P, ...cur(x => 2 * (sq(x) - 3), sq), pts: [[0, -6, '', BAD]], note: 'the vertex landed elsewhere' }
+    ]
+  },
+  'composition of transformations': {
+    say: 'Several applied one after another, read from the inside out. The written form is a set of instructions in reverse.',
+    frames: [
+      { pick: 'x²', ...P, ...cur(sq) },
+      { pick: 'x − 1 first', ...P, ...cur(x => sq(x - 1), sq) },
+      { pick: 'then halve', ...P, ...cur(x => 0.5 * sq(x - 1), sq) },
+      { pick: 'then drop 2', ...P, ...cur(x => 0.5 * sq(x - 1) - 2, sq), note: '0.5(x − 1)² − 2' }
+    ]
+  },
+  'even function': {
+    say: 'Feeding it the negative gives back the same answer. Its graph is unchanged by a flip in the vertical axis.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 0.4 * sq(x) - 2), pts: [[2, -0.4], [-2, -0.4]] },
+      { pick: 'flipped', ...P, ...cur(x => 0.4 * sq(-x) - 2, x => 0.4 * sq(x) - 2), lines: [{ x: 0, dash: true, c2: IN }], note: 'nothing changed: f(−x) = f(x)' }
+    ]
+  },
+  'odd function': {
+    say: 'Feeding it the negative flips the answer too. Turning the graph half a turn about the origin leaves it alone.',
+    frames: [
+      { pick: 'the curve', ...P, ...cur(x => 0.25 * x * sq(x) - 0.6 * x), pts: [[2, 0.8], [-2, -0.8]] },
+      { pick: 'turned half round', ...P, ...cur(x => -(0.25 * -x * sq(x) - 0.6 * -x), x => 0.25 * x * sq(x) - 0.6 * x), pts: [[0, 0, '', IN]], note: 'nothing changed: f(−x) = −f(x)' }
+    ]
+  },
+  'symmetry about the y-axis': {
+    say: 'The left half is the right half, mirrored. Only even rules do this.',
+    frames: [
+      { pick: 'one half', ...P, ...cur(x => x >= 0 ? Math.cos(x) : NaN), x0: -6.5, x1: 6.5, y0: -2, y1: 2, lines: [{ x: 0, dash: true, c2: IN }] },
+      { pick: 'both', ...P, ...cur(Math.cos), x0: -6.5, x1: 6.5, y0: -2, y1: 2, lines: [{ x: 0, dash: true, c2: IN }] }
+    ]
+  },
+  'symmetry about the origin': {
+    say: 'Half a turn about the origin puts the curve back on itself. Every point has a partner directly opposite.',
+    frames: [
+      { pick: 'a point', ...P, ...cur(x => 0.25 * x * sq(x) - 0.6 * x), pts: [[2, 0.8, '(2, 0.8)', IN]] },
+      { pick: 'its opposite', ...P, ...cur(x => 0.25 * x * sq(x) - 0.6 * x), pts: [[2, 0.8, '', IN], [-2, -0.8, '(−2, −0.8)', IN]], segs: [[2, 0.8, -2, -0.8, FAINT, true]], note: 'through the origin' }
+    ]
+  },
+  'rotational symmetry': {
+    say: 'Turning by a fixed fraction of a full circle leaves the shape looking identical. How many such turns is its order.',
+    frames: [
+      { pick: 'a square', ...P, x0: -4, x1: 4, y0: -4, y1: 4, ...shape([[-2, -2], [2, -2], [2, 2], [-2, 2]], { fill: 'none' }), pts: [[2, 2, '', IN]] },
+      { pick: 'quarter turn', ...P, x0: -4, x1: 4, y0: -4, y1: 4, ...shape([[-2, -2], [2, -2], [2, 2], [-2, 2]], { fill: 'none' }), pts: [[-2, 2, '', IN]], note: 'the same square, order 4' }
+    ]
+  },
+  'image curve': {
+    say: 'What is left after the transformation has been applied. The original is the object; this is its image.',
+    frames: [
+      { pick: 'the object', ...P, ...cur(x => Math.sqrt(x + 4) * 1.5 - 2) },
+      { pick: 'its image', ...P, ...cur(x => -(Math.sqrt(-x + 4) * 1.5 - 2), x => Math.sqrt(x + 4) * 1.5 - 2), note: 'flipped in both axes' }
+    ]
+  },
+  'mapping notation': {
+    say: 'Writing where a general point goes, rather than describing the move in words. It leaves no room for ambiguity.',
+    frames: [
+      { pick: 'the rule', ...B, text: [[0, 0.6, '(x, y) → (x + 3, y − 1)', '#16283f', 15]] },
+      { pick: 'applied', ...P, ...shape(TRI, { fill: 'none' }), polys: [{ pts: TRI, fill: 'none', c2: FAINT }, { pts: TRI.map(([x, y]) => [x + 3, y - 1]), fill: 'none' }], note: 'every point, the same way' }
+    ]
+  },
+  'transformation matrix': {
+    say: 'A small grid of numbers that performs the move by multiplication. Its two columns are simply where the two unit arrows land.',
+    frames: [
+      { pick: 'the unit arrows', ...P, x0: -4, x1: 4, y0: -4, y1: 4, segs: [[0, 0, 1, 0, IN, false, 2.2], [0, 0, 0, 1, OUT, false, 2.2]], pts: [[1, 0, '(1, 0)'], [0, 1, '(0, 1)']] },
+      { pick: 'where they land', ...P, x0: -4, x1: 4, y0: -4, y1: 4, segs: [[0, 0, 2, 1, IN, false, 2.2], [0, 0, -1, 2, OUT, false, 2.2]], pts: [[2, 1, '(2, 1)'], [-1, 2, '(−1, 2)']], note: 'those are the two columns' }
+    ]
+  },
+  'rotation about the origin': {
+    say: 'Turning everything by the same angle around a fixed point. Distances from that point never change.',
+    frames: [
+      { pick: 'the shape', ...P, x0: -4.5, x1: 4.5, y0: -4.5, y1: 4.5, ...shape(TRI, { fill: 'none' }), pts: [[0, 0, '', IN]] },
+      { pick: 'a quarter turn', ...P, x0: -4.5, x1: 4.5, y0: -4.5, y1: 4.5, polys: [{ pts: TRI, fill: 'none', c2: FAINT }, { pts: TRI.map(([x, y]) => [-y, x]), fill: 'none' }], pts: [[0, 0, '', IN]], note: '(x, y) → (−y, x)' },
+      { pick: 'a half turn', ...P, x0: -4.5, x1: 4.5, y0: -4.5, y1: 4.5, polys: [{ pts: TRI, fill: 'none', c2: FAINT }, { pts: TRI.map(([x, y]) => [-x, -y]), fill: 'none' }], pts: [[0, 0, '', IN]] }
+    ]
+  },
+  'shear': {
+    say: 'Sliding each row sideways by an amount that grows with its height. A rectangle becomes a leaning one, of exactly the same area.',
+    frames: [
+      { pick: 'a rectangle', ...P, x0: -4.5, x1: 4.5, y0: -3, y1: 3.5, ...shape([[-2, 0], [1, 0], [1, 2], [-2, 2]], { fill: 'none' }) },
+      { pick: 'sheared', ...P, x0: -4.5, x1: 4.5, y0: -3, y1: 3.5, polys: [{ pts: [[-2, 0], [1, 0], [1, 2], [-2, 2]], fill: 'none', c2: FAINT }, { pts: [[-2, 0], [1, 0], [3, 2], [0, 2]], fill: 'none' }], note: 'the base stayed, the top slid' }
+    ]
   }
 };
