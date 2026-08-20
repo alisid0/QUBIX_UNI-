@@ -115,8 +115,10 @@ const index = `<!doctype html>
       <a href="./${v.slug}.html">Open</a>
     </article>`).join('')}
   </div>
+  <!-- Absolute, because the library is served from two places: the site itself,
+       and a Pages mirror on a different host where "/" is not Qubix. -->
   <p class="note">Both open as ordinary web pages and print to PDF from any browser.
-    <a href="/">Back to Qubix</a></p>
+    <a href="https://qubix.university/">Back to Qubix</a></p>
 </main>
 </body></html>`;
 await writeFile(join(OUT, 'index.html'), index, 'utf8');
