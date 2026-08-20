@@ -20,6 +20,11 @@ const at = (pts, extra = {}) => pts.map(([x, y, pick, note]) => ({
   pick, pts: [[x, y, `(${x}, ${y})`]], guides: [[x, y]], note, ...extra
 }));
 
+// Closed shapes, for stage 3.
+const shape = (pts, o = {}) => ({ polys: [{ pts, ...o }] });
+const outline = pts => ({ polys: [{ pts, fill: 'none' }] });
+const TRI = [[-3, -2], [3, -2], [0, 3]];
+
 export const EXPLAIN = {
   /* ------------------------------------------------ 1. the plane itself ---- */
   'point': {
@@ -701,6 +706,396 @@ export const EXPLAIN = {
       { pick: 'a few', ...P, pts: [[-4, -1.5], [0, 0.5], [4, 2.5]] },
       { pick: 'more', ...P, pts: [[-4, -1.5], [-2, -0.5], [0, 0.5], [2, 1.5], [4, 2.5]] },
       { pick: 'all of them', ...P, lines: [{ m: 0.5, c: 0.5 }], note: 'the line is the set' }
+    ]
+  },
+
+  /* --------------------------------------- 3. regions, shapes and systems -- */
+  'polygon': {
+    say: 'A closed shape made only of straight sides. Add a side and you have a new one; there is no upper limit.',
+    frames: [
+      { pick: '3 sides', ...P, ...shape(TRI) },
+      { pick: '4', ...P, ...shape([[-3, -2], [3, -2], [2, 2], [-2, 3]]) },
+      { pick: '5', ...P, ...shape([[-3, -2], [1, -3], [3, 1], [0, 3], [-3, 1]]) }
+    ]
+  },
+  'vertex': {
+    say: 'A corner, where two sides meet. A polygon has exactly as many corners as sides.',
+    frames: [
+      { pick: 'one corner', ...P, ...outline(TRI), pts: [[0, 3, '', '#e0813a']] },
+      { pick: 'all three', ...P, ...outline(TRI), pts: TRI.map(p => [...p, '', '#e0813a']) }
+    ]
+  },
+  'side': {
+    say: 'One straight edge. Going round them all in order is what closes the shape.',
+    frames: [
+      { pick: 'one side', ...P, ...outline(TRI), segs: [[-3, -2, 3, -2, '#e0813a', false, 3.5]] },
+      { pick: 'the next', ...P, ...outline(TRI), segs: [[3, -2, 0, 3, '#e0813a', false, 3.5]] },
+      { pick: 'and the last', ...P, ...outline(TRI), segs: [[0, 3, -3, -2, '#e0813a', false, 3.5]] }
+    ]
+  },
+  'triangle': {
+    say: 'Three points not in a line, joined up. The simplest polygon, and the one every other polygon can be cut into.',
+    frames: [
+      { pick: 'a triangle', ...P, ...shape(TRI) },
+      { pick: 'move a corner', ...P, ...shape([[-3, -2], [3, -2], [2.5, 3]]), note: 'still a triangle' },
+      { pick: 'cutting a shape', ...P, ...outline([[-3, -2], [2, -3], [3, 1], [0, 3], [-3, 1]]), segs: [[-3, -2, 3, 1, '#e0813a', true, 1.6], [-3, -2, 0, 3, '#e0813a', true, 1.6]], note: 'three triangles' }
+    ]
+  },
+  'right triangle': {
+    say: 'One corner square. This is the shape Pythagoras applies to, which is why every distance on this sheet is one.',
+    frames: [
+      { pick: 'the square corner', ...P, ...shape([[-2, -2], [2, -2], [-2, 2]]), right: [-2, -2, 1, 1] },
+      { pick: 'as a distance', ...P, ...shape([[-2, -2], [2, -2], [-2, 2]], { fill: 'none' }), segs: [[2, -2, -2, 2, '#e0813a', false, 3]], right: [-2, -2, 1, 1], note: 'the hypotenuse is a length' }
+    ]
+  },
+  'isosceles triangle': {
+    say: 'Two sides equal, and with them two equal angles. Symmetry about a line through the odd corner.',
+    frames: [
+      { pick: 'two equal', ...P, ...shape([[-2, -2], [2, -2], [0, 3]]), text: [[-1.5, 0.6, '='], [1.5, 0.6, '=']] },
+      { pick: 'its mirror', ...P, ...shape([[-2, -2], [2, -2], [0, 3]], { fill: 'none' }), lines: [{ x: 0, dash: true, c2: '#e0813a' }] }
+    ]
+  },
+  'equilateral triangle': {
+    say: 'All three sides equal, so all three angles are sixty degrees. The most symmetric triangle there is.',
+    frames: [
+      { pick: 'the shape', ...P, ...shape([[-2, -1.7], [2, -1.7], [0, 1.76]]) },
+      { pick: 'three mirrors', ...P, ...shape([[-2, -1.7], [2, -1.7], [0, 1.76]], { fill: 'none' }), lines: [{ x: 0, dash: true, c2: '#e0813a' }, { m: 1.73, c: 1.73 * 2 - 1.7, dash: true, c2: '#e0813a' }, { m: -1.73, c: 1.73 * 2 - 1.7, dash: true, c2: '#e0813a' }] }
+    ]
+  },
+  'quadrilateral': {
+    say: 'Four straight sides. Every rectangle, square, rhombus and trapezium below is one of these with something extra promised.',
+    frames: [
+      { pick: 'general', ...P, ...shape([[-3, -2], [3, -3], [2, 2], [-2, 3]]) },
+      { pick: 'with a promise', ...P, ...shape([[-3, -2], [3, -2], [3, 2], [-3, 2]]), note: 'now a rectangle' }
+    ]
+  },
+  'rectangle': {
+    say: 'Four right angles. Opposite sides come out equal as a consequence, not as a second condition.',
+    frames: [
+      { pick: 'wide', ...P, ...shape([[-3, -1.5], [3, -1.5], [3, 1.5], [-3, 1.5]]), right: [-3, -1.5, 1, 1] },
+      { pick: 'tall', ...P, ...shape([[-1.5, -3], [1.5, -3], [1.5, 3], [-1.5, 3]]), right: [-1.5, -3, 1, 1] }
+    ]
+  },
+  'square': {
+    say: 'A rectangle whose sides are all equal. It is the unit of area: everything else is measured in these.',
+    frames: [
+      { pick: 'a square', ...P, ...shape([[-2, -2], [2, -2], [2, 2], [-2, 2]]), right: [-2, -2, 1, 1] },
+      { pick: 'as area', ...P, bands: [[-2, -2, -1, -1], [-1, -2, 0, -1], [0, -2, 1, -1], [1, -2, 2, -1]], ...outline([[-2, -2], [2, -2], [2, 2], [-2, 2]]), note: 'sixteen unit squares' }
+    ]
+  },
+  'parallelogram': {
+    say: 'Both pairs of opposite sides parallel. Push a rectangle sideways and you have one, with the same area.',
+    frames: [
+      { pick: 'a rectangle', ...P, ...shape([[-3, -2], [1, -2], [1, 2], [-3, 2]]) },
+      { pick: 'pushed over', ...P, ...shape([[-3, -2], [1, -2], [3, 2], [-1, 2]]), note: 'same base, same height' }
+    ]
+  },
+  'rhombus': {
+    say: 'A parallelogram with all four sides equal. Its diagonals cross at right angles.',
+    frames: [
+      { pick: 'the shape', ...P, ...shape([[0, -3], [3, 0], [0, 3], [-3, 0]]) },
+      { pick: 'its diagonals', ...P, ...shape([[0, -3], [3, 0], [0, 3], [-3, 0]], { fill: 'none' }), segs: [[-3, 0, 3, 0, '#e0813a', false, 2], [0, -3, 0, 3, '#e0813a', false, 2]], right: [0, 0, 1, 1] }
+    ]
+  },
+  'trapezium': {
+    say: 'Exactly one pair of parallel sides. Its area is the average of those two, times the distance between them.',
+    frames: [
+      { pick: 'the shape', ...P, ...shape([[-3, -2], [3, -2], [1.5, 2], [-1.5, 2]]) },
+      { pick: 'the two sides', ...P, ...shape([[-3, -2], [3, -2], [1.5, 2], [-1.5, 2]], { fill: 'none' }), segs: [[-3, -2, 3, -2, '#e0813a', false, 3], [-1.5, 2, 1.5, 2, '#12897c', false, 3]], note: 'average them' }
+    ]
+  },
+  'perimeter': {
+    say: 'The distance all the way round. Add the sides; there is no formula beyond that.',
+    frames: [
+      { pick: 'one side', ...P, ...outline([[-3, -2], [3, -2], [3, 2], [-3, 2]]), segs: [[-3, -2, 3, -2, '#e0813a', false, 3.5]] },
+      { pick: 'two', ...P, ...outline([[-3, -2], [3, -2], [3, 2], [-3, 2]]), segs: [[-3, -2, 3, -2, '#e0813a', false, 3.5], [3, -2, 3, 2, '#e0813a', false, 3.5]] },
+      { pick: 'all the way', ...P, polys: [{ pts: [[-3, -2], [3, -2], [3, 2], [-3, 2]], fill: 'none', stroke: '#e0813a', wid: 3.5 }], note: '6 + 4 + 6 + 4 = 20' }
+    ]
+  },
+  'area of a triangle': {
+    say: 'Half the base times the height. Slide the top corner along a parallel line and the area never changes, because neither does.',
+    frames: [
+      { pick: 'base and height', ...P, ...shape([[-3, -2], [3, -2], [1, 2]]), segs: [[1, 2, 1, -2, '#e0813a', true, 1.6]], note: 'half of 6 × 4' },
+      { pick: 'move the top', ...P, ...shape([[-3, -2], [3, -2], [-2, 2]]), segs: [[-2, 2, -2, -2, '#e0813a', true, 1.6]], lines: [{ y: 2, dash: true, c2: '#d8d3c7' }], note: 'same area' },
+      { pick: 'and again', ...P, ...shape([[-3, -2], [3, -2], [3, 2]]), segs: [[3, 2, 3, -2, '#e0813a', true, 1.6]], lines: [{ y: 2, dash: true, c2: '#d8d3c7' }], note: 'still the same' }
+    ]
+  },
+  'shoelace formula': {
+    say: 'Area straight from the corner coordinates, with no height to find. Multiply crosswise round the shape and subtract.',
+    frames: [
+      { pick: 'the corners', ...P, ...outline([[-3, -2], [3, -1], [0, 3]]), pts: [[-3, -2, '(−3,−2)'], [3, -1, '(3,−1)'], [0, 3, '(0,3)']] },
+      { pick: 'crosswise', ...P, ...shape([[-3, -2], [3, -1], [0, 3]]), segs: [[-3, -2, 3, -1, '#e0813a', true, 1.4], [3, -1, 0, 3, '#e0813a', true, 1.4], [0, 3, -3, -2, '#e0813a', true, 1.4]], note: 'no height needed' }
+    ]
+  },
+  'determinant form': {
+    say: 'The same computation written as a determinant. It is why area and determinants turn out to be the same idea.',
+    frames: [
+      { pick: 'two edges', ...P, ...shape([[0, 0], [4, 1], [1, 3]], { fill: 'none' }), segs: [[0, 0, 4, 1, '#e0813a', false, 2.6], [0, 0, 1, 3, '#12897c', false, 2.6]], pts: [[0, 0]] },
+      { pick: 'the triangle', ...P, ...shape([[0, 0], [4, 1], [1, 3]]), note: 'half |4·3 − 1·1|' },
+      { pick: 'the whole box', ...P, ...shape([[0, 0], [4, 1], [5, 4], [1, 3]]), note: 'the determinant itself' }
+    ]
+  },
+  'area of a polygon': {
+    say: 'Cut it into triangles from one corner and add them. Any polygon can be cut this way, so nothing else is needed.',
+    frames: [
+      { pick: 'the shape', ...P, ...shape([[-3, -2], [2, -3], [3, 1], [0, 3], [-3, 1]]) },
+      { pick: 'first cut', ...P, ...shape([[-3, -2], [2, -3], [3, 1], [0, 3], [-3, 1]], { fill: 'none' }), segs: [[-3, -2, 3, 1, '#e0813a', false, 1.8]] },
+      { pick: 'cut again', ...P, ...shape([[-3, -2], [2, -3], [3, 1], [0, 3], [-3, 1]], { fill: 'none' }), segs: [[-3, -2, 3, 1, '#e0813a', false, 1.8], [-3, -2, 0, 3, '#e0813a', false, 1.8]], note: 'three triangles' }
+    ]
+  },
+  'region': {
+    say: 'A part of the plane rather than a line through it. Regions are what inequalities describe.',
+    frames: [
+      { pick: 'a box', ...P, bands: [[-3, -1, 2, 3]] },
+      { pick: 'a half', ...P, shade: { above: 0 } },
+      { pick: 'a shape', ...P, ...shape([[-3, -2], [2, -3], [3, 1], [0, 3]]) }
+    ]
+  },
+  'half-plane': {
+    say: 'Everything on one side of a line. Two of them, and the line between, make up the whole plane.',
+    frames: [
+      { pick: 'above', ...P, lines: [{ m: 0.5, c: 0 }], shade: { above: 0 } },
+      { pick: 'below', ...P, lines: [{ m: 0.5, c: 0 }], shade: { below: 0 } }
+    ]
+  },
+  'inequality': {
+    say: 'A condition met by a whole region rather than by a single answer. Its picture is shading, not a point.',
+    frames: [
+      { pick: 'y ≥ 1', ...P, lines: [{ y: 1 }], shade: { above: 1 } },
+      { pick: 'y ≤ 1', ...P, lines: [{ y: 1 }], shade: { below: 1 } }
+    ]
+  },
+  'linear inequality': {
+    say: 'The boundary is a straight line, so the region is a half-plane. Test any single point to find out which side is wanted.',
+    frames: [
+      { pick: 'the boundary', ...P, lines: [{ m: -1, c: 2 }], note: 'x + y = 2' },
+      { pick: 'test the origin', ...P, lines: [{ m: -1, c: 2 }], pts: [[0, 0, '0 ≤ 2 ✓', '#12897c']] },
+      { pick: 'so shade that side', ...P, lines: [{ m: -1, c: 2 }], shade: { below: 0 }, note: 'x + y ≤ 2' }
+    ]
+  },
+  'strict inequality': {
+    say: 'The boundary itself is excluded, drawn dashed. The difference matters at the edge and nowhere else.',
+    frames: [
+      { pick: 'y > 1', ...P, lines: [{ y: 1, dash: true }], shade: { above: 1 }, note: 'edge excluded' },
+      { pick: 'y ≥ 1', ...P, lines: [{ y: 1 }], shade: { above: 1 }, note: 'edge included' }
+    ]
+  },
+  'boundary line': {
+    say: 'The edge of a region. Solid when it belongs to the region, dashed when it does not.',
+    frames: [
+      { pick: 'belongs', ...P, lines: [{ m: -1, c: 2, c2: '#e0813a' }], shade: { below: 0 } },
+      { pick: 'does not', ...P, lines: [{ m: -1, c: 2, c2: '#e0813a', dash: true }], shade: { below: 0 } }
+    ]
+  },
+  'shaded region': {
+    say: 'Where two or more conditions hold at once. Each one alone allows more; together they allow less.',
+    frames: [
+      { pick: 'first', ...P, lines: [{ m: 1, c: -1 }], shade: { above: 0 } },
+      { pick: 'second', ...P, lines: [{ m: -1, c: 3, c2: '#e0813a' }], shade: { below: 0 } },
+      { pick: 'both', ...P, lines: [{ m: 1, c: -1 }, { m: -1, c: 3, c2: '#e0813a' }], polys: [{ pts: [[-5, -5], [2, 1], [-5, 5]], fill: '#cfe6e1', stroke: 'none' }], note: 'the overlap' }
+    ]
+  },
+  'feasible region': {
+    say: 'Everything allowed by every constraint. Add a constraint and it can only shrink.',
+    frames: [
+      { pick: 'one rule', ...P, shade: { right: 0 }, lines: [{ x: 0 }] },
+      { pick: 'two', ...P, bands: [[0, 0, 5, 5]], lines: [{ x: 0 }, { y: 0 }] },
+      { pick: 'three', ...P, ...shape([[0, 0], [4, 0], [0, 4]]), lines: [{ m: -1, c: 4, c2: '#e0813a' }] },
+      { pick: 'four', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), note: 'smaller each time' }
+    ]
+  },
+  'convex region': {
+    say: 'Join any two of its points and the segment stays inside. Feasible regions from linear constraints are always like this.',
+    frames: [
+      { pick: 'convex', ...P, ...shape([[-3, -2], [3, -2], [2, 2], [-2, 2]]), segs: [[-3, -2, 2, 2, '#e0813a', true, 1.8]], note: 'stays inside' },
+      { pick: 'not convex', ...P, ...shape([[-3, -2], [3, -2], [0, 0], [2, 3], [-3, 2]]), segs: [[3, -2, 2, 3, '#c0504d', true, 1.8]], note: 'the join leaves it' }
+    ]
+  },
+  'bounded region': {
+    say: 'It fits inside some box. A bounded region always has a highest and a lowest point of anything measured on it.',
+    frames: [
+      { pick: 'the region', ...P, ...shape([[-2, -2], [2, -2], [2, 2], [-2, 2]]) },
+      { pick: 'boxed in', ...P, ...shape([[-2, -2], [2, -2], [2, 2], [-2, 2]]), ...{ polys: [{ pts: [[-2, -2], [2, -2], [2, 2], [-2, 2]], fill: '#cfe6e1' }, { pts: [[-3.5, -3.5], [3.5, -3.5], [3.5, 3.5], [-3.5, 3.5]], fill: 'none', stroke: '#e0813a', dash: true, wid: 1.6 }] } }
+    ]
+  },
+  'unbounded region': {
+    say: 'It runs on without limit. A quantity measured over one may have no largest value at all.',
+    frames: [
+      { pick: 'near view', ...P, lines: [{ m: 0.4, c: 1 }], shade: { above: 1 } },
+      { pick: 'wider', ...P, x0: -14, x1: 14, y0: -10, y1: 10, lines: [{ m: 0.4, c: 1 }], shade: { above: 1 }, note: 'still going' }
+    ]
+  },
+  'intersection of two lines': {
+    say: 'Where both lines pass at once. Unless they are parallel, there is exactly one such place.',
+    frames: [
+      { pick: 'one line', ...P, lines: [{ m: 1, c: -1 }] },
+      { pick: 'and another', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }] },
+      { pick: 'they cross', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1]] }
+    ]
+  },
+  'point of intersection': {
+    say: 'The one point satisfying both equations. Reading off its coordinates is solving the pair.',
+    frames: [
+      { pick: 'the crossing', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1]] },
+      { pick: 'read it off', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1, '(2, 1)']], guides: [[2, 1]] }
+    ]
+  },
+  'simultaneous equations': {
+    say: 'Two conditions to hold at the same time. Each is a line; the answer is where they meet.',
+    frames: [
+      { pick: 'first alone', ...P, lines: [{ m: 1, c: -1 }], note: 'many points fit' },
+      { pick: 'second alone', ...P, lines: [{ m: -0.5, c: 2, c2: '#e0813a' }], note: 'many fit this too' },
+      { pick: 'both at once', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1]], note: 'only one fits both' }
+    ]
+  },
+  'system of equations': {
+    say: 'Any number of equations considered together. More equations usually means fewer answers, and often none.',
+    frames: [
+      { pick: 'two', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1]] },
+      { pick: 'a third that fits', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }, { m: 3, c: -5, c2: '#c0504d' }], pts: [[2, 1]] },
+      { pick: 'one that does not', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }, { m: 3, c: -2, c2: '#c0504d' }], note: 'now nothing fits all three' }
+    ]
+  },
+  'unique solution': {
+    say: 'Different slopes, so the lines must cross, and can only cross once.',
+    frames: [
+      { pick: 'crossing', ...P, lines: [{ m: 1, c: 0 }, { m: -1, c: 2, c2: '#e0813a' }], pts: [[1, 1]] },
+      { pick: 'still crossing', ...P, lines: [{ m: 1, c: 0 }, { m: 0.2, c: 2, c2: '#e0813a' }], pts: [[2.5, 2.5]], note: 'nearer parallel, still one point' }
+    ]
+  },
+  'no solution': {
+    say: 'Same slope, different intercept. Parallel lines never meet, so no pair of numbers satisfies both.',
+    frames: [
+      { pick: 'crossing', ...P, lines: [{ m: 0.8, c: 2 }, { m: 0.3, c: -2, c2: '#e0813a' }], pts: [[-8, -4.4]], note: 'meets somewhere' },
+      { pick: 'nearly parallel', ...P, lines: [{ m: 0.8, c: 2 }, { m: 0.7, c: -2, c2: '#e0813a' }], note: 'meets far away' },
+      { pick: 'parallel', ...P, lines: [{ m: 0.8, c: 2 }, { m: 0.8, c: -2, c2: '#e0813a' }], note: 'never' }
+    ]
+  },
+  'infinitely many solutions': {
+    say: 'The two equations describe the same line, so every point on it solves both. Usually one is a multiple of the other.',
+    frames: [
+      { pick: 'two lines', ...P, lines: [{ m: 0.8, c: 1 }, { m: 0.8, c: 0, c2: '#e0813a' }], note: 'no meeting' },
+      { pick: 'the same line', ...P, lines: [{ m: 0.8, c: 0, c2: '#e0813a' }, { m: 0.8, c: 0, dash: true }], pts: [[-3, -2.4], [0, 0], [3, 2.4]], note: 'every point solves both' }
+    ]
+  },
+  'consistent system': {
+    say: 'It has at least one solution. Either the lines cross, or they coincide.',
+    frames: [
+      { pick: 'crossing', ...P, lines: [{ m: 1, c: 0 }, { m: -1, c: 2, c2: '#e0813a' }], pts: [[1, 1]] },
+      { pick: 'coinciding', ...P, lines: [{ m: 1, c: 0, c2: '#e0813a' }, { m: 1, c: 0, dash: true }], note: 'also consistent' }
+    ]
+  },
+  'inconsistent system': {
+    say: 'No solution at all. The conditions contradict each other, and the algebra ends in something false like 0 = 5.',
+    frames: [
+      { pick: 'parallel', ...P, lines: [{ m: 0.8, c: 2 }, { m: 0.8, c: -2, c2: '#e0813a' }] },
+      { pick: 'three that clash', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }, { m: 3, c: -2, c2: '#c0504d' }], note: 'no common point' }
+    ]
+  },
+  'dependent equations': {
+    say: 'One equation carries no new information, because it is a rescaling of another. Two equations, one condition.',
+    frames: [
+      { pick: 'as written', ...P, lines: [{ m: -0.6, c: 1, c2: '#e0813a' }], note: '3x + 5y = 5' },
+      { pick: 'doubled', ...P, lines: [{ m: -0.6, c: 1, c2: '#e0813a' }, { m: -0.6, c: 1, dash: true }], note: '6x + 10y = 10, the same line' }
+    ]
+  },
+  'graphical solution': {
+    say: 'Draw both and look. It gives an answer you can see and trust to about a grid square, which is often enough.',
+    frames: [
+      { pick: 'draw them', ...P, lines: [{ m: 1.5, c: -2 }, { m: -0.5, c: 2, c2: '#e0813a' }] },
+      { pick: 'find the crossing', ...P, lines: [{ m: 1.5, c: -2 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1]] },
+      { pick: 'read it', ...P, lines: [{ m: 1.5, c: -2 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1, '(2, 1)']], guides: [[2, 1]] }
+    ]
+  },
+  'substitution method': {
+    say: 'Use one equation to express a letter, then put it into the other. Geometrically, you have fixed one coordinate first.',
+    frames: [
+      { pick: 'both lines', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }] },
+      { pick: 'fix x', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }, { x: 2, c2: '#5d6b7d', dash: true }] },
+      { pick: 'read y', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1, '(2, 1)']] }
+    ]
+  },
+  'elimination method': {
+    say: 'Add or subtract the equations so one letter cancels. The combination is a third line through the same crossing.',
+    frames: [
+      { pick: 'the two', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1]] },
+      { pick: 'combine them', ...P, lines: [{ m: 1, c: -1, c2: '#d8d3c7' }, { m: -0.5, c: 2, c2: '#d8d3c7' }, { y: 1, c2: '#e0813a' }], pts: [[2, 1]], note: 'a horizontal line: x is gone' },
+      { pick: 'so y = 1', ...P, lines: [{ y: 1, c2: '#e0813a' }], pts: [[2, 1, '(2, 1)']] }
+    ]
+  },
+  'linear programming': {
+    say: 'Find the best allowed value of something. Because the region is convex and the objective is straight, the answer is always at a corner.',
+    frames: [
+      { pick: 'the region', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]) },
+      { pick: 'slide the value', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), lines: [{ m: -0.8, c: 2, dash: true, c2: '#5d6b7d' }] },
+      { pick: 'until it leaves', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), lines: [{ m: -0.8, c: 4.4, c2: '#e0813a' }], pts: [[3, 2, 'best', '#e0813a']], note: 'at a corner' }
+    ]
+  },
+  'objective function': {
+    say: 'The quantity being maximised or minimised. Its lines of equal value are parallel, so sliding them across the region finds the best point.',
+    frames: [
+      { pick: 'value 1.5', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), lines: [{ m: -0.8, c: 1.5, dash: true, c2: '#5d6b7d' }] },
+      { pick: 'value 3', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), lines: [{ m: -0.8, c: 3, dash: true, c2: '#5d6b7d' }] },
+      { pick: 'value 4.4', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), lines: [{ m: -0.8, c: 4.4, c2: '#e0813a' }], note: 'the last that still touches' }
+    ]
+  },
+  'corner point': {
+    say: 'A vertex of the feasible region. Checking only these is enough, which turns an infinite search into a short list.',
+    frames: [
+      { pick: 'the corners', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), pts: [[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]] },
+      { pick: 'test each', ...P, ...shape([[0, 0], [3.5, 0], [3, 2], [1, 3], [0, 2.5]]), pts: [[3, 2, 'best', '#e0813a'], [0, 0, '', '#5d6b7d'], [3.5, 0, '', '#5d6b7d'], [1, 3, '', '#5d6b7d'], [0, 2.5, '', '#5d6b7d']], note: 'five to check, not infinitely many' }
+    ]
+  },
+  'concurrency': {
+    say: 'Three or more lines through one point. It is not automatic, which is why it is worth a name when it happens.',
+    frames: [
+      { pick: 'two lines', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }], pts: [[2, 1]] },
+      { pick: 'a third, off', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }, { m: 3, c: -2, c2: '#c0504d' }], note: 'three crossings' },
+      { pick: 'a third, through', ...P, lines: [{ m: 1, c: -1 }, { m: -0.5, c: 2, c2: '#e0813a' }, { m: 3, c: -5, c2: '#c0504d' }], pts: [[2, 1]], note: 'concurrent' }
+    ]
+  },
+  'medians': {
+    say: 'Each line from a corner to the midpoint of the opposite side. All three always pass through one point.',
+    frames: [
+      { pick: 'one', ...P, ...outline(TRI), segs: [[0, 3, 0, -2, '#e0813a', false, 1.8]], pts: [[0, -2, '', '#5d6b7d']] },
+      { pick: 'two', ...P, ...outline(TRI), segs: [[0, 3, 0, -2, '#e0813a', false, 1.8], [-3, -2, 1.5, 0.5, '#e0813a', false, 1.8]] },
+      { pick: 'all three', ...P, ...outline(TRI), segs: [[0, 3, 0, -2, '#e0813a', false, 1.8], [-3, -2, 1.5, 0.5, '#e0813a', false, 1.8], [3, -2, -1.5, 0.5, '#e0813a', false, 1.8]], pts: [[0, -0.33]], note: 'concurrent' }
+    ]
+  },
+  'centroid': {
+    say: 'Where the medians meet, and the average of the three corners. A cardboard triangle balances on it.',
+    frames: [
+      { pick: 'the medians', ...P, ...outline(TRI), segs: [[0, 3, 0, -2, '#d8d3c7', false, 1.4], [-3, -2, 1.5, 0.5, '#d8d3c7', false, 1.4], [3, -2, -1.5, 0.5, '#d8d3c7', false, 1.4]] },
+      { pick: 'the point', ...P, ...outline(TRI), segs: [[0, 3, 0, -2, '#d8d3c7', false, 1.4], [-3, -2, 1.5, 0.5, '#d8d3c7', false, 1.4], [3, -2, -1.5, 0.5, '#d8d3c7', false, 1.4]], pts: [[0, -0.33, 'centroid', '#e0813a']], note: 'the average of the corners' }
+    ]
+  },
+  'circumcentre': {
+    say: 'The centre of the circle through all three corners. It is equally far from each, so it sits on every perpendicular bisector.',
+    frames: [
+      { pick: 'the point', ...P, ...outline(TRI), pts: [[0, -0.17, '', '#e0813a']] },
+      { pick: 'equally far', ...P, ...outline(TRI), pts: [[0, -0.17, '', '#e0813a']], segs: TRI.map(p => [0, -0.17, p[0], p[1], '#5d6b7d', true, 1.3]) },
+      { pick: 'the circle', ...P, ...outline(TRI), circles: [{ cx: 0, cy: -0.17, r: 3.005 }], pts: [[0, -0.17, '', '#e0813a']] }
+    ]
+  },
+  'incentre': {
+    say: 'The centre of the largest circle that fits inside. It is equally far from each side, rather than from each corner.',
+    frames: [
+      { pick: 'the point', ...P, ...outline(TRI), pts: [[0, -0.55, '', '#e0813a']] },
+      { pick: 'the circle', ...P, ...outline(TRI), circles: [{ cx: 0, cy: -0.55, r: 1.45, stroke: '#e0813a' }], pts: [[0, -0.55, '', '#e0813a']], note: 'touching all three sides' }
+    ]
+  },
+  'orthocentre': {
+    say: 'Where the three altitudes meet. Unlike the others it can fall outside the triangle entirely.',
+    frames: [
+      { pick: 'inside', ...P, ...outline(TRI), segs: [[0, 3, 0, -2, '#d8d3c7', false, 1.4], [-3, -2, 1.8, 1.2, '#d8d3c7', false, 1.4], [3, -2, -1.8, 1.2, '#d8d3c7', false, 1.4]], pts: [[0, 0.6, '', '#e0813a']] },
+      { pick: 'outside', ...P, ...outline([[-3, -2], [3, -2], [2.6, 2]]), pts: [[2.6, -3.7, '', '#c0504d']], note: 'an obtuse triangle pushes it out' }
+    ]
+  },
+  'Euler line': {
+    say: 'The circumcentre, centroid and orthocentre always lie on one line, in that order, whatever the triangle. A surprise that has no obvious reason to be true.',
+    frames: [
+      { pick: 'three centres', ...P, ...outline(TRI), pts: [[0, -0.17, '', '#12897c'], [0, -0.33, '', '#5d6b7d'], [0, 0.6, '', '#c0504d']] },
+      { pick: 'one line', ...P, ...outline(TRI), pts: [[0, -0.17, '', '#12897c'], [0, -0.33, '', '#5d6b7d'], [0, 0.6, '', '#c0504d']], lines: [{ x: 0, c2: '#e0813a', dash: true }], note: 'always' }
     ]
   }
 };

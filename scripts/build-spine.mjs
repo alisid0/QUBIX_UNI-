@@ -58,8 +58,15 @@ const figure = (t, id) => {
   const spec = ATLAS[t];
   if (!spec) return '';
   if (!spec.frames) return one(spec);
+  // A frame inherits the window it is drawn in, and nothing else. Spreading the
+  // whole base spec leaked its ink into every frame: the feasible region kept
+  // its polygon while the frames tried to build it up one constraint at a time,
+  // so nothing appeared to change.
+  const LAYOUT = ['w', 'h', 'x0', 'x1', 'y0', 'y1', 'grid', 'ticks', 'axes',
+                  'arrowheads', 'line', 'from', 'to', 'labels'];
+  const base = Object.fromEntries(LAYOUT.filter(k => k in spec).map(k => [k, spec[k]]));
   return `<div class="afr" id="${id}">`
-    + spec.frames.map((f, i) => `<div class="afr-f${i ? '' : ' on'}" data-i="${i}">${one({ ...spec, ...f, frames: undefined })}</div>`).join('')
+    + spec.frames.map((f, i) => `<div class="afr-f${i ? '' : ' on'}" data-i="${i}">${one({ alt: spec.alt, ...base, ...f })}</div>`).join('')
     + `<div class="afr-b">${spec.frames.map((f, i) =>
         `<button type="button" class="afr-x${i ? '' : ' on'}" data-i="${i}">${esc(f.pick ?? (i + 1))}</button>`).join('')}</div></div>`;
 };
