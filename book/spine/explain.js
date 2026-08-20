@@ -25,6 +25,14 @@ const shape = (pts, o = {}) => ({ polys: [{ pts, ...o }] });
 const outline = pts => ({ polys: [{ pts, fill: 'none' }] });
 const TRI = [[-3, -2], [3, -2], [0, 3]];
 
+// A bare canvas with no axes, for stage 4: the function idea is about pairing
+// rather than position, so most of it is drawn as arrows between two columns.
+const B = { grid: 'none', ticks: false, axes: false, arrowheads: false, x0: -5, x1: 5, y0: -4, y1: 4 };
+const IN = '#e0813a', OUT = '#12897c', BAD = '#c0504d';
+// Arrows from a left column to a right one, given as [fromY, toY] pairs.
+const arrows = (pairs, colour = '#16283f') => pairs.map(([a, b]) => [-2.2, a, 2.2, b, colour]);
+const col = (ys, x, colour) => ys.map(y => [x, y, '', colour]);
+
 export const EXPLAIN = {
   /* ------------------------------------------------ 1. the plane itself ---- */
   'point': {
@@ -1096,6 +1104,374 @@ export const EXPLAIN = {
     frames: [
       { pick: 'three centres', ...P, ...outline(TRI), pts: [[0, -0.17, '', '#12897c'], [0, -0.33, '', '#5d6b7d'], [0, 0.6, '', '#c0504d']] },
       { pick: 'one line', ...P, ...outline(TRI), pts: [[0, -0.17, '', '#12897c'], [0, -0.33, '', '#5d6b7d'], [0, 0.6, '', '#c0504d']], lines: [{ x: 0, c2: '#e0813a', dash: true }], note: 'always' }
+    ]
+  },
+
+  /* ------------------------------------------------- 4. the function idea -- */
+  'relation': {
+    say: 'Any pairing at all between two sets. No promises: an input may have many partners, or none.',
+    frames: [
+      { pick: 'one each', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([2, 0, -2], 2.5, OUT)], arrows: arrows([[2, 2], [0, 0], [-2, -2]]) },
+      { pick: 'or several', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([2, -1], 2.5, OUT)], arrows: arrows([[2, 2], [0, -1], [-2, 2], [-2, -1]]), note: 'still a relation' },
+      { pick: 'or none', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([2, -1], 2.5, OUT)], arrows: arrows([[2, 2], [-2, -1]]), note: 'the middle input has no partner' }
+    ]
+  },
+  'function': {
+    say: 'A relation that promises exactly one output for every allowed input. That single promise is the whole definition.',
+    frames: [
+      { pick: 'a relation', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([2, 0, -2], 2.5, OUT)], arrows: arrows([[2, 2], [0, 0], [0, -2], [-2, -2]]), note: 'one input has two' },
+      { pick: 'a function', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([2, 0, -2], 2.5, OUT)], arrows: arrows([[2, 2], [0, 0], [-2, -2]]), note: 'one arrow each' }
+    ]
+  },
+  'rule': {
+    say: 'The instruction that turns an input into an output. It can be words, a formula, a table, or a machine.',
+    frames: [
+      { pick: 'double it', ...B, pts: [[-2.8, 0, '3', IN], [2.8, 0, '6', OUT]], arrows: [[-2.3, 0, 2.3, 0]], text: [[0, 0.9, 'double it']] },
+      { pick: 'add one', ...B, pts: [[-2.8, 0, '3', IN], [2.8, 0, '4', OUT]], arrows: [[-2.3, 0, 2.3, 0]], text: [[0, 0.9, 'add one']], note: 'same input, new rule' }
+    ]
+  },
+  'input': {
+    say: 'What goes in. Choosing it is the one free act; everything after is decided by the rule.',
+    frames: [
+      { pick: '3', ...B, pts: [[-2.8, 0, '3', IN], [2.8, 0, '6', OUT]], arrows: [[-2.3, 0, 2.3, 0]], text: [[0, 0.9, 'double it']] },
+      { pick: '5', ...B, pts: [[-2.8, 0, '5', IN], [2.8, 0, '10', OUT]], arrows: [[-2.3, 0, 2.3, 0]], text: [[0, 0.9, 'double it']] },
+      { pick: '−2', ...B, pts: [[-2.8, 0, '−2', IN], [2.8, 0, '−4', OUT]], arrows: [[-2.3, 0, 2.3, 0]], text: [[0, 0.9, 'double it']] }
+    ]
+  },
+  'output': {
+    say: 'What comes out. You do not choose it; the input and the rule between them settle it.',
+    frames: [
+      { pick: 'from 3', ...B, pts: [[-2.8, 0, '3', '#d8d3c7'], [2.8, 0, '6', OUT]], arrows: [[-2.3, 0, 2.3, 0]] },
+      { pick: 'from 5', ...B, pts: [[-2.8, 0, '5', '#d8d3c7'], [2.8, 0, '10', OUT]], arrows: [[-2.3, 0, 2.3, 0]], note: 'settled, not chosen' }
+    ]
+  },
+  'domain': {
+    say: 'Every input the rule will accept. Stating it is part of stating the function, not an afterthought.',
+    frames: [
+      { pick: 'all of it', line: true, spans: [[-5, 5]], note: 'every number allowed' },
+      { pick: 'a restriction', line: true, spans: [[-5, -2, 'out'], [-2, 5]], marks: [{ x: -2 }], note: 'from −2 upward' },
+      { pick: 'a hole', line: true, spans: [[-5, 2], [2, 5]], marks: [{ x: 2, open: true }], note: 'one value refused' }
+    ]
+  },
+  'range': {
+    say: 'Every output the rule actually produces. Not what it might produce: what it does.',
+    frames: [
+      { pick: 'the rule', ...P, curves: [{ f: x => x * x - 2 }], note: 'x² − 2' },
+      { pick: 'its outputs', ...P, curves: [{ f: x => x * x - 2 }], shade: { above: -2 }, pts: [[0, -2, '', IN]], note: 'never below −2' },
+      { pick: 'as a line', line: true, spans: [[-2, 5]], marks: [{ x: -2 }], note: 'the range' }
+    ]
+  },
+  'codomain': {
+    say: 'The set outputs are allowed to come from. It may be bigger than the range, and often is, because it is declared rather than computed.',
+    frames: [
+      { pick: 'what is reached', ...B, pts: [...col([1.5, -1.5], -2.5, IN), ...col([2.5, 0.5], 2.5, OUT)], arrows: arrows([[1.5, 2.5], [-1.5, 0.5]]), note: 'the range' },
+      { pick: 'what is allowed', ...B, pts: [...col([1.5, -1.5], -2.5, IN), ...col([2.5, 0.5], 2.5, OUT), ...col([-1.5, -3], 2.5, '#d8d3c7')], arrows: arrows([[1.5, 2.5], [-1.5, 0.5]]), note: 'the codomain, larger' }
+    ]
+  },
+  'image': {
+    say: 'Where a particular input is sent. The image of 3 under squaring is 9.',
+    frames: [
+      { pick: 'of 3', ...B, pts: [[-2.5, 0, '3', IN], [2.5, 0, '9', OUT]], arrows: [[-2.1, 0, 2.1, 0]] },
+      { pick: 'of 4', ...B, pts: [[-2.5, 0, '4', IN], [2.5, 0, '16', OUT]], arrows: [[-2.1, 0, 2.1, 0]] }
+    ]
+  },
+  'preimage': {
+    say: 'Which input produced a given output. Running the arrow backwards, which may find one answer, several, or none.',
+    frames: [
+      { pick: 'of 9', ...B, pts: [[-2.5, 0, '3', OUT], [2.5, 0, '9', '#d8d3c7']], arrows: [[2.1, 0, -2.1, 0, IN]], note: 'and −3 as well' },
+      { pick: 'of −1', ...B, pts: [[2.5, 0, '−1', '#d8d3c7']], text: [[-2.2, 0, 'nothing', BAD, 12]], note: 'no square is negative' }
+    ]
+  },
+  'mapping': {
+    say: 'Another word for a function, used when the sets are not numbers. It emphasises the sending rather than the calculating.',
+    frames: [
+      { pick: 'numbers', ...B, pts: [...col([1.5, -1.5], -2.5, IN), ...col([1.5, -1.5], 2.5, OUT)], arrows: arrows([[1.5, 1.5], [-1.5, -1.5]]) },
+      { pick: 'anything', ...B, pts: [[-2.5, 1.5, 'FR', IN], [-2.5, -1.5, 'JP', IN], [2.5, 1.5, 'Paris', OUT], [2.5, -1.5, 'Tokyo', OUT]], arrows: arrows([[1.5, 1.5], [-1.5, -1.5]]) }
+    ]
+  },
+  'arrow diagram': {
+    say: 'Two columns and arrows between them. The clearest way to see whether a rule keeps its promise.',
+    frames: [
+      { pick: 'keeps it', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([2, 0, -2], 2.5, OUT)], arrows: arrows([[2, 2], [0, 0], [-2, -2]]) },
+      { pick: 'breaks it', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([2, 0, -2], 2.5, OUT)], arrows: [...arrows([[2, 2], [-2, -2]]), ...arrows([[0, 0], [0, 2]], BAD)], note: 'a fork' }
+    ]
+  },
+  'set of ordered pairs': {
+    say: 'A function written out as a list of what goes to what. Nothing is hidden: the list is the whole rule.',
+    frames: [
+      { pick: 'as a list', ...P, grid: 'dots', pts: [[-2, -1], [0, 1], [1, 2], [3, 0]], note: '{(−2,−1), (0,1), (1,2), (3,0)}' },
+      { pick: 'as arrows', ...B, pts: [[-2.5, 2, '−2', IN], [-2.5, 0.7, '0', IN], [-2.5, -0.7, '1', IN], [-2.5, -2, '3', IN], [2.5, 2, '−1', OUT], [2.5, 0.7, '1', OUT], [2.5, -0.7, '2', OUT], [2.5, -2, '0', OUT]], arrows: arrows([[2, 2], [0.7, 0.7], [-0.7, -0.7], [-2, -2]]) }
+    ]
+  },
+  'well-defined': {
+    say: 'The rule settles on one answer, and the same answer every time. Without this, nothing built on top of it can be trusted.',
+    frames: [
+      { pick: 'well-defined', ...B, pts: [[-2.5, 0, '', IN], [2.5, 0, '', OUT]], arrows: arrows([[0, 0]]), text: [[0, 0.9, 'one arrow']] },
+      { pick: 'not', ...B, pts: [[-2.5, 0, '', BAD], [2.5, 1.8, '', OUT], [2.5, -1.8, '', OUT]], arrows: arrows([[0, 1.8], [0, -1.8]], BAD), text: [[0, 0.2, 'which?', BAD]] }
+    ]
+  },
+  'one input one output': {
+    say: 'The promise, stated as plainly as it can be. Two inputs may share an output; one input may not split.',
+    frames: [
+      { pick: 'allowed', ...B, pts: [...col([1.5, -1.5], -2.5, IN), [2.5, 0, '', OUT]], arrows: arrows([[1.5, 0], [-1.5, 0]]), note: 'sharing is fine' },
+      { pick: 'forbidden', ...B, pts: [[-2.5, 0, '', BAD], ...col([1.5, -1.5], 2.5, OUT)], arrows: arrows([[0, 1.5], [0, -1.5]], BAD), note: 'splitting is not' }
+    ]
+  },
+  'the fork': {
+    say: 'One input with two arrows. It is the only way a relation fails to be a function, and it is always fatal.',
+    frames: [
+      { pick: 'one arrow', ...B, pts: [[-2.5, 0, '2', IN], [2.5, 1.8, '4', OUT]], arrows: arrows([[0, 1.8]]) },
+      { pick: 'add another', ...B, pts: [[-2.5, 0, '2', BAD], [2.5, 1.8, '4', OUT], [2.5, -1.8, '9', OUT]], arrows: arrows([[0, 1.8], [0, -1.8]], BAD), note: 'no longer a function' }
+    ]
+  },
+  'vertical line test': {
+    say: 'Sweep an upright line across a graph. It works because a vertical line collects every output at one input.',
+    frames: [
+      { pick: 'sweep left', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], lines: [{ x: -2.5, dash: true, c2: IN }], pts: [[-2.5, 0.5]] },
+      { pick: 'middle', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], lines: [{ x: 0, dash: true, c2: IN }], pts: [[0, -2]] },
+      { pick: 'right', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], lines: [{ x: 2.5, dash: true, c2: IN }], pts: [[2.5, 0.5]], note: 'never more than one hit' }
+    ]
+  },
+  'horizontal line test': {
+    say: 'Sweep a flat line instead. Two hits means two inputs share an output, so the rule cannot be reversed.',
+    frames: [
+      { pick: 'high', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], lines: [{ y: 1.6, dash: true, c2: IN }], pts: [[3, 1.6], [-3, 1.6]], note: 'two hits' },
+      { pick: 'at the bottom', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], lines: [{ y: -2, dash: true, c2: IN }], pts: [[0, -2]], note: 'one hit' },
+      { pick: 'below', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], lines: [{ y: -3.2, dash: true, c2: IN }], note: 'none' }
+    ]
+  },
+  'one-to-one': {
+    say: 'No output is used twice. It is the condition that lets a rule be run backwards.',
+    frames: [
+      { pick: 'one-to-one', ...B, pts: [...col([1.5, -1.5], -2.5, IN), ...col([1.5, -1.5], 2.5, OUT)], arrows: arrows([[1.5, 1.5], [-1.5, -1.5]]) },
+      { pick: 'not', ...B, pts: [...col([1.5, -1.5], -2.5, IN), [2.5, 0, '', OUT]], arrows: arrows([[1.5, 0], [-1.5, 0]]), note: 'the output is shared' }
+    ]
+  },
+  'injective': {
+    say: 'The formal name for one-to-one. Every output is used at most once; some may go unused.',
+    frames: [
+      { pick: 'injective', ...B, pts: [...col([1.5, -1.5], -2.5, IN), ...col([2.5, 0], 2.5, OUT), [2.5, -2.5, '', '#d8d3c7']], arrows: arrows([[1.5, 2.5], [-1.5, 0]]), note: 'one spare, still injective' },
+      { pick: 'not', ...B, pts: [...col([1.5, -1.5], -2.5, IN), [2.5, 1, '', OUT]], arrows: arrows([[1.5, 1], [-1.5, 1]]) }
+    ]
+  },
+  'many-to-one': {
+    say: 'Several inputs landing on the same output. Perfectly legal, and what squaring does to 3 and −3.',
+    frames: [
+      { pick: 'two into one', ...B, pts: [[-2.5, 1.5, '3', IN], [-2.5, -1.5, '−3', IN], [2.5, 0, '9', OUT]], arrows: arrows([[1.5, 0], [-1.5, 0]]) },
+      { pick: 'three into one', ...B, pts: [...col([2, 0, -2], -2.5, IN), [2.5, 0, '', OUT]], arrows: arrows([[2, 0], [0, 0], [-2, 0]]) }
+    ]
+  },
+  'onto': {
+    say: 'Nothing in the target is left out. Every possible output is actually reached by something.',
+    frames: [
+      { pick: 'onto', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([1.5, -1.5], 2.5, OUT)], arrows: arrows([[2, 1.5], [0, -1.5], [-2, -1.5]]) },
+      { pick: 'not', ...B, pts: [...col([2, -2], -2.5, IN), ...col([1.5, -1.5], 2.5, OUT), [2.5, 3, '', '#d8d3c7']], arrows: arrows([[2, 1.5], [-2, -1.5]]), note: 'one output unreached' }
+    ]
+  },
+  'surjective': {
+    say: 'The formal name for onto. Nothing in the codomain is wasted.',
+    frames: [
+      { pick: 'surjective', ...B, pts: [...col([2, 0, -2], -2.5, IN), ...col([1.5, -1.5], 2.5, OUT)], arrows: arrows([[2, 1.5], [0, -1.5], [-2, -1.5]]) },
+      { pick: 'not', ...B, pts: [...col([2, -2], -2.5, IN), ...col([1.5, -1.5], 2.5, OUT), [2.5, 3, '', '#d8d3c7']], arrows: arrows([[2, 1.5], [-2, -1.5]]) }
+    ]
+  },
+  'bijective': {
+    say: 'Both at once: nothing shared and nothing left out. A perfect pairing, and exactly what an inverse needs.',
+    frames: [
+      { pick: 'bijective', ...B, pts: [...col([1.5, -1.5], -2.5, IN), ...col([1.5, -1.5], 2.5, OUT)], arrows: arrows([[1.5, 1.5], [-1.5, -1.5]]) },
+      { pick: 'reversed', ...B, pts: [...col([1.5, -1.5], -2.5, OUT), ...col([1.5, -1.5], 2.5, IN)], arrows: arrows([[1.5, 1.5], [-1.5, -1.5]], IN), note: 'still a function backwards' }
+    ]
+  },
+  'function notation': {
+    say: 'A compact way to name the output a rule gives an input. The brackets mean "apply", never "multiply".',
+    frames: [
+      { pick: 'the symbol', ...B, text: [[0, 0.8, 'f(x)', '#16283f', 22], [0, -1.2, 'the output f gives to x']] },
+      { pick: 'not this', ...B, text: [[0, 0.8, 'f × x', BAD, 20], [0, -1.2, 'f is a rule, not a quantity', BAD]] }
+    ]
+  },
+  'f(x)': {
+    say: 'Read "f of x". The letter names the rule, the bracket holds whatever it is being applied to.',
+    frames: [
+      { pick: 'a rule', ...B, text: [[0, 0.8, 'f(x) = 2x + 1', '#16283f', 16]] },
+      { pick: 'applied to 4', ...B, text: [[0, 1, 'f(4) = 2(4) + 1', '#16283f', 15], [0, -0.6, '= 9', OUT, 16]] }
+    ]
+  },
+  'evaluating': {
+    say: 'Input given, output wanted. Substitute and compute; there is only ever one answer.',
+    frames: [
+      { pick: 'f(4)', ...B, pts: [[-2.8, 0, '4', IN], [2.8, 0, '9', OUT]], arrows: [[-2.3, 0, 2.3, 0]], text: [[0, 0.9, '2x + 1']] },
+      { pick: 'f(0)', ...B, pts: [[-2.8, 0, '0', IN], [2.8, 0, '1', OUT]], arrows: [[-2.3, 0, 2.3, 0]], text: [[0, 0.9, '2x + 1']] }
+    ]
+  },
+  'solving for the input': {
+    say: 'Output given, input wanted. The arrow runs backwards, and there may be more than one answer, or none.',
+    frames: [
+      { pick: 'one answer', ...B, pts: [[-2.8, 0, '4', OUT], [2.8, 0, '9', '#d8d3c7']], arrows: [[2.3, 0, -2.3, 0, IN]], text: [[0, 0.9, '2x + 1 = 9']] },
+      { pick: 'two answers', ...B, pts: [[-2.8, 1.5, '3', OUT], [-2.8, -1.5, '−3', OUT], [2.8, 0, '9', '#d8d3c7']], arrows: [[2.3, 0, -2.3, 1.5, IN], [2.3, 0, -2.3, -1.5, IN]], text: [[0, 0.9, 'x² = 9']], note: 'legal: the plural is on the input side' }
+    ]
+  },
+  'independent variable': {
+    say: 'The one you set. It goes across, and nothing in the rule constrains it beyond the domain.',
+    frames: [
+      { pick: 'choose 1', ...P, curves: [{ f: x => 0.6 * x + 1 }], pts: [[1, 1.6]], guides: [[1, 1.6]], axisHi: 'x' },
+      { pick: 'choose 3', ...P, curves: [{ f: x => 0.6 * x + 1 }], pts: [[3, 2.8]], guides: [[3, 2.8]], axisHi: 'x' },
+      { pick: 'choose −2', ...P, curves: [{ f: x => 0.6 * x + 1 }], pts: [[-2, -0.2]], guides: [[-2, -0.2]], axisHi: 'x' }
+    ]
+  },
+  'dependent variable': {
+    say: 'The one that follows. It goes up, and you never choose it directly: the rule and your input decide it.',
+    frames: [
+      { pick: 'follows 1', ...P, curves: [{ f: x => 0.6 * x + 1 }], pts: [[1, 1.6]], guides: [[1, 1.6]], axisHi: 'y' },
+      { pick: 'follows 3', ...P, curves: [{ f: x => 0.6 * x + 1 }], pts: [[3, 2.8]], guides: [[3, 2.8]], axisHi: 'y', note: 'you did not pick 2.8' }
+    ]
+  },
+  'argument': {
+    say: 'Whatever sits inside the brackets. It need not be a number: an expression works the same way.',
+    frames: [
+      { pick: 'a number', ...B, text: [[0, 0.6, 'f( 4 )', '#16283f', 20]] },
+      { pick: 'a letter', ...B, text: [[0, 0.6, 'f( a )', '#16283f', 20]] },
+      { pick: 'an expression', ...B, text: [[0, 0.6, 'f( x + h )', '#16283f', 19], [0, -1.3, 'the same procedure']] }
+    ]
+  },
+  'value of a function': {
+    say: 'The number that comes out at a stated input. One input, one value, always.',
+    frames: [
+      { pick: 'at 2', ...B, text: [[0, 0.8, 'f(2) = 5', '#16283f', 18]] },
+      { pick: 'at 4', ...B, text: [[0, 0.8, 'f(4) = 9', '#16283f', 18]] }
+    ]
+  },
+  'substituting into a rule': {
+    say: 'Whatever arrives goes into every blank. Reading the rule with a blank in it makes the next step obvious.',
+    frames: [
+      { pick: 'the blank', ...B, text: [[0, 0.8, 'f(⬚) = 2⬚ + 1', '#16283f', 16]] },
+      { pick: 'a number', ...B, text: [[0, 1, 'f(4) = 2(4) + 1', '#16283f', 15], [0, -0.6, '= 9', OUT, 15]] },
+      { pick: 'an expression', ...B, text: [[0, 1, 'f(x+h) = 2(x+h) + 1', '#16283f', 14], [0, -0.7, 'the bracket holds it together', '#5d6b7d']] }
+    ]
+  },
+  'table of values': {
+    say: 'A few rows of the rule, written out. It cannot show every input, but it can show the pattern.',
+    frames: [
+      { pick: 'two rows', ...P, grid: 'dots', pts: [[0, 1], [1, 3]] },
+      { pick: 'four', ...P, grid: 'dots', pts: [[0, 1], [1, 3], [2, 5], [3, 7]] },
+      { pick: 'the pattern', ...P, grid: 'dots', pts: [[0, 1], [1, 3], [2, 5], [3, 7]], lines: [{ m: 2, c: 1, c2: IN }], note: '2x + 1' }
+    ]
+  },
+  'graph of a function': {
+    say: 'Every input-output pair plotted at once. The table is a sample of it; the graph is all of it.',
+    frames: [
+      { pick: 'a few pairs', ...P, grid: 'dots', pts: [[-1, -3], [0, -1], [1, 1], [2, 3]] },
+      { pick: 'all of them', ...P, curves: [{ f: x => 2 * x - 1 }], pts: [[-1, -3], [0, -1], [1, 1], [2, 3]] }
+    ]
+  },
+  'four representations': {
+    say: 'Words, table, formula and graph. Fluency is moving between them in any direction, not reciting each in turn.',
+    frames: [
+      { pick: 'words', ...B, text: [[0, 0.4, 'double, then add one', '#16283f', 14]] },
+      { pick: 'table', ...P, grid: 'dots', pts: [[0, 1], [1, 3], [2, 5]] },
+      { pick: 'formula', ...B, text: [[0, 0.4, 'f(x) = 2x + 1', '#16283f', 17]] },
+      { pick: 'graph', ...P, curves: [{ f: x => 2 * x + 1 }] }
+    ]
+  },
+  'natural domain': {
+    say: 'Everything the formula will take, before anyone restricts it further. Found by scanning for what would break.',
+    frames: [
+      { pick: 'a square root', line: true, spans: [[-5, 0, 'out'], [0, 5]], marks: [{ x: 0 }], note: 'nothing negative' },
+      { pick: 'a fraction', line: true, spans: [[-5, 2], [2, 5]], marks: [{ x: 2, open: true }], note: 'nothing that divides by zero' }
+    ]
+  },
+  'implied domain': {
+    say: 'The domain a formula states without anyone writing it down. Silence is not permission: it is the formula speaking.',
+    frames: [
+      { pick: 'as written', ...B, text: [[0, 0.4, 'f(x) = 1 / (x − 2)', '#16283f', 15]] },
+      { pick: 'what it implies', line: true, spans: [[-5, 2], [2, 5]], marks: [{ x: 2, open: true }], note: 'x cannot be 2' }
+    ]
+  },
+  'contextual domain': {
+    say: 'Narrowed by what the quantity means rather than by the algebra. A count cannot be negative even when the formula would allow it.',
+    frames: [
+      { pick: 'the algebra', line: true, from: -6, to: 14, spans: [[-6, 14]], note: 'x² takes anything' },
+      { pick: 'a side length', line: true, from: -6, to: 14, spans: [[-6, 0, 'out'], [0, 14]], marks: [{ x: 0 }], note: 'no negative lengths' },
+      { pick: 'and a limit', line: true, from: -6, to: 14, spans: [[-6, 0, 'out'], [0, 10], [10, 14, 'out']], marks: [{ x: 0 }, { x: 10 }], note: 'set by the situation' }
+    ]
+  },
+  'restricted domain': {
+    say: 'Inputs deliberately withheld. It is how a rule that cannot be reversed is made reversible.',
+    frames: [
+      { pick: 'the whole curve', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], note: 'two inputs per height' },
+      { pick: 'half of it', ...P, curves: [{ f: x => x >= 0 ? 0.4 * x * x - 2 : NaN }], pts: [[0, -2]], note: 'one input per height now' }
+    ]
+  },
+  'excluded value': {
+    say: 'A single input the rule refuses. Drawn as a hollow endpoint, or as a hole in a curve.',
+    frames: [
+      { pick: 'on a line', line: true, spans: [[-5, 3], [3, 5]], marks: [{ x: 3, open: true }] },
+      { pick: 'on a curve', ...P, curves: [{ f: x => x === 1 ? NaN : x + 1 }], open: [[1, 2]], note: 'the same fact, drawn' }
+    ]
+  },
+  'division by zero': {
+    say: 'The commonest reason an input is refused. It is not that the answer is large: there is no answer.',
+    frames: [
+      { pick: 'near zero', ...P, curves: [{ f: x => 1 / x }], pts: [[0.5, 2], [-0.5, -2]], note: '1/0.5 = 2' },
+      { pick: 'nearer', ...P, curves: [{ f: x => 1 / x }], pts: [[0.25, 4], [-0.25, -4]], note: '1/0.25 = 4' },
+      { pick: 'at zero', ...P, curves: [{ f: x => 1 / x }], lines: [{ x: 0, dash: true, c2: BAD }], note: 'no value at all' }
+    ]
+  },
+  'even root of a negative': {
+    say: 'The other common refusal. No real number squares to something negative, so the root has nothing to return.',
+    frames: [
+      { pick: 'allowed', ...P, curves: [{ f: x => Math.sqrt(x) }], pts: [[4, 2], [1, 1]] },
+      { pick: 'refused', ...P, curves: [{ f: x => Math.sqrt(x) }], shade: { left: 0 }, note: 'nothing to the left' }
+    ]
+  },
+  'interval notation': {
+    say: 'A stretch of the line written in brackets. Square includes the end, round excludes it.',
+    frames: [
+      { pick: '[−2, 3]', line: true, spans: [[-2, 3]], marks: [{ x: -2 }, { x: 3 }] },
+      { pick: '(−2, 3)', line: true, spans: [[-2, 3]], marks: [{ x: -2, open: true }, { x: 3, open: true }] },
+      { pick: '[−2, 3)', line: true, spans: [[-2, 3]], marks: [{ x: -2 }, { x: 3, open: true }] }
+    ]
+  },
+  'open interval': {
+    say: 'Neither end included. Every point in it has room on both sides, which is what makes it useful for limits.',
+    frames: [
+      { pick: 'the interval', line: true, spans: [[-2, 3]], marks: [{ x: -2, open: true }, { x: 3, open: true }], note: '(−2, 3)' },
+      { pick: 'room either side', line: true, spans: [[-2, 3]], marks: [{ x: -2, open: true }, { x: 3, open: true }, { x: 2.6 }], note: 'even near the edge' }
+    ]
+  },
+  'closed interval': {
+    say: 'Both ends included. A continuous rule on one of these always attains a highest and a lowest value.',
+    frames: [
+      { pick: 'the interval', line: true, spans: [[-2, 3]], marks: [{ x: -2 }, { x: 3 }], note: '[−2, 3]' },
+      { pick: 'why it matters', ...P, curves: [{ f: x => 0.4 * x * x - 2 }], bands: [[-2, -4.5, 3, 4.5]], pts: [[0, -2, 'lowest', IN], [3, 1.6, 'highest', IN]] }
+    ]
+  },
+  'half-open interval': {
+    say: 'One end in, one out. Common when a quantity starts somewhere definite and runs on without reaching a limit.',
+    frames: [
+      { pick: '[−2, 3)', line: true, spans: [[-2, 3]], marks: [{ x: -2 }, { x: 3, open: true }] },
+      { pick: '(−2, 3]', line: true, spans: [[-2, 3]], marks: [{ x: -2, open: true }, { x: 3 }] }
+    ]
+  },
+  'union of intervals': {
+    say: 'Two or more stretches taken together. Removing a point from the line always produces one.',
+    frames: [
+      { pick: 'one stretch', line: true, spans: [[-5, 5]] },
+      { pick: 'remove a point', line: true, spans: [[-5, 1], [1, 5]], marks: [{ x: 1, open: true }], note: 'now two pieces' },
+      { pick: 'remove another', line: true, spans: [[-5, -2], [-2, 1], [1, 5]], marks: [{ x: -2, open: true }, { x: 1, open: true }], note: 'three' }
+    ]
+  },
+  'unbounded interval': {
+    say: 'One end and no other. Infinity always takes a round bracket, because it is a direction rather than a place you arrive at.',
+    frames: [
+      { pick: 'from 1 up', line: true, spans: [[1, 5]], marks: [{ x: 1 }], note: '[1, ∞)' },
+      { pick: 'wider view', line: true, from: -10, to: 40, spans: [[1, 40]], marks: [{ x: 1 }], note: 'still going' }
+    ]
+  },
+  'set-builder notation': {
+    say: 'A set written as the condition its members satisfy, rather than as a list. It works when the list would be infinite.',
+    frames: [
+      { pick: 'the condition', ...B, text: [[0, 0.6, '{ x : x > 2 }', '#16283f', 16], [0, -1.2, 'every x more than 2']] },
+      { pick: 'on the line', line: true, spans: [[2, 5]], marks: [{ x: 2, open: true }], note: 'the same set' }
     ]
   }
 };
