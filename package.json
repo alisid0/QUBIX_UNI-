@@ -22,7 +22,8 @@
     "build:spine": "node scripts/build-spine.mjs",
     "build:library": "npm run build:book && npm run build:spine && node scripts/publish-library.mjs",
     "check:assets": "node scripts/check-assets.mjs",
-    "build:pages": "node scripts/build-pages.mjs"
+    "build:pages": "node scripts/build-pages.mjs",
+    "state": "node scripts/build-state.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
