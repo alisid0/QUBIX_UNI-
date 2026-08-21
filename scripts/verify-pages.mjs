@@ -48,7 +48,9 @@ const app = await get('/');
 const asset = (app.body.match(/(?:src|href)="([^"]*assets\/[^"]+)"/) || [])[1] || '';
 const prefix = new URL(base).pathname;
 ok('the app bundle is built for this subpath', asset.startsWith(prefix), asset.slice(0, 54) || 'no bundle referenced');
-const bundle = asset.startsWith(prefix) ? await get(asset.slice(prefix.length - 1)) : { status: 0, body: '' };
+// prefix has no trailing slash, so slicing its full length leaves the leading
+// slash the fetch needs. Taking one character less pointed at /QUBIX_UNI--/.
+const bundle = asset.startsWith(prefix) ? await get(asset.slice(prefix.replace(/\/$/, '').length)) : { status: 0, body: '' };
 ok('the app bundle is served', bundle.status === 200, `${bundle.status}, ${(bundle.body.length / 1024).toFixed(0)} kB`);
 
 console.log(`\n${bad ? `${bad} check(s) FAILED` : 'all checks pass'}`);
