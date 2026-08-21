@@ -199,7 +199,7 @@ const html = `<!doctype html>
   <p class="key-note"><b>${drawableAtAll} of ${total}</b> concepts can be shown by some picture, and
     <b>${overall.direct}</b> of those are a picture in themselves. The remaining <b>${overall.none}</b> cannot be
     drawn at all, and ${Math.round(tally(stages.at(-1).terms.map(how)).none / overall.none * 100)}% of those
-    sit in the last stage — which is the argument for having a last stage.</p>
+    sit in the last stage, which is the argument for having a last stage.</p>
 </section>
 ${stages.map(st => {
   let i = stages.slice(0, st.n - 1).reduce((n, s) => n + s.terms.length, 0);
