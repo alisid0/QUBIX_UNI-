@@ -16,6 +16,8 @@ console.log(`checking ${base}\n`);
 
 for (const [path, expect] of [
   ['/', /Qubix Library/],
+  ['/what-data-is.html', /What Data Is/],
+  ['/what-a-program-does.html', /What a Computer Program Does/],
   ['/functions.html', /Calculus From The Ground Up/],
   ['/big-sheet-of-graphs.html', /The Big Sheet of Graphs/]
 ]) {
