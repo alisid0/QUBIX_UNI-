@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/check-assets.mjs && npm run build:library && node scripts/build-pilot.mjs",
+    "prebuild": "node scripts/check-missions.mjs && node scripts/check-assets.mjs && npm run build:library && node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -23,7 +23,8 @@
     "build:library": "npm run build:book && npm run build:spine && node scripts/publish-library.mjs",
     "check:assets": "node scripts/check-assets.mjs",
     "build:pages": "node scripts/build-pages.mjs",
-    "state": "node scripts/build-state.mjs"
+    "state": "node scripts/build-state.mjs",
+    "check:missions": "node scripts/check-missions.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

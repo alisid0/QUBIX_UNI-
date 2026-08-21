@@ -70,7 +70,9 @@
     assetPreview.then(m => { AssetShowcase = m.default; });
   }
   if (showGameMission) {
-    const gamePreview = params.get('mission') === 'classify-data'
+    const gamePreview = params.get('mission') === 'join-grain'
+      ? import('./views/JoinGrainMission.svelte')
+      : params.get('mission') === 'classify-data'
       ? import('./views/DataClassificationMission.svelte')
       : params.get('mission') === 'missing-data'
         ? import('./views/MissingDataMission.svelte')
