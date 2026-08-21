@@ -11,5 +11,5 @@ export function createDataRowTile(THREE,record){
   const indicator=add('row-indicator',[.1,.045,.1],[1.34,.12,0],materials.light);
   function setState(state='idle'){const colours={idle:0xe2a42d,error:0xc83c2c,resolved:0x63b13b};const colour=colours[state]||colours.idle;materials.light.color.setHex(colour);materials.light.emissive.setHex(colour)}
   const dispose=()=>{root.traverse(o=>o.geometry?.dispose());Object.values(materials).forEach(m=>m.dispose())};
-  return {group:root,parts:{indicator},setState,dispose};
+  return {group:root,record:root.userData.record,footprint:Object.freeze({width:3.0,depth:.36,height:.2}),parts:{indicator},attachment:name=>root.getObjectByName(name),setState,dispose};
 }

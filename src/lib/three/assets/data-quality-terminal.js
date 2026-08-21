@@ -104,5 +104,7 @@ export function createDataQualityTerminal(THREE) {
     Object.values(materials).forEach(material => material.dispose());
   };
 
-  return { group: root, parts: { screen, alertLight, statusLights }, attachment: name => root.getObjectByName(name), setStatus, dispose };
+  // setState is the name every asset answers to; setStatus is what this file
+  // called it first, kept so existing call sites keep working.
+  return { group: root, footprint: DATA_QUALITY_TERMINAL_ASSET.footprint, parts: { screen, alertLight, statusLights }, attachment: name => root.getObjectByName(name), setState: setStatus, setStatus, dispose };
 }

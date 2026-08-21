@@ -1,3 +1,5 @@
+import { stateSetter } from './kit.js';
+
 export const PRODUCT_PACKAGE_ASSET = Object.freeze({
   id: 'qx-superstore-product-package',
   version: 1,
@@ -134,6 +136,15 @@ export function createProductPackage(THREE, recordOrSku = PRODUCT_CATALOG[0]) {
   const barcode = addBarcode(THREE, root, record.barcode, barcodePlacement);
   materials.push(...barcode.materials);
 
+  // A small pip on the top face: an item that scanned turns green without
+  // anything being written over the label.
+  const stateMaterial = new THREE.MeshStandardMaterial({ color: 0xe2a42d, emissive: 0xe2a42d, emissiveIntensity: 0.45, roughness: 0.5 });
+  materials.push(stateMaterial);
+  const statePip = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.012, 0.05), stateMaterial);
+  statePip.name = 'state-pip';
+  statePip.position.set(0.14, root.userData.product.height ?? 0.44, 0.1);
+  root.add(statePip);
+
   const scanPoint = new THREE.Object3D();
   scanPoint.name = 'scan-point';
   scanPoint.position.copy(barcode.group.position);
@@ -147,6 +158,11 @@ export function createProductPackage(THREE, recordOrSku = PRODUCT_CATALOG[0]) {
   return {
     group: root,
     record: root.userData.product,
+    footprint: Object.freeze({ width: 0.42, depth: 0.3, height: 0.46 }),
+    parts: { barcodePanel: barcode.group, scanPoint, statePip },
+    attachment: name => root.getObjectByName(name),
+    setState: stateSetter(stateMaterial),
+    // The old names, kept so nothing that already reads them breaks.
     barcodePanel: barcode.group,
     scanPoint,
     dispose

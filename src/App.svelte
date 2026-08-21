@@ -56,7 +56,9 @@
     import('./views/ExerciseFactory.svelte').then(m => { ExerciseFactory = m.default; });
   }
   if (showAssetShowcase) {
-    const assetPreview = params.get('asset') === 'product-package'
+    const assetPreview = params.get('asset') === 'world'
+      ? import('./views/WorldAssetShowcase.svelte')
+      : params.get('asset') === 'product-package'
       ? import('./views/ProductAssetShowcase.svelte')
       : params.get('asset') === 'data-quality-terminal'
         ? import('./views/DataQualityAssetShowcase.svelte')

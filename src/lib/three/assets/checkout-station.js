@@ -1,3 +1,5 @@
+import { stateSetter } from './kit.js';
+
 export const CHECKOUT_STATION_ASSET = Object.freeze({
   id: 'qx-superstore-checkout-station',
   version: 1,
@@ -126,7 +128,9 @@ export function createCheckoutStation(THREE) {
 
   return {
     group: root,
+    footprint: CHECKOUT_STATION_ASSET.footprint,
     parts: { belt, scannerGlass, scanLight, display },
+    setState: stateSetter(materials.scanner),
     attachment: name => root.getObjectByName(name),
     dispose
   };

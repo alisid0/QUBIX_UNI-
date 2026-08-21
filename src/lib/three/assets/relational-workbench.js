@@ -14,5 +14,6 @@ export function createRelationalWorkbench(THREE) {
   const operator=new THREE.Object3D();operator.name='operator-position';operator.position.set(0,0,1.55);root.add(operator);
   function setStatus(status='idle'){const states={idle:0xe2a42d,error:0xc83c2c,resolved:0x63b13b};const colour=states[status]||states.idle;materials.light.color.setHex(colour);materials.light.emissive.setHex(colour);materials.light.emissiveIntensity=status==='resolved'?.75:.45}
   const dispose=()=>{root.traverse(o=>o.geometry?.dispose());Object.values(materials).forEach(m=>m.dispose())};
-  return {group:root,parts:{slotLights},attachment:name=>root.getObjectByName(name),setStatus,dispose};
+  // setState is the shared name; setStatus is kept for existing call sites.
+  return {group:root,footprint:RELATIONAL_WORKBENCH_ASSET.footprint,parts:{slotLights},attachment:name=>root.getObjectByName(name),setState:setStatus,setStatus,dispose};
 }

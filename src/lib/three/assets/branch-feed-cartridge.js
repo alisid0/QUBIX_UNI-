@@ -48,5 +48,5 @@ export function createBranchFeedCartridge(THREE, record) {
     root.traverse(object => object.geometry?.dispose());
     Object.values(materials).forEach(material => material.dispose());
   };
-  return { group: root, record: root.userData.record, parts: { indicator }, setState, dispose };
+  return { group: root, record: root.userData.record, footprint: Object.freeze({ width: 0.62, depth: 0.34, height: 0.2 }), parts: { indicator }, attachment: name => root.getObjectByName(name), setState, dispose };
 }
