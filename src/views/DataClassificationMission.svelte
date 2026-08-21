@@ -1,6 +1,7 @@
 <script>
   import { CLASSIFICATION_MISSION, QUESTION_STEPS, answerFor, explanationFor, subtypeStep } from '../lib/game/data-classification-mission.js';
-
+
+  import { recordCompletion } from '../lib/game/progress.js';
   const stepOrder = ['primary', 'subtype', 'scale'];
   const requestedVariation = new URLSearchParams(window.location.search).get('variation');
   const requestedIndex = CLASSIFICATION_MISSION.variations.findIndex(item => item.id === requestedVariation);
@@ -69,6 +70,9 @@
     const next = CLASSIFICATION_MISSION.variations.findIndex(item => !completedVariations.includes(item.id));
     if (next >= 0) openVariation(next);
   }
+
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (courseComplete) recordCompletion('classify-data');
 </script>
 
 <svelte:head>

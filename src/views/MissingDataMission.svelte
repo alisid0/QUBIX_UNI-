@@ -1,5 +1,6 @@
 <script>
-  import { onDestroy, onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import { recordCompletion } from '../lib/game/progress.js';
   import { createBranchFeedCartridge, createDataQualityTerminal } from '../lib/three/assets/index.js';
   import { MISSING_DATA_MISSION, MISSINGNESS_OPTIONS, TREATMENT_OPTIONS, answerForMissingCase } from '../lib/game/missing-data-mission.js';
 
@@ -157,6 +158,9 @@
     renderer?.dispose();
     renderer?.domElement?.remove();
   });
+
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (missionComplete) recordCompletion('missing-data');
 </script>
 
 <svelte:head><title>Missing Values Are Not Zero | Qubix University</title><meta name="description" content="Local AI draft of Qubix Superstore missing-data mission." /></svelte:head>

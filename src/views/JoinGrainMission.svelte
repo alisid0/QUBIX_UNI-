@@ -5,6 +5,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { createTableStack, createJoinBridge } from '../lib/three/assets/index.js';
   import { JOIN_GRAIN_MISSION, answerForJoinCase, joinChangesGrain } from '../lib/game/join-grain-mission.js';
+  import { recordCompletion } from '../lib/game/progress.js';
 
   let host, ready = false, loadError = '';
   let caseIndex = 0, step = 'matches', selected = '', checked = false, correct = false, completed = [];
@@ -21,6 +22,8 @@
     ? 'This is a question about the data, not about SQL. Ask whether the key you are joining on repeats in the table on the right.'
     : 'A join that matches more than once multiplies rows. Every total computed afterwards is computed at the new grain, whether or not anyone noticed it moved.';
   $: progress = Math.round(((completed.length * 2 + (step === 'grain' ? 1 : 0) + (correct ? 1 : 0)) / (JOIN_GRAIN_MISSION.cases.length * 2)) * 100);
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (missionComplete) recordCompletion('join-grain');
 
   const dispose = a => { if (a) { scene?.remove(a.group); a.dispose(); } };
 

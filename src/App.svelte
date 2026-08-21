@@ -70,7 +70,9 @@
     assetPreview.then(m => { AssetShowcase = m.default; });
   }
   if (showGameMission) {
-    const gamePreview = params.get('mission') === 'join-grain'
+    const gamePreview = !params.get('mission')
+      ? import('./views/GameHub.svelte')
+      : params.get('mission') === 'join-grain'
       ? import('./views/JoinGrainMission.svelte')
       : params.get('mission') === 'classify-data'
       ? import('./views/DataClassificationMission.svelte')

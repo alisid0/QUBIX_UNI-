@@ -1,5 +1,6 @@
 <script>
-  import { onDestroy, onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import { recordCompletion } from '../lib/game/progress.js';
   import { createCheckoutStation, createProductPackage } from '../lib/three/assets/index.js';
   import { CHECKOUT_MISSION, createScanOutcome, productFor, summariseBasket } from '../lib/game/checkout-mission.js';
 
@@ -225,6 +226,9 @@
     renderer?.dispose();
     renderer?.domElement?.remove();
   });
+
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (missionComplete) recordCompletion('checkout');
 </script>
 
 <svelte:head>

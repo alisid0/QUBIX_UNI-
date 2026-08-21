@@ -1,5 +1,6 @@
 <script>
-  import {onDestroy,onMount} from 'svelte';
+  import {onDestroy,onMount} from 'svelte';
+  import { recordCompletion } from '../lib/game/progress.js';
   import {createDataRowTile,createRelationalWorkbench} from '../lib/three/assets/index.js';
   import {TABLE_GRAIN_MISSION,answerForGrainCase} from '../lib/game/table-grain-mission.js';
   let host,ready=false,loadError='',caseIndex=0,step='grain',selected='',checked=false,correct=false,completed=[];
@@ -24,6 +25,9 @@
     reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;THREE=await import('three');const {OrbitControls}=await import('three/addons/controls/OrbitControls.js');scene=new THREE.Scene();scene.background=new THREE.Color('#e7e0d3');scene.fog=new THREE.Fog('#e7e0d3',9,17);camera=new THREE.PerspectiveCamera(36,Math.max(host.clientWidth,1)/Math.max(host.clientHeight,1),.1,35);camera.position.set(4.9,3.7,5.4);renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(host.clientWidth,host.clientHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;renderer.domElement.setAttribute('aria-label','Interactive relational table workbench with three data row tiles');host.appendChild(renderer.domElement);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.enablePan=false;controls.target.set(0,1,0);controls.update();workbench=createRelationalWorkbench(THREE);scene.add(workbench.group);placeRows();const floor=new THREE.Mesh(new THREE.CircleGeometry(6.5,56),new THREE.MeshStandardMaterial({color:0xd6cebd,roughness:.96}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor,new THREE.HemisphereLight(0xfffbef,0x65625b,2.2));const key=new THREE.DirectionalLight(0xffffff,2.6);key.position.set(4,7,4);key.castShadow=true;scene.add(key);resizeObserver=new ResizeObserver(()=>{if(!host.clientWidth||!host.clientHeight)return;camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight,false)});resizeObserver.observe(host);ready=true;const render=now=>{frame=requestAnimationFrame(render);controls.update();if(!reducedMotion)rowTiles.forEach((tile,index)=>tile.group.rotation.y=Math.sin(now*.0012+index)*.006);renderer.render(scene,camera)};frame=requestAnimationFrame(render)
   }catch(error){loadError='The relational workbench could not start on this device.';console.error(error)}});
   onDestroy(()=>{if(frame)cancelAnimationFrame(frame);resizeObserver?.disconnect();controls?.dispose();rowTiles.forEach(tile=>tile.dispose());workbench?.dispose();scene?.traverse(o=>{if(workbench?.group?.getObjectById(o.id)||rowTiles.some(tile=>tile.group.getObjectById(o.id)))return;o.geometry?.dispose();o.material?.dispose?.()});renderer?.dispose();renderer?.domElement?.remove()});
+
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (missionComplete) recordCompletion('table-grain');
 </script>
 
 <svelte:head><title>What Does One Row Represent? | Qubix University</title><meta name="description" content="Local AI draft of the Qubix Superstore table-grain mission." /></svelte:head>

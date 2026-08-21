@@ -1,5 +1,8 @@
 <script>
   import{ACTION_OPTIONS,DUPLICATE_RECORDS_MISSION,VERDICT_OPTIONS,duplicateGroups,keyValue,sqlForDuplicateCheck}from'../lib/game/duplicate-records-mission.js';
+  import { recordCompletion } from '../lib/game/progress.js';
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (missionComplete) recordCompletion('duplicate-records');
   let caseIndex=0,step='key',selected='',checked=false,correct=false,queryRan=false,completed=[];
   $: caseRecord=DUPLICATE_RECORDS_MISSION.cases[caseIndex];$: missionComplete=completed.length===DUPLICATE_RECORDS_MISSION.cases.length;
   $: groups=caseRecord?duplicateGroups(caseRecord.rows,caseRecord.key,caseRecord.columns):[];$: sql=caseRecord?sqlForDuplicateCheck(caseRecord.table,caseRecord.key):'';

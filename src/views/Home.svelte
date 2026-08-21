@@ -129,6 +129,16 @@
       {/if}
     </section>
 
+    <!-- The Superstore academy had no route in at all: you had to know the URL.
+         Hidden in a production build, like the missions themselves. -->
+    {#if !import.meta.env.PROD || import.meta.env.VITE_WORKSHOP === '1'}
+      <a class="academy" href="?mode=game">
+        <span class="academy-kick">ALSO IN DRAFT · DATA SCIENCE</span>
+        <b>Qubix Superstore</b>
+        <span>Learn data by working in a shop. Six missions from the checkout to the join.</span>
+      </a>
+    {/if}
+
     <div class="board-list-head">
       <span>CHOOSE A TOPIC</span>
       <small>Open any topic directly</small>
@@ -233,6 +243,14 @@
   .primary svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
   .quiet { border: 0; background: none; color: var(--qx-text-faint); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px; }
 
+  .academy { display: grid; gap: 4px; padding: 20px 24px; border-radius: 16px; text-decoration: none;
+             background: linear-gradient(120deg, #2a2118, #3f3428); color: #f1ede4;
+             border: 1px solid rgba(255,255,255,.14); }
+  .academy:hover { background: linear-gradient(120deg, #33291d, #4b3e2f); }
+  .academy:focus-visible { outline: 3px solid var(--qx-accent, #a85a34); outline-offset: 3px; }
+  .academy-kick { font: 900 9px var(--qx-font); letter-spacing: .13em; color: #c98c5e; }
+  .academy b { font: 700 22px Georgia, serif; }
+  .academy > span:last-child { font: 600 12.5px/1.5 var(--qx-font); color: #bcb19e; }
   .board-list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: -12px; }
   .board-list-head span { color: var(--qx-accent-text); font-size: 10px; letter-spacing: .14em; font-weight: 900; }
   .board-list-head small { color: var(--qx-text-faint); font-size: 10px; }
