@@ -30,7 +30,10 @@ const [owner, name] = repo.split('/');
 const work = mkdtempSync(join(tmpdir(), 'qx-pages-'));
 try {
   sh(`git worktree add --detach "${work}"`);
-  sh('git checkout --orphan gh-pages', { cwd: work });
+  // A throwaway branch name, pushed to gh-pages at the end. Reusing the name
+  // here fails the second time you publish, because the local branch survives
+  // the worktree it was made in.
+  sh(`git checkout --orphan pages-${Date.now()}`, { cwd: work });
   sh('git rm -rf --cached . 2>&1 || true', { cwd: work, shell: true });
   for (const f of sh('git ls-files', { cwd: work }).split('\n').filter(Boolean)) rmSync(join(work, f), { force: true });
 
@@ -41,7 +44,7 @@ try {
 
   sh('git add -A', { cwd: work });
   sh(`git commit -q -m "Publish the library from ${commit}"`, { cwd: work });
-  sh(`git push -q -f origin ${BRANCH}`, { cwd: work });
+  sh(`git push -q -f origin HEAD:${BRANCH}`, { cwd: work });
   console.log(`  pushed ${BRANCH} from ${commit}`);
 } finally {
   sh(`git worktree remove --force "${work}"`, { stdio: 'ignore' });
