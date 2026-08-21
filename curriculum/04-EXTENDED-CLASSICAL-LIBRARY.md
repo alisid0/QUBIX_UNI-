@@ -70,6 +70,7 @@ supplying learner wording, examples, diagrams or interaction designs.
 | OpenStax, *Prealgebra 2e* | Basic-number and prerequisite cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
 | OpenStax, *Algebra and Trigonometry 2e* | Functions, graphing and line-slope cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
 | OpenStax, *Calculus Volume 1* | Limits and derivatives cross-check | `REFERENCE_ONLY_CC_BY_NC_SA` |
+| Lane et al., *Introduction to Statistics (Online Edition)* (2022) | Variables, measurement, distributions, probability and inference | `PUBLIC_DOMAIN_WORLDWIDE`; exact passages still require founder selection |
 | Urone and Hinrichs, OpenStax *Physics* (2020), §4.3 | Newton's second law and the fixed-mass force/acceleration relationship | `ATTRIBUTED_CC_BY_4` |
 
 The OpenStax licence is non-commercial and share-alike. Unless the final Qubix

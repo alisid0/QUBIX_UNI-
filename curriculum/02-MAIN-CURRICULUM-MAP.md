@@ -4,6 +4,24 @@ Status: **Draft skeleton for founder review**
 
 This is a dependency skeleton, not permission to generate all listed content.
 
+## Proposed Data Science, Machine Learning and AI pathway
+
+Founder direction on 2026-08-21 established Data Science, Statistics,
+Probability, Machine Learning and AI as Qubix's long-range learning focus. The
+existing algebra and functions work becomes part of that pathway's mathematical
+foundation. The complete proposed dependency skeleton is kept in
+[`05-DATA-SCIENCE-ROADMAP.md`](./05-DATA-SCIENCE-ROADMAP.md).
+
+Only one board has entered drafting:
+
+| Order | Board | Key | Identifier | Intended understanding | Depends on | State |
+|---:|---|---|---|---|---|---|
+| 1 | Observations and Variables | `observations-variables` | `STAT-DATA-001` | A row records one case; a column records one variable consistently across cases | reading a small table | `AI_DRAFT`, gated |
+
+This is a separate proposed pathway. It does not silently insert itself into the
+calculus pilot, approve its source, or unlock later statistics and probability
+boards.
+
 The standalone Strata Migration Factory (`?mode=strata-factory`) is deliberately
 separate from this curriculum map and from the present Factory registry. It
 reviews the complete audited Strata migration inventory (curriculum paths,

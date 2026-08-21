@@ -4,6 +4,13 @@ Status: **Awaiting founder review**
 Authority: the founder's reviewed curriculum, not generated volume  
 Current instructional scope: **Variables and Rates of Change, pilot BB1–BB5 only**
 
+Strategic expansion direction, recorded 2026-08-21: Qubix is to become a
+gamified digital library for Data Science, Statistics, Probability, Machine
+Learning and Artificial Intelligence. The existing algebra pathway supplies
+part of its mathematical foundation. The expansion skeleton is recorded in
+[`curriculum/05-DATA-SCIENCE-ROADMAP.md`](./curriculum/05-DATA-SCIENCE-ROADMAP.md)
+and does not override the one-BB review gate.
+
 ## Purpose
 
 Qubix University will reconstruct mathematical ideas carefully from lawful source material, especially public-domain books, and turn them into small interactive learning experiences.

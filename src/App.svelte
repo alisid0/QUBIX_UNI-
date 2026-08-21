@@ -1,6 +1,7 @@
 <script>
   import ChangeLab from './views/ChangeLab.svelte';
   import Home from './views/Home.svelte';
+  import WikiMode from './views/WikiMode.svelte';
   import { view } from './lib/stores/view.js';
 
   // The Factory is loaded on demand. Imported statically it dragged every board
@@ -20,15 +21,22 @@
   let PartsSheet = null;
   // The exercises factory: questions answered by operating them. Authoring only.
   let ExerciseFactory = null;
+  // Local asset workshop. Individual Three.js assets are reviewed here before
+  // a lesson is allowed to depend on them.
+  let AssetShowcase = null;
+  let GameMission = null;
 
   const params = new URLSearchParams(window.location.search);
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
   const explicitReviewMode = params.get('mode') === 'review';
+  const showWikiMode = params.get('mode') === 'wiki';
   // Authoring surface. Never reached in production: options are drafts, not curriculum.
   const showFactoryMode = params.get('mode') === 'factory' && !import.meta.env.PROD;
   const showStrataMigrationFactory = params.get('mode') === 'strata-factory' && !import.meta.env.PROD;
   const showPartsSheet = params.get('mode') === 'parts' && !import.meta.env.PROD;
   const showExerciseFactory = params.get('mode') === 'exercises' && !import.meta.env.PROD;
+  const showAssetShowcase = params.get('mode') === 'assets' && !import.meta.env.PROD;
+  const showGameMission = params.get('mode') === 'game' && !import.meta.env.PROD;
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
@@ -47,6 +55,22 @@
   if (showExerciseFactory) {
     import('./views/ExerciseFactory.svelte').then(m => { ExerciseFactory = m.default; });
   }
+  if (showAssetShowcase) {
+    const assetPreview = params.get('asset') === 'product-package'
+      ? import('./views/ProductAssetShowcase.svelte')
+      : params.get('asset') === 'data-quality-terminal'
+        ? import('./views/DataQualityAssetShowcase.svelte')
+        : import('./views/AssetShowcase.svelte');
+    assetPreview.then(m => { AssetShowcase = m.default; });
+  }
+  if (showGameMission) {
+    const gamePreview = params.get('mission') === 'classify-data'
+      ? import('./views/DataClassificationMission.svelte')
+      : params.get('mission') === 'missing-data'
+        ? import('./views/MissingDataMission.svelte')
+        : import('./views/CheckoutMission.svelte');
+    gamePreview.then(m => { GameMission = m.default; });
+  }
   if (showReviewMode) {
     import('./views/ReviewMode.svelte').then(m => { ReviewMode = m.default; });
   }
@@ -61,8 +85,14 @@
     <svelte:component this={PartsSheet} />
   {:else if showExerciseFactory}
     <svelte:component this={ExerciseFactory} />
+  {:else if showAssetShowcase}
+    <svelte:component this={AssetShowcase} />
+  {:else if showGameMission}
+    <svelte:component this={GameMission} />
   {:else if showReviewMode}
     <svelte:component this={ReviewMode} />
+  {:else if showWikiMode}
+    <WikiMode />
   {:else if $view === 'lesson'}
     <ChangeLab />
   {:else}

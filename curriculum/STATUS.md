@@ -1,6 +1,6 @@
 # Curriculum Status
 
-Last updated: 2026-08-11
+Last updated: 2026-08-21
 
 | Artifact | Status | Next authority |
 |---|---|---|
@@ -10,6 +10,13 @@ Last updated: 2026-08-11
 | Foundational mathematics shelf | Draft | Founder |
 | Extended classical candidate library | Draft | Founder |
 | Strata migration finalization review | AI_DRAFT, authoring-only | Founder decisions across 100 audited records |
+| Data Science, Machine Learning and AI roadmap | Draft skeleton plus 150+ topic reference atlas | Founder review |
+| Wikipedia source policy | Exact revisions, licence links and change notices required | Active authoring rule |
+| Qubix Superstore learning world | Persistent company, relational model, 8 career routes and 14 mission phases | World implemented in `STAT-DATA-001`; later missions locked |
+| Superstore topic catalogue | 379 topics across 17 ordered phases | Pre-Intern phase 3 capstone current; later topic boards locked |
+| Data Science Wiki preview | Static local route implemented at `?mode=wiki`; catalogue, career path, Superstore world and reference shelf are browsable | Founder review before making it the public home page |
+| Pre-Intern ebook 001 | *What Data Is and Why People Use It* generated from reviewable source; 1 chapter, 20 answered practice items | Founder reading and amendments; remains `AI_DRAFT` |
+| Pre-Intern ebook 002 | *What a Computer Program Does* generated from reviewable source; 1 chapter, 20 answered practice items | Founder reading and amendments; remains `AI_DRAFT` |
 
 ## Boards
 
@@ -39,6 +46,14 @@ Named, not numbered, since 2026-08-09. `key` is the Factory URL.
 | Force and Acceleration | `force` | written | AI_DRAFT, gated; live pilot | Prerequisites, placement and formal approval |
 | Angles and Turns | `angles` | written | AI_DRAFT, gated | Founder selection, source edition review and placement |
 | Angle Sum of a Triangle | `triangle-angles` | written | AI_DRAFT, gated | Founder selection, prerequisite and edition review, placement |
+| Observations and Variables | `observations-variables` | written | AI_DRAFT, gated | Founder reading, interaction testing, prerequisites and placement |
+
+**Data Science direction, 2026-08-21.** The founder set Data Science, Machine
+Learning and AI as Qubix's destination and instructed the curriculum to move
+from its algebra foundation into Statistics and Probability. The dependency
+skeleton is recorded in `05-DATA-SCIENCE-ROADMAP.md`. Only
+`STAT-DATA-001` has been drafted. It is excluded from the learner generator;
+no variant is selected and no approval or release status has changed.
 
 The standalone Strata Migration Factory is available only at
 `?mode=strata-factory` in development. It is not registered in the present

@@ -22,6 +22,14 @@ const OUT = join(ROOT, 'public', 'library');
 
 // What the library holds, and how each piece is named on the site.
 const SHELF = [
+  { file: 'preintern-001-what-data-is.html', slug: 'what-data-is',
+    title: 'What Data Is and Why People Use It',
+    sub: 'Pre-Intern 001 · Data Foundations',
+    blurb: 'Start from zero. Follow a Superstore sale from a real-world event to a recorded fact, an organised table and a decision. Twenty practice questions, all explained.' },
+  { file: 'preintern-002-what-a-program-does.html', slug: 'what-a-program-does',
+    title: 'What a Computer Program Does',
+    sub: 'Pre-Intern 002 · Digital Foundations',
+    blurb: 'See a program as precise stored instructions: input enters, steps transform it, and output or an action follows. Superstore examples, four worked cases and twenty explained questions.' },
   { file: 'book1-functions.html', slug: 'functions',
     title: 'Calculus From The Ground Up',
     sub: 'Book 1: Functions',
@@ -96,7 +104,7 @@ const index = `<!doctype html>
 <header>
   <div class="kick">QUBIX UNIVERSITY</div>
   <h1>The Library</h1>
-  <p>Reference books and reference sheets, generated from source and rebuilt on every deploy. Nothing here is drawn by hand: every figure is computed from the formula printed beside it.</p>
+  <p>Source-first ebooks and reference sheets, generated from reviewable files and rebuilt on every release. Data foundations begin with plain language and synthetic Superstore evidence; technical figures are computed from their own data.</p>
 </header>
 <main>
   <div class="shelf" id="shelf">

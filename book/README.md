@@ -67,6 +67,12 @@ claim is wrong. Run it after editing any number.
 
 ## Where the book meets the app
 
+The Data Science pathway is ebook-first. One modular topic ebook is authored and
+reviewed before its interactive adaptation. The first title lives at
+`book/preintern-001-what-data-is/` and generates
+`book/dist/preintern-001-what-data-is.html`. Modular titles may later be
+collected into phase volumes without duplicating their source.
+
 Draft 1 proposed that each app board map to one subsection. That mapping does
 not hold yet, and the shortfall is on the app side: of the 13 chapters, six
 have no Factory board at all and five more have a board with nothing selected.

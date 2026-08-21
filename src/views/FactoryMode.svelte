@@ -39,6 +39,7 @@
     // Foundations. Each carries its own line, bar or columns.
     'zoom-line', 'jug-fill', 'split-bar', 'place-columns', 'compare-two',
     'pair-up', 'pair-mismatch', 'tally-basket', 'same-count', 'pebble-to-figure', 'figure-row',
+    'case-focus', 'case-row', 'variable-focus', 'variable-sort', 'dataset-grid', 'dataset-repair',
     'lay-units', 'unit-line', 'walk-line', 'line-runs-out', 'extend-left', 'both-ways',
     'root-both-ways', 'square-grid', 'root-search', 'root-approx', 'root-on-line', 'diagonal-square',
     'table-plot-step', 'table-plot-predict', 'table-plot-sprint', 'table-rule-switch',
@@ -178,6 +179,32 @@
   let tallied = 0;                          // tally-basket
   let counts = [5, 3, 4];                   // same-count
   let pebbles = 5;                          // pebble-to-figure
+  // Statistics: observations and variables. This is a deliberately tiny,
+  // synthetic branch-day feed from the fictional Qubix Superstore. It contains
+  // no user, customer, employee, Walmart or other retailer operational data.
+  const DATA_CASES = [
+    { name: 'B-014', region: 'North', transactions: 1248, stockouts: 6 },
+    { name: 'B-027', region: 'Central', transactions: 1536, stockouts: 3 },
+    { name: 'B-031', region: 'East', transactions: 1104, stockouts: 8 },
+    { name: 'B-044', region: 'West', transactions: 1389, stockouts: 4 }
+  ];
+  const DATA_VARIABLES = [
+    { key: 'region', label: 'region', type: 'categorical' },
+    { key: 'transactions', label: 'transactions', type: 'quantitative' },
+    { key: 'stockouts', label: 'stockouts', type: 'quantitative' }
+  ];
+  let dataRow = 0;
+  let dataColumn = 'region';
+  let dataSort = { region: 'unfiled', transactions: 'unfiled', stockouts: 'unfiled' };
+  let dataAxis = 'row';
+  let dataGuess = null;
+  const dataCycle = key => {
+    const order = ['unfiled', 'categorical', 'quantitative'];
+    dataSort = { ...dataSort, [key]: order[(order.indexOf(dataSort[key]) + 1) % order.length] };
+  };
+  // Reactive declaration: hiding the dataSort read inside a helper leaves the
+  // completion message frozen even though the cards themselves update.
+  $: dataSortComplete = DATA_VARIABLES.every(v => dataSort[v.key] === v.type);
   // Tally bench. benchSeen records that the collections were once uneven, so
   // goal 4 asks for a repair rather than being satisfied by never breaking them.
   // Goals here stick once reached. Goal 2 wants all three level and goal 3 wants
@@ -963,26 +990,117 @@
       </button>
     </nav>
 
-    {#each byUnit as unit}
-      <section class="unit">
-        <div class="unit-head">
-          <h3>{unit.name}</h3>
-          <em>{unit.blurb}</em>
-        </div>
-        <nav class="bb-switch" class:sequence={unit.key === 'functions'} aria-label={`Boards in ${unit.name}`}>
-          {#each unit.boards as item, i}
-            <button class:on={item.key === active} on:click={() => show(item.key)}>
-              {#if unit.key === 'functions'}<i class="step">{i + 1}</i>{/if}
-              {item.label}<em>{item.bb.title}</em>
-            </button>
-          {/each}
-        </nav>
-      </section>
-    {/each}
+    <details class="curriculum-drawer" open={entry.unit !== 'statistics'}>
+      <summary>Curriculum board drawer <span>{registry.length} authoring boards · current: {bb1.title}</span></summary>
+      <div class="curriculum-drawer-body">
+        {#each byUnit as unit}
+          <section class="unit">
+            <div class="unit-head">
+              <h3>{unit.name}</h3>
+              <em>{unit.blurb}</em>
+            </div>
+            <nav class="bb-switch" class:sequence={unit.key === 'functions'} aria-label={`Boards in ${unit.name}`}>
+              {#each unit.boards as item, i}
+                <button class:on={item.key === active} on:click={() => show(item.key)}>
+                  {#if unit.key === 'functions'}<i class="step">{i + 1}</i>{/if}
+                  {item.label}<em>{item.bb.title}</em>
+                </button>
+              {/each}
+            </nav>
+          </section>
+        {/each}
+      </div>
+    </details>
 
     <section class="intro">
       <span class="micro">{bb1.id}{#if unitOf}&nbsp;· {unitOf.name}, {unitPos} of {unitBoards.length}{/if}</span>
       <h1>{bb1.title}</h1>
+      {#if bb1.world}
+        <section class="world-console" aria-label={`${bb1.world.company} learning world`}>
+          <header class="world-head">
+            <div><span>Persistent learning world</span><h2>{bb1.world.company}</h2><p>{bb1.world.tagline}</p></div>
+            <small>{bb1.world.disclaimer}</small>
+          </header>
+
+          <div class="world-footprint" aria-label="Company footprint">
+            {#each bb1.world.footprint as fact}<span><b>{fact.value}</b><small>{fact.label}</small></span>{/each}
+          </div>
+
+          <section class="learning-loop" aria-label="Mission learning sequence">
+            <div class="world-subhead"><span>Learning process</span><b>Theory immediately earns a practical action, then the cycle repeats</b></div>
+            <div class="learning-loop-track">
+              {#each bb1.world.learningCycles as cycle, i}
+                <article><span>Theory {i + 1}</span><b>{cycle.theory}</b></article>
+                <i aria-hidden="true">→</i>
+                <article class="practical"><span>Practical {i + 1}</span><b>{cycle.practical}</b></article>
+                {#if i < bb1.world.learningCycles.length - 1}<i aria-hidden="true">→</i>{/if}
+              {/each}
+            </div>
+          </section>
+
+          <div class="world-primary">
+            <article class="mission-brief">
+              <span class="mission-role">Current role · {bb1.world.currentMission.role}</span>
+              <h3>{bb1.world.currentMission.title}</h3>
+              <p><b>{bb1.world.currentMission.team}</b> · {bb1.world.currentMission.location}</p>
+              <p>{bb1.world.currentMission.brief}</p>
+              <small>Business outcome · {bb1.world.currentMission.outcome}</small>
+            </article>
+
+            <div class="world-flow" aria-label="How superstore data moves">
+              {#each bb1.world.network as node, i}
+                {#if i}<span class="world-arrow" aria-hidden="true">→</span>{/if}
+                <article><b>{node.name}</b><small>{node.detail}</small></article>
+              {/each}
+            </div>
+          </div>
+
+          <section class="world-schema">
+            <div class="world-subhead"><span>Relational superstore</span><b>One connected company, not isolated toy datasets</b></div>
+            <div class="schema-grid">
+              {#each bb1.world.schema as table}
+                <article><b>{table.table}</b><span>PK · {table.key}</span><small>{table.fields}</small></article>
+              {/each}
+            </div>
+          </section>
+
+          <section class="promotion-map">
+            <div class="world-subhead"><span>Promotion path</span><b>No assumed knowledge: every role is earned through a visible competency gate</b></div>
+            <div class="promotion-track">
+              {#each bb1.world.promotionPath as step, i}
+                <article class:current={i === 0}><span>{i}</span><div><b>{step.role}</b><small>{step.gate}</small></div></article>
+                {#if i < bb1.world.promotionPath.length - 1}<i aria-hidden="true">→</i>{/if}
+              {/each}
+            </div>
+          </section>
+
+          <section class="career-map">
+            <div class="world-subhead"><span>Career routes</span><b>Start as an intern; specialise without leaving the same enterprise</b></div>
+            <div class="career-grid">
+              {#each bb1.world.careerRoutes as route}
+                <article><h3>{route.name}</h3><div>{#each route.roles as role}<span class:current={role === bb1.world.currentMission.role}>{role}</span>{/each}</div></article>
+              {/each}
+            </div>
+          </section>
+
+          <details class="topic-catalog">
+            <summary>
+              <span><b>Complete learning topic catalogue</b><small>{bb1.world.topicCount} ordered topics · {bb1.world.topicCatalog.length} phases · Pre-Intern to Lead Data Scientist</small></span>
+              <em>Open the list</em>
+            </summary>
+            <div class="topic-phase-grid">
+              {#each bb1.world.topicCatalog as phase}
+                <article class:current={phase.phase === 3}>
+                  <header><span>Phase {phase.phase}</span><small>{phase.role}</small></header>
+                  <h3>{phase.title}</h3>
+                  <ol>{#each phase.topics as topic}<li>{topic}</li>{/each}</ol>
+                  <p><b>Practical</b>{phase.practical}</p>
+                </article>
+              {/each}
+            </div>
+          </details>
+        </section>
+      {/if}
       {#if entry.unit === 'functions'}
         <!-- Founder direction: these three are one thing. The chain is drawn on
              every one of them so it cannot be read as a standalone board. -->
@@ -1040,7 +1158,7 @@
     {#each bb1.sections as section, si}
       <section class="section-block">
         <div class="section-head">
-          <span class="section-code">{section.code}</span>
+          <span class="section-code">Cycle {si + 1} · {section.code}</span>
           <h2>{section.name}</h2>
         </div>
 
@@ -1049,13 +1167,22 @@
             {#each section.sources as key}
               <blockquote>
                 <p>{sources[key].quote}</p>
-                <cite>{key} · {sources[key].ref}</cite>
+                <cite>
+                  {key} · {sources[key].ref}
+                  {#if sources[key].url}
+                    · <a href={sources[key].url} target="_blank" rel="noreferrer">source revision</a>
+                  {/if}
+                  {#if sources[key].licenseUrl}
+                    · <a href={sources[key].licenseUrl} target="_blank" rel="noreferrer">{sources[key].license}</a>
+                  {/if}
+                </cite>
+                {#if sources[key].changes}<small class="source-change">Changes: {sources[key].changes}</small>{/if}
               </blockquote>
             {/each}
           </div>
         {/if}
 
-        <h3>Reading</h3>
+        <h3>{bb1.world ? `Theory ${si + 1}` : 'Reading'} {#if bb1.world}<em>— understand the idea before touching the system</em>{/if}</h3>
         <div class="variant-grid">
           {#each (keptOnly ? section.readings.filter(r => selections[r.code] || finalised[r.code]) : section.readings) as reading}
             <article class="variant" class:selected={selections[reading.code] && !keptOnly} class:finalised={finalised[reading.code]} class:rejected={rejected[reading.code]}>
@@ -1069,7 +1196,7 @@
           {/each}
         </div>
 
-        <h3>{keptOnly && keptIsFigure(section, selections, finalised) ? 'Figure' : 'Interaction'} {#if !keptOnly}<em>— or a figure, where there is nothing to vary</em>{/if}</h3>
+        <h3>{bb1.world ? `Practical ${si + 1} · Guided lab` : (keptOnly && keptIsFigure(section, selections, finalised) ? 'Figure' : 'Interaction')} {#if !keptOnly}<em>— {bb1.world ? 'apply the theory immediately' : 'or a figure, where there is nothing to vary'}</em>{/if}</h3>
         <div class="variant-grid">
           {#each (keptOnly ? section.interactions.filter(i => selections[i.code] || finalised[i.code]) : section.interactions) as interaction}
             <article class="variant" class:selected={selections[interaction.code] && !keptOnly} class:finalised={finalised[interaction.code]} class:rejected={rejected[interaction.code]}>
@@ -1713,6 +1840,87 @@
                         {/if}
                       </p>
                     {/if}
+                  </div>
+
+                {:else if interaction.kind === 'case-focus' || interaction.kind === 'case-row'}
+                  <div class="rows data-stage">
+                    <div class="data-picks" aria-label="Choose one observed case">
+                      {#each DATA_CASES as item, ri}
+                        <button class="chip" class:up={dataRow === ri} on:click={() => (dataRow = ri)}>{item.name}</button>
+                      {/each}
+                    </div>
+                    {#if interaction.kind === 'case-focus'}
+                      {@const item = DATA_CASES[dataRow]}
+                      <div class="data-card" aria-live="polite">
+                        <strong>{item.name}</strong>
+                        {#each DATA_VARIABLES as variable}<span><small>{variable.label}</small>{item[variable.key]}</span>{/each}
+                      </div>
+                      <p class="stage-note">One branch-day case carries its complete close-of-day record together.</p>
+                    {:else}
+                      <table class="io-table data-grid">
+                        <thead><tr><th>branch-day</th>{#each DATA_VARIABLES as variable}<th>{variable.label}</th>{/each}</tr></thead>
+                        <tbody>{#each DATA_CASES as item, ri}
+                          <tr class:active={dataRow === ri}><th>{item.name}</th>{#each DATA_VARIABLES as variable}<td>{item[variable.key]}</td>{/each}</tr>
+                        {/each}</tbody>
+                      </table>
+                      <p class="stage-note">The highlighted row is one complete observation.</p>
+                    {/if}
+                  </div>
+
+                {:else if interaction.kind === 'variable-focus'}
+                  <div class="rows data-stage">
+                    <div class="data-picks" aria-label="Choose one variable">
+                      {#each DATA_VARIABLES as variable}
+                        <button class="chip" class:up={dataColumn === variable.key} on:click={() => (dataColumn = variable.key)}>{variable.label}</button>
+                      {/each}
+                    </div>
+                    <table class="io-table data-grid">
+                      <thead><tr><th>branch-day</th>{#each DATA_VARIABLES as variable}<th class:active={dataColumn === variable.key}>{variable.label}</th>{/each}</tr></thead>
+                      <tbody>{#each DATA_CASES as item}<tr><th>{item.name}</th>{#each DATA_VARIABLES as variable}<td class:active={dataColumn === variable.key}>{item[variable.key]}</td>{/each}</tr>{/each}</tbody>
+                    </table>
+                    <p class="stage-note">Read down: {DATA_CASES.map(item => item[dataColumn]).join(', ')}. One question, asked of every case.</p>
+                  </div>
+
+                {:else if interaction.kind === 'variable-sort'}
+                  <div class="rows data-stage">
+                    <div class="data-sort">
+                      {#each DATA_VARIABLES as variable}
+                        <button class="data-sort-card" class:right={dataSort[variable.key] === variable.type} on:click={() => dataCycle(variable.key)}>
+                          <b>{variable.label}</b><small>{dataSort[variable.key]}</small>
+                        </button>
+                      {/each}
+                    </div>
+                    <p class="stage-note" class:success={dataSortComplete}>{dataSortComplete ? 'All three variables classified. Labels are categorical; counts and measurements are quantitative.' : 'Tap each card until its type is right.'}</p>
+                  </div>
+
+                {:else if interaction.kind === 'dataset-grid'}
+                  <div class="rows data-stage">
+                    <div class="data-picks">
+                      <button class="chip" class:up={dataAxis === 'row'} on:click={() => (dataAxis = 'row')}>read a case →</button>
+                      <button class="chip" class:up={dataAxis === 'column'} on:click={() => (dataAxis = 'column')}>read a variable ↓</button>
+                    </div>
+                    {#if dataAxis === 'row'}
+                      <div class="data-picks">{#each DATA_CASES as item, ri}<button class="chip" class:up={dataRow === ri} on:click={() => (dataRow = ri)}>{item.name}</button>{/each}</div>
+                    {:else}
+                      <div class="data-picks">{#each DATA_VARIABLES as variable}<button class="chip" class:up={dataColumn === variable.key} on:click={() => (dataColumn = variable.key)}>{variable.label}</button>{/each}</div>
+                    {/if}
+                    <table class="io-table data-grid">
+                      <thead><tr><th>branch-day</th>{#each DATA_VARIABLES as variable}<th class:active={dataAxis === 'column' && dataColumn === variable.key}>{variable.label}</th>{/each}</tr></thead>
+                      <tbody>{#each DATA_CASES as item, ri}<tr class:active={dataAxis === 'row' && dataRow === ri}><th>{item.name}</th>{#each DATA_VARIABLES as variable}<td class:active={dataAxis === 'column' && dataColumn === variable.key}>{item[variable.key]}</td>{/each}</tr>{/each}</tbody>
+                    </table>
+                    <p class="stage-note">Across reconstructs one case. Down compares one variable.</p>
+                  </div>
+
+                {:else if interaction.kind === 'dataset-repair'}
+                  <div class="rows data-stage">
+                    <table class="io-table data-grid">
+                      <thead><tr><th>branch-day</th><th>region</th><th>transactions</th><th>stockouts</th></tr></thead>
+                      <tbody>{#each DATA_CASES as item}<tr><th>{item.name}</th><td>{item.region}</td><td>{item.transactions}</td><td class:missing={item.name === 'B-044'}>{item.name === 'B-044' ? (dataGuess ?? '?') : item.stockouts}</td></tr>{/each}</tbody>
+                    </table>
+                    <div class="data-picks" aria-label="Restore B-044's recorded stockout count">
+                      {#each [2, 4, 7] as guess}<button class="chip" class:up={dataGuess === guess} on:click={() => (dataGuess = guess)}>{guess}</button>{/each}
+                    </div>
+                    <p class="stage-note" class:success={dataGuess === 4}>{dataGuess === null ? 'Return B-044\'s detached count to the cell where B-044 crosses stockouts.' : dataGuess === 4 ? 'Feed repaired: 4 belongs to B-044’s row and the stockouts column.' : 'That value does not match the branch close record. Do not invent data to fill a blank.'}</p>
                   </div>
 
                 {:else if interaction.kind === 'pair-up' || interaction.kind === 'pair-mismatch'}
@@ -2878,7 +3086,7 @@
           {/each}
         </div>
 
-        <h3>{keptOnly ? 'Checks' : 'Exercise'} {#if !keptOnly}<em>— clickable, answers reveal</em>{/if}</h3>
+        <h3>{bb1.world ? `Practical ${si + 1} · Independent check` : (keptOnly ? 'Checks' : 'Exercise')} {#if !keptOnly}<em>— {bb1.world ? 'prove the skill without guidance' : 'clickable, answers reveal'}</em>{/if}</h3>
         <div class="variant-grid">
           {#each (keptOnly ? section.exercises.filter(e => selections[e.code] || finalised[e.code]) : section.exercises) as ex}
             <article class="variant" class:selected={selections[ex.code] && !keptOnly} class:finalised={finalised[ex.code]}>
@@ -3626,6 +3834,77 @@
   .factory-body { max-width: 1180px; margin: 0 auto; padding: 26px clamp(16px, 4vw, 48px) 80px; display: flex; flex-direction: column; gap: 34px; }
   .micro { color: var(--qx-accent-text); font-size: 10px; letter-spacing: .14em; font-weight: 900; }
   .intro h1 { font-size: clamp(28px, 4vw, 42px); margin: 6px 0 10px; }
+  .world-console { margin: 18px 0 22px; border: 1px solid var(--qx-border-2); border-radius: 22px; padding: clamp(16px, 3vw, 28px); background: linear-gradient(145deg, var(--qx-surface), var(--qx-surface-2)); box-shadow: 0 18px 55px rgba(38, 31, 22, .08); display: grid; gap: 18px; overflow: hidden; }
+  .world-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+  .world-head > div { display: grid; gap: 4px; }
+  .world-head span, .world-subhead span { color: var(--qx-accent-text); font-size: 9px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+  .world-head h2 { margin: 0; font-size: clamp(24px, 4vw, 38px); letter-spacing: -.03em; }
+  .world-head p { margin: 0; max-width: 65ch; color: var(--qx-text-2); font-size: 13px; line-height: 1.5; }
+  .world-head > small { max-width: 260px; border: 1px solid var(--qx-green); border-radius: 999px; padding: 6px 10px; background: var(--qx-green-soft); color: var(--qx-green-text); font-size: 8px; line-height: 1.35; font-weight: 900; text-align: center; }
+  .world-footprint { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .world-footprint span { border: 1px solid var(--qx-border); border-radius: 12px; padding: 10px 12px; background: var(--qx-surface); display: grid; gap: 1px; }
+  .world-footprint b { color: var(--qx-accent-text); font-size: 24px; }
+  .world-footprint small { color: var(--qx-text-faint); font-size: 8px; letter-spacing: .09em; font-weight: 900; text-transform: uppercase; }
+  .learning-loop { display: grid; gap: 9px; }
+  .learning-loop-track { display: flex; align-items: stretch; gap: 6px; }
+  .learning-loop-track article { flex: 1 1 0; min-width: 0; border: 1px solid var(--qx-accent); border-radius: 11px; padding: 9px; background: var(--qx-accent-soft); display: grid; gap: 4px; align-content: start; }
+  .learning-loop-track article.practical { border-color: var(--qx-green); background: var(--qx-green-soft); }
+  .learning-loop-track article span { color: var(--qx-accent-text); font-size: 8px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+  .learning-loop-track article.practical span { color: var(--qx-green-text); }
+  .learning-loop-track article b { color: var(--qx-text); font-size: 9px; line-height: 1.35; }
+  .learning-loop-track > i { align-self: center; color: var(--qx-text-faint); font-size: 12px; font-style: normal; font-weight: 900; }
+  .world-primary { display: grid; grid-template-columns: minmax(260px, .85fr) minmax(420px, 1.4fr); gap: 12px; }
+  .mission-brief { border: 1px solid var(--qx-accent); border-radius: 16px; padding: 16px; background: var(--qx-accent-soft); display: grid; gap: 8px; align-content: start; }
+  .mission-role { color: var(--qx-accent-text); font-size: 9px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+  .mission-brief h3 { margin: 0; color: var(--qx-text); font-size: 19px; letter-spacing: -.01em; text-transform: none; }
+  .mission-brief p { margin: 0; color: var(--qx-text-2); font-size: 12px; line-height: 1.5; }
+  .mission-brief small { border-top: 1px solid var(--qx-border-2); padding-top: 8px; color: var(--qx-accent-text); font-size: 10px; line-height: 1.45; font-weight: 800; }
+  .world-flow { border: 1px solid var(--qx-border); border-radius: 16px; padding: 12px; background: var(--qx-surface); display: flex; align-items: stretch; gap: 7px; }
+  .world-flow article { flex: 1 1 0; min-width: 0; border: 1px solid var(--qx-border); border-radius: 11px; padding: 10px; display: grid; gap: 4px; align-content: start; }
+  .world-flow b { color: var(--qx-text); font-size: 11px; }
+  .world-flow small { color: var(--qx-text-faint); font-size: 8.5px; line-height: 1.4; }
+  .world-arrow { align-self: center; color: var(--qx-accent-text); font-weight: 900; }
+  .world-schema, .career-map { display: grid; gap: 9px; }
+  .world-subhead { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+  .world-subhead b { color: var(--qx-text-dim); font-size: 11px; }
+  .schema-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+  .schema-grid article { min-width: 0; border: 1px solid var(--qx-border); border-radius: 11px; padding: 10px; background: var(--qx-surface); display: grid; gap: 4px; }
+  .schema-grid b { color: var(--qx-accent-text); font-size: 11px; overflow-wrap: anywhere; }
+  .schema-grid span { color: var(--qx-text); font-size: 8px; font-weight: 900; overflow-wrap: anywhere; }
+  .schema-grid small { color: var(--qx-text-faint); font-size: 8px; line-height: 1.35; overflow-wrap: anywhere; }
+  .promotion-map { display: grid; gap: 9px; }
+  .promotion-track { display: flex; align-items: stretch; gap: 5px; }
+  .promotion-track article { flex: 1 1 0; min-width: 0; border: 1px solid var(--qx-border); border-radius: 11px; padding: 8px; background: var(--qx-surface); display: flex; gap: 7px; align-items: flex-start; }
+  .promotion-track article.current { border-color: var(--qx-green); background: var(--qx-green-soft); }
+  .promotion-track article > span { flex: 0 0 20px; height: 20px; border-radius: 50%; background: var(--qx-accent-soft); color: var(--qx-accent-text); display: grid; place-items: center; font-size: 8px; font-weight: 900; }
+  .promotion-track article.current > span { background: var(--qx-green); color: #fff; }
+  .promotion-track article div { min-width: 0; display: grid; gap: 3px; }
+  .promotion-track article b { color: var(--qx-text); font-size: 9px; line-height: 1.25; }
+  .promotion-track article small { color: var(--qx-text-faint); font-size: 7.5px; line-height: 1.35; }
+  .promotion-track > i { align-self: center; color: var(--qx-text-faint); font-size: 11px; font-style: normal; font-weight: 900; }
+  .career-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 7px; }
+  .career-grid article { min-width: 0; border: 1px solid var(--qx-border); border-radius: 12px; padding: 10px; background: var(--qx-surface); }
+  .career-grid h3 { margin: 0 0 7px; color: var(--qx-text-dim); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+  .career-grid article div { display: flex; flex-wrap: wrap; gap: 4px; }
+  .career-grid span { border: 1px solid var(--qx-border); border-radius: 999px; padding: 4px 7px; color: var(--qx-text-2); font-size: 8px; line-height: 1.25; font-weight: 800; }
+  .career-grid span.current { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .topic-catalog { border: 1px solid var(--qx-border-2); border-radius: 14px; background: var(--qx-surface); }
+  .topic-catalog > summary { min-height: 52px; padding: 10px 13px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; list-style-position: inside; }
+  .topic-catalog > summary > span { display: grid; gap: 2px; }
+  .topic-catalog > summary b { color: var(--qx-text); font-size: 12px; }
+  .topic-catalog > summary small { color: var(--qx-text-faint); font-size: 9px; line-height: 1.4; }
+  .topic-catalog > summary em { border: 1px solid var(--qx-accent); border-radius: 999px; padding: 5px 9px; color: var(--qx-accent-text); font-size: 8px; font-style: normal; font-weight: 900; white-space: nowrap; }
+  .topic-phase-grid { border-top: 1px solid var(--qx-border); padding: 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+  .topic-phase-grid > article { min-width: 0; border: 1px solid var(--qx-border); border-radius: 12px; padding: 11px; background: var(--qx-surface-2); display: grid; gap: 8px; align-content: start; }
+  .topic-phase-grid > article.current { border-color: var(--qx-green); box-shadow: inset 0 3px 0 var(--qx-green); }
+  .topic-phase-grid header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .topic-phase-grid header span { color: var(--qx-accent-text); font-size: 8px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+  .topic-phase-grid header small { color: var(--qx-text-faint); font-size: 8px; text-align: right; }
+  .topic-phase-grid h3 { margin: 0; color: var(--qx-text); font-size: 14px; letter-spacing: 0; line-height: 1.25; text-transform: none; }
+  .topic-phase-grid ol { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+  .topic-phase-grid li { color: var(--qx-text-2); font-size: 9px; line-height: 1.35; }
+  .topic-phase-grid p { margin: 0; border-top: 1px solid var(--qx-border); padding-top: 7px; color: var(--qx-text-dim); font-size: 9px; line-height: 1.4; }
+  .topic-phase-grid p b { display: block; margin-bottom: 2px; color: var(--qx-green-text); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
   .lede { color: var(--qx-text-2); font-size: 16px; line-height: 1.6; max-width: 62ch; }
   .fork-note { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
   .fork-note div { flex: 1 1 260px; border: 1px solid var(--qx-border); border-radius: 12px; padding: 11px 13px; background: var(--qx-surface-2); display: flex; flex-direction: column; gap: 3px; }
@@ -3918,6 +4197,8 @@
   .sources blockquote { border-left: 2px solid var(--qx-accent); padding: 2px 0 2px 13px; margin-bottom: 9px; }
   .sources p { color: var(--qx-text-2); font-size: 14px; line-height: 1.55; font-style: italic; }
   .sources cite { display: block; margin-top: 5px; font-size: 10px; color: var(--qx-text-faint); font-style: normal; font-weight: 700; }
+  .sources cite a { color: var(--qx-accent-text); text-underline-offset: 2px; }
+  .source-change { display: block; margin-top: 4px; color: var(--qx-text-faint); font-size: 9px; line-height: 1.4; }
 
   .variant-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
   .variant { border: 1px solid var(--qx-border); border-radius: 15px; background: var(--qx-surface); padding: 13px; display: flex; flex-direction: column; gap: 9px; }
@@ -3962,7 +4243,7 @@
 
   .prompt { font-size: 15px; font-weight: 800; line-height: 1.45; }
   .options { display: grid; gap: 7px; }
-  .options button { min-height: 42px; border-radius: 11px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 14px; font-weight: 800; cursor: pointer; padding: 7px 12px; text-align: left; }
+  .options button { min-height: 44px; border-radius: 11px; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font-size: 14px; font-weight: 800; cursor: pointer; padding: 8px 12px; text-align: left; }
   .options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .options button.wrong { border-color: var(--qx-danger); }
   .fb { font-size: 12px; line-height: 1.45; color: var(--qx-danger-text); background: var(--qx-danger-soft); border-radius: 9px; padding: 9px 11px; }
@@ -3973,7 +4254,7 @@
 
   .tray { display: flex; flex-wrap: wrap; gap: 7px; min-height: 44px; align-items: center; }
   .tray-empty { font-size: 11px; color: var(--qx-text-faint); font-weight: 700; }
-  .chip.pick { min-width: 40px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font-size: 17px; font-weight: 900; cursor: pointer; }
+  .chip.pick { min-width: 44px; min-height: 44px; height: auto; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font-size: 17px; line-height: 1.25; text-align: center; font-weight: 900; cursor: pointer; }
   .chip.pick.up { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); transform: translateY(-3px); }
   .bins { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
   .bin { min-height: 74px; border: 1px dashed var(--qx-border-2); border-radius: 12px; background: var(--qx-surface-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; padding: 9px; }
@@ -4235,6 +4516,10 @@
   .mode-switch button { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text-dim); border-radius: 12px; padding: 10px 15px; cursor: pointer; font-weight: 900; font-size: 13px; }
   .mode-switch button em { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
   .mode-switch button.on { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .curriculum-drawer { border: 1px solid var(--qx-border); border-radius: 14px; background: var(--qx-surface-2); }
+  .curriculum-drawer > summary { min-height: 44px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--qx-text); cursor: pointer; font-size: 11px; font-weight: 900; letter-spacing: .06em; list-style-position: inside; }
+  .curriculum-drawer > summary span { color: var(--qx-text-faint); font-size: 9px; font-weight: 700; letter-spacing: 0; text-align: right; }
+  .curriculum-drawer-body { border-top: 1px solid var(--qx-border); padding: 14px; display: grid; gap: 18px; }
   .warn { color: var(--qx-danger-text); background: var(--qx-danger-soft); border: 1px solid var(--qx-danger); border-radius: 11px; padding: 11px 13px; font-size: 13px; line-height: 1.55; font-weight: 700; margin-bottom: 12px; }
   .bb-switch { display: flex; gap: 8px; flex-wrap: wrap; }
   .bb-switch button { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); border-radius: 12px; padding: 9px 14px; cursor: pointer; font-weight: 900; font-size: 12px; }
@@ -4305,6 +4590,22 @@
   .edge-label.sm { font: italic 800 14px/1 Georgia, serif; gap: 6px; }
 
   .variant.selected { border-color: var(--qx-green); background: var(--qx-green-soft); }
+  .data-stage { width: 100%; }
+  .data-picks { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+  .data-picks .chip { min-width: 44px; min-height: 44px; height: auto; }
+  .data-card { display: grid; grid-template-columns: repeat(3, minmax(70px, 1fr)); gap: 8px; width: min(100%, 430px); }
+  .data-card strong { grid-column: 1 / -1; color: var(--qx-accent-text); font-size: 20px; }
+  .data-card span { display: grid; gap: 3px; border: 1px solid var(--qx-border); border-radius: 9px; padding: 9px; background: var(--qx-surface); font-weight: 900; text-align: center; }
+  .data-card small { color: var(--qx-text-faint); font-size: 8px; letter-spacing: .09em; text-transform: uppercase; }
+  .data-grid { width: min(100%, 520px); }
+  .data-grid tr.active > *, .data-grid .active { background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .data-grid td.missing { border: 2px dashed var(--qx-accent); color: var(--qx-accent-text); font-weight: 900; }
+  .data-sort { display: grid; grid-template-columns: repeat(3, minmax(90px, 1fr)); gap: 8px; width: min(100%, 430px); }
+  .data-sort-card { display: grid; gap: 5px; border: 1px solid var(--qx-border-2); border-radius: 11px; padding: 12px 8px; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; }
+  .data-sort-card b { font-size: 13px; }
+  .data-sort-card small { color: var(--qx-text-faint); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
+  .data-sort-card.right { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .stage-note.success { color: var(--qx-green-text); font-weight: 800; }
   .variant.selected .code { border-color: var(--qx-green); color: var(--qx-green-text); }
   .flow { display: flex; align-items: center; gap: 10px; }
   .flow-card { display: flex; flex-direction: column; gap: 3px; border: 2px solid var(--qx-accent); border-radius: 12px; padding: 11px 15px; background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 17px; font-weight: 900; }
@@ -4438,8 +4739,32 @@
   .closing p { color: var(--qx-text-2); font-size: 14px; line-height: 1.6; max-width: 70ch; }
   code { background: var(--qx-surface-2); border: 1px solid var(--qx-border); border-radius: 6px; padding: 2px 6px; font-size: 12.5px; }
 
+  @media (max-width: 900px) {
+    .world-primary { grid-template-columns: 1fr; }
+    .schema-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .career-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .topic-phase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
   @media (max-width: 560px) {
     .factory-body { gap: 26px; }
+    .world-head { flex-direction: column; }
+    .world-head > small { max-width: none; }
+    .world-footprint { grid-template-columns: 1fr 1fr; }
+    .world-primary { grid-template-columns: 1fr; }
+    .world-flow { flex-direction: column; }
+    .world-arrow { transform: rotate(90deg); }
+    .learning-loop-track { flex-direction: column; }
+    .learning-loop-track > i { transform: rotate(90deg); }
+    .promotion-track { flex-direction: column; }
+    .promotion-track > i { transform: rotate(90deg); }
+    .schema-grid { grid-template-columns: 1fr 1fr; }
+    .career-grid { grid-template-columns: 1fr; }
+    .topic-phase-grid { grid-template-columns: 1fr; }
+    .topic-catalog > summary { align-items: flex-start; flex-direction: column; }
+    .world-subhead { align-items: flex-start; flex-direction: column; gap: 3px; }
+    .curriculum-drawer > summary { align-items: flex-start; flex-direction: column; }
+    .curriculum-drawer > summary span { text-align: left; }
     .variant-grid { grid-template-columns: 1fr; }
     .triangle-sliders { grid-template-columns: 1fr; }
     .motion-sliders, .motion-readouts.four { grid-template-columns: 1fr 1fr; }

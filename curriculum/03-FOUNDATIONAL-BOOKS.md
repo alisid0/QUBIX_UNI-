@@ -20,6 +20,17 @@ Rule: a listed book is a source anchor, not automatic permission to generate con
 |---|---|---|
 | *Mathematical Recreations and Essays* by W. W. Rouse Ball | Problems, puzzles, historical investigations and optional explorations | It may inspire individual investigations but must not distort the dependency-led curriculum |
 
+## Proposed statistics anchor
+
+| Work | Edition anchor | Curriculum role | Status |
+|---|---|---|---|
+| *Introduction to Statistics (Online Edition)* | David M. Lane, David Scott, Mikki Hebl, Rudy Guerra, Dan Osherson and Heidi Zimmer, 2022 online edition | Modern terminology for variables, measurement, distributions and inference | `PUBLIC_DOMAIN_WORLDWIDE`, proposed for passage-level founder review |
+
+The source states that its copyright holders released the work into the public
+domain worldwide. `STAT-DATA-001` uses only the definition of a variable and the
+categorical/quantitative distinction from Introduction / Variables. Its example
+dataset and interactions are original Qubix material.
+
 This is the anchor shelf, not the complete library. A broader, deliberately unapproved set of alternative voices and specialist texts is maintained in [Extended Classical Mathematics Library](./04-EXTENDED-CLASSICAL-LIBRARY.md). Its purpose is to improve source comparison for one BB at a time.
 
 ## Verified source records

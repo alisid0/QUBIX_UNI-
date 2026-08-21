@@ -27,6 +27,7 @@ import { number, selections as selNum, finalised as finNum, rejected as rejNum, 
 import { numberLine, selections as selLine, finalised as finLine, rejected as rejLine, gated as gateLine } from './line-options.js';
 import { rateBasics, selections as selRB, finalised as finRB, rejected as rejRB, gated as gateRB } from './rate-basics-options.js';
 import { root, selections as selRoot, finalised as finRoot, rejected as rejRoot, gated as gateRoot } from './root-options.js';
+import { observationsVariables, selections as selData, finalised as finData, rejected as rejData, gated as gateData } from './data-options.js';
 
 export { sources };
 
@@ -86,7 +87,8 @@ export const registry = [
   { key: 'speed-velocity', unit: 'physics', label: 'Speed and velocity', bb: motion, selections: selMotion, finalised: finMotion, rejected: rejMotion, gated: gateMotion },
   { key: 'vectors', unit: 'physics', label: 'Vectors', bb: vectors, selections: selVectors, finalised: finVectors, rejected: rejVectors, gated: gateVectors },
   { key: 'vector-addition', unit: 'physics', label: 'Vector addition', bb: vectorAddition, selections: selVectorAddition, finalised: finVectorAddition, rejected: rejVectorAddition, gated: gateVectorAddition },
-  { key: 'force', unit: 'physics', label: 'Force', bb: force, selections: selForce, finalised: finForce, rejected: rejForce, gated: gateForce }
+  { key: 'force', unit: 'physics', label: 'Force', bb: force, selections: selForce, finalised: finForce, rejected: rejForce, gated: gateForce },
+  { key: 'observations-variables', unit: 'statistics', label: 'Observations & variables', bb: observationsVariables, selections: selData, finalised: finData, rejected: rejData, gated: gateData }
 ];
 
 export const UNITS = [
@@ -96,7 +98,8 @@ export const UNITS = [
   { key: 'geometry', name: 'Coordinate geometry', blurb: 'Counting a surface, then finding a place on one.' },
   { key: 'plane-geometry', name: 'Plane geometry', blurb: 'Angles first; triangles and circles next, before trigonometry.' },
   { key: 'rates', name: 'Rates and derivatives', blurb: 'Proposed to leave this course and open the next.' },
-  { key: 'physics', name: 'Introductory physics', blurb: 'Motion, direction and vector addition before the forces that change motion.' }
+  { key: 'physics', name: 'Introductory physics', blurb: 'Motion, direction and vector addition before the forces that change motion.' },
+  { key: 'statistics', name: 'Statistics and probability', blurb: 'Cases and variables first; summaries, chance and inference follow only after the data has meaning.' }
 ];
 
 // The strip is drawn from this, so a board with no unit cannot silently vanish.

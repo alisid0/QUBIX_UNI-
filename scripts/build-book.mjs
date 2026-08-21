@@ -155,19 +155,28 @@ const FIG = {
     const b = [];
     const ins = [...new Set(pairs.map(p => p[0]))];
     const outs = [...new Set(pairs.flatMap(p => p.slice(1)))];
-    const yI = i => 34 + i * 38, yO = i => 34 + i * 38;
-    b.push(`<ellipse cx="52" cy="${34 + (ins.length - 1) * 19}" rx="34" ry="${28 + ins.length * 14}" fill="${broken ? '#fdf2ef' : C.faint}"/>`);
-    b.push(`<ellipse cx="196" cy="${34 + (outs.length - 1) * 19}" rx="34" ry="${28 + outs.length * 14}" fill="${broken ? '#fdf2ef' : C.faint}"/>`);
-    b.push(label(52, 14, 'INPUT', C.mute, 8), label(196, 14, 'OUTPUT', C.mute, 8));
+    const w = 320, cardW = 104, cardH = 28, leftX = 16, rightX = w - 16 - cardW;
+    const rows = Math.max(ins.length, outs.length), top = 42, step = 42;
+    const h = top + rows * step + (tag ? 34 : 14);
+    const yI = i => top + i * step, yO = i => top + i * step;
+    b.push(`<rect width="${w}" height="${h}" rx="12" fill="#f8faf9" stroke="${C.rule}"/>`);
+    b.push(label(leftX, 23, 'INPUT', C.mute, 8, 'start'), label(rightX, 23, 'RESULT', C.mute, 8, 'start'));
     pairs.forEach(([i, ...os]) => os.forEach(o => {
       const bad = broken && i === broken;
-      b.push(`<line x1="72" y1="${yI(ins.indexOf(i))}" x2="176" y2="${yO(outs.indexOf(o))}" stroke="${bad ? C.rose : C.ink}" stroke-width="${bad ? 1.6 : 1.1}"/>`);
+      b.push(`<path d="M${leftX + cardW} ${yI(ins.indexOf(i))} C145 ${yI(ins.indexOf(i))},175 ${yO(outs.indexOf(o))},${rightX} ${yO(outs.indexOf(o))}"
+        fill="none" stroke="${bad ? C.rose : C.teal}" stroke-width="${bad ? 2 : 1.5}" marker-end="url(#ar)" opacity=".82"/>`);
     }));
-    ins.forEach((v, i) => { b.push(`<circle cx="52" cy="${yI(i)}" r="13" fill="${C.orange}"/>`, label(52, yI(i) + 4, v, '#fff', 11)); });
-    outs.forEach((v, i) => { b.push(`<circle cx="196" cy="${yO(i)}" r="13" fill="${broken && pairs.find(p => p[0] === broken)?.includes(v) ? C.rose : C.teal}"/>`, label(196, yO(i) + 4, v, '#fff', 11)); });
-    const h = 34 + Math.max(ins.length, outs.length) * 38 + (tag ? 18 : 6);
-    if (tag) b.push(label(124, h - 5, tag, broken ? C.rose : C.teal, 9));
-    return svg(248, h, b.join(''));
+    ins.forEach((v, i) => {
+      b.push(`<rect x="${leftX}" y="${yI(i) - cardH / 2}" width="${cardW}" height="${cardH}" rx="7" fill="#fff7f0" stroke="${C.orange}" stroke-width="1.4"/>`);
+      b.push(label(leftX + cardW / 2, yI(i) + 4, v, C.ink, 10));
+    });
+    outs.forEach((v, i) => {
+      const bad = broken && pairs.find(p => p[0] === broken)?.includes(v);
+      b.push(`<rect x="${rightX}" y="${yO(i) - cardH / 2}" width="${cardW}" height="${cardH}" rx="7" fill="${bad ? '#fdf2ef' : '#eef6f4'}" stroke="${bad ? C.rose : C.teal}" stroke-width="1.4"/>`);
+      b.push(label(rightX + cardW / 2, yO(i) + 4, v, C.ink, 10));
+    });
+    if (tag) b.push(label(w / 2, h - 12, tag, broken ? C.rose : C.teal, 9));
+    return svg(w, h, b.join(''));
   },
 
   // A labelled graph of one formula.
@@ -240,22 +249,40 @@ const FIG = {
   // Machines wired in series, which is what a composite actually is.
   chain({ stages, input, values, w = 460 }) {
     const b = [];
-    const boxW = 96, gap = 34, x0 = 46;
-    b.push(`<circle cx="22" cy="52" r="19" fill="${C.orange}"/>`, label(22, 57, input, '#fff', 13));
+    const h = 138, pad = 10, inputW = 76, gap = 22;
+    const naturalBoxW = Math.floor((w - pad * 2 - inputW - gap * stages.length) / stages.length);
+    const boxW = Math.min(112, naturalBoxW);
+    const flowW = inputW + gap * stages.length + boxW * stages.length;
+    const x0 = (w - flowW) / 2;
+    const boxY = 37, boxH = 62, midY = boxY + boxH / 2;
+    const wrap = value => {
+      const words = String(value).split(' ');
+      if (words.length < 2 || String(value).length <= 12) return [String(value)];
+      const cut = Math.ceil(words.length / 2);
+      return [words.slice(0, cut).join(' '), words.slice(cut).join(' ')];
+    };
+    const centredLines = (x, y, value, colour, size = 11) => {
+      const lines = wrap(value);
+      return `<text x="${x}" y="${y - (lines.length - 1) * 6}" text-anchor="middle" font-size="${size}" fill="${colour}" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600">`
+        + lines.map((line, i) => `<tspan x="${x}" dy="${i ? 13 : 0}">${esc(math(line))}</tspan>`).join('') + `</text>`;
+    };
+    b.push(`<rect width="${w}" height="${h}" rx="12" fill="#f8faf9" stroke="${C.rule}"/>`);
+    b.push(label(x0, 23, 'INPUT', C.mute, 8, 'start'));
+    b.push(`<rect x="${x0}" y="${boxY + 6}" width="${inputW}" height="${boxH - 12}" rx="10" fill="#fff7f0" stroke="${C.orange}" stroke-width="1.5"/>`);
+    b.push(centredLines(x0 + inputW / 2, midY + 4, input, C.ink, String(input).length > 11 ? 9 : 11));
     stages.forEach((s, i) => {
-      const x = x0 + i * (boxW + gap);
-      b.push(`<path d="M${x - gap + 4} 52 h${gap - 10}" stroke="${C.ink}" stroke-width="1.5" marker-end="url(#ar)"/>`);
-      b.push(`<rect x="${x}" y="26" width="${boxW}" height="52" rx="9" fill="#eef6f4" stroke="${C.teal}" stroke-width="1.5"/>`);
-      b.push(`<text x="${x + boxW / 2}" y="${57}" text-anchor="middle" font-size="12" fill="${C.teal}" font-family="ui-monospace,monospace">${esc(math(s))}</text>`);
-      if (values && values[i] !== undefined) {
-        const vx = x + boxW + gap / 2;
-        b.push(`<path d="M${x + boxW + 4} 52 h${gap - 10}" stroke="${C.ink}" stroke-width="1.5" marker-end="url(#ar)"/>`);
-        b.push(label(vx, 42, String(values[i]), C.ink, 12));
-      }
+      const x = x0 + inputW + gap + i * (boxW + gap);
+      const priorRight = i === 0 ? x0 + inputW : x - gap;
+      b.push(`<path d="M${priorRight + 5} ${midY} H${x - 6}" stroke="${C.teal}" stroke-width="1.7" marker-end="url(#ar)"/>`);
+      b.push(`<rect x="${x}" y="${boxY}" width="${boxW}" height="${boxH}" rx="10" fill="#fff" stroke="${C.teal}" stroke-width="1.5"/>`);
+      b.push(`<circle cx="${x + 15}" cy="${boxY + 15}" r="9" fill="${C.teal}"/>`, label(x + 15, boxY + 18.5, String(i + 1), '#fff', 8));
+      b.push(centredLines(x + boxW / 2, midY + 5, s, C.ink, String(s).length > 15 ? 9 : 11));
+      if (values && values[i] !== undefined)
+        b.push(`<rect x="${x + 6}" y="${boxY + boxH + 8}" width="${boxW - 12}" height="20" rx="10" fill="#e4f3ef"/>`,
+          label(x + boxW / 2, boxY + boxH + 22, String(values[i]), C.teal, String(values[i]).length > 12 ? 8 : 9));
     });
-    const last = x0 + stages.length * (boxW + gap);
-    b.push(`<circle cx="${last + 4}" cy="52" r="19" fill="${C.teal}"/>`, label(last + 4, 57, String(values?.at(-1) ?? ''), '#fff', 13));
-    return svg(w, 92, b.join(''));
+    b.push(label(w - pad, 23, 'PROCESS → RESULT', C.mute, 8, 'end'));
+    return svg(w, h, b.join(''));
   },
 
   // The rule written with a blank, so substitution is a physical act.
@@ -928,6 +955,33 @@ const coverMark = () => {
     aria-label="The emblem of this book: a curve with four secant lines drawn from one fixed point, each closer than the last, settling on a dashed tangent line at that point.">${b.join('')}</svg>`;
 };
 
+// The Data Science series begins before charts or models. Its cover therefore
+// shows the more fundamental move: an event becomes a record, records become a
+// table, and a documented table can support a decision. The drawing is fixed
+// geometry generated with the book, not an imported or decorative asset.
+const dataCoverMark = () => {
+  const boxes = [
+    ['EVENT', 'a sale happens'],
+    ['RECORD', 'facts are captured'],
+    ['TABLE', 'records stay organised'],
+    ['DECISION', 'evidence is used']
+  ];
+  const body = boxes.map(([title, note], i) => {
+    const x = 16 + i * 70;
+    const arrow = i < boxes.length - 1
+      ? `<path d="M${x + 54} 74 h12" stroke="#e0813a" stroke-width="1.6" marker-end="url(#data-arrow)"/>`
+      : '';
+    return `<g><rect x="${x}" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/>`
+      + `<text x="${x + 27}" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">${title}</text>`
+      + `<text x="${x + 27}" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">${note.split(' ')[0]}</text>`
+      + `<text x="${x + 27}" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">${note.split(' ').slice(1).join(' ')}</text>${arrow}</g>`;
+  }).join('');
+  return `<svg class="cover-mark" viewBox="0 0 300 150" width="300" height="150" role="img"
+    aria-label="A data flow: a sale event becomes a record, records form a table, and the table supports a decision.">
+    <defs><marker id="data-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#e0813a"/></marker></defs>
+    <rect x="6" y="20" width="288" height="108" rx="12" fill="#132234" stroke="#22384f"/>${body}</svg>`;
+};
+
 const chapterHTML = (ch, i) => {
   const prac = ch.practice || [];
   const lvl = [...new Set(prac.map(p => p.level).filter(Boolean))];
@@ -1093,6 +1147,7 @@ const page = (meta, chapters) => `<!doctype html>
   /* This page commits to one world on purpose: it is a printed book, laid out
      for A4, and it carries its own ground rather than borrowing the viewer's.
      Hence no dark palette, and an explicit background here. */
+  html, body { overflow-x:hidden; }
   body { margin:0; background:#fff; color:var(--ink); font:16.5px/1.66 var(--serif); }
   .skip { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);
           white-space:nowrap; background:var(--ink); color:#fff; z-index:10;
@@ -1356,7 +1411,7 @@ const page = (meta, chapters) => `<!doctype html>
         .map(([n, l]) => `<div><dt>${n}</dt><dd>${esc(l)}</dd></div>`).join('')}
     </dl>
   </div>
-  ${coverMark()}
+  ${meta.cover === 'data' ? dataCoverMark() : coverMark()}
   <div class="stamp"><b>${esc(meta.status)}</b>${esc(meta.note)}</div>
 </header>
 <a class="skip" href="#contents">Skip to contents</a>

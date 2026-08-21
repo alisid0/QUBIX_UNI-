@@ -298,6 +298,42 @@ export const sources = {
     ref: 'Hardy, A Course of Pure Mathematics, 3rd ed., §26, printed pages 49–50',
     quote: 'It would be natural to denote by √x, where x is any positive number, the positive square root of x, in which case y = √x would be a one-valued function of x. It is however often more convenient to regard √x as standing for the two-valued function whose two values are the positive and negative square roots of x.'
   },
+  // Statistics. Lane et al., Introduction to Statistics (Online Edition),
+  // 2022. The authors released the work worldwide into the public domain. The
+  // exact source page is:
+  // https://en.wikisource.org/wiki/Introduction_to_Statistics_(Online_Edition)/Introduction/Variables
+  //
+  // STAT-DATA-001 paraphrases these definitions. Its example dataset and every
+  // interaction are original to Qubix; no example or illustration is copied.
+  STAT1: {
+    ref: 'Lane et al., Introduction to Statistics (Online Edition), Introduction / Variables (2022), “Independent and dependent variables”',
+    quote: 'Variables are properties or characteristics of some event, object, or person that can take on different values or amounts.'
+  },
+  STAT2: {
+    ref: 'Lane et al., Introduction to Statistics (Online Edition), Introduction / Variables (2022), “Qualitative and Quantitative Variables”',
+    quote: 'Qualitative variables are those that express a qualitative attribute. Quantitative variables are those variables that are measured in terms of numbers.'
+  },
+  // Wikipedia is a secondary navigation and explanation source, not the sole
+  // authority for a board. These entries pin the exact revisions inspected and
+  // expose the licence, source link and change notice in the Factory. Qubix's
+  // examples, sequencing and interaction designs are original. Short excerpts
+  // are reproduced under CC BY-SA 4.0; no Wikipedia image or diagram is copied.
+  WIKI_OBS: {
+    ref: 'Wikipedia contributors, “Unit of observation”, English Wikipedia, revision 1365392581, accessed 2026-08-21',
+    quote: 'A data point or observation is a set of one or more measurements on a single member of the unit of observation.',
+    url: 'https://en.wikipedia.org/w/index.php?title=Unit_of_observation&oldid=1365392581',
+    license: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    changes: 'Excerpt retained; Qubix explanations and fictional examples are newly written and substantially expanded.'
+  },
+  WIKI_DATA: {
+    ref: 'Wikipedia contributors, “Data set”, English Wikipedia, revision 1327891150, accessed 2026-08-21',
+    quote: 'Every column of a table represents a particular variable, and each row corresponds to a given record.',
+    url: 'https://en.wikipedia.org/w/index.php?title=Data_set&oldid=1327891150',
+    license: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    changes: 'Excerpt shortened; Qubix explanations, dataset, examples and interactions are newly written and substantially expanded.'
+  },
   T17: {
     ref: 'Thompson, Calculus Made Easy, ch. XI, printed page 93',
     quote: 'One of the principal uses of the process of differentiating is to find out under what conditions the value of the thing differentiated becomes a maximum, or a minimum. This is often exceedingly important in engineering questions, where it is most desirable to know what conditions will make the cost of working a minimum, or will make the efficiency a maximum.'

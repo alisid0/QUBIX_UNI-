@@ -17,6 +17,11 @@ boards. A product or store release never changes a board's curriculum status.
 - Product type: general interactive learning for curious people, including but
   not limited to students
 - Initial subjects: **Maths** and **Physics**, kept as separate subject areas
+- Core learning destination: **Data Science, Statistics, Probability, Machine
+  Learning and Artificial Intelligence**, supported by the existing Maths
+  foundations; Physics may remain as an applied modelling pathway
+- Next curriculum priority after the algebra/functions foundation: **Statistics
+  and Probability**, beginning with observations and variables
 - Product is not a school, examination board, qualification provider, prescribed
   syllabus or homework-answer service
 - Market reference: an affordable alternative in the interactive-learning space
@@ -26,9 +31,11 @@ boards. A product or store release never changes a board's curriculum status.
   the complete product offered through **Qubix Plus**
 - Advertising: none at launch
 
-Proposed public promise:
+Proposed public promise, to be revisited for the new direction:
 
 > Understand Maths and Physics through visual, interactive learning.
+
+> Build real understanding from data and probability to machine learning and AI.
 
 Proposed campaign line:
 
@@ -78,6 +85,12 @@ Keep the existing web-first stack:
 
 Do not rewrite the product in Flutter or separate native applications without a
 measured limitation that Capacitor cannot solve.
+
+The first Data Science Wiki information architecture is available locally at
+`?mode=wiki`. It is a static, searchable view of the 17-phase learning path,
+379-topic catalogue, Superstore data world and reference shelf. It does not
+change any board status, and it must receive founder review before replacing the
+current public home page or being deployed.
 
 ## 4. Content delivery without app updates
 
