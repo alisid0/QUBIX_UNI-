@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Coordinate Geometry, Tier 0 (BB1-BB17)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="quiz-style.css">
+</head>
+<body>
+<main>
+  <h1>Quick Quiz — Tier 0 complete</h1>
+  <div class="sub">BB1 to BB17, the plane itself · 17 questions · values reroll on every "try again"</div>
+  <div id="progressWrap"><div id="progressBar"></div></div>
+  <div id="quizArea"></div>
+  <div class="result-card" id="resultCard">
+    <h2>Done</h2>
+    <div class="score" id="resultCardScore"></div>
+    <p id="resultCardSub"></p>
+    <button class="restartBtn" id="resultCardRestart">Try again (new values)</button>
+  </div>
+</main>
+
+<script src="paths-manifest.js"></script>
+<script src="progress-store.js"></script>
+<script src="quiz-engine.js"></script>
+<script>
+const QUESTION_DEFS = [
+
+  {cg:"CG1", type:"mcq", generate: () => ({
+    q:"Which statement is true about a number line?",
+    opts:["It only contains whole numbers","Every point on it corresponds to exactly one real number","It only goes in one direction","It starts at 1"], answer:1,
+    explain:"A number line matches every point to exactly one real number, in order, extending infinitely both ways."
+  })},
+
+  {cg:"CG2", type:"mcq", generate: () => ({
+    q:"Zero on the number line is best described as:",
+    opts:["The starting point — nothing exists before it","The fixed reference point all distances and signs are measured from","The biggest number","An optional marker"], answer:1,
+    explain:"Zero isn't an edge or a start — it's the fixed point everything else is measured against."
+  })},
+
+  {cg:"CG3", type:"mcq", generate: () => ({
+    q:"Why is \"right of zero = positive\" the rule we use?",
+    opts:["It's a law of mathematics that can never change","It's a convention everyone agreed on, not a necessity","Negative numbers aren't real","Computers require it"], answer:1,
+    explain:"Right = positive is a convention. Nothing stops you flipping it, except that everyone already agreed not to."
+  })},
+
+  {cg:"CG4", type:"mcq", generate: () => {
+    const a = QuizEngine.randInt(-6,6), b = a+1;
+    return {
+      q:`How many numbers exist strictly between ${a} and ${b} on the number line?`,
+      opts:["0","Exactly 1","10","Infinitely many"], answer:3,
+      explain:"However finely you slice the gap between any two numbers, there's always another number living there."
+    };
+  }},
+
+  {cg:"CG5", type:"mcq", generate: () => {
+    let x = -QuizEngine.randInt(1,9), y = -QuizEngine.randInt(1,9);
+    while(y===x) y = -QuizEngine.randInt(1,9);
+    const bigger = Math.max(x,y);
+    return {
+      q:`Which is bigger: ${x} or ${y}?`,
+      opts:[String(x), String(y), "They're equal", "Cannot be determined"],
+      answer: bigger===x?0:1,
+      explain:`${bigger} sits further right on the line than ${Math.min(x,y)}, so ${bigger} is bigger — sign and digit size don't matter, only position.`
+    };
+  }},
+
+  {cg:"CG6", type:"numeric", generate: () => {
+    const a = QuizEngine.randInt(-5,10), span = QuizEngine.randInt(3,12), b = a+span;
+    return {
+      q:`What is the distance between ${a} and ${b} on the number line?`,
+      answer: span,
+      explain:`Distance is |a − b| = |${a} − ${b}| = ${span}.`
+    };
+  }},
+
+  {cg:"CG7", type:"numeric", generate: () => {
+    const a = QuizEngine.randInt(-10,10), b = a + QuizEngine.randInt(2,16);
+    const mid = (a+b)/2;
+    return {
+      q:`What is the midpoint of ${a} and ${b}?`,
+      answer: mid,
+      explain:`Midpoint = (${a} + ${b}) / 2 = ${mid}.`
+    };
+  }},
+
+  {cg:"CG8", type:"mcq", generate: () => ({
+    q:"Why can't one number line pinpoint a single seat in a theatre?",
+    opts:["Number lines can't handle big numbers","You need two independent pieces of information at once (row and seat)","Theatres are three-dimensional","Seats aren't numbers"], answer:1,
+    explain:"One line only describes one direction. Pinpointing a seat needs two independent numbers at once — row and seat."
+  })},
+
+  {cg:"CG9", type:"mcq", generate: () => ({
+    q:"Which axis is conventionally the horizontal, \"input\" axis?",
+    opts:["The y-axis","The x-axis"], answer:1,
+    explain:"x is horizontal and conventionally the input — you choose x first, then y comes out, as in y = f(x)."
+  })},
+
+  {cg:"CG10", type:"mcq", generate: () => ({
+    q:"What are the coordinates of the origin?",
+    opts:["(1, 1)","(0, 0)","(x, y)","It has no fixed coordinates"], answer:1,
+    explain:"The origin is where both axes' zeros line up — (0, 0)."
+  })},
+
+  {cg:"CG11", type:"mcq", generate: () => {
+    const x = QuizEngine.randInt(2,8), y = QuizEngine.randInt(2,8);
+    return {
+      q:`To plot the point (${x}, ${y}), what's the first move?`,
+      opts:[`Move up ${y} from the origin`, `Move right ${x} along the x-axis`, `Move left ${x}`, `Move down ${y}`], answer:1,
+      explain:"The first number in an ordered pair is always the horizontal move along x, done first."
+    };
+  }},
+
+  {cg:"CG12", type:"mcq", generate: () => ({
+    q:"To read off a point's y-coordinate, you measure its distance from:",
+    opts:["The y-axis","The x-axis","The origin only","Quadrant I"], answer:1,
+    explain:"Distance from the x-axis gives you y; distance from the y-axis gives you x — the reverse of what you'd guess."
+  })},
+
+  {cg:"CG13", type:"mcq", generate: () => ({
+    q:"Starting at Quadrant I (top-right), which direction do you sweep to label II, III, IV?",
+    opts:["Clockwise","Anticlockwise"], answer:1,
+    explain:"The convention sweeps anticlockwise: I (top-right) → II (top-left) → III (bottom-left) → IV (bottom-right)."
+  })},
+
+  {cg:"CG14", type:"mcq", generate: () => {
+    const sx = QuizEngine.pick([1,-1]), sy = QuizEngine.pick([1,-1]);
+    const x = sx*QuizEngine.randInt(1,9), y = sy*QuizEngine.randInt(1,9);
+    const quad = sx>0 ? (sy>0?'I':'IV') : (sy>0?'II':'III');
+    const order = ["I","II","III","IV"];
+    return {
+      q:`A point at (${x}, ${y}) sits in which quadrant?`,
+      opts:order.slice(), answer:order.indexOf(quad),
+      explain:`x ${sx>0?'positive':'negative'}, y ${sy>0?'positive':'negative'} = Quadrant ${quad}.`
+    };
+  }},
+
+  {cg:"CG15", type:"numeric", generate: () => {
+    const triples = [[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[12,16,20]];
+    const t = QuizEngine.pick(triples);
+    const ox = QuizEngine.randInt(-5,5), oy = QuizEngine.randInt(-5,5);
+    return {
+      q:`What is the distance between (${ox},${oy}) and (${ox+t[0]},${oy+t[1]})?`,
+      answer: t[2],
+      explain:`distance² = ${t[0]}² + ${t[1]}² = ${t[0]*t[0]} + ${t[1]*t[1]} = ${t[2]*t[2]}, so distance = ${t[2]}. The horizontal and vertical gaps are the two legs of a right triangle; the distance is the hypotenuse.`
+    };
+  }},
+
+  {cg:"CG16", type:"mcq", generate: () => {
+    function evenPair(){ let a=QuizEngine.randInt(-8,8), b=QuizEngine.randInt(-8,8); if((a+b)%2!==0) b+=1; return [a,b]; }
+    const [x1,x2] = evenPair(), [y1,y2] = evenPair();
+    const mx=(x1+x2)/2, my=(y1+y2)/2;
+    return {
+      q:`What is the midpoint of (${x1},${y1}) and (${x2},${y2})?`,
+      opts:[`(${mx}, ${my})`, `(${my}, ${mx})`, `(${x1+x2}, ${y1+y2})`, `(${x1-x2}, ${y1-y2})`], answer:0,
+      explain:`Average each axis separately: ((${x1}+${x2})/2, (${y1}+${y2})/2) = (${mx}, ${my}).`
+    };
+  }},
+
+  {cg:"CG17", type:"mcq", generate: () => {
+    const w = QuizEngine.randInt(2,9), h = QuizEngine.randInt(2,9);
+    return {
+      q:`Four points form a shape. Two opposite sides measure ${w} and ${w}, the other two measure ${h} and ${h}, using the distance formula. What does that prove?`,
+      opts:["Nothing — you'd still need to look at it","The shape's opposite sides are equal, confirming a rectangle","The shape must be a circle","The points aren't connected"], answer:1,
+      explain:"Equal opposite-side lengths, found by calculation rather than by eye, is exactly how you prove a shape is a rectangle."
+    };
+  }},
+
+];
+
+QuizEngine.mount({
+  questionDefs: QUESTION_DEFS,
+  reviewUrl: "COORDINATE-GEOMETRY-REVIEW.html",
+  mountId: "quizArea",
+  resultId: "resultCard",
+  completeMessage: "Clean sweep. Tier 0's foundations are solid — ready for Tier 1 (Lines).",
+  partialMessage: "Solid. Worth a quick second pass on the ones you missed.",
+  weakMessage: "A few gaps worth revisiting before moving to Tier 1.",
+  onComplete: function(score, total){ ProgressStore.recordQuizResult('M3', score, total); }
+});
+</script>
+</body>
+</html>

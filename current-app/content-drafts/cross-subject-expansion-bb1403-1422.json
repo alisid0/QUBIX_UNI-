@@ -1,0 +1,604 @@
+{
+  "boards": [
+    {
+      "kicker": "BB 1403",
+      "title": "The Rule Machine",
+      "tags": {
+        "topic": "The Line",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "maths",
+        "reviewStatus": "QF",
+        "concept": "functions",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Put a number into the rule &quot;double it and add three.&quot; The rule does not care which number is chosen.</p>"
+        },
+        {
+          "content": "<p>If 2 goes in, 7 comes out. If 5 goes in, 13 comes out. Each input is handled the same way.</p>"
+        },
+        {
+          "content": "<p>A function is a rule that takes an allowed input and returns a definite output, with no guessing in between.</p>"
+        },
+        {
+          "content": "<p>The same function can be written in words, in a table, on a graph, or as a formula, depending on what is easiest to read.</p>"
+        },
+        {
+          "content": "<p>The pairing is the thing to watch: each input is sent to its own output, and that pairing is the function.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1404",
+      "title": "The Graph of a Rule",
+      "tags": {
+        "topic": "The Line",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "maths",
+        "reviewStatus": "QF",
+        "concept": "graphing-functions",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Take the rule &quot;double it and add three&quot; and try it on several input numbers, one after another, without changing the rule.</p>"
+        },
+        {
+          "content": "<p>Each input-output pair becomes a point. The input gives the x-position, and the output gives the y-position on the plane.</p>"
+        },
+        {
+          "content": "<p>When the points for 0, 1, 2, 3, and 4 are plotted, they form an ordered pattern rather than scattered marks.</p>"
+        },
+        {
+          "content": "<p>For this rule, the points fall on a straight line because the output rises by the same amount each time.</p>"
+        },
+        {
+          "content": "<p>A graph is the rule placed on the plane, where its pattern can be seen instead of only calculated from a table.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1405",
+      "title": "Slope as a Rate",
+      "tags": {
+        "topic": "The Line",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "maths",
+        "reviewStatus": "QF",
+        "concept": "slope-rate",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A ramp can rise gently or sharply, and each step covers horizontal distance while the height changes by some amount.</p>"
+        },
+        {
+          "content": "<p>On a graph, slope measures a similar comparison: how much y changes when x changes by a chosen amount along the horizontal axis.</p>"
+        },
+        {
+          "content": "<p>If x moves one step right while y rises two steps, the slope is two for that line throughout its length.</p>"
+        },
+        {
+          "content": "<p>Slope is not merely a drawing feature on the page. It is a rate of change inside the line itself.</p>"
+        },
+        {
+          "content": "<p>The same idea will later measure speed, growth, reaction rate, and other changing quantities that compare one change with another.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1406",
+      "title": "When a Line Becomes Motion",
+      "tags": {
+        "topic": "The Line",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "maths",
+        "reviewStatus": "QF",
+        "concept": "motion-graphs",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Put time along the x-axis and position along the y-axis. Now the graph can describe motion instead of only numbers.</p>"
+        },
+        {
+          "content": "<p>A flat line means the position is not changing, so the object is sitting still during that stretch of time.</p>"
+        },
+        {
+          "content": "<p>A rising straight line means the object is moving steadily away from the starting position as time passes on the graph.</p>"
+        },
+        {
+          "content": "<p>The slope of that line is the velocity, because it tells how position changes with time in each equal interval.</p>"
+        },
+        {
+          "content": "<p>A line that once described a number rule can also describe a moving object as its position changes over time.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1407",
+      "title": "The Energy Account",
+      "tags": {
+        "topic": "Energy and Momentum",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "physics",
+        "reviewStatus": "QF",
+        "concept": "energy",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Push a toy car across the floor, and the car can now do things it could not do before the push.</p>"
+        },
+        {
+          "content": "<p>It can roll into a block, climb a small ramp, or scrape along the floor until friction slows it down.</p>"
+        },
+        {
+          "content": "<p>Energy is the account used for the ability to produce motion, heat, lifting, stretching, or some other physical change in matter.</p>"
+        },
+        {
+          "content": "<p>Energy is not a liquid inside the car, but it can be transferred from one object or process to another.</p>"
+        },
+        {
+          "content": "<p>A rolling car, a warm floor, and a lifted weight can be connected by following where the energy transfers during each event.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1408",
+      "title": "Work Means Force Through Distance",
+      "tags": {
+        "topic": "Energy and Momentum",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "physics",
+        "reviewStatus": "QF",
+        "concept": "work",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Push a box across the floor. The push changes the box only while the box moves through some distance across the surface.</p>"
+        },
+        {
+          "content": "<p>A person can push against a wall and become tired, even though the wall has not moved through any measurable distance.</p>"
+        },
+        {
+          "content": "<p>In physics, work means a force acting through a distance in the same direction as the motion of the object.</p>"
+        },
+        {
+          "content": "<p>A force alone is not enough, and motion alone is not enough. The force has to act through the motion.</p>"
+        },
+        {
+          "content": "<p>In the simplest case, work is written as W = Fd: force multiplied by distance in the direction of motion on the object.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1409",
+      "title": "Momentum as Moving Mass",
+      "tags": {
+        "topic": "Energy and Momentum",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "physics",
+        "reviewStatus": "QF",
+        "concept": "momentum",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A tennis ball and a bowling ball can roll at the same speed, but stopping them requires very different pushes.</p>"
+        },
+        {
+          "content": "<p>The bowling ball carries more motion to deal with because the same speed is attached to much more mass than the tennis ball.</p>"
+        },
+        {
+          "content": "<p>Momentum is mass times velocity, so it depends on both the amount of matter and the direction of motion, not speed alone.</p>"
+        },
+        {
+          "content": "<p>Because velocity has direction, momentum has direction too. It points in the same direction as the moving object travels through space.</p>"
+        },
+        {
+          "content": "<p>Momentum becomes important in collisions, recoils, explosions, and pushes between objects that act on each other during contact or separation.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1410",
+      "title": "Stretching the Stop",
+      "tags": {
+        "topic": "Energy and Momentum",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "physics",
+        "reviewStatus": "QF",
+        "concept": "impulse",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Catching a fast ball with stiff hands can hurt because the stop happens quickly and the force becomes large on the hands.</p>"
+        },
+        {
+          "content": "<p>Moving the hands backward during the catch makes the same ball easier to handle during the stop because the stopping time increases.</p>"
+        },
+        {
+          "content": "<p>The ball&#39;s momentum still changes, but the change is spread over a longer time instead of one sudden jolt through the hands.</p>"
+        },
+        {
+          "content": "<p>Impulse is force multiplied by time, and it equals the change in momentum during a push, collision, or stop between objects.</p>"
+        },
+        {
+          "content": "<p>Gloves, airbags, mats, and crumple zones all use the same principle: stretch the stop so the force becomes smaller at impact.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1411",
+      "title": "The Reaction Recipe",
+      "tags": {
+        "topic": "The Atom",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "chemistry",
+        "reviewStatus": "QF",
+        "concept": "chemical-reactions",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Iron left outside in rain changes over time, and the shiny metal begins to rust on the surface as oxygen reacts.</p>"
+        },
+        {
+          "content": "<p>The iron has not vanished. Its atoms have joined with oxygen from the air to make a new substance on the metal.</p>"
+        },
+        {
+          "content": "<p>A chemical reaction rearranges atoms. It does not make the atoms disappear from the material world; it changes their connections.</p>"
+        },
+        {
+          "content": "<p>The starting substances are reactants. The substances formed afterward are products of the same rearrangement of atoms across the reaction.</p>"
+        },
+        {
+          "content": "<p>Chemistry keeps count of which atoms were present before and where those atoms ended up after the reaction in the products.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1412",
+      "title": "Balancing the Atoms",
+      "tags": {
+        "topic": "The Atom",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "chemistry",
+        "reviewStatus": "QF",
+        "concept": "balancing-equations",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>If a reaction begins with six carbon atoms, the products must still contain six carbon atoms afterward on the product side.</p>"
+        },
+        {
+          "content": "<p>The atoms may be rearranged into new molecules, but the count of each element is preserved through the reaction rather than destroyed.</p>"
+        },
+        {
+          "content": "<p>Balancing a chemical equation is atom bookkeeping: count before, count after, then adjust whole molecules until the counts match on both sides.</p>"
+        },
+        {
+          "content": "<p>The number of molecules can change, but the formula inside a molecule is not edited during balancing because that changes the substance.</p>"
+        },
+        {
+          "content": "<p>The equation is balanced when every element has the same count on both sides of the reaction arrow after adjustment.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1413",
+      "title": "Heat in a Reaction",
+      "tags": {
+        "topic": "The Atom",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "chemistry",
+        "reviewStatus": "QF",
+        "concept": "reaction-energy",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Strike a match, and the reaction gives off heat and light almost immediately from the flame as substances change inside the match head.</p>"
+        },
+        {
+          "content": "<p>The atoms are rearranging, and energy is being transferred to the surroundings as heat and light during the reaction in the flame.</p>"
+        },
+        {
+          "content": "<p>Some reactions release energy and warm the surroundings. Other reactions absorb energy and lower the nearby temperature during the process.</p>"
+        },
+        {
+          "content": "<p>Chemical bonds belong in the energy account, because breaking and making bonds changes stored energy in the reacting substances inside molecules.</p>"
+        },
+        {
+          "content": "<p>Chemistry tracks atoms, but it also tracks the energy moving with those atoms during a reaction as bonds change and products form.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1414",
+      "title": "Acids Give Protons",
+      "tags": {
+        "topic": "The Atom",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "chemistry",
+        "reviewStatus": "QF",
+        "concept": "acids",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Lemon juice tastes sharp because its molecules behave as acids when they dissolve and interact with water in the mouth.</p>"
+        },
+        {
+          "content": "<p>A first model of an acid is a substance that can give away hydrogen ions when dissolved in water during reactions.</p>"
+        },
+        {
+          "content": "<p>A hydrogen ion is basically a proton, so acids are often described as proton donors in many reactions in solution.</p>"
+        },
+        {
+          "content": "<p>That picture will need refining later, but it already explains many common acid reactions that happen in water as proton transfers.</p>"
+        },
+        {
+          "content": "<p>A tiny charged particle moving from one molecule to another can change the behaviour of a whole solution by shifting charge.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1415",
+      "title": "The Address Problem",
+      "tags": {
+        "topic": "The Bit",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "computing",
+        "reviewStatus": "QF",
+        "concept": "memory-addressing",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Computer memory can be pictured as a long hallway of numbered lockers, each holding a small piece of information at an address.</p>"
+        },
+        {
+          "content": "<p>To read the right locker, the computer needs an address, not a vague description of where the value might be.</p>"
+        },
+        {
+          "content": "<p>Memory works like this: stored values live in numbered places the machine can point to directly instead of searching by description.</p>"
+        },
+        {
+          "content": "<p>A program can ask for the value at an address, change it, or use the stored value in a calculation.</p>"
+        },
+        {
+          "content": "<p>Before software does anything large, the machine is already doing a lot of careful pointing between addresses and values while it runs.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1416",
+      "title": "The Stack",
+      "tags": {
+        "topic": "The Bit",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "computing",
+        "reviewStatus": "QF",
+        "concept": "stack-memory",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Stack plates in a cupboard, and the last plate placed on top is the first one removed from the pile.</p>"
+        },
+        {
+          "content": "<p>Computers use a similar idea when a program enters a function and later returns from it in the right order.</p>"
+        },
+        {
+          "content": "<p>The stack remembers short-lived information: where to return, local values, and unfinished work for the current function call inside the program.</p>"
+        },
+        {
+          "content": "<p>When the function finishes, its stack space is cleared, like removing the top plate from the pile above it during return.</p>"
+        },
+        {
+          "content": "<p>The stack lets a program enter a smaller job, finish it, and return to the larger job without losing its place.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1417",
+      "title": "Packets",
+      "tags": {
+        "topic": "Machines Talk",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "computing",
+        "reviewStatus": "QF",
+        "concept": "packets",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A long message sent across a network usually does not travel as one huge lump from start to finish across machines.</p>"
+        },
+        {
+          "content": "<p>It is broken into smaller packets, each carrying data and information about where it should go across the network toward its destination.</p>"
+        },
+        {
+          "content": "<p>Packets can travel through different routes, arrive out of order, and still be reassembled into the message at the end.</p>"
+        },
+        {
+          "content": "<p>This makes networks flexible, because one broken path does not have to stop the whole message from moving through another route.</p>"
+        },
+        {
+          "content": "<p>The internet is less like one pipe and more like a postal system for small numbered pieces moving between machines.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1418",
+      "title": "DNS",
+      "tags": {
+        "topic": "Machines Talk",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "computing",
+        "reviewStatus": "QF",
+        "concept": "dns",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A website name is easy for humans to remember, but machines need a more exact destination on the network before sending data.</p>"
+        },
+        {
+          "content": "<p>The network cannot send a request to &quot;the site I meant.&quot; It needs an address that points to a machine.</p>"
+        },
+        {
+          "content": "<p>DNS is the lookup system that turns a name like example.com into an address machines can use for routing.</p>"
+        },
+        {
+          "content": "<p>Without DNS, web addresses would work more like memorised phone numbers than human-readable names for every site on the network.</p>"
+        },
+        {
+          "content": "<p>DNS is one of the translation layers that hides the addressing system underneath ordinary website names used by machines during lookup.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1419",
+      "title": "Keeping Count",
+      "tags": {
+        "topic": "The Atom",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "chemistry",
+        "reviewStatus": "QF",
+        "concept": "conservation",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A balanced chemical equation, a momentum collision, and a computer memory address look unrelated at first because their objects differ.</p>"
+        },
+        {
+          "content": "<p>All three depend on keeping track of what goes where during a change from one state to another without losing count.</p>"
+        },
+        {
+          "content": "<p>Chemistry tracks atoms, physics tracks quantities like energy and momentum, and computing tracks values in memory as systems change over time.</p>"
+        },
+        {
+          "content": "<p>Mathematics supplies the language for that tracking: numbers, rules, graphs, and equations for comparing quantities across different systems and changes.</p>"
+        },
+        {
+          "content": "<p>The subjects separate on the surface, then meet again when the counting becomes serious across different problems, materials, and motions.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1420",
+      "title": "Rate",
+      "tags": {
+        "topic": "The Line",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "maths",
+        "reviewStatus": "QF",
+        "concept": "rates",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A slope on a graph, a car&#39;s velocity, a reaction rate, and network speed share the same mathematical skeleton despite different labels.</p>"
+        },
+        {
+          "content": "<p>Each one compares a change in something with a change in something else over the same interval of time or distance.</p>"
+        },
+        {
+          "content": "<p>Position per time gives velocity. Product formed per time gives reaction rate. Data per time gives bandwidth in a network.</p>"
+        },
+        {
+          "content": "<p>Mathematics gives the reusable pattern, and each science attaches that pattern to a different situation without changing the underlying structure.</p>"
+        },
+        {
+          "content": "<p>Rate is one of the places where the subjects use the same tool under different names across different fields and contexts.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1421",
+      "title": "Following Energy",
+      "tags": {
+        "topic": "Energy and Momentum",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "physics",
+        "reviewStatus": "QF",
+        "concept": "energy-transfer",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A falling ball, a burning match, and a glowing screen all ask the same question about energy during change across different processes.</p>"
+        },
+        {
+          "content": "<p>The central question is where the energy came from, where it went, and what changed while it moved between forms.</p>"
+        },
+        {
+          "content": "<p>In physics, energy changes between height, motion, heat, sound, and other forms during events such as falls, collisions, and heating.</p>"
+        },
+        {
+          "content": "<p>In chemistry, energy is tied to bonds breaking and forming during reactions between atoms in molecules and materials as products form.</p>"
+        },
+        {
+          "content": "<p>In computing, electrical energy is spent moving charge through circuits and switching transistors on and off inside processors many times.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1422",
+      "title": "Reaction Rate",
+      "tags": {
+        "topic": "The Atom",
+        "ground": "g0",
+        "source": "quarter-final-cross-subject-expansion",
+        "subject": "chemistry",
+        "reviewStatus": "QF",
+        "concept": "reaction-rate",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Drop an effervescent tablet into cold water, and the bubbles appear slowly at first around the tablet as gas forms.</p>"
+        },
+        {
+          "content": "<p>Drop the same kind of tablet into warm water, and the fizz usually becomes faster almost immediately as particle motion increases.</p>"
+        },
+        {
+          "content": "<p>The reaction is similar, but the speed of the reaction has changed because the conditions changed inside the water around the tablet.</p>"
+        },
+        {
+          "content": "<p>A reaction rate measures how quickly reactants turn into products during a chemical change over a measured time in a system.</p>"
+        },
+        {
+          "content": "<p>Chemistry often asks what will form, and also how fast that product will form under the chosen conditions during a reaction.</p>"
+        }
+      ]
+    }
+  ]
+}

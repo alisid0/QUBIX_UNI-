@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>QUBIX | Modern learning</title><style>html,body{margin:0;background:#09131d;overflow:hidden}canvas{display:block;width:960px;height:540px}</style></head>
+<body>
+  <video id="product" src="./latest-physics-interactions.webm" muted playsinline preload="auto" hidden></video>
+  <div hidden id="classroom-frames">
+    <img src="./classroom-frames/frame-01.png" alt=""><img src="./classroom-frames/frame-02.png" alt="">
+    <img src="./classroom-frames/frame-03.png" alt=""><img src="./classroom-frames/frame-04.png" alt="">
+    <img src="./classroom-frames/frame-05.png" alt=""><img src="./classroom-frames/frame-06.png" alt="">
+    <img src="./classroom-frames/frame-07.png" alt=""><img src="./classroom-frames/frame-08.png" alt="">
+  </div>
+  <canvas id="film" width="1920" height="1080"></canvas>
+  <script type="module">
+    const W=1920,H=1080,FPS=30,DURATION=40,canvas=document.querySelector('#film'),ctx=canvas.getContext('2d'),product=document.querySelector('#product'),classrooms=[...document.querySelectorAll('#classroom-frames img')];
+    await new Promise(r=>{if(product.readyState>=3)r();else product.oncanplay=r});
+    await Promise.all(classrooms.map(img=>new Promise(r=>{if(img.complete)r();else img.onload=r})));
+    const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),smooth=v=>{v=clamp(v);return v*v*(3-2*v)},ease=v=>1-Math.pow(1-clamp(v),3);
+    const phase=(t,s,e,f=.5)=>smooth((t-s)/f)*smooth((e-t)/f);
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+    function text(v,x,y,size,weight=700,color='#faf6ee',align='left',alpha=1){ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;ctx.font=`${weight} ${size}px Arial,sans-serif`;ctx.textAlign=align;ctx.textBaseline='alphabetic';ctx.fillText(v,x,y);ctx.restore()}
+    function background(t){const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#091622');g.addColorStop(.55,'#10302f');g.addColorStop(1,'#0a111b');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);const glow=ctx.createRadialGradient(1520,230,20,1520,230,750);glow.addColorStop(0,'rgba(239,119,51,.18)');glow.addColorStop(1,'rgba(239,119,51,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);for(let i=0;i<22;i++){ctx.fillStyle=`rgba(245,142,78,${.016+.012*Math.sin(t*.7+i)})`;ctx.beginPath();ctx.arc((i*211+t*9)%2020-50,70+(i*269)%960,2+i%3,0,Math.PI*2);ctx.fill()}}
+    function brand(a=1){text('QUBIX',86,91,35,900,'#f17d38','left',a);text('UNIVERSITY',230,91,18,800,'#d7e1de','left',a*.86);ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#f17d38';ctx.fillRect(86,108,56,4);ctx.restore()}
+    function classroomScene(a,t){
+      // Keep the opening perfectly stable and draw at an exact 2x scale. Fractional
+      // camera movement softens pixel art and frame switching reads as blur.
+      const classroom=t<3.2?classrooms[0]:classrooms[Math.floor((t-3.2)*1.35)%classrooms.length];
+      ctx.save();ctx.globalAlpha=a;ctx.imageSmoothingEnabled=false;ctx.drawImage(classroom,0,0,W,H);
+      const shade=ctx.createLinearGradient(0,0,1150,0);shade.addColorStop(0,'rgba(5,16,25,.9)');shade.addColorStop(.58,'rgba(5,16,25,.42)');shade.addColorStop(1,'rgba(5,16,25,0)');ctx.fillStyle=shade;ctx.fillRect(0,0,W,H);
+      const vignette=ctx.createRadialGradient(W*.55,H*.46,280,W*.55,H*.46,1120);vignette.addColorStop(.55,'rgba(0,0,0,0)');vignette.addColorStop(1,'rgba(0,0,0,.42)');ctx.fillStyle=vignette;ctx.fillRect(0,0,W,H);
+      for(let i=0;i<34;i++){const x=(i*83+t*54)%520-30,y=150+(i*137+t*126)%490;ctx.fillStyle='rgba(183,219,229,.24)';ctx.fillRect(Math.round(x),Math.round(y),2,10+(i%3)*5)}
+      ctx.fillStyle=`rgba(255,244,210,${.018+.015*Math.max(0,Math.sin(t*8.7))})`;ctx.fillRect(720,28,1080,170);
+      for(let y=0;y<H;y+=8){ctx.fillStyle='rgba(2,9,14,.035)';ctx.fillRect(0,y,W,2)}
+      ctx.restore();
+    }
+    function pill(label,x,y,w,a,accent=false){ctx.save();ctx.globalAlpha=a;rr(x,y,w,66,33);ctx.fillStyle=accent?'#f17d38':'rgba(244,247,243,.09)';ctx.strokeStyle=accent?'#f17d38':'rgba(220,232,227,.18)';ctx.lineWidth=2;ctx.fill();ctx.stroke();text(label,x+w/2,y+43,20,850,accent?'#fffaf3':'#dce7e3','center',a);ctx.restore()}
+    function headline(kicker,l1,l2,sub,a,y=332){text(kicker.toUpperCase(),86,y,22,900,'#f17d38','left',a);text(l1,86,y+94,72,900,'#fbf8f0','left',a);if(l2)text(l2,86,y+177,72,900,'#fbf8f0','left',a);text(sub,88,y+(l2?248:165),28,600,'#b9c9c4','left',a)}
+    function paragraph(lines,x,y,size,a,leading=50,color='#fbf8f0',weight=800){lines.forEach((line,i)=>text(line,x,y+i*leading,size,weight,color,'left',a))}
+    function phone(a=1,scale=1){const w=500,h=978,x=1242+(1-scale)*250,y=46+(1-scale)*490;ctx.save();ctx.globalAlpha=a;ctx.translate(x+w/2,y+h/2);ctx.scale(scale,scale);ctx.translate(-x-w/2,-y-h/2);ctx.shadowColor='rgba(0,0,0,.56)';ctx.shadowBlur=58;ctx.shadowOffsetY=26;rr(x-16,y-16,w+32,h+32,60);ctx.fillStyle='#101419';ctx.fill();ctx.shadowColor='transparent';rr(x,y,w,h,45);ctx.clip();ctx.drawImage(product,x,y,w,h);ctx.restore()}
+    function passiveCard(a,t){const x=1160,y=190,w=610,h=690;ctx.save();ctx.globalAlpha=a;ctx.translate(x+w/2,y+h/2);ctx.rotate(.012);ctx.translate(-x-w/2,-y-h/2);ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=45;ctx.shadowOffsetY=18;rr(x,y,w,h,26);ctx.fillStyle='#f2eee5';ctx.fill();ctx.shadowColor='transparent';text('CHAPTER 7',x+48,y+72,18,900,'#aa5938','left',a);text('Force and acceleration',x+48,y+122,34,850,'#28251f','left',a);for(let i=0;i<16;i++){ctx.fillStyle=i===4?'rgba(179,91,52,.22)':'rgba(67,62,54,.16)';rr(x+48,y+166+i*26,490-(i%3)*34,10,5);ctx.fill()}text('READ. REPEAT. REMEMBER.',x+48,y+630,20,900,'#766d60','left',a);ctx.strokeStyle='#d66b39';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x+42,y+642);ctx.lineTo(x+480*ease((t-5)/1.4),y+613);ctx.stroke();ctx.restore()}
+    function recallLoop(a,t){const cx=1428,cy=520,r=230,nodes=[['DO',-90],['CHECK',30],['RECALL',150]];ctx.save();ctx.globalAlpha=a;ctx.strokeStyle='rgba(241,125,56,.65)';ctx.lineWidth=6;ctx.setLineDash([16,14]);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);for(const [label,deg] of nodes){const q=(deg+t*4)*Math.PI/180,x=cx+Math.cos(q)*r,y=cy+Math.sin(q)*r;ctx.beginPath();ctx.arc(x,y,76,0,Math.PI*2);ctx.fillStyle=label==='RECALL'?'#f17d38':'#f2efe7';ctx.fill();text(label,x,y+9,22,900,label==='RECALL'?'#fffaf3':'#2b2924','center',a)}text('UNDERSTANDING',cx,cy+10,25,900,'#f8f5ed','center',a);text('gets stronger each time around',cx,cy+48,19,650,'#a9bbb5','center',a);ctx.restore()}
+    function draw(t){
+      background(t);classroomScene(smooth((10.1-t)/.7),t);brand(phase(t,0,39.6,.5));
+      let a=phase(t,0,5.2,.55);if(a){text('ONE PACE DOES NOT WORK FOR EVERYONE',86,295,22,900,'#f17d38','left',a);paragraph(['School teaches every student','at the same pace.'],86,390,62,a,74);text('Keeping up and understanding everything is not easy for everyone.',88,580,27,650,'#c1d0cb','left',a)}
+      a=phase(t,4.7,10.1,.55);if(a){text('WHY I AM MAKING QUBIX',86,285,22,900,'#f17d38','left',a);paragraph(["I'm making a learning system app",'that makes difficult concepts','easier to understand.'],86,375,54,a,66);text('Especially for a generation living with short attention spans.',88,610,25,650,'#c1d0cb','left',a)}
+      a=phase(t,9.6,15.1,.55);if(a){headline('How QUBIX works','Break difficult ideas','into smaller parts.','One concept at a time.',a,278);phone(a)}
+      a=phase(t,14.6,21.1,.55);if(a){headline('Learn by doing','Change something.','See what happens.','Start to understand why.',a,278);phone(a)}
+      a=phase(t,20.6,27.1,.55);if(a){headline('AI can handle repetitive work','Understanding','the basics matters.','Now more than ever.',a,278);phone(a)}
+      a=phase(t,26.6,36.8,.55);if(a){headline('Try it for yourself','Test an idea.','Get feedback.','Work through concepts at your own pace.',a,278);phone(a)}
+      a=phase(t,36.3,40.2,.55);if(a){text('AN ENGAGED LEARNING PLATFORM.',86,345,57,900,'#fbf8f0','left',a);text('BUILT FOR SHORT ATTENTION SPANS.',86,415,51,900,'#f17d38','left',a);text('Understand the basics. Think clearly. Create what comes next.',88,486,25,650,'#c1d0cb','left',a);ctx.save();ctx.globalAlpha=a;rr(86,570,355,78,20);ctx.fillStyle='#f17d38';ctx.fill();text('TRY THE BETA',263,621,24,900,'#fffaf3','center',a);ctx.restore();text('More lessons will be added based on your feedback.',88,700,22,650,'#aebfba','left',a);text('qubix.university',88,748,24,850,'#fbf8f0','left',a);ctx.save();ctx.globalAlpha=a;rr(1250,250,440,520,38);ctx.fillStyle='#f1eee6';ctx.fill();ctx.restore();text('QUBIX',1470,405,72,900,'#ad5936','center',a);text('UNIVERSITY',1470,451,24,800,'#74695c','center',a);text('Engaged learning.',1470,557,34,850,'#28241f','center',a);text('Built for now.',1470,603,34,850,'#ad5936','center',a)}
+      text('Mathematics · Physics · Interactive practice',86,1012,18,650,'#78918a','left',phase(t,0,39.8,.5));
+    }
+    function effects(){const ac=new AudioContext({sampleRate:48000}),dest=ac.createMediaStreamDestination(),master=ac.createGain();master.gain.value=.12;master.connect(dest);for(const second of [12.4,15.8,18.3,21.5,24.2,27.8,30.2]){const when=ac.currentTime+second,osc=ac.createOscillator(),gain=ac.createGain();osc.type='sine';osc.frequency.setValueAtTime(520,when);osc.frequency.exponentialRampToValueAtTime(260,when+.055);gain.gain.setValueAtTime(0,when);gain.gain.linearRampToValueAtTime(.16,when+.006);gain.gain.exponentialRampToValueAtTime(.0001,when+.075);osc.connect(gain);gain.connect(master);osc.start(when);osc.stop(when+.08)}return{ac,dest}}
+    window.renderFilm=async()=>{product.currentTime=0;product.pause();const {ac,dest}=effects(),stream=new MediaStream([...canvas.captureStream(FPS).getVideoTracks(),...dest.stream.getAudioTracks()]),type=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(MediaRecorder.isTypeSupported),rec=new MediaRecorder(stream,{mimeType:type,videoBitsPerSecond:10500000,audioBitsPerSecond:96000}),chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};const stopped=new Promise(r=>rec.onstop=r),start=performance.now();rec.start(1000);setTimeout(()=>product.play(),9000);await new Promise(resolve=>{function frame(now){const t=Math.min(DURATION,(now-start)/1000);draw(t);if(t<DURATION)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});rec.stop();await stopped;product.pause();await ac.close();const blob=new Blob(chunks,{type}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='qubix-modern-learning-physics-16x9.webm';document.body.append(link);link.click();link.remove();return{type,size:blob.size}};
+    draw(0);window.filmReady=true;
+  </script>
+</body></html>

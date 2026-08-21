@@ -1,0 +1,42 @@
+/* ============================================================
+   Strata — Design tokens (CSS custom properties)
+   Chalk on a dark green chalkboard, wooden frame.
+   ============================================================ */
+:root {
+  /* Board (card backgrounds, by depth — warmer/older as you descend) */
+  --board-1: #1f3b30;   /* surface, fresh green slate (depth 0) */
+  --board-2: #24463a;   /* (depth 1) */
+  --board-3: #2c2f2a;   /* older, greyer board (depth 2) */
+  --board-4: #262422;   /* near-black slate, bedrock (depth 3+) */
+
+  /* Page background */
+  --bg-1: #152a22;
+
+  /* Frame */
+  --frame: #5a4632;        /* wooden chalk-tray brown (slab border) */
+  --frame-dark: #3f3022;   /* inner frame line */
+
+  /* Chalk (text & strokes) */
+  --chalk: #f4f1e9;        /* main chalk white (warm) */
+  --chalk-dim: #c7ccc0;    /* faded chalk (secondary text) */
+  --chalk-faint: #8fa093;  /* faintest chalk (lines, ladder, borders) */
+  --chalk-yellow: #f2d585; /* yellow chalk — primary emphasis / key terms */
+  --chalk-green: #a9d6a0;  /* pale green chalk — secondary emphasis / labels */
+  --chalk-blue: #9ec6d8;   /* pale blue chalk — occasional accent */
+
+  /* Hairline dividers */
+  --line: rgba(244, 241, 233, 0.16);
+
+  /* Fonts */
+  --hand-display: 'Architects Daughter', 'Kalam', cursive;
+  --hand: 'Kalam', 'Comic Sans MS', cursive;
+  --print: 'Patrick Hand', 'Kalam', cursive;
+  --sans: 'Nunito Sans', 'Helvetica Neue', system-ui, sans-serif;
+
+  /* Spacing */
+  --tap-target: 44px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+}

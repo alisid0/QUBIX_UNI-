@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#061126" />
+    <title>QUBIX Cube Mascot Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/node_modules/three/build/three.module.js",
+          "three/addons/": "/node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header class="app-bar">
+      <a class="app-brand" href="/" aria-label="QUBIX home">
+        <span class="brand-cube" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span><strong>QUBIX</strong><small>Creator tools</small></span>
+      </a>
+      <span class="local-badge"><i></i> Local studio</span>
+    </header>
+
+    <main class="studio">
+      <section class="preview-panel">
+        <div class="stage-shell" id="stage-shell">
+          <canvas id="mascot-canvas" aria-label="Animated QUBIX cube mascot"></canvas>
+          <div class="stage-topline" aria-hidden="true">
+            <span><i></i> Live preview</span>
+            <span>9:16</span>
+          </div>
+          <div class="safe-zone" aria-hidden="true"></div>
+          <div class="stage-footer" aria-hidden="true">
+            <span id="stage-animation">Idle</span>
+            <span>540 × 960</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="controls-panel">
+        <p class="eyebrow">QUBIX SHORTS · MASCOT</p>
+        <h1>Motion studio</h1>
+        <p class="intro">Direct the cube, tune the scene, then export one clean animation loop. Pixel character, production-sharp output.</p>
+        <div class="feature-strip" aria-label="Studio capabilities">
+          <span><i class="eye-dot" aria-hidden="true"></i> Pointer-responsive eyes</span>
+          <span><i class="pixel-dot" aria-hidden="true"></i> Sharp-pixel render</span>
+        </div>
+
+        <section class="control-card" aria-labelledby="animation-label">
+          <div class="section-heading">
+            <div>
+              <span class="label" id="animation-label">Animation</span>
+              <span class="section-note">Choose a reusable reaction</span>
+            </div>
+            <span class="count-badge">13 states</span>
+          </div>
+          <div class="animation-grid" id="animation-grid">
+            <button class="active" data-animation="idle"><kbd>1</kbd><span>Idle</span></button>
+            <button data-animation="curious"><kbd>2</kbd><span>Curious</span></button>
+            <button data-animation="face-front"><kbd>F</kbd><span>Front view</span></button>
+            <button data-animation="face-right"><kbd>R</kbd><span>Turn right</span></button>
+            <button data-animation="face-left"><kbd>L</kbd><span>Turn left</span></button>
+            <button data-animation="think"><kbd>3</kbd><span>Think</span></button>
+            <button data-animation="surprise"><kbd>4</kbd><span>Surprise</span></button>
+            <button data-animation="celebrate"><kbd>5</kbd><span>Celebrate</span></button>
+            <button data-animation="error"><kbd>6</kbd><span>Error</span></button>
+            <button data-animation="point-left"><kbd>7</kbd><span>Point left</span></button>
+            <button data-animation="point-right"><kbd>8</kbd><span>Point right</span></button>
+            <button data-animation="press"><kbd>9</kbd><span>Press</span></button>
+            <button data-animation="transition"><kbd>0</kbd><span>Transition</span></button>
+          </div>
+        </section>
+
+        <section class="control-card compact-card" aria-label="Scene controls">
+          <div class="control-row">
+            <label>
+              <span class="label">Background</span>
+              <select id="background-select">
+                <option value="navy">QUBIX navy</option>
+                <option value="cream">Warm cream</option>
+                <option value="transparent">Transparent</option>
+              </select>
+            </label>
+            <label>
+              <span class="label">Speed</span>
+              <select id="speed-select">
+                <option value="0.75">Gentle · 0.75×</option>
+                <option value="1" selected>Normal · 1×</option>
+                <option value="1.35">Fast · 1.35×</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="toggle-row">
+            <span>
+              <strong>Shorts safe area</strong>
+              <small>Show title and caption boundaries</small>
+            </span>
+            <input id="safe-zone-toggle" type="checkbox" />
+          </label>
+        </section>
+
+        <div class="export-row">
+          <button class="primary" id="record-button"><span>Record one loop</span><small>WEBM</small></button>
+          <button id="snapshot-button"><span>Save still</span><small>PNG</small></button>
+        </div>
+
+        <div class="status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span class="status-copy">
+            <strong id="status-text">Idle loop ready</strong>
+            <small>540 × 960 · 30 FPS · transparent-ready</small>
+          </span>
+          <span class="timeline"><i id="timeline-progress"></i></span>
+        </div>
+        <p class="hint">Shortcuts <kbd>1–9</kbd> <kbd>0</kbd> animation · <kbd>F</kbd> front · <kbd>R</kbd>/<kbd>L</kbd> turn · <kbd>S</kbd> still</p>
+      </section>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

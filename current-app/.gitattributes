@@ -1,0 +1,39 @@
+# Normalise line endings.
+#
+# The repo lives in a OneDrive-synced folder on Windows, which rewrites files to
+# CRLF. Without this, Git reports every line of every file as changed — a real
+# one-line edit arrives as a 92,000-line diff. Text files are stored LF in the
+# repository regardless of what the working tree looks like.
+
+* text=auto eol=lf
+
+# Binary assets — never touch these.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.svg  text eol=lf
+*.mp4  binary
+*.webm binary
+*.mp3  binary
+*.wav  binary
+*.woff  binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.pdf  binary
+*.zip  binary
+
+# Keep shell scripts LF even if a tool tries otherwise.
+*.sh   text eol=lf
+*.mjs  text eol=lf
+*.js   text eol=lf
+*.ts   text eol=lf
+*.sql  text eol=lf
+*.md   text eol=lf
+*.json text eol=lf
+*.svelte text eol=lf
+*.html text eol=lf
+*.css  text eol=lf

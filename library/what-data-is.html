@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What Data Is and Why People Use It</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  :root { --ink:#16283f; --teal:#12897c; --orange:#e0813a; --rose:#c0504d;
+          --paper:#faf7f0; --rule:#d8d3c7; --mute:#5d6b7d; --faint:#eae5d9;
+          /* Graphics need 3:1 and keep the identity hues above. Text needs
+             4.5:1, so anything a person reads uses these instead. */
+          --teal-text:#10796e; --orange-text:#a25d2a; --rose-text:#b84d4a;
+          /* --rule is a decorative hairline and has no contrast requirement.
+             The edge of a control does: 3:1 (WCAG 1.4.11). */
+          --edge:#918d85;
+          /* Three roles. Running text is a book and gets a serif; the apparatus
+             around it (eyebrows, table headers, figure labels, practice tags) is
+             machinery and gets the sans; formulas get the mono. All system faces,
+             so there is no webfont to fail silently behind the CSP. */
+          --serif: Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+          --sans: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+          --mono: ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace; }
+  * { box-sizing: border-box; }
+  /* This page commits to one world on purpose: it is a printed book, laid out
+     for A4, and it carries its own ground rather than borrowing the viewer's.
+     Hence no dark palette, and an explicit background here. */
+  html, body { overflow-x:hidden; }
+  body { margin:0; background:#fff; color:var(--ink); font:16.5px/1.66 var(--serif); }
+  .skip { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);
+          white-space:nowrap; background:var(--ink); color:#fff; z-index:10;
+          font-family:var(--sans); font-size:14px; border-radius:0 0 6px 0; }
+  .skip:focus { position:fixed; left:0; top:0; width:auto; height:auto; clip:auto;
+                padding:10px 16px; min-height:24px; }
+  .sheet { max-width: 41rem; margin: 0 auto; padding: 0 22px 80px; }   /* ~72 characters */
+  code, .formula { font-family: var(--mono); }
+  .kicker, .pr-head, .pr-l, .wk-h, table.data th, .fig-table th, figcaption,
+  nav.toc h2, .cover .series, .cover .stamp,
+  .cover h1, .cover h2 { font-family: var(--sans); }   /* the jacket stays as Draft 1 set it */
+  table.data, .fig-table, .gate-sum { font-variant-numeric: tabular-nums; }
+  /* Wide content scrolls inside itself so the page body never moves sideways. */
+  .tw { overflow-x: auto; margin: 16px 0; }
+  .tw table.data { margin: 0; min-width: 30rem; }
+
+  .cover { background:var(--ink); color:#fff; margin-bottom:52px; border-radius:0 0 20px 20px;
+           padding:56px 44px 48px; display:grid; gap:34px 48px; align-items:center;
+           grid-template-columns:minmax(0,1fr); max-width:1080px; margin-inline:auto; }
+  @media (min-width:820px) { .cover { grid-template-columns:minmax(0,1fr) 300px; padding:68px 56px 60px; } }
+  .cover-mark { width:100%; height:auto; max-width:320px; justify-self:center; opacity:.95; }
+  /* DOM order is already title, mark, stamp; an order override only pushed
+     the mark past the stamp on narrow screens. */
+  @media (max-width:819px) { .cover-mark { max-width:270px; justify-self:start; margin-top:4px; } }
+  .cover .series { color:#7fd3c6; font-size:11px; letter-spacing:.16em; font-weight:700; }
+  .cover h1 { font-size:clamp(34px,5.4vw,50px); line-height:1.02; margin:14px 0 18px;
+              letter-spacing:-.025em; text-wrap:balance; }
+  .cover-sub { color:#7fd3c6; font-family:var(--sans); font-weight:700; font-size:18px;
+               margin:0 0 16px; letter-spacing:.01em; }
+  .cover-blurb { color:#c2cedd; max-width:44ch; margin:0; font-size:15px; line-height:1.55; }
+  .cover-facts { display:flex; flex-wrap:wrap; gap:10px 34px; margin:30px 0 0; padding:0; }
+  .cover-facts div { margin:0; }
+  .cover-facts dt { font-family:var(--sans); font-size:25px; font-weight:700; color:#fff;
+                    line-height:1; font-variant-numeric:tabular-nums; }
+  .cover-facts dd { margin:5px 0 0; font-size:11.5px; color:#8fa2b8; letter-spacing:.04em;
+                    font-family:var(--sans); max-width:15ch; }
+  .cover .stamp { grid-column:1/-1; margin-top:6px; padding-top:20px; border-top:1px solid #2b405a;
+                  color:#93a5ba; font-size:12px; line-height:1.6; max-width:78ch; }
+  .cover .stamp b { color:#fff; display:block; margin-bottom:6px; letter-spacing:.07em; font-size:11px;
+                    font-family:var(--sans); }
+
+  .kicker { color:var(--teal-text); font-size:11px; font-weight:700; letter-spacing:.13em; margin-bottom:6px; }
+  h2 { font-size:30px; line-height:1.14; margin:0 0 14px; letter-spacing:-.018em; text-wrap:balance; }
+  h3 { text-wrap:balance; }
+  p { text-wrap:pretty; }
+  h3 { font-size:17px; color:var(--teal-text); margin:26px 0 8px; }
+  .stand { font-size:16px; color:var(--mute); margin:0 0 20px; }
+  p { margin:0 0 13px; }
+  .bullets { margin:0 0 14px; padding-left:20px; } .bullets li { margin-bottom:5px; }
+
+  .chapter { padding:44px 0 10px; border-top:1px solid var(--rule); break-before:page; }
+  .chapter > h2 + .stand { margin-bottom:26px; }
+  .chapter:first-of-type { border-top:0; break-before:auto; }
+
+  .formula { background:var(--paper); border-left:3px solid var(--teal); padding:13px 16px;
+             margin:16px 0; font-size:15px; text-align:center; border-radius:0 6px 6px 0; break-inside:avoid; }
+
+  table.data { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px; break-inside:avoid; }
+  table.data th { background:var(--ink); color:#fff; text-align:left; padding:9px 11px; font-size:11px; letter-spacing:.05em; }
+  table.data td { padding:9px 11px; border-bottom:1px solid var(--rule); vertical-align:top; }
+  table.data tbody tr:nth-child(even) { background:var(--paper); }
+  table.data td.tight { white-space:nowrap; }
+  @media (max-width:520px) { table.data td.tight { white-space:normal; } }
+  table.gate { font-size:13px; }
+  table.gate th.num, table.gate td.num { text-align:right; white-space:nowrap; }
+  table.gate td { vertical-align:middle; }
+  .g-name { display:flex; gap:9px; align-items:baseline; }
+  .g-num { flex:0 0 auto; min-width:20px; font-family:var(--sans); font-size:11px; color:var(--mute);
+           font-variant-numeric:tabular-nums; text-align:right; }
+  table.gate td.short { color:var(--orange-text); font-weight:700; }
+  .pill { display:inline-block; font-family:var(--sans); font-size:10.5px; letter-spacing:.06em;
+          text-transform:uppercase; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+  /* Tints chosen so the label clears 4.5:1 on them, not by eye. */
+  .pill.yes { background:#e4f3ef; color:var(--teal-text); }
+  .pill.no  { background:#fbf3eb; color:var(--orange-text); }
+  .gate-sum { background:var(--paper); padding:12px 15px; border-radius:7px; font-size:14px; }
+
+  figure { margin:20px 0; text-align:center; break-inside:avoid; }
+  figcaption { color:var(--mute); font-size:12.5px; margin-top:8px; text-align:left; }
+  .fig { max-width:100%; height:auto; }
+  .fig-row { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:20px 0; break-inside:avoid; }
+  .fig-row figure { margin:0; flex:1 1 210px; }
+  .fig-table { border-collapse:collapse; margin:0 auto; font-size:13px; }
+  .fig-table th { background:var(--ink); color:#fff; padding:7px 14px; font-size:10.5px; }
+  .fig-table td { padding:6px 14px; border-bottom:1px solid var(--rule); text-align:center; }
+
+  .callout { background:#eef6f4; border:1px solid #cfe4df; border-radius:8px; padding:14px 16px; margin:18px 0; break-inside:avoid; }
+  .callout b { display:block; margin-bottom:5px; }
+  .callout p { margin:0 0 6px; font-size:14px; } .callout p:last-child { margin:0; }
+  .callout.warn { background:#fdf3ec; border-color:#f0d5bf; }
+  .callout.warn b { color:var(--orange-text); }
+  .callout.back { background:var(--paper); border-color:var(--rule); }
+  .callout .fix { color:var(--mute); }
+
+  .worked { border:1px solid var(--rule); border-left:3px solid var(--orange); border-radius:0 8px 8px 0;
+            padding:14px 16px; margin:18px 0; background:#fffdf9; break-inside:avoid; }
+  .wk-h { color:var(--orange-text); font-size:11px; letter-spacing:.09em; text-transform:uppercase; display:block; margin-bottom:6px; }
+  .wk-q { font-weight:600; margin-bottom:9px; }
+  .wk-steps { margin:0 0 10px; padding-left:20px; font-size:14px; } .wk-steps li { margin-bottom:5px; }
+  .wk-a { margin:0; padding-top:9px; border-top:1px solid var(--rule); font-size:14px; }
+  .wk-n { margin:8px 0 0; font-size:13px; color:var(--mute); }
+  .turn { margin:11px -16px -14px; padding:10px 16px; background:var(--paper);
+          border-top:1px solid var(--rule); border-radius:0 0 8px 0; font-size:13.5px; }
+  .turn > b { color:var(--teal-text); font-family:var(--sans); font-size:11px; letter-spacing:.07em;
+              text-transform:uppercase; display:inline; margin-right:5px; }
+  .turn details { margin-top:6px; }
+  .turn summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11.5px;
+                  letter-spacing:.04em; width:max-content;
+                  display:inline-flex; align-items:center; min-height:24px; padding:2px 0; }
+  .turn summary:focus-visible { outline:2px solid var(--teal); outline-offset:3px; border-radius:3px; }
+  .turn details[open] summary { margin-bottom:4px; }
+  .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+             overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  .zoom-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+
+  /* ---- interactive labs ---- */
+  .lab-wrap { margin:20px 0; break-inside:avoid; }
+  .lab { border:1px solid var(--rule); border-radius:9px; background:var(--paper);
+         padding:13px 14px 12px; text-align:center; }
+  .lab-h { font-family:var(--sans); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+           color:var(--teal-text); margin-bottom:9px; text-align:left; }
+  .lab-stage { min-height:1px; }
+  .lab-frame { display:none; }
+  .lab-frame.on { display:block; }
+  .lab-say { font-size:13.5px; margin:8px auto 2px; max-width:46ch; min-height:2.9em; }
+  .lab-btns { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
+  .lab-b, .jd-c button { font:600 13px/1 var(--sans); min-height:24px; padding:7px 13px; border-radius:6px;
+          cursor:pointer; border:1px solid var(--edge); background:#fff; color:var(--ink); }
+  .lab-b:hover, .jd-c button:hover { border-color:var(--teal); }
+  .lab-b.on { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
+  .lab-b:focus-visible, .jd-c button:focus-visible, .lab-range:focus-visible,
+  .pr-sol summary:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+  /* 2.5.8 wants 24px of target; a bare range input renders about 16px tall.
+     The track and thumb are given explicit colours so the control has a
+     visible boundary against the panel behind it (1.4.11). */
+  .lab-range { width:min(100%,300px); height:24px; margin-top:10px; accent-color:var(--teal-text);
+               background:transparent; -webkit-appearance:none; appearance:none; }
+  .lab-range::-webkit-slider-runnable-track { height:6px; border-radius:3px;
+               background:#fff; border:1px solid var(--edge); }
+  .lab-range::-moz-range-track { height:6px; border-radius:3px; background:#fff; border:1px solid var(--edge); }
+  .lab-range::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:20px; height:20px;
+               margin-top:-8px; border-radius:50%; background:var(--teal-text); border:1px solid #fff; }
+  .lab-range::-moz-range-thumb { width:20px; height:20px; border-radius:50%;
+               background:var(--teal-text); border:1px solid #fff; }
+  .lab-hint { font-size:12.5px; color:var(--mute); margin:11px auto 0; max-width:52ch; }
+  [data-lab="judge"] .lab-hint { text-align:left; margin-left:0; padding-top:11px;
+                                  border-top:1px solid var(--rule); }
+
+  .jd { list-style:none; margin:0; padding:0; text-align:left; }
+  .jd li { display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center;
+           padding:9px 0; border-bottom:1px solid var(--rule); }
+  .jd li:last-child { border-bottom:0; }
+  .jd-t { font-size:14px; }
+  .jd-c { display:flex; gap:6px; }
+  .jd-w { grid-column:1 / -1; font-size:13px; color:var(--mute); padding:2px 0 1px; }
+  .jd li.right .jd-w { color:var(--teal-text); }
+  .jd li.wrong .jd-w { color:var(--orange-text); }
+  .jd li.right .jd-c button.picked { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
+  .jd li.wrong .jd-c button.picked { background:var(--orange-text); border-color:var(--orange-text); color:#fff; }
+  .lab-ask { font-size:13.5px; color:var(--mute); text-align:left; margin:0 0 4px; }
+  .lab-score { font-family:var(--sans); font-size:12px; color:var(--teal-text); margin:10px 0 0; text-align:left; min-height:1.2em; }
+
+  /* ---- practice solutions ---- */
+  .pr-list li { display:block; }
+  .pr-top { display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; }
+  .pr-q { min-width:0; overflow-wrap:anywhere; }
+  .pr-sol { margin-top:6px; }
+  .pr-sol summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11px;
+                    letter-spacing:.05em; text-transform:uppercase; width:max-content;
+                    display:inline-flex; align-items:center; min-height:24px; padding:2px 0; }
+  .pr-sol[open] summary { margin-bottom:6px; }
+  .pr-steps { margin:0 0 6px; padding-left:19px; font-size:13.5px; color:#33445c; }
+  .pr-steps li { display:list-item; padding:0; border:0; margin-bottom:3px; }
+  .pr-steps li::before { content:none; }
+  .pr-a { font-size:13.5px; margin:0; }
+  .pr-sol .lab-wrap, .pr-sol figure { margin:10px 0 2px; }
+  .wk-show { margin:12px 0 4px; }
+  .wk-show figure, .wk-show .lab-wrap { margin:0; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+  @media print { .turn details { display:block; } .turn summary { display:none; }
+                 .turn details::before { content:"Answer. "; font-weight:700; } }
+
+  .practice { margin:24px 0 6px; break-inside:avoid; }
+  .pr-head { background:var(--ink); color:#fff; padding:8px 13px; border-radius:7px 7px 0 0;
+             display:flex; justify-content:space-between; align-items:baseline; font-size:12px; }
+  .pr-head span { color:#9fb0c4; font-size:11px; }
+  .pr-list { margin:0; padding:4px 0 0 0; list-style:none; counter-reset:pr;
+             border:1px solid var(--rule); border-top:0; border-radius:0 0 7px 7px; }
+  .pr-list li { counter-increment:pr; padding:8px 13px 8px 40px; position:relative; font-size:14px;
+                border-bottom:1px solid var(--faint); display:flex; gap:10px; justify-content:space-between; }
+  .pr-list li:last-child { border-bottom:0; }
+  .pr-list li.pr-tier { counter-increment:none; padding:9px 13px 6px; background:var(--paper);
+                        display:flex; gap:10px; align-items:baseline; justify-content:flex-start; }
+  .pr-list li.pr-tier::before { content:none; }
+  .pr-list li.pr-tier b { font-family:var(--sans); font-size:11px; letter-spacing:.09em;
+                          text-transform:uppercase; color:var(--teal-text); }
+  .pr-list li.pr-tier span { font-size:12.5px; color:var(--mute); }
+  .pr-list li::before { content:counter(pr) "."; position:absolute; left:13px; color:var(--teal-text); font-weight:700; }
+  .pr-l { color:var(--mute); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; padding-top:3px; }
+
+  .answers .ans-ch { margin-bottom:26px; }
+  .answers h3 { margin:22px 0 10px; padding-bottom:5px; border-bottom:1px solid var(--rule); }
+  .answers h3 a { color:var(--teal-text); text-decoration:none; display:inline-block; min-height:24px; padding:2px 0; }
+  .ans { display:grid; grid-template-columns:26px 1fr; gap:0 10px; padding:9px 0;
+         border-bottom:1px solid var(--faint); break-inside:avoid; }
+  .ans:last-child { border-bottom:0; }
+  .ans-n { font-family:var(--sans); font-size:12px; font-weight:700; color:var(--teal-text);
+           text-align:right; padding-top:2px; font-variant-numeric:tabular-nums; }
+  .ans-q { font-size:13.5px; color:var(--mute); margin:0 0 4px; }
+  .ans-a { font-size:14px; margin:0; }
+  .ans.has-fig { padding-bottom:14px; }
+  .ans figure, .ans .lab-wrap { margin:11px 0 0; text-align:center; }
+  .ans figcaption { font-size:12px; }
+  .todo { color:var(--orange-text); }
+
+  nav.toc { background:var(--paper); border-radius:12px; padding:26px 28px 22px; margin-bottom:42px; }
+  nav.toc h2 { font-size:21px; margin:0 0 18px; }
+  .toc-part + .toc-part { margin-top:20px; padding-top:18px; border-top:1px solid var(--rule); }
+  .toc-h { font-family:var(--sans); font-size:10.5px; letter-spacing:.13em; text-transform:uppercase;
+           color:var(--mute); margin-bottom:9px; }
+  nav.toc ol, nav.toc ul { margin:0; padding:0; list-style:none; font-size:14.5px;
+                           columns:2; column-gap:34px; }
+  nav.toc li { margin:0; break-inside:avoid; }
+  nav.toc a { color:var(--ink); text-decoration:none; display:flex; gap:10px; align-items:baseline;
+              min-height:24px; padding:3px 0; }
+  nav.toc a:hover { color:var(--teal-text); }
+  nav.toc a:hover .toc-n { background:var(--teal-text); color:#fff; border-color:var(--teal-text); }
+  .toc-n { flex:0 0 auto; width:22px; height:22px; border-radius:5px; border:1px solid var(--rule);
+           font-family:var(--sans); font-size:11px; font-variant-numeric:tabular-nums;
+           display:inline-flex; align-items:center; justify-content:center; color:var(--mute);
+           background:#fff; }
+  .toc-back a { padding-left:32px; }
+  @media (max-width:640px) { nav.toc ol, nav.toc ul { columns:1; } }
+
+  /* Print is still a book: every disclosure opens, the controls go, and each
+     lab falls back to its first frame, which is why frame 0 is authored as the
+     one that stands alone. */
+  @media print {
+    .chapter { break-before:page; } nav.toc ol { columns:2; } a { color:inherit; }
+    .pr-sol, .turn details { display:block; }
+    .pr-sol summary { display:none; }
+    .pr-sol::before { content:"Solution."; font-family:var(--sans); font-size:11px;
+                      letter-spacing:.05em; text-transform:uppercase; color:var(--teal-text); }
+    .lab-btns, .lab-range, .lab-hint, .jd-c { display:none; }
+    .lab-frame { display:none !important; }
+    .lab-frame[data-i="0"] { display:block !important; }
+    .jd-w { display:block; color:var(--mute) !important; }
+  }
+</style></head><body>
+<header class="cover">
+  <div class="cover-body">
+    <div class="series">QUBIX UNIVERSITY · DATA SCIENCE FROM ZERO</div>
+    <h1>What Data Is and Why People Use It</h1>
+    <p class="cover-sub">Pre-Intern 001 · Data Foundations</p>
+    <p class="cover-blurb">From a Superstore sale to a recorded fact, an organised table and a defensible decision.</p>
+    <dl class="cover-facts">
+      <div><dt>1</dt><dd>chapters</dd></div><div><dt>20</dt><dd>practice items, all answered</dd></div><div><dt>18</dt><dd>figures, all computed</dd></div>
+    </dl>
+  </div>
+  <svg class="cover-mark" viewBox="0 0 300 150" width="300" height="150" role="img"
+    aria-label="A data flow: a sale event becomes a record, records form a table, and the table supports a decision.">
+    <defs><marker id="data-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#e0813a"/></marker></defs>
+    <rect x="6" y="20" width="288" height="108" rx="12" fill="#132234" stroke="#22384f"/><g><rect x="16" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="43" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">EVENT</text><text x="43" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">a</text><text x="43" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">sale happens</text><path d="M70 74 h12" stroke="#e0813a" stroke-width="1.6" marker-end="url(#data-arrow)"/></g><g><rect x="86" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="113" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">RECORD</text><text x="113" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">facts</text><text x="113" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">are captured</text><path d="M140 74 h12" stroke="#e0813a" stroke-width="1.6" marker-end="url(#data-arrow)"/></g><g><rect x="156" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="183" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">TABLE</text><text x="183" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">records</text><text x="183" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">stay organised</text><path d="M210 74 h12" stroke="#e0813a" stroke-width="1.6" marker-end="url(#data-arrow)"/></g><g><rect x="226" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="253" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">DECISION</text><text x="253" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">evidence</text><text x="253" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">is used</text></g></svg>
+  <div class="stamp"><b>SOURCE-FIRST EBOOK · AI_DRAFT</b>Founder review required. No lesson, interaction, promotion or curriculum approval is implied by this generated book.</div>
+</header>
+<a class="skip" href="#contents">Skip to contents</a>
+<main class="sheet">
+  <nav class="toc" id="contents" aria-label="Contents">
+    <h2>Contents</h2>
+    
+      <div class="toc-part">
+        <div class="toc-h">Pre-intern academy · data foundations</div>
+        <ol><li><a href="#ch1"><span class="toc-n">1</span>What data is and why people use it</a></li></ol>
+      </div>
+    <div class="toc-part">
+      <div class="toc-h">At the back</div>
+      <ul class="toc-back">
+        <li><a href="#answers">Answers, shown</a></li>
+        <li><a href="#gate">What this book still owes its reader</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+<section class="chapter" id="ch1">
+  <div class="kicker">PRE-INTERN ACADEMY · DATA FOUNDATIONS</div>
+  <h2>1. What data is and why people use it</h2>
+  <p class="stand">Data begins when something about the world is recorded so it can be examined later.</p>
+  <aside class="callout "><b>Learning objective</b><p>By the end of this book, you should be able to distinguish an event from its record, recognise several forms of data, explain why context matters, and trace recorded evidence into a decision.</p></aside>
+  <p>A customer places a carton of milk on a checkout counter. The scanner reads a product code. The checkout records a time, a branch, a quantity and a price. The sale happened in the world; the stored facts are <b>data about the sale</b>.</p>
+  <p>Data is recorded evidence. It can describe an event, object, place, process or measurement. A number can be data, but so can a word, date, image, sound or yes/no answer. What makes it useful is not its shape. It is the connection between the recorded value and what that value is meant to describe.</p>
+  <figure><svg aria-label="Two machines wired in series: record, organise then use. The input sale enters the first, the value facts passes along the wire between them, and decision leaves the second." class="fig " viewBox="0 0 460 138" width="460" height="138" role="img"><rect width="460" height="138" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="10.5" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><rect x="10.5" y="43" width="76" height="50" rx="10" fill="#fff7f0" stroke="#e0813a" stroke-width="1.5"/><text x="48.5" y="72" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="48.5" dy="0">sale</tspan></text><path d="M91.5 68 H102.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="108.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="123.5" cy="52" r="9" fill="#12897c"/><text x="123.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">1</text><text x="158" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="158" dy="0">record</tspan></text><rect x="114.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="158" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">facts</text><path d="M212.5 68 H223.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="229.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="244.5" cy="52" r="9" fill="#12897c"/><text x="244.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">2</text><text x="279" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="279" dy="0">organise</tspan></text><rect x="235.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="279" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">table</text><path d="M333.5 68 H344.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="350.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="365.5" cy="52" r="9" fill="#12897c"/><text x="365.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">3</text><text x="400" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="400" dy="0">use</tspan></text><rect x="356.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="400" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">decision</text><text x="450" y="23" text-anchor="end" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">PROCESS → RESULT</text></svg><figcaption>The central movement of the book: something happens, facts about it are recorded, records are organised, and people use the evidence.</figcaption></figure>
+  <h3>The event is not the record</h3>
+  <p>A checkout record is not the sale itself. It is a deliberately limited description of the sale. It may record the product and price but not whether the customer was in a hurry. Every record includes some facts and leaves others out.</p>
+  <aside class="callout "><b>A useful question</b><p>Whenever you meet data, ask: what happened in the world, what was recorded, who recorded it, when was it recorded, and what was left out?</p></aside>
+  <div class="tw"><table class="data"><thead><tr><th scope="col">World event</th><th scope="col">Recorded value</th><th scope="col">Meaning</th></tr></thead><tbody><tr><td>a product crosses the scanner</td><td class="tight">P-1042</td><td>the product identifier</td></tr><tr><td>the sale completes</td><td class="tight">18:42</td><td>the recorded checkout time</td></tr><tr><td>two cartons are sold</td><td class="tight">2</td><td>the recorded quantity</td></tr><tr><td class="tight">payment succeeds</td><td class="tight">card</td><td>the payment category</td></tr></tbody></table></div>
+  <div class="worked"><b class="wk-h">Worked example 1</b><p class="wk-q">A checkout receipt says product P-1042, quantity 2, time 18:42. Which part is the event and which parts are data?</p><ol class="wk-steps"><li>Identify what happened: two units of a product were purchased at a checkout.</li><li>Identify what was retained: the product identifier, quantity and recorded time.</li><li>Keep the two ideas separate. The values describe the event; they are not the physical event.</li></ol><p class="wk-a"><b>Answer.</b> The purchase is the event. P-1042, 2 and 18:42 are recorded data about it.</p><div class="wk-show"><figure><table class="fig-table"><thead><tr><th scope="col">Event</th><th scope="col">Recorded data</th></tr></thead><tbody><tr><td>two cartons are purchased</td><td>P-1042 · quantity 2 · 18:42</td></tr></tbody></table></figure></div><p class="wk-n">A record can be incomplete or wrong even when the event truly occurred.</p><div class="turn"><b>Your turn.</b> <span>A temperature sensor stores 6°C at 07:00. Name the event and the recorded data.</span><details><summary>answer</summary><span>The event is the sensor taking a temperature measurement. The recorded data is 6°C together with the time 07:00; the sensor and location are also needed as context.</span></details></div></div>
+  <h3>Data takes many forms</h3>
+  <p>A common beginner mistake is to equate data with numbers. Qubix Superstore uses quantities and prices, but it also uses branch names, product categories, timestamps, delivery photographs and written incident notes. Each form can preserve evidence.</p>
+  <figure><table class="fig-table"><thead><tr><th scope="col">Form</th><th scope="col">Example</th><th scope="col">What it describes</th></tr></thead><tbody><tr><td>number</td><td>14</td><td>units sold</td></tr><tr><td>text</td><td>North</td><td>region name</td></tr><tr><td>date</td><td>2026-08-21</td><td>business date</td></tr><tr><td>yes/no</td><td>yes</td><td>promotion active</td></tr><tr><td>image</td><td>shelf photo</td><td>visible shelf condition</td></tr></tbody></table><figcaption>Data is not defined by being numerical. It is defined by what has been recorded and what that record means.</figcaption></figure>
+  <div class="worked"><b class="wk-h">Worked example 2</b><p class="wk-q">Classify these as possible data: a price, a branch name, a delivery photograph and a spoken customer comment.</p><ol class="wk-steps"><li>Do not ask whether the item is a number.</li><li>Ask whether it records something that can be examined later.</li><li>All four retain evidence: an amount, a category, a visual condition and spoken words.</li></ol><p class="wk-a"><b>Answer.</b> All four can be data.</p><div class="wk-show"><figure><table class="fig-table"><thead><tr><th scope="col">Record</th><th scope="col">Form</th></tr></thead><tbody><tr><td>£3.20</td><td>number</td></tr><tr><td>Central</td><td>text</td></tr><tr><td>shelf.jpg</td><td>image</td></tr><tr><td>audio note</td><td>sound</td></tr></tbody></table></figure></div><p class="wk-n">Later topics will distinguish structured and unstructured data. This book needs only the broader idea.</p><div class="turn"><b>Your turn.</b> <span>Are a calendar date and a yes/no inspection result data even though neither is a measurement like height?</span><details><summary>answer</summary><span>Yes. Each records evidence in a defined form.</span></details></div></div>
+  <h3>A value without context can mislead</h3>
+  <p>Suppose someone sends you the number <b>14</b>. It could mean fourteen items, fourteen pounds, branch fourteen, fourteen minutes, or a temperature of fourteen degrees. The digits are present, but their meaning is missing.</p>
+  <ul class="bullets"><li>A <b>label</b> says what was recorded.</li><li>A <b>unit</b> says how a quantity was measured.</li><li>A <b>time</b> says when it was true.</li><li>A <b>source</b> says where it came from.</li><li>A <b>grain</b> says what one complete record describes.</li></ul>
+  <figure><svg aria-label="A mapping diagram: input 14 has 3 arrows, to units sold, minutes late and branch ID. The arrows from 14 are marked in red, because that input has more than one output." class="fig " viewBox="0 0 320 202" width="320" height="202" role="img"><rect width="320" height="202" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="16" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><text x="200" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">RESULT</text><path d="M120 42 C145 42,175 42,200 42"
+        fill="none" stroke="#c0504d" stroke-width="2" marker-end="url(#ar)" opacity=".82"/><path d="M120 42 C145 42,175 84,200 84"
+        fill="none" stroke="#c0504d" stroke-width="2" marker-end="url(#ar)" opacity=".82"/><path d="M120 42 C145 42,175 126,200 126"
+        fill="none" stroke="#c0504d" stroke-width="2" marker-end="url(#ar)" opacity=".82"/><rect x="16" y="28" width="104" height="28" rx="7" fill="#fff7f0" stroke="#e0813a" stroke-width="1.4"/><text x="68" y="46" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">14</text><rect x="200" y="28" width="104" height="28" rx="7" fill="#fdf2ef" stroke="#c0504d" stroke-width="1.4"/><text x="252" y="46" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">units sold</text><rect x="200" y="70" width="104" height="28" rx="7" fill="#fdf2ef" stroke="#c0504d" stroke-width="1.4"/><text x="252" y="88" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">minutes late</text><rect x="200" y="112" width="104" height="28" rx="7" fill="#fdf2ef" stroke="#c0504d" stroke-width="1.4"/><text x="252" y="130" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">branch ID</text><text x="160" y="190" text-anchor="middle" font-size="9" fill="#c0504d" font-family="ui-sans-serif,system-ui,sans-serif">one value, several possible meanings</text></svg><figcaption>The number alone does not settle its meaning. Labels, units, time and source supply the missing context.</figcaption></figure>
+  <div class="worked"><b class="wk-h">Worked example 3</b><p class="wk-q">A message says only “14”. What must you ask before using it in a branch report?</p><ol class="wk-steps"><li>Ask what the value describes.</li><li>Ask for its unit if it is a measurement.</li><li>Ask which branch or product it belongs to.</li><li>Ask when it was observed and which system produced it.</li></ol><p class="wk-a"><b>Answer.</b> Request the label, unit, subject, time and source before treating 14 as evidence.</p><div class="wk-show"><figure><svg aria-label="A mapping diagram: input 14 has one arrow, to 14 units, input 14 has one arrow, to 14 minutes and input 14 has one arrow, to branch 14. The arrows from 14 are marked in red, because that input has more than one output." class="fig " viewBox="0 0 320 202" width="320" height="202" role="img"><rect width="320" height="202" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="16" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><text x="200" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">RESULT</text><path d="M120 42 C145 42,175 42,200 42"
+        fill="none" stroke="#c0504d" stroke-width="2" marker-end="url(#ar)" opacity=".82"/><path d="M120 42 C145 42,175 84,200 84"
+        fill="none" stroke="#c0504d" stroke-width="2" marker-end="url(#ar)" opacity=".82"/><path d="M120 42 C145 42,175 126,200 126"
+        fill="none" stroke="#c0504d" stroke-width="2" marker-end="url(#ar)" opacity=".82"/><rect x="16" y="28" width="104" height="28" rx="7" fill="#fff7f0" stroke="#e0813a" stroke-width="1.4"/><text x="68" y="46" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">14</text><rect x="200" y="28" width="104" height="28" rx="7" fill="#fdf2ef" stroke="#c0504d" stroke-width="1.4"/><text x="252" y="46" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">14 units</text><rect x="200" y="70" width="104" height="28" rx="7" fill="#eef6f4" stroke="#12897c" stroke-width="1.4"/><text x="252" y="88" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">14 minutes</text><rect x="200" y="112" width="104" height="28" rx="7" fill="#eef6f4" stroke="#12897c" stroke-width="1.4"/><text x="252" y="130" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">branch 14</text><text x="160" y="190" text-anchor="middle" font-size="9" fill="#c0504d" font-family="ui-sans-serif,system-ui,sans-serif">context must choose one meaning</text></svg></figure></div><p class="wk-n">Guessing the missing meaning manufactures data that was never supplied.</p><div class="turn"><b>Your turn.</b> <span>A table contains the value 6. What two questions would you ask first?</span><details><summary>answer</summary><span>What does 6 describe, and in what unit or category is it recorded? Time, source and subject usually follow.</span></details></div></div>
+  <h3>Why people record data</h3>
+  <p>People record data because memory is limited and decisions need evidence. A single branch manager can remember that a delivery was late. A company with 48 branches needs consistent records to find repeated delays, compare suppliers and decide where to intervene.</p>
+  <ol class="bullets"><li><b>Remember:</b> preserve evidence after an event has passed.</li><li><b>Describe:</b> state what is happening now.</li><li><b>Compare:</b> examine differences across time, products or branches.</li><li><b>Monitor:</b> notice when a process moves outside an expected condition.</li><li><b>Decide:</b> choose an action using the available evidence.</li><li><b>Learn:</b> test whether an action produced the intended result.</li></ol>
+  <div class="worked"><b class="wk-h">Worked example 4</b><p class="wk-q">Branch B014 records a stockout for milk at 18:42. How can that one record support a decision?</p><ol class="wk-steps"><li>The record preserves the event after the shelf has been refilled.</li><li>Combined with other records, it can reveal how often the product is unavailable.</li><li>The branch can compare stockouts with deliveries and sales.</li><li>A manager can change an order only after checking that the evidence is accurate and relevant.</li></ol><p class="wk-a"><b>Answer.</b> The record becomes useful when it is combined with context and related evidence to support a replenishment decision.</p><div class="wk-show"><figure><svg aria-label="Two machines wired in series: record, compare then decide. The input stockout enters the first, the value 18:42 passes along the wire between them, and reorder leaves the second." class="fig " viewBox="0 0 460 138" width="460" height="138" role="img"><rect width="460" height="138" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="10.5" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><rect x="10.5" y="43" width="76" height="50" rx="10" fill="#fff7f0" stroke="#e0813a" stroke-width="1.5"/><text x="48.5" y="72" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="48.5" dy="0">stockout</tspan></text><path d="M91.5 68 H102.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="108.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="123.5" cy="52" r="9" fill="#12897c"/><text x="123.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">1</text><text x="158" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="158" dy="0">record</tspan></text><rect x="114.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="158" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">18:42</text><path d="M212.5 68 H223.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="229.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="244.5" cy="52" r="9" fill="#12897c"/><text x="244.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">2</text><text x="279" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="279" dy="0">compare</tspan></text><rect x="235.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="279" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">pattern</text><path d="M333.5 68 H344.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="350.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="365.5" cy="52" r="9" fill="#12897c"/><text x="365.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">3</text><text x="400" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="400" dy="0">decide</tspan></text><rect x="356.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="400" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">reorder</text><text x="450" y="23" text-anchor="end" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">PROCESS → RESULT</text></svg></figure></div><p class="wk-n">Data supports a decision; it does not make the decision automatically.</p><div class="turn"><b>Your turn.</b> <span>A supplier arrives late once. What should be recorded before deciding that the supplier is unreliable?</span><details><summary>answer</summary><span>Record the supplier, order, promised time, actual arrival time, branch or hub, and relevant circumstances; then compare with other deliveries rather than judging from an isolated memory.</span></details></div></div>
+  <h3>Data can be wrong, incomplete or harmful</h3>
+  <p>Recorded does not mean true. A scanner can fail, a person can mistype a code, a clock can be wrong and a field can be left blank. Data can also expose people or be collected without a fair purpose. Good data work therefore keeps evidence of uncertainty, protects privacy and documents corrections rather than quietly inventing values.</p>
+  <aside class="callout "><b>Do not repair by guessing</b><p>If a value is missing, mark it as missing and investigate. Zero is a recorded quantity. Missing means the quantity was not recorded or is not available. They are not interchangeable.</p></aside>
+  <h3>Reference and provenance record</h3>
+  <p>Terminology was cross-checked against David M. Lane and collaborators, <i>Online Statistics Education: An Interactive Multimedia Course of Study</i>, Introduction and “Variables,” OnlineStatBook/Rice University. The source site states that the work is in the public domain and requests citation. Stable records: https://onlinestatbook.com/2/index.html and https://onlinestatbook.com/2/introduction/variables.html (accessed 21 August 2026).</p>
+  <p>The Qubix Superstore company, event trail, identifiers, records, examples and questions are original synthetic teaching material. They describe no real customer, employee, branch or retailer.</p>
+
+  
+  <div class="practice">
+    <div class="pr-head"><b>Practice</b><span>20 items · Recognise, Explain, Decide, Recall, Apply, Reconstruct</span></div>
+    <ol class="pr-list">
+      <li class="pr-tier"><b>Core</b><span>the standard set</span></li><li>
+        <div class="pr-top"><span class="pr-q">A customer buys bread. The checkout stores product B-12 and quantity 1. What is the event?</span><span class="pr-l">Recognise</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">The event is the customer purchasing one bread product. The stored identifier and quantity are data about it.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">In the same example, name two recorded data values.</span><span class="pr-l">Recognise</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">B-12 and 1.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Is a branch name data even though it is text?</span><span class="pr-l">Recognise</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Yes. It records which branch is being described.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Is a shelf photograph capable of being data?</span><span class="pr-l">Recognise</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Yes. It can preserve visible evidence about the shelf at a particular time and place.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Explain why the number 27 is not useful by itself.</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Its label, unit, subject, time and source are unknown, so its meaning is unsettled.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What is the difference between a sale and a sale record?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">The sale is the real-world event. The sale record is a limited stored description of that event.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A record says “North, 08:00, 6°C”. What does the unit contribute?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">The °C tells us that 6 is a temperature measured on the Celsius scale rather than a count, identifier or another quantity.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Give one reason people record data rather than rely on memory.</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Records preserve evidence after events pass and allow consistent comparison across many events, places or times.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Which is a safer response to a blank stock count: enter zero or mark it missing and investigate?</span><span class="pr-l">Decide</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Mark it missing and investigate. Zero asserts that no stock existed; a blank does not establish that.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A checkout clock is ten minutes fast. Can its timestamps still be recorded data?</span><span class="pr-l">Decide</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Yes, but they are inaccurate records of the true time. Recorded does not guarantee correct.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Name two forms of data that are not ordinary numbers.</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Any two of text, dates, yes/no categories, images, sound or video.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What does a source tell you?</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It tells you where a value or record came from, such as a checkout, sensor, survey or supplier system.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Why should a correction retain evidence of what changed?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">So another person can trace the original record, understand the correction and audit the result instead of trusting an unexplained replacement.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A manager sees one late delivery and dismisses the supplier. What is weak about the evidence?</span><span class="pr-l">Decide</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">One event may not represent the supplier’s usual performance, and the manager has not checked context or compared other deliveries.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">List the four steps in the book’s central data flow.</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Event, record, organised table or collection, and use in a decision.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Does data make a decision automatically?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">No. Data supplies evidence. People or defined systems still interpret it, consider limitations and choose an action.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A field contains “card”. What kind of thing might it record?</span><span class="pr-l">Apply</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It might record a payment category. The field label and documentation are needed to confirm that interpretation.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Why can two records of the same event disagree?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">They may use different clocks, instruments, definitions or entry processes, or one may contain an error.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What privacy question should be asked before collecting a new field?</span><span class="pr-l">Decide</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Is the field genuinely needed for a stated fair purpose, and can that purpose be achieved with less personal data?</p>
+          
+        </details></li>
+      <li class="pr-tier"><b>Stretch</b><span>these need a decision, not just a method</span></li><li class="hard">
+        <div class="pr-top"><span class="pr-q">In one sentence, define data for this course.</span><span class="pr-l">Reconstruct</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Data is recorded evidence about an event, object, place, process or measurement that can be examined later with its context.</p>
+          
+        </details></li>
+    </ol>
+  </div>
+
+  
+  <aside class="callout warn"><b>Common mistake: data means numbers that are automatically true</b>
+    <p>A value looks objective once it appears in a table, so it is easy to treat every number as a fact and every word or image as something else.</p>
+    <p class="fix"><b>Why it is wrong.</b> Numbers, words, dates and images can all be data. Any of them can also be inaccurate, incomplete, badly defined or detached from context. Recording creates evidence, not certainty.</p>
+  </aside>
+
+  <aside class="callout back"><b>Returning to earlier work</b><p>This is the entry point and assumes no earlier data-science topic. If event, record, label, unit, time or source still feel interchangeable, reread the checkout example before moving to files, tables, rows and columns.</p></aside>
+</section>
+  
+<section class="chapter answers" id="answers">
+  <div class="kicker">ANSWER KEY</div>
+  <h2>Answers, shown</h2>
+  <p class="stand">Every practice item is answered here, with the reasoning that produces it and, wherever a picture says it better than a sentence, the picture. 0 of 20 are drawn so far. A book that answers only the odd numbers teaches its reader to guess.</p>
+  
+  <div class="ans-ch">
+    <h3><a href="#ch1">1. What data is and why people use it</a></h3>
+    
+    <div class="ans">
+      <div class="ans-n">1</div>
+      <div class="ans-body">
+        <p class="ans-q">A customer buys bread. The checkout stores product B-12 and quantity 1. What is the event?</p>
+        <p class="ans-a">The event is the customer purchasing one bread product. The stored identifier and quantity are data about it.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">2</div>
+      <div class="ans-body">
+        <p class="ans-q">In the same example, name two recorded data values.</p>
+        <p class="ans-a">B-12 and 1.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">3</div>
+      <div class="ans-body">
+        <p class="ans-q">Is a branch name data even though it is text?</p>
+        <p class="ans-a">Yes. It records which branch is being described.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">4</div>
+      <div class="ans-body">
+        <p class="ans-q">Is a shelf photograph capable of being data?</p>
+        <p class="ans-a">Yes. It can preserve visible evidence about the shelf at a particular time and place.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">5</div>
+      <div class="ans-body">
+        <p class="ans-q">Explain why the number 27 is not useful by itself.</p>
+        <p class="ans-a">Its label, unit, subject, time and source are unknown, so its meaning is unsettled.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">6</div>
+      <div class="ans-body">
+        <p class="ans-q">What is the difference between a sale and a sale record?</p>
+        <p class="ans-a">The sale is the real-world event. The sale record is a limited stored description of that event.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">7</div>
+      <div class="ans-body">
+        <p class="ans-q">A record says “North, 08:00, 6°C”. What does the unit contribute?</p>
+        <p class="ans-a">The °C tells us that 6 is a temperature measured on the Celsius scale rather than a count, identifier or another quantity.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">8</div>
+      <div class="ans-body">
+        <p class="ans-q">Give one reason people record data rather than rely on memory.</p>
+        <p class="ans-a">Records preserve evidence after events pass and allow consistent comparison across many events, places or times.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">9</div>
+      <div class="ans-body">
+        <p class="ans-q">Which is a safer response to a blank stock count: enter zero or mark it missing and investigate?</p>
+        <p class="ans-a">Mark it missing and investigate. Zero asserts that no stock existed; a blank does not establish that.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">10</div>
+      <div class="ans-body">
+        <p class="ans-q">A checkout clock is ten minutes fast. Can its timestamps still be recorded data?</p>
+        <p class="ans-a">Yes, but they are inaccurate records of the true time. Recorded does not guarantee correct.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">11</div>
+      <div class="ans-body">
+        <p class="ans-q">Name two forms of data that are not ordinary numbers.</p>
+        <p class="ans-a">Any two of text, dates, yes/no categories, images, sound or video.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">12</div>
+      <div class="ans-body">
+        <p class="ans-q">What does a source tell you?</p>
+        <p class="ans-a">It tells you where a value or record came from, such as a checkout, sensor, survey or supplier system.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">13</div>
+      <div class="ans-body">
+        <p class="ans-q">Why should a correction retain evidence of what changed?</p>
+        <p class="ans-a">So another person can trace the original record, understand the correction and audit the result instead of trusting an unexplained replacement.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">14</div>
+      <div class="ans-body">
+        <p class="ans-q">A manager sees one late delivery and dismisses the supplier. What is weak about the evidence?</p>
+        <p class="ans-a">One event may not represent the supplier’s usual performance, and the manager has not checked context or compared other deliveries.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">15</div>
+      <div class="ans-body">
+        <p class="ans-q">List the four steps in the book’s central data flow.</p>
+        <p class="ans-a">Event, record, organised table or collection, and use in a decision.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">16</div>
+      <div class="ans-body">
+        <p class="ans-q">Does data make a decision automatically?</p>
+        <p class="ans-a">No. Data supplies evidence. People or defined systems still interpret it, consider limitations and choose an action.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">17</div>
+      <div class="ans-body">
+        <p class="ans-q">A field contains “card”. What kind of thing might it record?</p>
+        <p class="ans-a">It might record a payment category. The field label and documentation are needed to confirm that interpretation.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">18</div>
+      <div class="ans-body">
+        <p class="ans-q">Why can two records of the same event disagree?</p>
+        <p class="ans-a">They may use different clocks, instruments, definitions or entry processes, or one may contain an error.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">19</div>
+      <div class="ans-body">
+        <p class="ans-q">What privacy question should be asked before collecting a new field?</p>
+        <p class="ans-a">Is the field genuinely needed for a stated fair purpose, and can that purpose be achieved with less personal data?</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">20</div>
+      <div class="ans-body">
+        <p class="ans-q">In one sentence, define data for this course.</p>
+        <p class="ans-a">Data is recorded evidence about an event, object, place, process or measurement that can be examined later with its context.</p>
+        
+      </div>
+    </div>
+  </div>
+</section>
+  
+<section class="chapter" id="gate">
+  <div class="kicker">COMPLETION</div>
+  <h2>What this book still owes its reader</h2>
+  <p class="stand">A chapter passes when it carries at least 4 worked examples, each followed by a parallel one the reader does; at least 4 figures; an illustrated or operable answer on every worked example; at least 20 practice items with an answer for every one; a named misconception; and a link back to earlier work. This table is counted from the source at build time, so it cannot flatter the book.</p>
+  <div class="tw"><table class="data gate">
+    <thead><tr><th scope="col">Chapter</th><th scope="col" class="num">Requirements met</th><th scope="col" class="num">Labs</th><th scope="col" class="num">Figures</th><th scope="col" class="num">Practice</th><th scope="col"></th></tr></thead>
+    <tbody><tr class="ok">
+      <td class="g-name"><span class="g-num">1</span>What data is and why people use it</td>
+      <td class="num">8 of 8</td>
+      <td class="num">—</td>
+      <td class="num">18</td>
+      <td class="num">20</td>
+      <td><span class="pill yes">passes</span></td></tr></tbody>
+  </table></div>
+  <p class="gate-sum"><b>1 of 1 chapters</b> meet the gate.
+  20 practice items, every one with a solution you can open; 4 worked examples
+  carrying 4 parallel exercises and 4 illustrated answers; 0 interactive labs;
+  and 18 figures, every one computed at build time from the formula printed beside it.</p>
+</section>
+</div>
+<svg width="0" height="0"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5"
+  markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16283f"/></marker></defs></svg>
+
+<script src="./what-data-is.js" defer></script>
+</body></html>

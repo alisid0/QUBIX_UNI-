@@ -1,0 +1,169 @@
+/* ============================================================
+   Qubix — design tokens. LOCKED 5-COLOUR SYSTEM (UI chrome).
+
+   Five roles, tuned per theme (light + dark). The two neutrals invert
+   between modes; the three accents lighten on dark for contrast:
+     1. Ink     — text / dark base
+     2. Canvas  — background / surfaces (surfaces are tints of this)
+     3. Clay    — the brand accent: buttons, links, active, highlight, streak
+     4. Olive   — positive: correct, complete, mastered, success
+     5. Red     — alert: errors, wrong answers, destructive
+
+   Legacy token names are kept so components don't churn, but collapsed to
+   the five: accent + yellow = Clay, green + pink = Olive, danger = Red.
+   Content (illustrations, 3D molecular models) is exempt — it has its own
+   palette and only needs to harmonise. Never add a sixth UI hue.
+   ============================================================ */
+
+:root {
+  --qx-font: 'Mulish', sans-serif;
+  /* Display face for headings and big figures — editorial character over the
+     workhorse body sans. Applied to h1/h2 and anything tagged .qx-display. */
+  --qx-font-display: 'Bricolage Grotesque', 'Mulish', system-ui, sans-serif;
+  --qx-radius-sm: 8px;
+  --qx-radius-md: 14px;
+  --qx-radius-lg: 22px;
+  --qx-radius-pill: 999px;
+  --qx-page-pad: clamp(16px, 4vw, 28px);
+  --qx-card-pad: clamp(14px, 3.4vw, 20px);
+  --qx-content-max: 900px;
+  --qx-ease-out: cubic-bezier(.22, 1, .36, 1);
+  --qx-duration-fast: 160ms;
+  --qx-duration-page: 300ms;
+
+  /* Reading-optimised type: larger, book-like body with generous line-height. */
+  --qx-fs-body: 17.5px;
+  --qx-lh-body: 1.72;
+
+  /* Spacing scale (DESIGN.md) */
+  --qx-space-xs: 4px;
+  --qx-space-sm: 8px;
+  --qx-space-md: 16px;
+  --qx-space-lg: 24px;
+  --qx-space-xl: 40px;
+}
+
+/* ── Light — Warm book feel: cream canvas, forest-green accent ── */
+:root[data-qx-theme="light"] {
+  --qx-bg: #FEF9F3;
+  --qx-bg-radial: #FFFBF7;
+  --qx-surface: #FFFDF9;
+  --qx-surface-2: #F7F0E8;
+  --qx-surface-3: #EFE6D8;
+  --qx-surface-elevated: #3D2E1F;
+  --qx-border: #E8DCC8;
+  --qx-border-2: #D9C9AE;
+
+  --qx-text: #3D2E1F;
+  --qx-text-2: #6B5C48;
+  --qx-text-dim: #7A6A54;       /* was #8C7B64 — WCAG AA (4.99) */
+  --qx-text-faint: #8C7B64;     /* was #B0A08A — AA at >=14px (3.91) */
+  --qx-text-faintest: #A2957E;  /* was #CBC0AC — decorative only (2.81) */
+
+  /* Clay = terracotta accent (primary brand) */
+  --qx-accent: #D28A5E;
+  --qx-accent-soft: #F7E6D8;
+  --qx-accent-soft-2: #FCF3EC;
+  --qx-accent-text: #8A4A22;
+  --qx-accent-strong: #A85F32;  /* darker Clay that carries white text (4.87) */
+  --qx-on-accent: #FFFFFF;
+  --qx-yellow: #D28A5E;
+  --qx-yellow-soft: #F7E6D8;
+  --qx-yellow-text: #8A4A22;
+
+  /* Book surfaces — desktop Reader spread (paper on a desk) */
+  --qx-page: #F7F0E2;
+  --qx-page-2: #FCF7EC;
+  --qx-page-edge: #E9DFCB;
+  --qx-page-fold: rgba(90,66,38,.14);
+  --qx-spine: #E2D5BE;
+
+  /* Olive = fresh green (positive / success) */
+  --qx-green: #3D9B3D;
+  --qx-green-soft: #E6F5E6;
+  --qx-green-text: #2E6E2E;
+  --qx-pink: #3D9B3D;
+  --qx-pink-soft: #E6F5E6;
+  --qx-pink-soft-2: #EEF8EE;
+  --qx-pink-text: #2E6E2E;
+
+  /* Red (danger) */
+  --qx-danger: #D94335;
+  --qx-danger-soft: #FCEAE8;
+  --qx-danger-text: #B33024;
+
+  --qx-shadow-card: 0 1px 2px rgba(61,46,31,.05), 0 6px 18px -10px rgba(61,46,31,.12);
+  --qx-shadow-soft: 0 12px 50px -24px rgba(61,46,31,.18);
+}
+
+/* ── Dark — Ink background, Canvas-warm text; accents lightened ── */
+:root[data-qx-theme="dark"] {
+  --qx-bg: #141310;
+  --qx-bg-radial: #1D1A15;
+  --qx-surface: #1C1A16;
+  --qx-surface-2: #24211B;
+  --qx-surface-3: #2B271F;
+  --qx-surface-elevated: #211B12;
+  --qx-border: rgba(255,255,255,0.09);
+  --qx-border-2: rgba(255,255,255,0.14);
+
+  --qx-text: #F2EADB;
+  --qx-text-2: #CFC6B4;
+  --qx-text-dim: #BDB3A0;
+  --qx-text-faint: #A39A87;
+  --qx-text-faintest: #877F6F;
+
+  /* Clay (accent + yellow) */
+  --qx-accent: #D28A5E;
+  --qx-accent-soft: rgba(210,138,94,0.16);
+  --qx-accent-soft-2: rgba(210,138,94,0.11);
+  --qx-accent-text: #DDA079;
+  --qx-accent-strong: #E09B6F;
+  --qx-on-accent: #1B1409;
+  --qx-yellow: #D28A5E;
+  --qx-yellow-soft: rgba(210,138,94,0.15);
+  --qx-yellow-text: #DDA079;
+
+  /* Book surfaces — desktop Reader spread — dark paper */
+  --qx-page: #221E18;
+  --qx-page-2: #272219;
+  --qx-page-edge: #2B261E;
+  --qx-page-fold: rgba(0,0,0,.45);
+  --qx-spine: #1A1712;
+
+  /* Olive (green + pink) */
+  --qx-green: #6BC93F;
+  --qx-green-soft: rgba(134,184,99,0.16);
+  --qx-green-text: #9CC97A;
+  --qx-pink: #6BC93F;
+  --qx-pink-soft: rgba(134,184,99,0.15);
+  --qx-pink-soft-2: rgba(134,184,99,0.11);
+  --qx-pink-text: #9CC97A;
+
+  /* Red (danger) */
+  --qx-danger: #EC4B31;
+  --qx-danger-soft: rgba(236,75,49,0.16);
+  --qx-danger-text: #F26B52;
+
+  --qx-shadow-card: 0 1px 0 rgba(255,255,255,.025), 0 12px 32px -20px rgba(0,0,0,.72);
+  --qx-shadow-soft: 0 30px 80px -42px rgba(0,0,0,.9);
+}
+
+:is(h1, h2, .qx-display) {
+  font-family: var(--qx-font-display);
+  letter-spacing: -0.015em;
+}
+
+.qx-shell {
+  font-family: var(--qx-font);
+  background:
+    radial-gradient(ellipse at 50% -18%, var(--qx-bg-radial), transparent 56%),
+    var(--qx-bg);
+  color: var(--qx-text);
+  -webkit-font-smoothing: antialiased;
+  width: 100%;
+  max-width: var(--qx-content-max);
+  margin: 0 auto;
+  position: relative;
+  min-width: 0;
+}

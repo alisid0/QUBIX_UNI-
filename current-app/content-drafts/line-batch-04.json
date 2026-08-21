@@ -1,0 +1,93 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "Counting on your fingers",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "natural-numbers", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>Long before anyone invented algebra or geometry, people just needed to count things. If you were a shepherd thousands of years ago, you needed to know how many sheep you had.</p>" },
+        { "content": "<p>You would count them exactly the same way a toddler counts blocks today: 1, 2, 3, 4, and so on. You do not use halves or quarters to count whole sheep. And you do not start counting at zero. You just start at one and keep going up.</p>" },
+        { "content": "<p>In math, this most basic, ancient way of counting gets its own box. It is called the Natural Numbers.</p>" },
+        { "content": "<p>If you look at our number line, the natural numbers are just the clean stepping stones on the right side. That is the very first box. Simple, solid, and easy.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The invention of nothing",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "zero", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>The natural numbers work great if you actually have sheep to count. But what happens if all your sheep run away? You need a way to write down that you have absolutely nothing left.</p>" },
+        { "content": "<p>It sounds obvious to us now, but for a long time, humanity did not actually have a number for nothing. Eventually, someone invented zero.</p>" },
+        { "content": "<p>When you take the first box (the natural numbers) and just toss the number zero into it, you get a brand new box. This one is called the Whole Numbers.</p>" },
+        { "content": "<p>That is literally the only difference between the two boxes. Whole numbers are just the natural counting numbers, plus zero.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Walking backwards",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "integers", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>So far, we have only looked at the right side of the number line, plus zero. But real life does not just go in one direction.</p>" },
+        { "content": "<p>If you have 5 dollars in your pocket, you are at a positive 5. But if you buy a sandwich for 8 dollars, you do not just hit zero. You now owe the sandwich shop 3 dollars. You have dropped below zero.</p>" },
+        { "content": "<p>This is all negative numbers are. They are just the exact same stepping stones, but walking backward to the left of zero.</p>" },
+        { "content": "<p>When you take all the whole numbers (0, 1, 2, 3) and add their negative versions (-1, -2, -3), you create the third box: the Integers.</p>" },
+        { "content": "<p>Whenever someone says the word integer, just think of a clean, solid step on the line. Positives, negatives, and zero. No fractions allowed.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Chopping things up",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "fractions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>The problem with the real world is that it rarely deals in clean, solid steps. You can eat half a pizza. You can buy a quarter-pound burger.</p>" },
+        { "content": "<p>If you want to place half a pizza on the number line, you have to look at the blank space exactly halfway between 0 and 1. We write that spot as 1/2.</p>" },
+        { "content": "<p>Any number that can be written as a clean fraction like this is put into a box called the Rational Numbers.</p>" },
+        { "content": "<p>The word rational makes it sound like these numbers are smart or logical. They are not. In math, a fraction is just called a ratio (one number stacked on top of another). So, a ratio-nal number is literally just a number that can be written as a fraction.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Decimals that behave",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "rationals", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>We do not always use fractions, though. Usually, we write things out as decimals. So how do you know if a decimal belongs in that Rational fraction box?</p>" },
+        { "content": "<p>It is actually very simple. If a decimal comes to a dead stop, it belongs in the box. For example, 1/2 is exactly 0.5. It stops cold. It is clean and predictable.</p>" },
+        { "content": "<p>But what about a fraction like 1/3? If you type 1 divided by 3 into a calculator, it spits out 0.333333... and the threes never stop.</p>" },
+        { "content": "<p>Even though it never stops, it still belongs in the Rational box. Why? Because it is just doing the exact same thing over and over. It is perfectly predictable.</p>" },
+        { "content": "<p>The rule is this: if a decimal stops completely, or if it repeats a simple pattern forever, it is rational. It behaves.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The rule breakers",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "irrationals", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>There is one final group of numbers. These are the ones that refuse to behave.</p>" },
+        { "content": "<p>These numbers produce decimals that go on forever and ever, but they never settle into a repeating pattern. They just keep spitting out totally random numbers into infinity.</p>" },
+        { "content": "<p>The most famous one is Pi (3.14159265...). There is no pattern. You cannot write Pi as a simple, clean fraction, because it is just too messy.</p>" },
+        { "content": "<p>Because they break the fraction rule, these numbers are called Irrational Numbers.</p>" },
+        { "content": "<p>Even though they are messy to write down, they are very real. Pi has an exact physical spot on the number line. It just has a really long, ugly address.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The whole line",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "real-numbers", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>Let us look at our number line one last time.</p>" },
+        { "content": "<p>First, we drop down the integers. Those are our clean, solid stepping stones spaced out evenly across the line.</p>" },
+        { "content": "<p>Next, we take the rational numbers (the fractions and behaving decimals) and use them to fill in the gaps between the stepping stones.</p>" },
+        { "content": "<p>Finally, we take the irrational numbers (the messy, never-ending decimals) and wedge them into whatever microscopic empty spaces are left.</p>" },
+        { "content": "<p>If you do this, the line is now completely solid. There are no gaps left anywhere.</p>" },
+        { "content": "<p>This totally solid line gets one final umbrella name: the Real Numbers. It does not matter if it is a positive, a negative, a fraction, or a messy decimal. If you can point to it anywhere on that line, it is a real number.</p>" }
+      ]
+    }
+  ]
+}

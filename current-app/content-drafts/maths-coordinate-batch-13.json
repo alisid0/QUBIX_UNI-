@@ -1,0 +1,113 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The flat world",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "coordinate-geometry", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A single horizontal number line is perfectly efficient for tracking distance or value. Every number has a specific location, increasing to the right and decreasing into negative values to the left.</p>" },
+        { "content": "<p>However, a single line is strictly one-dimensional. It can only map movement backward and forward.</p>" },
+        { "content": "<p>If a point exists anywhere above or below that single horizontal line, the 1D map becomes completely useless. A single number cannot describe a location in a two-dimensional space.</p>" },
+        { "content": "<p>To map a flat surface, the system requires a second dimension.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The second axis",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "cartesian-grid", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>In 1637, mathematician René Descartes solved this limitation by introducing a second number line.</p>" },
+        { "content": "<p>A second, vertical number line is placed directly over the first. It is rotated exactly 90 degrees, crossing the horizontal line perfectly at the zero mark.</p>" },
+        { "content": "<p>This creates the Cartesian Coordinate System.</p>" },
+        { "content": "<p>The horizontal line is permanently designated as the X-axis. The vertical line is permanently designated as the Y-axis. The exact point where the two zeroes cross is called the Origin.</p>" },
+        { "content": "<p>By simply crossing two lines at right angles, an infinite, blank surface is instantly converted into a rigid, measurable grid. Every microscopic location on the surface can now be pinpointed with absolute mathematical precision.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The ordered pair",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "ordered-pairs", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because there are two axes, pinning a location requires two numbers.</p>" },
+        { "content": "<p>These two numbers are written inside parentheses, separated by a comma. This is an Ordered Pair.</p>" },
+        { "content": "<p>The rule for reading an ordered pair is absolute: the X-value is always listed first, followed by the Y-value. The mechanical movement is always Horizontal, then Vertical.</p>" },
+        { "content": "<p>To plot the coordinate (4, 3), the starting position is always the Origin (0,0). The first number dictates a movement of 4 units to the right along the X-axis. The second number dictates a movement of 3 units straight up, parallel to the Y-axis.</p>" },
+        { "content": "<p>Because the order is strictly enforced, (4, 3) and (3, 4) represent entirely different physical locations on the grid. Reversing the numbers fundamentally changes the geometry.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Four Quadrants",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "quadrants", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The intersection of the X and Y axes divides the infinite grid into four distinct rectangular sections.</p>" },
+        { "content": "<p>These sections are called Quadrants. They dictate the positive or negative sign of any coordinate placed inside them.</p>" },
+        { "content": "<p>The upper-right section is Quadrant I. Here, movement is always to the right (positive X) and up (positive Y). Every coordinate in this space consists of two positive numbers, like (4, 3).</p>" },
+        { "content": "<p>Moving counter-clockwise, Quadrant II sits in the upper-left. Movement requires going left along the X-axis (negative), but up along the Y-axis (positive). The coordinates always follow the pattern (−X, +Y).</p>" },
+        { "content": "<p>Quadrant III (bottom-left) holds two negative numbers (−X, −Y). Quadrant IV (bottom-right) holds a positive X and a negative Y (+X, −Y). By simply looking at the positive or negative signs of an ordered pair, its exact quadrant is instantly known.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The unification",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "algebra-geometry", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The Cartesian grid is not just a tool for drawing maps. It is a translation engine.</p>" },
+        { "content": "<p>Before this grid existed, Algebra (the mathematics of equations) and Geometry (the mathematics of physical shapes) were completely isolated fields of study.</p>" },
+        { "content": "<p>Descartes' grid forced them to combine.</p>" },
+        { "content": "<p>Because every point in space now had an exact numerical address, a physical shape like a circle or a triangle could be expressed entirely as a list of numbers.</p>" },
+        { "content": "<p>Conversely, an abstract algebraic equation (like y = 2x) could be plotted point-by-point and physically drawn as a straight line. The grid proved that shapes and equations are not different concepts; they are simply two different languages describing the exact same truth.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The dependent relationship",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "linear-equations", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>On a coordinate grid, a single dot is a static location. But a straight line is a continuous path built from an infinite number of dots sitting side-by-side.</p>" },
+        { "content": "<p>These dots are not scattered randomly. Their X and Y coordinates are locked together by a strict, mathematical rule.</p>" },
+        { "content": "<p>If a line possesses the coordinates (1, 2), (2, 4), and (3, 6), a clear pattern emerges. The Y-coordinate is always exactly double the X-coordinate.</p>" },
+        { "content": "<p>This relationship is written algebraically as y = 2x.</p>" },
+        { "content": "<p>In this relationship, X is the independent variable. It can be any number. Y is the dependent variable. Its value is entirely dictated by whatever happens to X. By defining this rule, the entire infinite length of the line is calculated and locked into place.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Measuring the steepness (Slope)",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "slope", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The multiplier attached to the X-variable completely dictates the physical behavior of the line.</p>" },
+        { "content": "<p>In the equation y = 2x, for every 1 unit the line moves to the right along the X-axis, it is forced to move exactly 2 units up the Y-axis.</p>" },
+        { "content": "<p>If the equation is changed to y = 5x, the line must leap 5 units up for every 1 unit it moves right. The physical line becomes significantly steeper.</p>" },
+        { "content": "<p>This multiplier is called the Slope (often represented by the letter m). It is a precise mathematical measurement of steepness.</p>" },
+        { "content": "<p>Slope is calculated universally as the change in vertical height divided by the change in horizontal distance. It is strictly defined as the Rise over the Run.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The direction of the line",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "slope", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The slope does not just measure how steep a line is. It also dictates its exact direction across the grid.</p>" },
+        { "content": "<p>If a slope is a positive number (like m = 2), the line rises upward as it moves from left to right.</p>" },
+        { "content": "<p>If the slope is a negative number (like m = -2), the line must fall downward as it moves from left to right. For every 1 unit across, it drops 2 units down.</p>" },
+        { "content": "<p>If a line is perfectly flat and horizontal, it has no vertical rise at all. Its rise is zero. Therefore, the slope of any horizontal line is exactly 0.</p>" },
+        { "content": "<p>If a line is perfectly vertical, the math breaks. It rises infinitely without ever moving horizontally (a run of zero). Because dividing any number by zero is mathematically impossible, a vertical line is defined as having an 'undefined' slope.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The anchor point (The Y-Intercept)",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "y-intercept", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Slope alone is not enough to define a specific line on a grid.</p>" },
+        { "content": "<p>An infinite number of lines can share the exact same slope of m = 2. They will all tilt at the exact same angle, but they can be drawn floating at the top of the grid, or sitting at the very bottom.</p>" },
+        { "content": "<p>To lock a line into a specific physical location, it requires an anchor.</p>" },
+        { "content": "<p>This anchor is the exact coordinate where the line crosses the vertical Y-axis. It is called the Y-Intercept (represented by the letter c or b).</p>" },
+        { "content": "<p>At the exact moment a line crosses the Y-axis, its horizontal X-value is mathematically guaranteed to be 0. The Y-Intercept is simply the value of Y when X is 0.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The master equation",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "y=mx+c", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>By combining the slope and the anchor, the master equation for all straight lines is formed: y = mx + c.</p>" },
+        { "content": "<p>It is a simple, two-number control panel.</p>" },
+        { "content": "<p>The m controls the tilt. Changing this number rotates the line, making it steeper, flatter, or reversing its direction entirely.</p>" },
+        { "content": "<p>The c controls the height. Changing this number physically slides the entire line up or down the Y-axis without altering its angle.</p>" },
+        { "content": "<p>Together, these two variables contain the total geometric data of the line. A computer rendering a 3D environment does not store visual images of straight lines. It simply stores the (m) and the (c), allowing the processor to instantly redraw the geometry perfectly every single time.</p>" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What a Computer Program Does</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  :root { --ink:#16283f; --teal:#12897c; --orange:#e0813a; --rose:#c0504d;
+          --paper:#faf7f0; --rule:#d8d3c7; --mute:#5d6b7d; --faint:#eae5d9;
+          /* Graphics need 3:1 and keep the identity hues above. Text needs
+             4.5:1, so anything a person reads uses these instead. */
+          --teal-text:#10796e; --orange-text:#a25d2a; --rose-text:#b84d4a;
+          /* --rule is a decorative hairline and has no contrast requirement.
+             The edge of a control does: 3:1 (WCAG 1.4.11). */
+          --edge:#918d85;
+          /* Three roles. Running text is a book and gets a serif; the apparatus
+             around it (eyebrows, table headers, figure labels, practice tags) is
+             machinery and gets the sans; formulas get the mono. All system faces,
+             so there is no webfont to fail silently behind the CSP. */
+          --serif: Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+          --sans: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+          --mono: ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace; }
+  * { box-sizing: border-box; }
+  /* This page commits to one world on purpose: it is a printed book, laid out
+     for A4, and it carries its own ground rather than borrowing the viewer's.
+     Hence no dark palette, and an explicit background here. */
+  html, body { overflow-x:hidden; }
+  body { margin:0; background:#fff; color:var(--ink); font:16.5px/1.66 var(--serif); }
+  .skip { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);
+          white-space:nowrap; background:var(--ink); color:#fff; z-index:10;
+          font-family:var(--sans); font-size:14px; border-radius:0 0 6px 0; }
+  .skip:focus { position:fixed; left:0; top:0; width:auto; height:auto; clip:auto;
+                padding:10px 16px; min-height:24px; }
+  .sheet { max-width: 41rem; margin: 0 auto; padding: 0 22px 80px; }   /* ~72 characters */
+  code, .formula { font-family: var(--mono); }
+  .kicker, .pr-head, .pr-l, .wk-h, table.data th, .fig-table th, figcaption,
+  nav.toc h2, .cover .series, .cover .stamp,
+  .cover h1, .cover h2 { font-family: var(--sans); }   /* the jacket stays as Draft 1 set it */
+  table.data, .fig-table, .gate-sum { font-variant-numeric: tabular-nums; }
+  /* Wide content scrolls inside itself so the page body never moves sideways. */
+  .tw { overflow-x: auto; margin: 16px 0; }
+  .tw table.data { margin: 0; min-width: 30rem; }
+
+  .cover { background:var(--ink); color:#fff; margin-bottom:52px; border-radius:0 0 20px 20px;
+           padding:56px 44px 48px; display:grid; gap:34px 48px; align-items:center;
+           grid-template-columns:minmax(0,1fr); max-width:1080px; margin-inline:auto; }
+  @media (min-width:820px) { .cover { grid-template-columns:minmax(0,1fr) 300px; padding:68px 56px 60px; } }
+  .cover-mark { width:100%; height:auto; max-width:320px; justify-self:center; opacity:.95; }
+  /* DOM order is already title, mark, stamp; an order override only pushed
+     the mark past the stamp on narrow screens. */
+  @media (max-width:819px) { .cover-mark { max-width:270px; justify-self:start; margin-top:4px; } }
+  .cover .series { color:#7fd3c6; font-size:11px; letter-spacing:.16em; font-weight:700; }
+  .cover h1 { font-size:clamp(34px,5.4vw,50px); line-height:1.02; margin:14px 0 18px;
+              letter-spacing:-.025em; text-wrap:balance; }
+  .cover-sub { color:#7fd3c6; font-family:var(--sans); font-weight:700; font-size:18px;
+               margin:0 0 16px; letter-spacing:.01em; }
+  .cover-blurb { color:#c2cedd; max-width:44ch; margin:0; font-size:15px; line-height:1.55; }
+  .cover-facts { display:flex; flex-wrap:wrap; gap:10px 34px; margin:30px 0 0; padding:0; }
+  .cover-facts div { margin:0; }
+  .cover-facts dt { font-family:var(--sans); font-size:25px; font-weight:700; color:#fff;
+                    line-height:1; font-variant-numeric:tabular-nums; }
+  .cover-facts dd { margin:5px 0 0; font-size:11.5px; color:#8fa2b8; letter-spacing:.04em;
+                    font-family:var(--sans); max-width:15ch; }
+  .cover .stamp { grid-column:1/-1; margin-top:6px; padding-top:20px; border-top:1px solid #2b405a;
+                  color:#93a5ba; font-size:12px; line-height:1.6; max-width:78ch; }
+  .cover .stamp b { color:#fff; display:block; margin-bottom:6px; letter-spacing:.07em; font-size:11px;
+                    font-family:var(--sans); }
+
+  .kicker { color:var(--teal-text); font-size:11px; font-weight:700; letter-spacing:.13em; margin-bottom:6px; }
+  h2 { font-size:30px; line-height:1.14; margin:0 0 14px; letter-spacing:-.018em; text-wrap:balance; }
+  h3 { text-wrap:balance; }
+  p { text-wrap:pretty; }
+  h3 { font-size:17px; color:var(--teal-text); margin:26px 0 8px; }
+  .stand { font-size:16px; color:var(--mute); margin:0 0 20px; }
+  p { margin:0 0 13px; }
+  .bullets { margin:0 0 14px; padding-left:20px; } .bullets li { margin-bottom:5px; }
+
+  .chapter { padding:44px 0 10px; border-top:1px solid var(--rule); break-before:page; }
+  .chapter > h2 + .stand { margin-bottom:26px; }
+  .chapter:first-of-type { border-top:0; break-before:auto; }
+
+  .formula { background:var(--paper); border-left:3px solid var(--teal); padding:13px 16px;
+             margin:16px 0; font-size:15px; text-align:center; border-radius:0 6px 6px 0; break-inside:avoid; }
+
+  table.data { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px; break-inside:avoid; }
+  table.data th { background:var(--ink); color:#fff; text-align:left; padding:9px 11px; font-size:11px; letter-spacing:.05em; }
+  table.data td { padding:9px 11px; border-bottom:1px solid var(--rule); vertical-align:top; }
+  table.data tbody tr:nth-child(even) { background:var(--paper); }
+  table.data td.tight { white-space:nowrap; }
+  @media (max-width:520px) { table.data td.tight { white-space:normal; } }
+  table.gate { font-size:13px; }
+  table.gate th.num, table.gate td.num { text-align:right; white-space:nowrap; }
+  table.gate td { vertical-align:middle; }
+  .g-name { display:flex; gap:9px; align-items:baseline; }
+  .g-num { flex:0 0 auto; min-width:20px; font-family:var(--sans); font-size:11px; color:var(--mute);
+           font-variant-numeric:tabular-nums; text-align:right; }
+  table.gate td.short { color:var(--orange-text); font-weight:700; }
+  .pill { display:inline-block; font-family:var(--sans); font-size:10.5px; letter-spacing:.06em;
+          text-transform:uppercase; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+  /* Tints chosen so the label clears 4.5:1 on them, not by eye. */
+  .pill.yes { background:#e4f3ef; color:var(--teal-text); }
+  .pill.no  { background:#fbf3eb; color:var(--orange-text); }
+  .gate-sum { background:var(--paper); padding:12px 15px; border-radius:7px; font-size:14px; }
+
+  figure { margin:20px 0; text-align:center; break-inside:avoid; }
+  figcaption { color:var(--mute); font-size:12.5px; margin-top:8px; text-align:left; }
+  .fig { max-width:100%; height:auto; }
+  .fig-row { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:20px 0; break-inside:avoid; }
+  .fig-row figure { margin:0; flex:1 1 210px; }
+  .fig-table { border-collapse:collapse; margin:0 auto; font-size:13px; }
+  .fig-table th { background:var(--ink); color:#fff; padding:7px 14px; font-size:10.5px; }
+  .fig-table td { padding:6px 14px; border-bottom:1px solid var(--rule); text-align:center; }
+
+  .callout { background:#eef6f4; border:1px solid #cfe4df; border-radius:8px; padding:14px 16px; margin:18px 0; break-inside:avoid; }
+  .callout b { display:block; margin-bottom:5px; }
+  .callout p { margin:0 0 6px; font-size:14px; } .callout p:last-child { margin:0; }
+  .callout.warn { background:#fdf3ec; border-color:#f0d5bf; }
+  .callout.warn b { color:var(--orange-text); }
+  .callout.back { background:var(--paper); border-color:var(--rule); }
+  .callout .fix { color:var(--mute); }
+
+  .worked { border:1px solid var(--rule); border-left:3px solid var(--orange); border-radius:0 8px 8px 0;
+            padding:14px 16px; margin:18px 0; background:#fffdf9; break-inside:avoid; }
+  .wk-h { color:var(--orange-text); font-size:11px; letter-spacing:.09em; text-transform:uppercase; display:block; margin-bottom:6px; }
+  .wk-q { font-weight:600; margin-bottom:9px; }
+  .wk-steps { margin:0 0 10px; padding-left:20px; font-size:14px; } .wk-steps li { margin-bottom:5px; }
+  .wk-a { margin:0; padding-top:9px; border-top:1px solid var(--rule); font-size:14px; }
+  .wk-n { margin:8px 0 0; font-size:13px; color:var(--mute); }
+  .turn { margin:11px -16px -14px; padding:10px 16px; background:var(--paper);
+          border-top:1px solid var(--rule); border-radius:0 0 8px 0; font-size:13.5px; }
+  .turn > b { color:var(--teal-text); font-family:var(--sans); font-size:11px; letter-spacing:.07em;
+              text-transform:uppercase; display:inline; margin-right:5px; }
+  .turn details { margin-top:6px; }
+  .turn summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11.5px;
+                  letter-spacing:.04em; width:max-content;
+                  display:inline-flex; align-items:center; min-height:24px; padding:2px 0; }
+  .turn summary:focus-visible { outline:2px solid var(--teal); outline-offset:3px; border-radius:3px; }
+  .turn details[open] summary { margin-bottom:4px; }
+  .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+             overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  .zoom-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+
+  /* ---- interactive labs ---- */
+  .lab-wrap { margin:20px 0; break-inside:avoid; }
+  .lab { border:1px solid var(--rule); border-radius:9px; background:var(--paper);
+         padding:13px 14px 12px; text-align:center; }
+  .lab-h { font-family:var(--sans); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+           color:var(--teal-text); margin-bottom:9px; text-align:left; }
+  .lab-stage { min-height:1px; }
+  .lab-frame { display:none; }
+  .lab-frame.on { display:block; }
+  .lab-say { font-size:13.5px; margin:8px auto 2px; max-width:46ch; min-height:2.9em; }
+  .lab-btns { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
+  .lab-b, .jd-c button { font:600 13px/1 var(--sans); min-height:24px; padding:7px 13px; border-radius:6px;
+          cursor:pointer; border:1px solid var(--edge); background:#fff; color:var(--ink); }
+  .lab-b:hover, .jd-c button:hover { border-color:var(--teal); }
+  .lab-b.on { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
+  .lab-b:focus-visible, .jd-c button:focus-visible, .lab-range:focus-visible,
+  .pr-sol summary:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+  /* 2.5.8 wants 24px of target; a bare range input renders about 16px tall.
+     The track and thumb are given explicit colours so the control has a
+     visible boundary against the panel behind it (1.4.11). */
+  .lab-range { width:min(100%,300px); height:24px; margin-top:10px; accent-color:var(--teal-text);
+               background:transparent; -webkit-appearance:none; appearance:none; }
+  .lab-range::-webkit-slider-runnable-track { height:6px; border-radius:3px;
+               background:#fff; border:1px solid var(--edge); }
+  .lab-range::-moz-range-track { height:6px; border-radius:3px; background:#fff; border:1px solid var(--edge); }
+  .lab-range::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:20px; height:20px;
+               margin-top:-8px; border-radius:50%; background:var(--teal-text); border:1px solid #fff; }
+  .lab-range::-moz-range-thumb { width:20px; height:20px; border-radius:50%;
+               background:var(--teal-text); border:1px solid #fff; }
+  .lab-hint { font-size:12.5px; color:var(--mute); margin:11px auto 0; max-width:52ch; }
+  [data-lab="judge"] .lab-hint { text-align:left; margin-left:0; padding-top:11px;
+                                  border-top:1px solid var(--rule); }
+
+  .jd { list-style:none; margin:0; padding:0; text-align:left; }
+  .jd li { display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center;
+           padding:9px 0; border-bottom:1px solid var(--rule); }
+  .jd li:last-child { border-bottom:0; }
+  .jd-t { font-size:14px; }
+  .jd-c { display:flex; gap:6px; }
+  .jd-w { grid-column:1 / -1; font-size:13px; color:var(--mute); padding:2px 0 1px; }
+  .jd li.right .jd-w { color:var(--teal-text); }
+  .jd li.wrong .jd-w { color:var(--orange-text); }
+  .jd li.right .jd-c button.picked { background:var(--teal-text); border-color:var(--teal-text); color:#fff; }
+  .jd li.wrong .jd-c button.picked { background:var(--orange-text); border-color:var(--orange-text); color:#fff; }
+  .lab-ask { font-size:13.5px; color:var(--mute); text-align:left; margin:0 0 4px; }
+  .lab-score { font-family:var(--sans); font-size:12px; color:var(--teal-text); margin:10px 0 0; text-align:left; min-height:1.2em; }
+
+  /* ---- practice solutions ---- */
+  .pr-list li { display:block; }
+  .pr-top { display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; }
+  .pr-q { min-width:0; overflow-wrap:anywhere; }
+  .pr-sol { margin-top:6px; }
+  .pr-sol summary { cursor:pointer; color:var(--teal-text); font-family:var(--sans); font-size:11px;
+                    letter-spacing:.05em; text-transform:uppercase; width:max-content;
+                    display:inline-flex; align-items:center; min-height:24px; padding:2px 0; }
+  .pr-sol[open] summary { margin-bottom:6px; }
+  .pr-steps { margin:0 0 6px; padding-left:19px; font-size:13.5px; color:#33445c; }
+  .pr-steps li { display:list-item; padding:0; border:0; margin-bottom:3px; }
+  .pr-steps li::before { content:none; }
+  .pr-a { font-size:13.5px; margin:0; }
+  .pr-sol .lab-wrap, .pr-sol figure { margin:10px 0 2px; }
+  .wk-show { margin:12px 0 4px; }
+  .wk-show figure, .wk-show .lab-wrap { margin:0; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+  @media print { .turn details { display:block; } .turn summary { display:none; }
+                 .turn details::before { content:"Answer. "; font-weight:700; } }
+
+  .practice { margin:24px 0 6px; break-inside:avoid; }
+  .pr-head { background:var(--ink); color:#fff; padding:8px 13px; border-radius:7px 7px 0 0;
+             display:flex; justify-content:space-between; align-items:baseline; font-size:12px; }
+  .pr-head span { color:#9fb0c4; font-size:11px; }
+  .pr-list { margin:0; padding:4px 0 0 0; list-style:none; counter-reset:pr;
+             border:1px solid var(--rule); border-top:0; border-radius:0 0 7px 7px; }
+  .pr-list li { counter-increment:pr; padding:8px 13px 8px 40px; position:relative; font-size:14px;
+                border-bottom:1px solid var(--faint); display:flex; gap:10px; justify-content:space-between; }
+  .pr-list li:last-child { border-bottom:0; }
+  .pr-list li.pr-tier { counter-increment:none; padding:9px 13px 6px; background:var(--paper);
+                        display:flex; gap:10px; align-items:baseline; justify-content:flex-start; }
+  .pr-list li.pr-tier::before { content:none; }
+  .pr-list li.pr-tier b { font-family:var(--sans); font-size:11px; letter-spacing:.09em;
+                          text-transform:uppercase; color:var(--teal-text); }
+  .pr-list li.pr-tier span { font-size:12.5px; color:var(--mute); }
+  .pr-list li::before { content:counter(pr) "."; position:absolute; left:13px; color:var(--teal-text); font-weight:700; }
+  .pr-l { color:var(--mute); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; padding-top:3px; }
+
+  .answers .ans-ch { margin-bottom:26px; }
+  .answers h3 { margin:22px 0 10px; padding-bottom:5px; border-bottom:1px solid var(--rule); }
+  .answers h3 a { color:var(--teal-text); text-decoration:none; display:inline-block; min-height:24px; padding:2px 0; }
+  .ans { display:grid; grid-template-columns:26px 1fr; gap:0 10px; padding:9px 0;
+         border-bottom:1px solid var(--faint); break-inside:avoid; }
+  .ans:last-child { border-bottom:0; }
+  .ans-n { font-family:var(--sans); font-size:12px; font-weight:700; color:var(--teal-text);
+           text-align:right; padding-top:2px; font-variant-numeric:tabular-nums; }
+  .ans-q { font-size:13.5px; color:var(--mute); margin:0 0 4px; }
+  .ans-a { font-size:14px; margin:0; }
+  .ans.has-fig { padding-bottom:14px; }
+  .ans figure, .ans .lab-wrap { margin:11px 0 0; text-align:center; }
+  .ans figcaption { font-size:12px; }
+  .todo { color:var(--orange-text); }
+
+  nav.toc { background:var(--paper); border-radius:12px; padding:26px 28px 22px; margin-bottom:42px; }
+  nav.toc h2 { font-size:21px; margin:0 0 18px; }
+  .toc-part + .toc-part { margin-top:20px; padding-top:18px; border-top:1px solid var(--rule); }
+  .toc-h { font-family:var(--sans); font-size:10.5px; letter-spacing:.13em; text-transform:uppercase;
+           color:var(--mute); margin-bottom:9px; }
+  nav.toc ol, nav.toc ul { margin:0; padding:0; list-style:none; font-size:14.5px;
+                           columns:2; column-gap:34px; }
+  nav.toc li { margin:0; break-inside:avoid; }
+  nav.toc a { color:var(--ink); text-decoration:none; display:flex; gap:10px; align-items:baseline;
+              min-height:24px; padding:3px 0; }
+  nav.toc a:hover { color:var(--teal-text); }
+  nav.toc a:hover .toc-n { background:var(--teal-text); color:#fff; border-color:var(--teal-text); }
+  .toc-n { flex:0 0 auto; width:22px; height:22px; border-radius:5px; border:1px solid var(--rule);
+           font-family:var(--sans); font-size:11px; font-variant-numeric:tabular-nums;
+           display:inline-flex; align-items:center; justify-content:center; color:var(--mute);
+           background:#fff; }
+  .toc-back a { padding-left:32px; }
+  @media (max-width:640px) { nav.toc ol, nav.toc ul { columns:1; } }
+
+  /* Print is still a book: every disclosure opens, the controls go, and each
+     lab falls back to its first frame, which is why frame 0 is authored as the
+     one that stands alone. */
+  @media print {
+    .chapter { break-before:page; } nav.toc ol { columns:2; } a { color:inherit; }
+    .pr-sol, .turn details { display:block; }
+    .pr-sol summary { display:none; }
+    .pr-sol::before { content:"Solution."; font-family:var(--sans); font-size:11px;
+                      letter-spacing:.05em; text-transform:uppercase; color:var(--teal-text); }
+    .lab-btns, .lab-range, .lab-hint, .jd-c { display:none; }
+    .lab-frame { display:none !important; }
+    .lab-frame[data-i="0"] { display:block !important; }
+    .jd-w { display:block; color:var(--mute) !important; }
+  }
+</style></head><body>
+<header class="cover">
+  <div class="cover-body">
+    <div class="series">QUBIX UNIVERSITY · DATA SCIENCE FROM ZERO</div>
+    <h1>What a Computer Program Does</h1>
+    <p class="cover-sub">Pre-Intern 002 · Digital Foundations</p>
+    <p class="cover-blurb">Instructions, input, processing, output and state—before the first line of code.</p>
+    <dl class="cover-facts">
+      <div><dt>1</dt><dd>chapters</dd></div><div><dt>20</dt><dd>practice items, all answered</dd></div><div><dt>14</dt><dd>figures, all computed</dd></div>
+    </dl>
+  </div>
+  <svg class="cover-mark" viewBox="0 0 300 150" width="300" height="150" role="img"
+    aria-label="A data flow: a sale event becomes a record, records form a table, and the table supports a decision.">
+    <defs><marker id="data-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#e0813a"/></marker></defs>
+    <rect x="6" y="20" width="288" height="108" rx="12" fill="#132234" stroke="#22384f"/><g><rect x="16" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="43" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">EVENT</text><text x="43" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">a</text><text x="43" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">sale happens</text><path d="M70 74 h12" stroke="#e0813a" stroke-width="1.6" marker-end="url(#data-arrow)"/></g><g><rect x="86" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="113" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">RECORD</text><text x="113" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">facts</text><text x="113" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">are captured</text><path d="M140 74 h12" stroke="#e0813a" stroke-width="1.6" marker-end="url(#data-arrow)"/></g><g><rect x="156" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="183" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">TABLE</text><text x="183" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">records</text><text x="183" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">stay organised</text><path d="M210 74 h12" stroke="#e0813a" stroke-width="1.6" marker-end="url(#data-arrow)"/></g><g><rect x="226" y="42" width="54" height="64" rx="7" fill="#1d344d" stroke="#7fd3c6"/><text x="253" y="65" text-anchor="middle" font-size="8" font-weight="700" fill="#7fd3c6" font-family="ui-sans-serif,system-ui,sans-serif">DECISION</text><text x="253" y="81" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">evidence</text><text x="253" y="91" text-anchor="middle" font-size="6.5" fill="#c2cedd" font-family="ui-sans-serif,system-ui,sans-serif">is used</text></g></svg>
+  <div class="stamp"><b>SOURCE-FIRST EBOOK · AI_DRAFT</b>Founder review required. This ebook creates no interactive lesson and grants no curriculum approval.</div>
+</header>
+<a class="skip" href="#contents">Skip to contents</a>
+<main class="sheet">
+  <nav class="toc" id="contents" aria-label="Contents">
+    <h2>Contents</h2>
+    
+      <div class="toc-part">
+        <div class="toc-h">Pre-intern academy · digital foundations</div>
+        <ol><li><a href="#ch1"><span class="toc-n">1</span>What a computer program does</a></li></ol>
+      </div>
+    <div class="toc-part">
+      <div class="toc-h">At the back</div>
+      <ul class="toc-back">
+        <li><a href="#answers">Answers, shown</a></li>
+        <li><a href="#gate">What this book still owes its reader</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+<section class="chapter" id="ch1">
+  <div class="kicker">PRE-INTERN ACADEMY · DIGITAL FOUNDATIONS</div>
+  <h2>1. What a computer program does</h2>
+  <p class="stand">A program is a stored set of precise instructions that a computer can execute.</p>
+  <aside class="callout "><b>Learning objective</b><p>By the end of this book, you should be able to describe a program using input, ordered instructions, output and state; distinguish code from data; and explain why a computer can follow a faulty instruction perfectly.</p></aside>
+  <p>At a Qubix Superstore checkout, a cashier scans a product. The screen finds its price, multiplies by the quantity, adds the result to the basket and displays a new total. Nobody performs those steps by hand for every scan. A computer program carries them out.</p>
+  <p>A <b>computer program</b> is a set of instructions written in a form that a computer system can execute. A person decides what the system should accomplish and expresses the necessary rules. The computer performs the implemented steps. Speed does not give it judgment, intention or common sense.</p>
+  <figure><svg aria-label="Two machines wired in series: look up, calculate then display. The input scan enters the first, the value price passes along the wire between them, and screen leaves the second." class="fig " viewBox="0 0 460 138" width="460" height="138" role="img"><rect width="460" height="138" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="10.5" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><rect x="10.5" y="43" width="76" height="50" rx="10" fill="#fff7f0" stroke="#e0813a" stroke-width="1.5"/><text x="48.5" y="72" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="48.5" dy="0">scan</tspan></text><path d="M91.5 68 H102.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="108.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="123.5" cy="52" r="9" fill="#12897c"/><text x="123.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">1</text><text x="158" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="158" dy="0">look up</tspan></text><rect x="114.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="158" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">price</text><path d="M212.5 68 H223.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="229.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="244.5" cy="52" r="9" fill="#12897c"/><text x="244.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">2</text><text x="279" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="279" dy="0">calculate</tspan></text><rect x="235.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="279" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">total</text><path d="M333.5 68 H344.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="350.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="365.5" cy="52" r="9" fill="#12897c"/><text x="365.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">3</text><text x="400" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="400" dy="0">display</tspan></text><rect x="356.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="400" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">screen</text><text x="450" y="23" text-anchor="end" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">PROCESS → RESULT</text></svg><figcaption>One checkout path: input enters, ordered instructions process it, and an output appears.</figcaption></figure>
+  <h3>Input, processing and output</h3>
+  <p>Many programs can first be understood with three questions: what enters, what steps happen, and what comes out? The answer need not be a number. A click may enter and a window may open. A sensor reading may enter and an alarm may sound.</p>
+  <div class="tw"><table class="data"><thead><tr><th scope="col">Program</th><th scope="col">Input</th><th scope="col">Processing</th><th scope="col">Output or action</th></tr></thead><tbody><tr><td class="tight">checkout</td><td>product code and quantity</td><td>find price and calculate</td><td>updated basket total</td></tr><tr><td class="tight">stock alert</td><td>recorded stock count</td><td>compare with threshold</td><td>alert or no alert</td></tr><tr><td class="tight">daily report</td><td class="tight">sale records</td><td class="tight">group and total</td><td class="tight">branch summary</td></tr><tr><td class="tight">door controller</td><td>valid access signal</td><td class="tight">check permission</td><td>unlock or remain locked</td></tr></tbody></table></div>
+  <div class="worked"><b class="wk-h">Worked example 1</b><p class="wk-q">A checkout receives product P-1042 and quantity 2. It finds a price of £1.50 per item. Identify the input, processing and output.</p><ol class="wk-steps"><li>The input is the product code and quantity.</li><li>The program looks up £1.50 and multiplies it by 2.</li><li>The output contributed to the basket is £3.00.</li></ol><p class="wk-a"><b>Answer.</b> Input: P-1042 and 2. Processing: price lookup and multiplication. Output: £3.00.</p><div class="wk-show"><figure><svg aria-label="Two machines wired in series: look up, multiply then return. The input P-1042 × 2 enters the first, the value £1.50 passes along the wire between them, and basket leaves the second." class="fig " viewBox="0 0 460 138" width="460" height="138" role="img"><rect width="460" height="138" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="10.5" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><rect x="10.5" y="43" width="76" height="50" rx="10" fill="#fff7f0" stroke="#e0813a" stroke-width="1.5"/><text x="48.5" y="72" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="48.5" dy="0">P-1042 × 2</tspan></text><path d="M91.5 68 H102.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="108.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="123.5" cy="52" r="9" fill="#12897c"/><text x="123.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">1</text><text x="158" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="158" dy="0">look up</tspan></text><rect x="114.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="158" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">£1.50</text><path d="M212.5 68 H223.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="229.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="244.5" cy="52" r="9" fill="#12897c"/><text x="244.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">2</text><text x="279" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="279" dy="0">multiply</tspan></text><rect x="235.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="279" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">£3.00</text><path d="M333.5 68 H344.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="350.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="365.5" cy="52" r="9" fill="#12897c"/><text x="365.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">3</text><text x="400" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="400" dy="0">return</tspan></text><rect x="356.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="400" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">basket</text><text x="450" y="23" text-anchor="end" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">PROCESS → RESULT</text></svg></figure></div><p class="wk-n">The stored price is data. The instructions that retrieve and use it belong to the program.</p><div class="turn"><b>Your turn.</b> <span>A stock alert receives count 3 and threshold 5, compares them and shows “reorder”. Name the three parts.</span><details><summary>answer</summary><span>Input: 3 and 5. Processing: compare count with threshold. Output: the reorder alert.</span></details></div></div>
+  <h3>Order matters</h3>
+  <p>Instructions form a sequence. “Find the price, multiply by quantity, then add to the basket” is meaningful. “Add to the basket, then find the price” asks the system to use a value it does not yet have. Computers follow execution order, not the order a person probably intended.</p>
+  <figure><table class="fig-table"><thead><tr><th scope="col">Step</th><th scope="col">Instruction</th><th scope="col">Available afterward</th></tr></thead><tbody><tr><td>1</td><td>read product code</td><td>P-1042</td></tr><tr><td>2</td><td>look up price</td><td>£1.50</td></tr><tr><td>3</td><td>read quantity</td><td>2</td></tr><tr><td>4</td><td>multiply price by quantity</td><td>£3.00</td></tr><tr><td>5</td><td>add line amount to basket</td><td>new basket total</td></tr></tbody></table><figcaption>Each step supplies something the next step can use. Moving a step can change the result or make execution impossible.</figcaption></figure>
+  <div class="worked"><b class="wk-h">Worked example 2</b><p class="wk-q">A report must load today’s sales, remove cancelled transactions, then calculate revenue. Why should calculation come last?</p><ol class="wk-steps"><li>Revenue depends on which records are included.</li><li>Cancelled transactions must be identified before the total is calculated.</li><li>Calculating first would include values that should not contribute.</li></ol><p class="wk-a"><b>Answer.</b> Calculation comes last because it must operate on the checked set of valid sales.</p><div class="wk-show"><figure><svg aria-label="Two machines wired in series: load, exclude cancelled then sum. The input sales enters the first, the value rows passes along the wire between them, and revenue leaves the second." class="fig " viewBox="0 0 460 138" width="460" height="138" role="img"><rect width="460" height="138" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="10.5" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><rect x="10.5" y="43" width="76" height="50" rx="10" fill="#fff7f0" stroke="#e0813a" stroke-width="1.5"/><text x="48.5" y="72" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="48.5" dy="0">sales</tspan></text><path d="M91.5 68 H102.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="108.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="123.5" cy="52" r="9" fill="#12897c"/><text x="123.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">1</text><text x="158" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="158" dy="0">load</tspan></text><rect x="114.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="158" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">rows</text><path d="M212.5 68 H223.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="229.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="244.5" cy="52" r="9" fill="#12897c"/><text x="244.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">2</text><text x="279" y="67" text-anchor="middle" font-size="9" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="279" dy="0">exclude</tspan><tspan x="279" dy="13">cancelled</tspan></text><rect x="235.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="279" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">valid rows</text><path d="M333.5 68 H344.5" stroke="#12897c" stroke-width="1.7" marker-end="url(#ar)"/><rect x="350.5" y="37" width="99" height="62" rx="10" fill="#fff" stroke="#12897c" stroke-width="1.5"/><circle cx="365.5" cy="52" r="9" fill="#12897c"/><text x="365.5" y="55.5" text-anchor="middle" font-size="8" fill="#fff" font-family="ui-sans-serif,system-ui,sans-serif">3</text><text x="400" y="73" text-anchor="middle" font-size="11" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="600"><tspan x="400" dy="0">sum</tspan></text><rect x="356.5" y="107" width="87" height="20" rx="10" fill="#e4f3ef"/><text x="400" y="121" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">revenue</text><text x="450" y="23" text-anchor="end" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">PROCESS → RESULT</text></svg></figure></div><p class="wk-n">A wrong order can produce a plausible number, which makes the error more dangerous.</p><div class="turn"><b>Your turn.</b> <span>Put these in order: display receipt, calculate basket total, read basket lines.</span><details><summary>answer</summary><span>Read basket lines, calculate basket total, display receipt.</span></details></div></div>
+  <h3>Programs make choices and repeat steps</h3>
+  <p>A useful program rarely follows only one straight path. A <b>condition</b> chooses a path: if stock is below the threshold, create an alert; otherwise continue. A <b>repetition</b> applies instructions again: for each sale line, calculate its amount.</p>
+  <ul class="bullets"><li><b>Sequence:</b> perform steps in an order.</li><li><b>Selection:</b> choose a path using a condition.</li><li><b>Repetition:</b> apply steps again while a rule says to continue or for each item in a collection.</li></ul>
+  <figure><svg aria-label="A mapping diagram: input stock 3 has one arrow, to alert, input stock 8 has one arrow, to no alert and input stock 0 has one arrow, to alert." class="fig " viewBox="0 0 320 202" width="320" height="202" role="img"><rect width="320" height="202" rx="12" fill="#f8faf9" stroke="#d8d3c7"/><text x="16" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">INPUT</text><text x="200" y="23" text-anchor="start" font-size="8" fill="#5d6b7d" font-family="ui-sans-serif,system-ui,sans-serif">RESULT</text><path d="M120 42 C145 42,175 42,200 42"
+        fill="none" stroke="#12897c" stroke-width="1.5" marker-end="url(#ar)" opacity=".82"/><path d="M120 84 C145 84,175 84,200 84"
+        fill="none" stroke="#12897c" stroke-width="1.5" marker-end="url(#ar)" opacity=".82"/><path d="M120 126 C145 126,175 42,200 42"
+        fill="none" stroke="#12897c" stroke-width="1.5" marker-end="url(#ar)" opacity=".82"/><rect x="16" y="28" width="104" height="28" rx="7" fill="#fff7f0" stroke="#e0813a" stroke-width="1.4"/><text x="68" y="46" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">stock 3</text><rect x="16" y="70" width="104" height="28" rx="7" fill="#fff7f0" stroke="#e0813a" stroke-width="1.4"/><text x="68" y="88" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">stock 8</text><rect x="16" y="112" width="104" height="28" rx="7" fill="#fff7f0" stroke="#e0813a" stroke-width="1.4"/><text x="68" y="130" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">stock 0</text><rect x="200" y="28" width="104" height="28" rx="7" fill="#eef6f4" stroke="#12897c" stroke-width="1.4"/><text x="252" y="46" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">alert</text><rect x="200" y="70" width="104" height="28" rx="7" fill="#eef6f4" stroke="#12897c" stroke-width="1.4"/><text x="252" y="88" text-anchor="middle" font-size="10" fill="#16283f" font-family="ui-sans-serif,system-ui,sans-serif">no alert</text><text x="160" y="190" text-anchor="middle" font-size="9" fill="#12897c" font-family="ui-sans-serif,system-ui,sans-serif">one condition, two possible paths</text></svg><figcaption>The comparison chooses an output for each input. The program does not worry; it evaluates the stated condition.</figcaption></figure>
+  <div class="worked"><b class="wk-h">Worked example 3</b><p class="wk-q">A program examines four basket lines and calculates an amount for each. What is repeating, and what changes?</p><ol class="wk-steps"><li>The instruction “price multiplied by quantity” repeats once per line.</li><li>The current product, price and quantity change from line to line.</li><li>The running basket total changes after each result is added.</li></ol><p class="wk-a"><b>Answer.</b> The calculation repeats; the current line data and running total change.</p><div class="wk-show"><figure><table class="fig-table"><thead><tr><th scope="col">Line</th><th scope="col">Price × quantity</th><th scope="col">Running total</th></tr></thead><tbody><tr><td>1</td><td>£2 × 1</td><td>£2</td></tr><tr><td>2</td><td>£1 × 3</td><td>£5</td></tr><tr><td>3</td><td>£4 × 1</td><td>£9</td></tr><tr><td>4</td><td>£2 × 2</td><td>£13</td></tr></tbody></table></figure></div><p class="wk-n">The value a program retains while it runs is part of its state.</p><div class="turn"><b>Your turn.</b> <span>A program checks every branch file for a missing date. What repeats?</span><details><summary>answer</summary><span>The same missing-date check repeats for each branch file; the current file and result change.</span></details></div></div>
+  <h3>Code, program, data and state</h3>
+  <p><b>Source code</b> is the written expression of instructions in a programming language. A running program is those instructions being executed by a computer system. <b>Data</b> is what the program reads, creates or changes. <b>State</b> is the data the running program currently remembers, such as the basket lines and current total.</p>
+  <aside class="callout "><b>One file can play different roles</b><p>A program can read code as data, and programs often generate other programs. The beginner distinction is still useful: ask whether a particular thing is being executed as instructions or handled as a value.</p></aside>
+  <div class="worked"><b class="wk-h">Worked example 4</b><p class="wk-q">A checkout program uses a price table. Which is code and which is data?</p><ol class="wk-steps"><li>The instruction “look up the scanned product in the price table” is code.</li><li>The product codes and prices in the table are data.</li><li>Changing a price changes the result without changing the lookup instruction.</li></ol><p class="wk-a"><b>Answer.</b> The lookup rule is code; the price table is data.</p><div class="wk-show"><figure><table class="fig-table"><thead><tr><th scope="col">Thing</th><th scope="col">Role</th></tr></thead><tbody><tr><td>look up product code</td><td>instruction / code</td></tr><tr><td>P-1042 → £1.50</td><td>data</td></tr><tr><td>current basket total</td><td>running state</td></tr></tbody></table></figure></div><p class="wk-n">Keeping changing business values out of the instruction itself makes the system easier to maintain and audit.</p><div class="turn"><b>Your turn.</b> <span>A report program reads a CSV file of sales. Which is the program and which is the data?</span><details><summary>answer</summary><span>The instructions that read and summarise are the program; the sales records in the CSV file are data.</span></details></div></div>
+  <h3>A computer can execute a mistake perfectly</h3>
+  <p>A program does what its implemented instructions specify under the conditions it encounters. That is not always what its author wanted. A missing rule, incorrect comparison, wrong unit or misunderstood business definition can produce an incorrect result at great speed.</p>
+  <ul class="bullets"><li>A <b>syntax error</b> breaks the language’s writing rules.</li><li>A <b>runtime error</b> occurs while instructions execute.</li><li>A <b>logic error</b> allows execution but produces the wrong behaviour.</li><li>A <b>bad input</b> may make correct instructions produce an unusable result.</li></ul>
+  <aside class="callout "><b>Programs need tests and monitoring</b><p>Check ordinary cases, boundaries, missing inputs and known answers. After release, monitor whether the real system continues to behave as expected.</p></aside>
+  <h3>Reference and provenance record</h3>
+  <p>Terminology was cross-checked against the NIST Computer Security Resource Center glossary entry for software and its cited source publications, and against the Python Software Foundation’s Python 3.14 tutorial and language documentation (accessed 21 August 2026). These are reference checks; no wording, examples or diagrams were copied. Stable records: https://csrc.nist.gov/glossary/term/software and https://docs.python.org/3/tutorial/</p>
+  <p>The Qubix Superstore checkout, stock alert, report flow, values and questions are original synthetic teaching material. No production retailer program, source code or data was used.</p>
+
+  
+  <div class="practice">
+    <div class="pr-head"><b>Practice</b><span>20 items · Recall, Recognise, Explain, Apply, Decide, Reconstruct</span></div>
+    <ol class="pr-list">
+      <li class="pr-tier"><b>Core</b><span>the standard set</span></li><li>
+        <div class="pr-top"><span class="pr-q">In one sentence, what is a computer program?</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">A computer program is a stored set of precise instructions that a computer system can execute.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A scanner supplies product P-1042. Is that value an instruction or input data?</span><span class="pr-l">Recognise</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It is input data supplied to the checkout program.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A screen shows £3.00 after a scan. Is that an input or output?</span><span class="pr-l">Recognise</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It is an output produced by the program’s processing.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Name the three parts of the simplest program description used here.</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Input, processing or instructions, and output or action.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Why does instruction order matter?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">A later instruction may depend on a value created by an earlier one, and changing the order can change or prevent the result.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Put these in order: add amount to basket, look up price, read product code.</span><span class="pr-l">Apply</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Read product code, look up price, add the calculated amount to the basket.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What does a condition allow a program to do?</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It allows the program to choose between paths based on whether a stated test is satisfied.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What does repetition allow a program to do?</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It allows instructions to be applied again, such as once for every sale line or branch file.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A program checks “stock below 5”. What output should stock 3 produce?</span><span class="pr-l">Apply</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It should follow the below-threshold path, such as producing a reorder alert.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What is source code?</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It is the written expression of program instructions in a programming language.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What is program state?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">It is the data the running program currently remembers, such as the present basket and running total.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">A price changes from £2 to £2.20 while the lookup rule stays the same. What changed?</span><span class="pr-l">Apply</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">The price data changed; the lookup instruction did not.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Can a fast program still be wrong?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Yes. It can execute an incorrect rule or use bad input very quickly.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What kind of error executes successfully but gives the wrong result?</span><span class="pr-l">Recall</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">A logic error.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Why test a program with a known answer?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">A known answer lets you compare the program’s output with an independently established result.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Why test missing input?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Real data can be absent, and the program needs defined safe behaviour instead of crashing or inventing a value.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Does a computer understand the business goal merely because it runs the program?</span><span class="pr-l">Decide</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">No. It executes implemented instructions; human designers remain responsible for expressing and checking the goal.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">Give one Superstore example of input, processing and output.</span><span class="pr-l">Reconstruct</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Example: stock count and threshold enter; the program compares them; a reorder alert is produced when the count is lower.</p>
+          
+        </details></li>
+      <li>
+        <div class="pr-top"><span class="pr-q">What is the difference between code and data in the price-table example?</span><span class="pr-l">Explain</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">Code tells the system to perform a lookup; data supplies the product codes and prices being looked up.</p>
+          
+        </details></li>
+      <li class="pr-tier"><b>Stretch</b><span>these need a decision, not just a method</span></li><li class="hard">
+        <div class="pr-top"><span class="pr-q">A program totals cancelled sales because it filters them after calculating. Identify the fault.</span><span class="pr-l">Decide</span></div>
+        <details class="pr-sol"><summary>show solution</summary>
+          
+          <p class="pr-a">The instruction sequence is wrong. Cancelled records must be excluded before the revenue calculation.</p>
+          
+        </details></li>
+    </ol>
+  </div>
+
+  
+  <aside class="callout warn"><b>Common mistake: a computer understands the intention behind its program</b>
+    <p>Because computers respond quickly and consistently, it is easy to imagine that they know what the author meant and will repair an unclear or incomplete instruction.</p>
+    <p class="fix"><b>Why it is wrong.</b> Execution follows implemented rules and available data. A computer can apply the wrong business definition consistently, making human specification, testing, review and monitoring essential.</p>
+  </aside>
+
+  <aside class="callout back"><b>Returning to earlier work</b><p>Ebook 001 established the difference between an event and recorded data. Return to it if input data, stored prices or output records seem interchangeable with the instructions that process them.</p></aside>
+</section>
+  
+<section class="chapter answers" id="answers">
+  <div class="kicker">ANSWER KEY</div>
+  <h2>Answers, shown</h2>
+  <p class="stand">Every practice item is answered here, with the reasoning that produces it and, wherever a picture says it better than a sentence, the picture. 0 of 20 are drawn so far. A book that answers only the odd numbers teaches its reader to guess.</p>
+  
+  <div class="ans-ch">
+    <h3><a href="#ch1">1. What a computer program does</a></h3>
+    
+    <div class="ans">
+      <div class="ans-n">1</div>
+      <div class="ans-body">
+        <p class="ans-q">In one sentence, what is a computer program?</p>
+        <p class="ans-a">A computer program is a stored set of precise instructions that a computer system can execute.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">2</div>
+      <div class="ans-body">
+        <p class="ans-q">A scanner supplies product P-1042. Is that value an instruction or input data?</p>
+        <p class="ans-a">It is input data supplied to the checkout program.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">3</div>
+      <div class="ans-body">
+        <p class="ans-q">A screen shows £3.00 after a scan. Is that an input or output?</p>
+        <p class="ans-a">It is an output produced by the program’s processing.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">4</div>
+      <div class="ans-body">
+        <p class="ans-q">Name the three parts of the simplest program description used here.</p>
+        <p class="ans-a">Input, processing or instructions, and output or action.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">5</div>
+      <div class="ans-body">
+        <p class="ans-q">Why does instruction order matter?</p>
+        <p class="ans-a">A later instruction may depend on a value created by an earlier one, and changing the order can change or prevent the result.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">6</div>
+      <div class="ans-body">
+        <p class="ans-q">Put these in order: add amount to basket, look up price, read product code.</p>
+        <p class="ans-a">Read product code, look up price, add the calculated amount to the basket.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">7</div>
+      <div class="ans-body">
+        <p class="ans-q">What does a condition allow a program to do?</p>
+        <p class="ans-a">It allows the program to choose between paths based on whether a stated test is satisfied.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">8</div>
+      <div class="ans-body">
+        <p class="ans-q">What does repetition allow a program to do?</p>
+        <p class="ans-a">It allows instructions to be applied again, such as once for every sale line or branch file.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">9</div>
+      <div class="ans-body">
+        <p class="ans-q">A program checks “stock below 5”. What output should stock 3 produce?</p>
+        <p class="ans-a">It should follow the below-threshold path, such as producing a reorder alert.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">10</div>
+      <div class="ans-body">
+        <p class="ans-q">What is source code?</p>
+        <p class="ans-a">It is the written expression of program instructions in a programming language.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">11</div>
+      <div class="ans-body">
+        <p class="ans-q">What is program state?</p>
+        <p class="ans-a">It is the data the running program currently remembers, such as the present basket and running total.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">12</div>
+      <div class="ans-body">
+        <p class="ans-q">A price changes from £2 to £2.20 while the lookup rule stays the same. What changed?</p>
+        <p class="ans-a">The price data changed; the lookup instruction did not.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">13</div>
+      <div class="ans-body">
+        <p class="ans-q">Can a fast program still be wrong?</p>
+        <p class="ans-a">Yes. It can execute an incorrect rule or use bad input very quickly.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">14</div>
+      <div class="ans-body">
+        <p class="ans-q">What kind of error executes successfully but gives the wrong result?</p>
+        <p class="ans-a">A logic error.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">15</div>
+      <div class="ans-body">
+        <p class="ans-q">Why test a program with a known answer?</p>
+        <p class="ans-a">A known answer lets you compare the program’s output with an independently established result.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">16</div>
+      <div class="ans-body">
+        <p class="ans-q">Why test missing input?</p>
+        <p class="ans-a">Real data can be absent, and the program needs defined safe behaviour instead of crashing or inventing a value.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">17</div>
+      <div class="ans-body">
+        <p class="ans-q">Does a computer understand the business goal merely because it runs the program?</p>
+        <p class="ans-a">No. It executes implemented instructions; human designers remain responsible for expressing and checking the goal.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">18</div>
+      <div class="ans-body">
+        <p class="ans-q">Give one Superstore example of input, processing and output.</p>
+        <p class="ans-a">Example: stock count and threshold enter; the program compares them; a reorder alert is produced when the count is lower.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">19</div>
+      <div class="ans-body">
+        <p class="ans-q">What is the difference between code and data in the price-table example?</p>
+        <p class="ans-a">Code tells the system to perform a lookup; data supplies the product codes and prices being looked up.</p>
+        
+      </div>
+    </div>
+    <div class="ans">
+      <div class="ans-n">20</div>
+      <div class="ans-body">
+        <p class="ans-q">A program totals cancelled sales because it filters them after calculating. Identify the fault.</p>
+        <p class="ans-a">The instruction sequence is wrong. Cancelled records must be excluded before the revenue calculation.</p>
+        
+      </div>
+    </div>
+  </div>
+</section>
+  
+<section class="chapter" id="gate">
+  <div class="kicker">COMPLETION</div>
+  <h2>What this book still owes its reader</h2>
+  <p class="stand">A chapter passes when it carries at least 4 worked examples, each followed by a parallel one the reader does; at least 4 figures; an illustrated or operable answer on every worked example; at least 20 practice items with an answer for every one; a named misconception; and a link back to earlier work. This table is counted from the source at build time, so it cannot flatter the book.</p>
+  <div class="tw"><table class="data gate">
+    <thead><tr><th scope="col">Chapter</th><th scope="col" class="num">Requirements met</th><th scope="col" class="num">Labs</th><th scope="col" class="num">Figures</th><th scope="col" class="num">Practice</th><th scope="col"></th></tr></thead>
+    <tbody><tr class="ok">
+      <td class="g-name"><span class="g-num">1</span>What a computer program does</td>
+      <td class="num">8 of 8</td>
+      <td class="num">—</td>
+      <td class="num">14</td>
+      <td class="num">20</td>
+      <td><span class="pill yes">passes</span></td></tr></tbody>
+  </table></div>
+  <p class="gate-sum"><b>1 of 1 chapters</b> meet the gate.
+  20 practice items, every one with a solution you can open; 4 worked examples
+  carrying 4 parallel exercises and 4 illustrated answers; 0 interactive labs;
+  and 14 figures, every one computed at build time from the formula printed beside it.</p>
+</section>
+</div>
+<svg width="0" height="0"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5"
+  markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16283f"/></marker></defs></svg>
+
+<script src="./what-a-program-does.js" defer></script>
+</body></html>

@@ -1,0 +1,115 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "The smallest piece",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "atoms", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Take a piece of aluminum foil. Cut it in half. Now cut one of those halves in half. Keep going. If you had a microscopic pair of scissors, how far could you go? Is there a smallest piece, or can you just keep dividing that foil forever?</p>" },
+        { "content": "<p>People argued about this for thousands of years. Some said you could keep cutting forever. Others argued that eventually, you would hit a hard limit. They said you would reach a piece of matter so fundamental that it simply could not be cut anymore.</p>" },
+        { "content": "<p>The ancient Greeks called this hypothetical, uncuttable piece <em>atomos</em>.</p>" },
+        { "content": "<p>It turns out, they were right. If you cut that foil enough times, you eventually get down to a single, solitary piece of aluminum. If you force that piece to split one more time, it ceases to be aluminum entirely. You have reached the bottom. That is the atom.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Are we sure?",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "atoms", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>For a long time, the atom was just a very good guess. Nobody had ever seen one, because they are so impossibly small that regular light waves just pass right over them.</p>" },
+        { "content": "<p>So, how do we know they are actually there? Are we certain?</p>" },
+        { "content": "<p>Yes. Today, we don't have to guess. We have electron microscopes that bounce tiny particles off objects to map their surface.</p>" },
+        { "content": "<p>If you put a piece of metal under one of these microscopes, you can look at a screen and actually see the atoms. They look like millions of fuzzy little tennis balls stacked neatly in rows. It is not just a theory anymore. It is a physical fact.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The absolute smallest?",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "subatomic", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If the atom is the bottom of the pile, is it the absolute smallest thing in the universe? Not quite.</p>" },
+        { "content": "<p>An atom actually has pieces. It has a heavy, dense center called the nucleus. And zipping around that center at incredible speeds is a cloud of much, much smaller particles called electrons.</p>" },
+        { "content": "<p>You can smash an atom apart into these smaller pieces. But if you take an aluminum atom and smash it apart, you do not have microscopic aluminum anymore. You just have a pile of generic, raw parts.</p>" },
+        { "content": "<p>An electron from an aluminum atom is exactly the same as an electron from a gold atom. The atom is simply the smallest piece of a substance that still keeps its identity.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Elements",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "elements", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>So, everything in the physical world is made of atoms. But aluminum behaves very differently from iron, and iron behaves differently from gold. Why?</p>" },
+        { "content": "<p>Because not all atoms are built exactly the same. Some atoms have a heavy center with lots of electrons zipping around it. Some have a light center with only one or two electrons.</p>" },
+        { "content": "<p>These differences completely change how the atom behaves in the real world. In chemistry, a specific type of atom is called an <em>element</em>.</p>" },
+        { "content": "<p>Gold is an element. Iron is an element. If you have a solid bar of pure gold, every single atom inside it is exactly the same.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The identity badge",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "protons", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>But wait. If all electrons are identical, and all atoms are built from the same raw parts, why is a hydrogen atom a highly explosive gas, while an oxygen atom lets you breathe?</p>" },
+        { "content": "<p>It all comes down to simple counting.</p>" },
+        { "content": "<p>Inside the heavy center of every atom (the nucleus) are tiny particles called protons. The number of protons is the atom's ultimate identity badge.</p>" },
+        { "content": "<p>If you have exactly 1 proton in the center, you are Hydrogen. Period. If you have exactly 8 protons in the center, you are Oxygen.</p>" },
+        { "content": "<p>If you took a Hydrogen atom and somehow jammed a second proton into its center, it wouldn't be Hydrogen anymore. It would instantly become a completely different element. Identity is just a headcount.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The inventory",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "periodic-table", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Since there are millions of different textures, gases, and liquids in the world, you might assume there are millions of different elements. But there are not.</p>" },
+        { "content": "<p>In nature, there are only about 100 different elements.</p>" },
+        { "content": "<p>The Periodic Table that you see in science classrooms is not a complex math puzzle. It is simply a list. It is an inventory of every single type of atom that exists, sorted by how many protons they have.</p>" },
+        { "content": "<p>Every physical object you have ever touched or seen is built entirely from that short list of 100 atoms.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Flesh and bone",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "biochemistry", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>When people hear that the world is built from just 100 atoms, they usually ask: does that include living things? What about a tree? What about blood, skin, or a human brain?</p>" },
+        { "content": "<p>Yes. There is no special 'life' particle in the universe.</p>" },
+        { "content": "<p>A rock is just a massive collection of atoms. And you are just a massive collection of atoms. You are mostly made of carbon, hydrogen, oxygen, and nitrogen.</p>" },
+        { "content": "<p>The exact same carbon atoms that make up a lump of coal are currently inside your body, building your cells. The only difference between a rock and a living human is how those atoms are arranged, and how complicated the machinery is.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Molecules",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "molecules", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If there are only 100 types of atoms, how do we get millions of different substances, like water, plastic, and human skin?</p>" },
+        { "content": "<p>Atoms do not usually sit alone. They bond together. When two or more atoms physically attach to each other, the new group they form is called a <em>molecule</em>.</p>" },
+        { "content": "<p>Take water, for example. You will not find 'water' on the Periodic Table. There is no such thing as a water atom.</p>" },
+        { "content": "<p>Water is a molecule made by attaching two hydrogen atoms to one oxygen atom. Hydrogen and oxygen are both invisible gases. But the moment they bond together, they form a liquid you can drink. The joined molecule has completely different properties than the bare atoms it is made of.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The hookup",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "chemical-bonds", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>So, how do two atoms actually bond? They don't have physical hooks or velcro. How do a hydrogen atom and an oxygen atom hold onto each other?</p>" },
+        { "content": "<p>It all comes down to those tiny electrons zipping around the outside of the atom.</p>" },
+        { "content": "<p>Atoms like to share electrons. When two atoms get close enough, an electron from one atom will start zipping around the other atom too. It flies in a figure-eight, orbiting both of them.</p>" },
+        { "content": "<p>Because they are now sharing a moving part, they are locked together. They are physically tethered to each other by electricity. That shared electron is what chemists call a <em>chemical bond</em>.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Rearranging",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "reactions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>When atoms share electrons to form molecules, they build the physical world. But these electrical bonds are not permanent.</p>" },
+        { "content": "<p>When a piece of wood burns in a fire, it looks like the wood is vanishing into nothing. It is not.</p>" },
+        { "content": "<p>The heat is simply breaking the electrical grip that holds the wood molecules together. The atoms themselves are not destroyed. They are just let loose.</p>" },
+        { "content": "<p>Once loose, they immediately bond with oxygen in the air, floating away as smoke and invisible gases. The exact same atoms are still there, just holding hands with a different partner. In chemistry, matter is never destroyed. It just rearranges.</p>" }
+      ]
+    }
+  ]
+}

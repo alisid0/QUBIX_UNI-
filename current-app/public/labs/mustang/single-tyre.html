@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Single Tyre — Friction Demo</title>
+<style>
+  :root {
+    --bg: #0d0f14; --panel: #171a21; --panel-2: #1e222b;
+    --line: #2a2f3a; --text: #e6e9ef; --muted: #9aa3b2;
+    --accent: #35d07f; --bad: #ff5c5c; --eq: #7fb2ff;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: grid; grid-template-columns: 1fr 280px;
+    height: 100vh; overflow: hidden;
+    padding-bottom: 52px; /* room for fixed controls bar */
+  }
+  #viewport { position: relative; min-width: 0; }
+  #viewport canvas { display: block; }
+  aside { overflow-y: auto; }
+
+  /* ── Controls bar — FIXED at bottom, never hidden ── */
+  #controls-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 52px;
+    background: #1a1f2b;
+    border-top: 2px solid var(--accent);
+    padding: 0 20px;
+    display: flex; align-items: center; gap: 16px;
+    z-index: 99999;
+  }
+  #controls-bar label { display: flex; align-items: center; gap: 8px;
+    font-size: 14px; color: var(--text); white-space: nowrap; font-weight: 600; }
+  #controls-bar .hint { font-size: 12px; color: var(--muted); margin-left: 4px; }
+  #controls-bar input[type=range] {
+    width: 180px; accent-color: var(--accent); cursor: pointer;
+  }
+  #controls-bar .throttle-pct {
+    font-weight: 700; font-size: 20px; min-width: 44px; text-align: right;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+  }
+  #controls-bar select {
+    padding: 6px 10px; border-radius: 6px; background: var(--panel-2);
+    color: var(--text); border: 1px solid var(--line);
+    font: inherit; font-size: 13px; cursor: pointer;
+  }
+  #controls-bar button {
+    padding: 7px 16px; border-radius: 6px; background: var(--panel-2);
+    color: var(--text); border: 1px solid var(--line);
+    cursor: pointer; font: inherit; font-size: 13px; font-weight: 600;
+  }
+  #controls-bar button:hover { background: #2a3040; border-color: var(--accent); }
+
+  aside {
+    display: flex; flex-direction: column; border-left: 1px solid var(--line);
+    background: var(--panel); padding: 14px; overflow-y: auto; gap: 10px;
+  }
+  h1 { font-size: 18px; margin-bottom: 4px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+
+  .panel { background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 13px 14px; }
+  .slider { display: block; margin-bottom: 6px; font-size: 13px; }
+  .slider span { display: flex; justify-content: space-between; color: var(--muted); }
+  .slider .v { color: var(--text); }
+  .slider input { width: 100%; margin-top: 4px; accent-color: var(--accent); }
+
+  select { width: 100%; padding: 7px; border-radius: 6px;
+    background: var(--panel); color: var(--text); border: 1px solid var(--line);
+    font: inherit; font-size: 13px; margin-top: 4px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table td { padding: 5px 0; border-bottom: 1px solid #23272f; }
+  table td:first-child { color: var(--muted); }
+  table td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .eq { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--eq); font-size: 12px; }
+
+  .gauge { margin-top: 4px; }
+  .gauge .bar { position: relative; height: 14px; border-radius: 7px;
+    background: #0f1218; overflow: hidden; border: 1px solid var(--line); }
+  .gauge .fill { height: 100%; width: 0; background: var(--accent); transition: width .06s linear; }
+  .gauge .fill.over { background: var(--bad); }
+  .bar-labels { display: flex; justify-content: space-between; font-size: 12px;
+    color: var(--muted); margin-top: 5px; }
+  .bar-labels b { color: var(--text); }
+
+  .status { margin-top: 6px; font-size: 13px; color: var(--accent); }
+  .status.bad { color: var(--bad); font-weight: 600; }
+
+  .legend { position: absolute; top: 14px; left: 16px;
+    background: rgba(0,0,0,.55); padding: 9px 13px; border-radius: 8px;
+    font-size: 12px; backdrop-filter: blur(4px); line-height: 1.9; }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px;
+    margin-right: 7px; vertical-align: -1px; }
+
+  button { width: 100%; padding: 8px; border-radius: 6px;
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--line);
+    cursor: pointer; font: inherit; font-size: 13px; }
+  button:hover { border-color: #444c5c; }
+
+  @media (max-width: 800px) {
+    body { grid-template-columns: 1fr; grid-template-rows: 55vh 1fr; padding-bottom: 48px; }
+    aside { border-left: none; border-top: 1px solid var(--line); }
+    #controls-bar { flex-wrap: wrap; gap: 8px; padding: 0 10px; height: 44px; }
+    #controls-bar input[type=range] { width: 90px; }
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<main id="viewport">
+  <div class="legend">
+    <i style="background:#35d07f"></i>Drive force (road → tyre)<br>
+    <i style="background:#6aa9ff"></i>Weight (mg)<br>
+    <i style="background:#c77dff"></i>Normal reaction (N)<br>
+    <i style="background:#ffa93d"></i>Rolling resistance
+  </div>
+</main>
+
+<div id="controls-bar">
+  <label>🛞 Throttle
+    <input type="range" id="throttle" min="0" max="100" value="0">
+    <span class="throttle-pct" id="throttle-v">0%</span>
+  </label>
+  <label>Surface
+    <select id="surface">
+      <option value="dry">Dry (μ=0.90)</option>
+      <option value="wet">Wet (μ=0.60)</option>
+      <option value="gravel">Gravel (μ=0.40)</option>
+      <option value="ice">Ice (μ=0.12)</option>
+    </select>
+  </label>
+  <button id="reset">⟳ Reset</button>
+  <span class="hint">or hold <b>W</b> · press <b>F</b> for arrows</span>
+</div>
+
+<aside>
+  <h1 style="font-size:16px;margin-bottom:2px;">Live Telemetry</h1>
+
+  <div class="panel">
+    <h2>Grip</h2>
+    <div class="gauge">
+      <div class="bar"><div class="fill" id="grip-fill"></div></div>
+      <div class="bar-labels">
+        <span>Demand <b id="demand">0 N</b></span>
+        <span>Limit μN <b id="grip-limit">0 N</b></span>
+      </div>
+    </div>
+    <div class="status" id="grip-status">Gripping</div>
+  </div>
+
+  <div class="panel">
+    <h2>Telemetry</h2>
+    <table>
+      <tr><td>Speed</td><td><b id="speed">0.0</b> km/h</td></tr>
+      <tr><td>Accel <span class="eq">a=F/m</span></td><td><b id="accel">0.00</b> m/s²</td></tr>
+      <tr><td>Distance</td><td><b id="dist">0.0</b> m</td></tr>
+      <tr><td>Drive force</td><td><b id="fdrive">0</b></td></tr>
+      <tr><td>Rolling resist <span class="eq">C<sub>rr</sub>mg</span></td><td><b id="frr">0</b></td></tr>
+      <tr><td>Net force</td><td><b id="fnet">0</b></td></tr>
+      <tr><td>Normal load N</td><td><b id="normal">0</b></td></tr>
+    </table>
+  </div>
+</aside>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ── Physics constants ──
+const G = 9.81;
+const MASS = 400;          // kg — one tyre carries ~¼ of a car
+const MAX_FORCE = 5000;    // N — max drive force at this wheel
+const C_RR = 0.015;        // rolling resistance coefficient
+
+const SURFACES = {
+  dry:    { label: 'Dry tarmac', mu: 0.90, colour: 0x33363c },
+  wet:    { label: 'Wet tarmac', mu: 0.60, colour: 0x2b3038 },
+  gravel: { label: 'Loose gravel', mu: 0.40, colour: 0x4a4033 },
+  ice:    { label: 'Ice',      mu: 0.12, colour: 0x6d7c88 }
+};
+
+// ── Scene ──
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1d25);
+scene.fog = new THREE.Fog(0x1a1d25, 30, 80);
+
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 200);
+camera.position.set(4, 2.5, 6);
+camera.lookAt(0, 0.4, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+document.getElementById('viewport').appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.target.set(0, 0.4, 0);
+controls.minDistance = 3;
+controls.maxDistance = 20;
+controls.maxPolarAngle = Math.PI / 2 - 0.03;
+
+// ── Lighting ──
+scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x30302c, 0.7));
+const sun = new THREE.DirectionalLight(0xffffff, 2.5);
+sun.position.set(5, 8, 4);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 1, far: 25 });
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+
+// ── Road ──
+function makeRoadTex() {
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 8;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, 128, 8);
+  ctx.fillStyle = '#c8c8c8';
+  ctx.fillRect(0, 0, 10, 8);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(100, 1);
+  return tex;
+}
+const roadTex = makeRoadTex();
+const roadMat = new THREE.MeshStandardMaterial({
+  color: SURFACES.dry.colour, roughness: 0.92, metalness: 0.0, map: roadTex
+});
+const road = new THREE.Mesh(new THREE.PlaneGeometry(200, 20), roadMat);
+road.rotation.x = -Math.PI / 2;
+road.receiveShadow = true;
+scene.add(road);
+
+// ── Tyre ──
+const tyreGroup = new THREE.Group();
+scene.add(tyreGroup);
+
+// Tread (dark rubber cylinder)
+const treadGeo = new THREE.CylinderGeometry(0.44, 0.44, 0.28, 48);
+const treadMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9, metalness: 0.0 });
+const tread = new THREE.Mesh(treadGeo, treadMat);
+tread.rotation.z = Math.PI / 2; // lay it flat like a wheel
+tread.castShadow = true;
+tyreGroup.add(tread);
+
+// Rim (metallic disc)
+const rimGeo = new THREE.CylinderGeometry(0.30, 0.30, 0.29, 32);
+const rimMat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, metalness: 0.9, roughness: 0.2 });
+const rim = new THREE.Mesh(rimGeo, rimMat);
+rim.rotation.z = Math.PI / 2;
+tyreGroup.add(rim);
+
+// Spokes (subtle cross pattern)
+const spokes = [];
+for (let i = 0; i < 5; i++) {
+  const angle = (i / 5) * Math.PI;
+  const spokeGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.58, 8);
+  const spoke = new THREE.Mesh(spokeGeo, rimMat);
+  spoke.rotation.z = Math.PI / 2;
+  spoke.rotation.y = angle;
+  spokes.push(spoke);
+  tyreGroup.add(spoke);
+}
+
+// All parts that spin with the wheel
+const wheelParts = [tread, rim, ...spokes];
+
+tyreGroup.position.set(0, 0.44, 0);
+
+// ── Force arrows ──
+const arrowScale = 1 / 800; // m per newton
+function makeArrow(colour, dir) {
+  const arrow = new THREE.ArrowHelper(
+    dir.clone().normalize(), new THREE.Vector3(), 0.2, colour, 0.18, 0.10
+  );
+  scene.add(arrow);
+  return arrow;
+}
+const V3 = THREE.Vector3;
+const arrowDrive = makeArrow(0x35d07f, new V3(1, 0, 0));
+const arrowWeight = makeArrow(0x6aa9ff, new V3(0, -1, 0));
+const arrowNormal = makeArrow(0xc77dff, new V3(0, 1, 0));
+const arrowRR = makeArrow(0xffa93d, new V3(-1, 0, 0));
+
+let showForces = true;
+
+// ── Simulation state ──
+let v = 0, distance = 0, ax = 0;
+let surfaceKey = 'dry';
+let currentMu = SURFACES.dry.mu;
+let slipping = false;
+
+function reset() {
+  v = 0; distance = 0; ax = 0; slipping = false;
+}
+
+// ── UI ──
+const el = {};
+for (const id of ['throttle', 'throttle-v', 'surface', 'reset',
+  'demand', 'grip-limit', 'grip-fill', 'grip-status',
+  'speed', 'accel', 'dist', 'fdrive', 'frr', 'fnet', 'normal']) {
+  el[id] = document.getElementById(id);
+}
+
+const keys = new Set();
+addEventListener('keydown', e => {
+  if (e.key === 'w' || e.key === 'W') { keys.add('w'); e.preventDefault(); }
+  if (e.key === 'f' || e.key === 'F') { showForces = !showForces; e.preventDefault(); }
+});
+addEventListener('keyup', e => keys.delete('w'));
+
+el.throttle.addEventListener('input', () => {
+  el['throttle-v'].textContent = el.throttle.value + '%';
+});
+el.surface.addEventListener('change', () => {
+  surfaceKey = el.surface.value;
+  currentMu = SURFACES[surfaceKey].mu;
+  roadMat.color.setHex(SURFACES[surfaceKey].colour);
+  reset();
+});
+el.reset.addEventListener('click', reset);
+
+// ── Resize ──
+function resize() {
+  const host = document.getElementById('viewport');
+  const w = host.clientWidth, h = host.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+
+// ── Loop ──
+// Use setInterval (not requestAnimationFrame) so the simulation runs
+// even when the tab is in the background — important for demos and testing.
+let lastTime = performance.now();
+
+function step() {
+  const now = performance.now();
+  const raw = (now - lastTime) / 1000;
+  lastTime = now;
+  // Clamp dt: if the tab was backgrounded, don't jump forward.
+  const safeDt = Math.min(0.05, raw > 0 ? raw : 1 / 60);
+
+  // --- Read controls ---
+  const throttle = keys.has('w') ? 1 : el.throttle.value / 100;
+
+  // --- Physics ---
+  const normalForce = MASS * G;
+  const demand = throttle * MAX_FORCE;
+  const gripLimit = currentMu * normalForce;
+
+  let drive;
+  if (!slipping) {
+    if (demand > gripLimit) { slipping = true; drive = gripLimit; }
+    else { drive = demand; }
+  } else {
+    if (demand <= gripLimit) { slipping = false; drive = demand; }
+    else { drive = gripLimit; }
+  }
+
+  const rollingResist = v > 0.01 ? C_RR * normalForce : 0;
+  const net = drive - rollingResist;
+  ax = net / MASS;
+
+  const vNew = v + ax * safeDt;
+  v = Math.max(0, vNew);
+  distance += v * safeDt;
+
+  // --- Visuals ---
+  roadTex.offset.x += (v * safeDt) / 2;
+
+  // Tyre rotation: tangential speed = v, so ω = v / r
+  // The wheel is laid flat (rotation.z = PI/2), so its axle is along world X.
+  const rollAngle = (v * safeDt) / 0.44;
+  const axle = new THREE.Vector3(1, 0, 0);
+  wheelParts.forEach(p => p.rotateOnWorldAxis(axle, rollAngle));
+
+  // Force arrows
+  const tyrePos = new V3(0, 0.44, 0);
+  if (showForces) {
+    arrowDrive.position.copy(tyrePos).add(new V3(0, 0.05, 0));
+    arrowDrive.setDirection(new V3(1, 0, 0));
+    arrowDrive.setLength(Math.max(0.15, drive * arrowScale), 0.18, 0.10);
+
+    arrowWeight.position.copy(tyrePos).add(new V3(0, -0.05, 0));
+    arrowWeight.setDirection(new V3(0, -1, 0));
+    arrowWeight.setLength(Math.max(0.15, normalForce * arrowScale), 0.18, 0.10);
+
+    arrowNormal.position.copy(tyrePos).add(new V3(0, -0.48, 0));
+    arrowNormal.setDirection(new V3(0, 1, 0));
+    arrowNormal.setLength(Math.max(0.15, normalForce * arrowScale), 0.18, 0.10);
+
+    arrowRR.position.copy(tyrePos).add(new V3(-0.4, 0.05, 0));
+    arrowRR.setDirection(new V3(-1, 0, 0));
+    arrowRR.setLength(Math.max(0.15, rollingResist * arrowScale), 0.18, 0.10);
+  }
+  [arrowDrive, arrowWeight, arrowNormal, arrowRR].forEach(a => {
+    a.visible = showForces && a.position.length() > 0;
+  });
+
+  // --- HUD ---
+  const pct = gripLimit > 0 ? Math.min(100, (demand / gripLimit) * 100) : 0;
+  el['grip-fill'].style.width = Math.min(100, pct) + '%';
+  el['grip-fill'].classList.toggle('over', slipping);
+
+  el.demand.textContent = Math.round(demand).toLocaleString() + ' N';
+  el['grip-limit'].textContent = Math.round(gripLimit).toLocaleString() + ' N';
+
+  if (slipping) {
+    el['grip-status'].textContent = `SLIPPING — demand ${Math.round(demand).toLocaleString()} N exceeds μN = ${Math.round(gripLimit).toLocaleString()} N`;
+    el['grip-status'].classList.add('bad');
+  } else {
+    el['grip-status'].textContent = 'Gripping — friction holding';
+    el['grip-status'].classList.remove('bad');
+  }
+
+  el.speed.textContent = (v * 3.6).toFixed(1);
+  el.accel.textContent = ax.toFixed(2);
+  el.dist.textContent = distance.toFixed(1);
+  el.fdrive.textContent = Math.round(drive).toLocaleString() + ' N';
+  el.frr.textContent = Math.round(rollingResist).toLocaleString() + ' N';
+  el.fnet.textContent = Math.round(net).toLocaleString() + ' N';
+  el.normal.textContent = Math.round(normalForce).toLocaleString() + ' N';
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+resize();
+setInterval(step, 16); // ~60 fps, runs even in background tabs
+</script>
+</body>
+</html>

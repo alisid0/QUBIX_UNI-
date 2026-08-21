@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1969 Mustang Boss 302</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #14161a; }
+    canvas { display: block; }
+    #info {
+      position: absolute; top: 12px; left: 12px;
+      color: #eee; font-family: system-ui, sans-serif;
+      background: rgba(0,0,0,0.6); padding: 8px 14px; border-radius: 8px;
+      font-size: 13px; letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+  <div id="info">1969 Mustang Boss 302 — drag to rotate • scroll to zoom</div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+    const TAU = Math.PI * 2;
+
+    // ---------------------------------------------------------------- scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x14161a);
+    scene.fog = new THREE.Fog(0x14161a, 20, 60);
+
+    const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 200);
+    camera.position.set(6.4, 2.3, 6.6);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    document.body.appendChild(renderer.domElement);
+
+    // studio reflections — this is what makes paint and chrome read correctly
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.target.set(0, 0.75, 0);
+    controls.minDistance = 4;
+    controls.maxDistance = 22;
+    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+
+    // --------------------------------------------------------------- lights
+    scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x30302c, 0.55));
+
+    const key = new THREE.DirectionalLight(0xffffff, 2.1);
+    key.position.set(6, 9, 5);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    const sc = key.shadow.camera;
+    sc.left = -6; sc.right = 6; sc.top = 6; sc.bottom = -6; sc.near = 1; sc.far = 30;
+    key.shadow.bias = -0.0005;
+    scene.add(key);
+
+    const rim = new THREE.DirectionalLight(0xbcd4ff, 0.7);
+    rim.position.set(-7, 4, -6);
+    scene.add(rim);
+
+    // --------------------------------------------------------------- ground
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(80, 80),
+      new THREE.MeshStandardMaterial({ color: 0x22242a, roughness: 0.9, metalness: 0.0 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // ------------------------------------------------------------ materials
+    const paint = new THREE.MeshPhysicalMaterial({
+      color: 0x1668c8, metalness: 0.55, roughness: 0.22,
+      clearcoat: 1.0, clearcoatRoughness: 0.06
+    });
+    const blackout = new THREE.MeshPhysicalMaterial({
+      color: 0x0b0b0c, metalness: 0.2, roughness: 0.55, clearcoat: 0.6
+    });
+    const chrome = new THREE.MeshStandardMaterial({ color: 0xf2f4f6, metalness: 1.0, roughness: 0.06 });
+    const rubber = new THREE.MeshStandardMaterial({ color: 0x0e0f10, roughness: 0.95, metalness: 0.0 });
+    const darkMetal = new THREE.MeshStandardMaterial({ color: 0x25272b, metalness: 0.8, roughness: 0.38 });
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      color: 0xaad4ee, metalness: 0.0, roughness: 0.03,
+      transmission: 0.9, thickness: 0.05, transparent: true, opacity: 0.6,
+      side: THREE.DoubleSide
+    });
+    const lensRed = new THREE.MeshStandardMaterial({
+      color: 0xd41400, emissive: 0x5a0800, roughness: 0.25, metalness: 0.1
+    });
+
+    // ----------------------------------------------------------- helpers
+    // Extrude a 2D side-profile (XY) across the car's width (Z), with a bevel
+    // so every edge is softened — this is what kills the "stack of boxes" look.
+    function extrudeProfile(shape, depth, bevel, material, curveSegments = 32) {
+      const geo = new THREE.ExtrudeGeometry(shape, {
+        depth, bevelEnabled: true,
+        bevelThickness: bevel, bevelSize: bevel, bevelSegments: 5,
+        curveSegments, steps: 1
+      });
+      geo.computeBoundingBox();
+      const bb = geo.boundingBox;
+      geo.translate(0, 0, -(bb.min.z + bb.max.z) / 2);   // centre on the Z axis
+      geo.computeVertexNormals();
+      const mesh = new THREE.Mesh(geo, material);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    function panel(w, h, d, mat) {
+      return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    }
+
+    // ------------------------------------------------------------------ car
+    const car = new THREE.Group();
+    car.name = 'Mustang';
+    scene.add(car);
+
+    // Axle geometry drives the wheel arches, so define it once.
+    const FRONT_X = 1.30, REAR_X = -1.49;
+    const FRONT_R = 0.44, REAR_R = 0.45;
+    const ROCKER_Y = 0.32;
+
+    // ===================================================== LOWER BODY SHELL
+    // One continuous silhouette: nose → rocker → arches → tail → deck →
+    // beltline → cowl → long hood → back to the nose.
+    const bodyProfile = new THREE.Shape();
+    bodyProfile.moveTo(2.36, ROCKER_Y);
+
+    // rocker + front arch
+    bodyProfile.lineTo(1.7854, ROCKER_Y);
+    bodyProfile.absarc(FRONT_X, 0.44, 0.50, -0.2424, Math.PI + 0.2424, false);
+    // rocker + rear arch
+    bodyProfile.lineTo(-0.9865, ROCKER_Y);
+    bodyProfile.absarc(REAR_X, 0.45, 0.52, -0.2527, Math.PI + 0.2527, false);
+    bodyProfile.lineTo(-2.30, ROCKER_Y);
+
+    // tail panel, kicked up into the deck lip
+    bodyProfile.quadraticCurveTo(-2.44, 0.36, -2.42, 0.64);
+    bodyProfile.quadraticCurveTo(-2.40, 0.94, -2.24, 1.01);
+    bodyProfile.lineTo(-2.02, 1.04);
+
+    // short rear deck → beltline → cowl
+    bodyProfile.lineTo(-1.55, 1.06);
+    bodyProfile.lineTo(0.20, 1.00);
+    bodyProfile.lineTo(0.58, 0.98);
+
+    // step down onto the long hood, which falls away toward the nose
+    bodyProfile.lineTo(0.66, 0.90);
+    bodyProfile.lineTo(2.02, 0.82);
+    bodyProfile.quadraticCurveTo(2.30, 0.80, 2.34, 0.66);
+    bodyProfile.quadraticCurveTo(2.44, 0.50, 2.36, ROCKER_Y);
+    bodyProfile.closePath();
+
+    const shell = extrudeProfile(bodyProfile, 1.60, 0.13, paint);
+    shell.name = 'BodyShell';
+    car.add(shell);
+
+    // ======================================================== GREENHOUSE
+    // Narrower than the shell, so the body tapers inward above the beltline.
+    const roofProfile = new THREE.Shape();
+    roofProfile.moveTo(0.56, 0.94);
+    roofProfile.lineTo(-0.20, 1.38);                          // windshield / A-pillar
+    roofProfile.quadraticCurveTo(-0.60, 1.42, -1.00, 1.39);   // roof crown
+    roofProfile.quadraticCurveTo(-1.62, 1.33, -2.06, 1.02);   // fastback run to the tail
+    roofProfile.lineTo(-1.70, 0.96);
+    roofProfile.closePath();
+
+    const greenhouse = extrudeProfile(roofProfile, 1.44, 0.09, paint);
+    greenhouse.name = 'Greenhouse';
+    car.add(greenhouse);
+
+    // ============================================================== GLASS
+    // Side glass: a thin extrusion sitting just proud of the greenhouse flank.
+    const sideGlassShape = new THREE.Shape();
+    sideGlassShape.moveTo(0.40, 1.02);
+    sideGlassShape.lineTo(-0.16, 1.33);
+    sideGlassShape.lineTo(-0.98, 1.31);
+    sideGlassShape.lineTo(-1.06, 1.02);
+    sideGlassShape.closePath();
+
+    [1, -1].forEach(side => {
+      const g = new THREE.ExtrudeGeometry(sideGlassShape, { depth: 0.02, bevelEnabled: false });
+      const m = new THREE.Mesh(g, glassMat);
+      m.position.z = side * 0.80 - (side > 0 ? 0 : 0.02);
+      car.add(m);
+    });
+
+    // Windshield and backlight, each aligned to its pillar line.
+    const windshield = panel(0.878, 0.03, 1.36, glassMat);
+    windshield.position.set(0.190, 1.177, 0);
+    windshield.rotation.z = Math.atan2(0.44, -0.76);
+    car.add(windshield);
+
+    const backlight = panel(1.053, 0.03, 1.34, glassMat);
+    backlight.position.set(-1.506, 1.244, 0);
+    backlight.rotation.z = Math.atan2(-0.33, -1.0);
+    car.add(backlight);
+
+    // ==================================================== BOSS 302 TRIM
+    // Blacked-out hood, angled to follow the hood's fall.
+    const hoodBlack = panel(1.38, 0.02, 1.34, blackout);
+    hoodBlack.position.set(1.34, 0.878, 0);
+    hoodBlack.rotation.z = Math.atan2(-0.08, 1.36);
+    car.add(hoodBlack);
+
+    // C-stripe along the flank
+    [1, -1].forEach(side => {
+      const stripe = panel(2.30, 0.13, 0.015, blackout);
+      stripe.position.set(0.42, 0.74, side * 0.932);
+      car.add(stripe);
+      // C-pillar scoop
+      const scoop = panel(0.46, 0.15, 0.05, blackout);
+      scoop.position.set(-1.22, 1.16, side * 0.80);
+      scoop.rotation.z = 0.30;
+      car.add(scoop);
+    });
+
+    // ============================================================== FRONT
+    const grille = panel(0.10, 0.34, 1.44, blackout);
+    grille.position.set(2.32, 0.62, 0);
+    car.add(grille);
+
+    // pony corral
+    const corral = panel(0.05, 0.17, 0.34, chrome);
+    corral.position.set(2.37, 0.62, 0);
+    car.add(corral);
+
+    // quad headlights: inboard pair inside the grille, outboard pair in the fenders
+    const headGeo = new THREE.CylinderGeometry(0.105, 0.105, 0.06, 24);
+    [[0.30, 0.10], [0.58, 0.115]].forEach(([z, r]) => {
+      [1, -1].forEach(side => {
+        const lamp = new THREE.Mesh(headGeo, chrome);
+        lamp.scale.setScalar(r / 0.105);
+        lamp.rotation.z = Math.PI / 2;
+        lamp.position.set(2.35, 0.64, side * z);
+        car.add(lamp);
+      });
+    });
+
+    const frontBumper = panel(0.10, 0.10, 1.84, chrome);
+    frontBumper.position.set(2.40, 0.42, 0);
+    frontBumper.castShadow = true;
+    car.add(frontBumper);
+
+    const spoiler = panel(0.26, 0.05, 1.72, blackout);
+    spoiler.position.set(2.28, 0.26, 0);
+    car.add(spoiler);
+
+    // =============================================================== REAR
+    const rearBumper = panel(0.10, 0.10, 1.80, chrome);
+    rearBumper.position.set(-2.45, 0.42, 0);
+    rearBumper.castShadow = true;
+    car.add(rearBumper);
+
+    // '69 tri-bar taillights
+    [1, -1].forEach(side => {
+      for (let j = 0; j < 3; j++) {
+        const bar = panel(0.05, 0.15, 0.11, lensRed);
+        bar.position.set(-2.44, 0.76, side * (0.34 + j * 0.14));
+        car.add(bar);
+      }
+    });
+
+    // exhaust tips
+    [1, -1].forEach(side => {
+      const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.22, 16), chrome);
+      tip.rotation.z = Math.PI / 2;
+      tip.position.set(-2.36, 0.30, side * 0.46);
+      car.add(tip);
+    });
+
+    // ============================================================= WHEELS
+    function createWheel(radius, width) {
+      const wheel = new THREE.Group();
+
+      const tire = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, width, 40), rubber);
+      tire.rotation.x = Math.PI / 2;
+      tire.castShadow = true;
+      wheel.add(tire);
+
+      const face = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius * 0.70, radius * 0.70, width * 1.03, 40),
+        chrome
+      );
+      face.rotation.x = Math.PI / 2;
+      wheel.add(face);
+
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, width * 1.1, 20), chrome);
+      hub.rotation.x = Math.PI / 2;
+      wheel.add(hub);
+
+      // Magnum 500 slots. Each slot lives in its own pivot group so the
+      // rotation happens around the axle, not around the slot's own centre.
+      for (let i = 0; i < 5; i++) {
+        [1, -1].forEach(side => {
+          const pivot = new THREE.Group();
+          pivot.rotation.z = (i / 5) * TAU;
+          const slot = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.19, 0.02), darkMetal);
+          slot.position.set(0, radius * 0.44, side * (width * 0.52 + 0.004));
+          pivot.add(slot);
+          wheel.add(pivot);
+        });
+      }
+      return wheel;
+    }
+
+    const wheelSpecs = [
+      [FRONT_X, FRONT_R, 0.30, 0.92],
+      [FRONT_X, FRONT_R, 0.30, -0.92],
+      [REAR_X, REAR_R, 0.34, 0.90],
+      [REAR_X, REAR_R, 0.34, -0.90]
+    ];
+
+    wheelSpecs.forEach(([x, r, w, z], i) => {
+      const wheel = createWheel(r, w);
+      wheel.position.set(x, r, z);
+      wheel.name = `Wheel_${i}`;
+      car.add(wheel);
+    });
+
+    // ============================================== ENGINE (under the hood)
+    const engine = new THREE.Group();
+    engine.name = 'EngineAssembly';
+    engine.position.set(1.25, 0.62, 0);
+    car.add(engine);
+
+    const block = panel(0.62, 0.34, 0.52, darkMetal);
+    block.name = 'EngineBlock';
+    engine.add(block);
+
+    // 302 V8: two banks of four
+    [1, -1].forEach(bank => {
+      for (let i = 0; i < 4; i++) {
+        const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.14, 12), chrome);
+        cyl.position.set(-0.20 + i * 0.135, 0.20, bank * 0.15);
+        cyl.rotation.x = bank * 0.22;
+        cyl.name = `Piston_${bank > 0 ? 'L' : 'R'}${i}`;
+        engine.add(cyl);
+      }
+    });
+
+    // --------------------------------------------------------- render loop
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    (function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    })();
+  </script>
+</body>
+</html>

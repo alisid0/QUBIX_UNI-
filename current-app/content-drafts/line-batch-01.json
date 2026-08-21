@@ -1,0 +1,26 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "A line",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "line", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>What is a line? Take a stick. Drag it through wet sand. You have made a groove. That groove is a line. Yes — it is a line.</p>" },
+        { "content": "<p>A railway line. Is that a line? A phone line. A help line. The word shows up everywhere. And underneath all of them is the same idea: a straight path from one place to another.</p>" },
+        { "content": "<p>In mathematics a line is defined as a straight one-dimensional figure that has no thickness and extends infinitely in both directions.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The groove and the idea",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "euclidean-line", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>You would call that groove a line. I would too. If you pick up a pencil and draw a straight mark on a sheet of paper, you have made a line. A crease in a folded sheet, a crack in a wall — we call all of these lines. They begin somewhere. They end somewhere. That is what the word means, for most of us, most of the time.</p>" },
+        { "content": "<p>Euclid meant something else. Around 300 BC he wrote down a definition that has lasted twenty-three centuries: a line is <strong>breadthless length</strong>. No thickness at all. And it never starts and it never stops. A Euclidian line goes on forever in both directions.</p>" },
+        { "content": "<p>You cannot hold a Euclidian line. You cannot draw one — the page runs out before the line does. A crack quits at the edge of the brick. None of these are what Euclid meant.</p><p>We built on it anyway. For two thousand years people have used this thing nobody has ever seen to do things you can see.</p><p>The sand groove was never the line. The line was the idea it pointed to.</p>" }
+      ]
+    }
+  ]
+}

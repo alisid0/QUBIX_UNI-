@@ -1,0 +1,17 @@
+{
+  "name": "Qubix University — Variables and Rates of Change",
+  "short_name": "Qubix",
+  "description": "An interactive, bite-sized path from change to the first idea of the derivative.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F1E8",
+  "theme_color": "#F6F1E8",
+  "categories": ["education", "mathematics"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/apple-touch-180.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

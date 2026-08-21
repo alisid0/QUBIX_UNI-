@@ -1,0 +1,41 @@
+{
+  "name": "qubix-university-app",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode standalone",
+    "dev:staging": "vite --mode staging",
+    "dev:production": "vite --mode production",
+    "build": "node scripts/build-app.mjs standalone",
+    "build:production": "node scripts/build-app.mjs production",
+    "build:staging": "node scripts/build-app.mjs staging",
+    "test:security": "node scripts/test-sanitize-html.mjs",
+    "test:solve-first": "node tests/solve-first/check-registry.mjs && vite build -c tests/solve-first/harness.vite.config.js && node tests/solve-first/play-networks.mjs",
+    "test:arcade": "vite build -c tests/arcade/vite.config.js && node tests/arcade/run.mjs",
+    "test:expansion": "node tests/expansion-program.mjs",
+    "test:launch": "npm run build && node tests/launch-smoke.mjs",
+    "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
+    "audit:live-catalogue": "node scripts/export-live-path-catalogue.mjs",
+    "audit:live-media": "node scripts/export-live-path-catalogue.mjs && node scripts/build-gif-eligibility-audit.mjs",
+    "preview": "vite preview --mode standalone",
+    "preview:production": "vite preview --mode production",
+    "deploy": "node scripts/deploy.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/edge": "^1.3.1",
+    "pixi.js": "^8.19.0",
+    "three": "^0.185.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "jsdom": "^26.1.0",
+    "nodemailer": "^9.0.3",
+    "playwright": "^1.61.1",
+    "sharp": "^0.35.3",
+    "svelte": "^4.2.0",
+    "vite": "^5.4.0"
+  }
+}

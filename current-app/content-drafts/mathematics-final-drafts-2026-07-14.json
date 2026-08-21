@@ -1,0 +1,2972 @@
+{
+  "boards": [
+    {
+      "kicker": "BB 1078",
+      "title": "A line",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "A line",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>What is a line? A stick dragged through wet sand leaves a straight groove. In general terms, that groove can be called a line.</p>"
+        },
+        {
+          "content": "<p>Railway lines, phone lines, and help lines all use the same word in different ways. Underneath them is the idea of a path from one place to another.</p>"
+        },
+        {
+          "content": "<p>In mathematics, a line is a straight one-dimensional figure with no thickness, extending infinitely in both directions.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1079",
+      "title": "Infinite",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Infinite",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A groove in sand, a railway track, and a laser beam may look like lines, but each one eventually stops somewhere.</p>"
+        },
+        {
+          "content": "<p>A Euclidean line does not stop. It continues without an endpoint in both directions, beyond anything that can be physically drawn.</p>"
+        },
+        {
+          "content": "<p>A true mathematical line is not found as an object in the world. It is an ideal concept: perfectly straight, infinitely long, and useful because of that perfection.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1080",
+      "title": "Segment, ray, line",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Segment, ray, line",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A railway track is not a true mathematical line. It is closer to a line segment: a straight piece with a start, an end, and a measurable length.</p>"
+        },
+        {
+          "content": "<p>A ray has one starting point and then continues in one direction without an endpoint. It has a beginning, but no finishing point.</p>"
+        },
+        {
+          "content": "<p>A segment has two endpoints, a ray has one endpoint, and a true line has no endpoints. The difference is the number of ends.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1081",
+      "title": "The number line",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The number line",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A blank line is not very informative on its own. Once evenly spaced marks are placed on it, the line can begin to carry numbers.</p>"
+        },
+        {
+          "content": "<p>The first important mark is zero. It acts as the anchor point, giving every other number a position relative to the starting place.</p>"
+        },
+        {
+          "content": "<p>Moving right from zero gives 1, 2, 3, and the rest of the counting numbers. Since the line keeps going, the counting can keep going too.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1082",
+      "title": "The left side",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The left side",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A true line extends in both directions, so the number line cannot stop at zero or only grow to the right.</p>"
+        },
+        {
+          "content": "<p>Numbers to the left of zero are negative numbers. They use the same spacing as positive numbers, but in the opposite direction.</p>"
+        },
+        {
+          "content": "<p>Negative numbers appear whenever a value falls below a chosen zero point: temperatures below freezing, debts below a balance of zero, or positions left of an origin.</p>"
+        },
+        {
+          "content": "<p>Positive whole steps, negative whole steps, and zero form the integers. Integers have no fractional or decimal parts.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1083",
+      "title": "The spaces between",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The spaces between",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Whole numbers mark clean steps, but a line is not a row of separated stones. It is continuous, with space between every pair of neighboring integers.</p>"
+        },
+        {
+          "content": "<p>Fractions and decimals describe positions inside those spaces. The point halfway between 0 and 1 is written as 1/2, or 0.5.</p>"
+        },
+        {
+          "content": "<p>The spaces can be divided again and again. However closely the line is examined, more positions still exist between the numbers already marked.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1084",
+      "title": "Counting on fingers",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Counting on fingers",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The oldest use of numbers is counting objects: sheep, stones, fingers, marks, or anything that comes in separate units.</p>"
+        },
+        {
+          "content": "<p>Counting begins at 1 and continues upward: 1, 2, 3, 4, and so on. Halves and quarters are not needed when the objects are whole.</p>"
+        },
+        {
+          "content": "<p>This basic counting set has its own name in mathematics. It is called the natural numbers.</p>"
+        },
+        {
+          "content": "<p>On the number line, the natural numbers are the whole steps to the right of zero: 1, 2, 3, 4, and onward.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1085",
+      "title": "The invention of nothing",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The invention of nothing",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Natural numbers work well when objects are present. A separate symbol is needed when the count has nothing in it.</p>"
+        },
+        {
+          "content": "<p>Zero fills that role. It marks the absence of counted objects and also becomes the anchor point of the number line.</p>"
+        },
+        {
+          "content": "<p>Adding zero to the natural numbers creates a larger set: the whole numbers.</p>"
+        },
+        {
+          "content": "<p>Whole numbers are the natural counting numbers together with zero. That is the only difference between the two sets.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1086",
+      "title": "Walking backwards",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Walking backwards",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The number line includes the right side of zero, but it also continues to the left. That left side is where negative numbers belong.</p>"
+        },
+        {
+          "content": "<p>A balance of 5 dollars is positive. A debt of 3 dollars is negative. The sign records which side of zero the value sits on.</p>"
+        },
+        {
+          "content": "<p>Negative numbers are the same whole steps as positive numbers, placed to the left of zero instead of to the right.</p>"
+        },
+        {
+          "content": "<p>Whole numbers and their negative versions combine to form the integers: ..., -3, -2, -1, 0, 1, 2, 3, ...</p>"
+        },
+        {
+          "content": "<p>An integer is a clean whole step on the number line. It may be positive, negative, or zero, but it has no fractional part.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1087",
+      "title": "Chopping things up",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Chopping things up",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Many real quantities do not land exactly on whole steps. A length, amount, or share can fall between two integers.</p>"
+        },
+        {
+          "content": "<p>Halfway between 0 and 1 is the number 1/2. It names a precise point inside the gap rather than on a whole step.</p>"
+        },
+        {
+          "content": "<p>Any number that can be written as a fraction of two integers belongs to the rational numbers.</p>"
+        },
+        {
+          "content": "<p>The word rational comes from ratio. A rational number is a number that can be expressed as one integer divided by another.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1088",
+      "title": "Decimals that behave",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Decimals that behave",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Rational numbers can be written as fractions, but they can also be written as decimals. The decimal form follows a clear rule.</p>"
+        },
+        {
+          "content": "<p>Some rational decimals stop. For example, 1/2 is exactly 0.5, so the decimal has a final digit.</p>"
+        },
+        {
+          "content": "<p>Other rational decimals repeat forever. For example, 1/3 becomes 0.333333..., with the same digit repeating without end.</p>"
+        },
+        {
+          "content": "<p>A repeating decimal is still rational because it comes from a fraction and follows a predictable pattern.</p>"
+        },
+        {
+          "content": "<p>A decimal is rational if it stops completely or repeats a pattern forever.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1089",
+      "title": "The rule breakers",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The rule breakers",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Some numbers do not fit the fraction rule. Their decimals continue forever without settling into a repeating pattern.</p>"
+        },
+        {
+          "content": "<p>These decimals do not stop and do not repeat. Their digits keep going without becoming predictable.</p>"
+        },
+        {
+          "content": "<p>Pi is the most famous example. Its decimal begins 3.14159265..., and it cannot be written as a simple fraction of two integers.</p>"
+        },
+        {
+          "content": "<p>Numbers that cannot be written as fractions of integers are called irrational numbers.</p>"
+        },
+        {
+          "content": "<p>Irrational numbers still have exact positions on the number line, even when their decimal addresses are endless.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1090",
+      "title": "The whole line",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The whole line",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The number line can now be built up in layers.</p>"
+        },
+        {
+          "content": "<p>Integers give the clean whole-number steps across the line: negative numbers, zero, and positive numbers.</p>"
+        },
+        {
+          "content": "<p>Rational numbers fill many of the gaps between those steps using fractions and decimals that stop or repeat.</p>"
+        },
+        {
+          "content": "<p>Irrational numbers fill the remaining gaps with decimals that continue forever without repeating.</p>"
+        },
+        {
+          "content": "<p>Together, rational and irrational numbers leave no gaps on the number line.</p>"
+        },
+        {
+          "content": "<p>The complete number line is called the real numbers. Any number with a position on that line is a real number.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1091",
+      "title": "The name tags",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The name tags",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Mathematicians use shorthand letters for common sets of numbers instead of writing their full names every time.</p>"
+        },
+        {
+          "content": "<p>Some of these letters are written in blackboard bold, such as ℕ or ℝ. The double-stroke style marks them as number sets.</p>"
+        },
+        {
+          "content": "<p>The natural numbers are written as ℕ. Whole numbers are often written as W in school-level notation.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1092",
+      "title": "The foreign letters",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The foreign letters",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Integers are written as ℤ rather than I, because I is already used for other mathematical ideas.</p>"
+        },
+        {
+          "content": "<p>The symbol ℤ comes from the German word Zahlen, meaning numbers. It represents the whole steps: negative, zero, and positive.</p>"
+        },
+        {
+          "content": "<p>The rational numbers are written as ℚ.</p>"
+        },
+        {
+          "content": "<p>The symbol ℚ comes from quotient. A quotient is the result of division, and rational numbers are numbers expressible as one integer divided by another.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1093",
+      "title": "The big umbrella",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The big umbrella",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Irrational numbers do not have a single common letter as universally familiar as ℕ, ℤ, or ℚ. They are often treated as the non-rational numbers inside the real line.</p>"
+        },
+        {
+          "content": "<p>The largest set in this sequence is the real numbers, written as ℝ. It contains every number with a position on the number line.</p>"
+        },
+        {
+          "content": "<p>The natural numbers, whole numbers, integers, rational numbers, and irrational numbers all sit inside the real numbers.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1403",
+      "title": "The Rule Machine",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The Rule Machine",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A rule such as \"double it and add three\" can accept different input numbers without changing the rule itself.</p>"
+        },
+        {
+          "content": "<p>If 2 goes in, 7 comes out. If 5 goes in, 13 comes out. Each input is handled in the same way.</p>"
+        },
+        {
+          "content": "<p>A function is a rule that takes an allowed input and returns a definite output.</p>"
+        },
+        {
+          "content": "<p>The same function can appear in words, in a table, on a graph, or as a formula.</p>"
+        },
+        {
+          "content": "<p>The function is the pairing: each input is connected to its own output.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1404",
+      "title": "The Graph of a Rule",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "The Graph of a Rule",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The rule \"double it and add three\" can be tested on several input numbers while the rule stays unchanged.</p>"
+        },
+        {
+          "content": "<p>Each input-output pair becomes a point. The input gives the x-position, and the output gives the y-position.</p>"
+        },
+        {
+          "content": "<p>When the points for 0, 1, 2, 3, and 4 are plotted, they form an ordered pattern rather than scattered marks.</p>"
+        },
+        {
+          "content": "<p>For this rule, the points fall on a straight line because the output rises by the same amount each time.</p>"
+        },
+        {
+          "content": "<p>A graph places the rule on the plane, where its pattern can be seen instead of only calculated.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1405",
+      "title": "Slope as a Rate",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Slope as a Rate",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A ramp can rise gently or sharply. In each case, horizontal distance is paired with a change in height.</p>"
+        },
+        {
+          "content": "<p>On a graph, slope measures a similar comparison: how much y changes when x changes by a chosen amount.</p>"
+        },
+        {
+          "content": "<p>If x moves one step right while y rises two steps, the slope of that line is two.</p>"
+        },
+        {
+          "content": "<p>Slope is more than a drawing feature. It is a rate of change built into the line.</p>"
+        },
+        {
+          "content": "<p>The same structure later describes speed, growth, reaction rate, and other quantities that compare one change with another.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1406",
+      "title": "When a Line Becomes Motion",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "When a Line Becomes Motion",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>When time is placed on the x-axis and position on the y-axis, a graph can describe motion.</p>"
+        },
+        {
+          "content": "<p>A flat line means the position is not changing, so the object is stationary during that interval.</p>"
+        },
+        {
+          "content": "<p>A rising straight line means the object is moving steadily away from the starting position as time passes.</p>"
+        },
+        {
+          "content": "<p>The slope of that line is the velocity, because it shows how position changes with time.</p>"
+        },
+        {
+          "content": "<p>A line that describes a number rule can also describe an object changing position over time.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1420",
+      "title": "Rate",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "Rate",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Slope on a graph, velocity, reaction rate, and network speed share the same mathematical structure.</p>"
+        },
+        {
+          "content": "<p>Each compares a change in one quantity with a change in another quantity over the same interval.</p>"
+        },
+        {
+          "content": "<p>Position per time gives velocity. Product formed per time gives reaction rate. Data per time gives bandwidth.</p>"
+        },
+        {
+          "content": "<p>Mathematics gives the reusable pattern, and each science attaches that pattern to its own kind of change.</p>"
+        },
+        {
+          "content": "<p>Rate is one place where different subjects use the same structure under different names.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1161",
+      "title": "The map problem",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The map problem",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A map has to answer two questions at once: where something is, and how to get from one place to another.</p>"
+        },
+        {
+          "content": "<p>A line, a ray, and a segment each describe a different kind of straight path, but only some paths are useful for measuring real movement.</p>"
+        },
+        {
+          "content": "<p>A true line extends forever in both directions. It has no fixed start and no fixed end, so it cannot describe a finished movement.</p>"
+        },
+        {
+          "content": "<p>A ray has a starting point and a direction. It can point the right way, but it does not say where the movement stops.</p>"
+        },
+        {
+          "content": "<p>A useful movement needs a start, a direction, and a finish. That is why the next object has to carry more information than a plain line or ray.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1162",
+      "title": "The directed segment",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The directed segment",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A line segment has a start and an end. Because both endpoints are fixed, its length can be measured.</p>"
+        },
+        {
+          "content": "<p>A segment can represent a distance such as 10 meters, because it is trapped between two points instead of running forever.</p>"
+        },
+        {
+          "content": "<p>A plain segment still has a weakness: it shows length, but it does not mark which endpoint is the beginning and which is the destination.</p>"
+        },
+        {
+          "content": "<p>Length alone is a scalar. A vector needs both size and direction, so the segment must be given an orientation.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1163",
+      "title": "The vector arrow",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The vector arrow",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A vector arrow is a line segment with direction added. The tail marks the starting point, and the arrowhead marks the direction of travel.</p>"
+        },
+        {
+          "content": "<p>The length of the arrow represents magnitude. A longer arrow represents a larger speed, force, displacement, or other vector quantity.</p>"
+        },
+        {
+          "content": "<p>In mathematics, this object is often called a directed line segment. In physics, it is usually called a vector arrow.</p>"
+        },
+        {
+          "content": "<p>The vector arrow carries two pieces of information at once: how much, and which way.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1164",
+      "title": "Drawing motion",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "Drawing motion",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Vector arrows are used whenever size and direction matter together.</p>"
+        },
+        {
+          "content": "<p>A car moving 30 miles per hour east can be drawn as an arrow pointing east, with length representing the speed.</p>"
+        },
+        {
+          "content": "<p>If the speed increases to 60 miles per hour east, the arrow points the same way but becomes longer.</p>"
+        },
+        {
+          "content": "<p>The drawing turns motion into geometry. Direction is shown by the arrowhead, and magnitude is shown by the arrow's length.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1165",
+      "title": "Adding vectors",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "Adding vectors",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Scalars add by size alone. One kilogram plus one kilogram is always two kilograms because direction is not involved.</p>"
+        },
+        {
+          "content": "<p>Vectors cannot be added by size alone. One meter north followed by one meter south returns to the starting point.</p>"
+        },
+        {
+          "content": "<p>In vector addition, equal sizes can combine to make zero, double, or something in between, depending on their directions.</p>"
+        },
+        {
+          "content": "<p>Direction changes the result. Vector addition must combine both the lengths and the directions of the arrows.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1166",
+      "title": "The resultant vector",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The resultant vector",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A movement of 3 meters east followed by 4 meters north can be drawn as two arrows placed head-to-tail.</p>"
+        },
+        {
+          "content": "<p>The first arrow ends where the second arrow begins, creating a path with one starting point and one final point.</p>"
+        },
+        {
+          "content": "<p>A single arrow can be drawn directly from the starting point to the final point.</p>"
+        },
+        {
+          "content": "<p>That single arrow is the resultant vector. It represents the combined effect of the two original movements.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1167",
+      "title": "The number list",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The number list",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A drawn arrow is useful on paper, but calculation needs numbers.</p>"
+        },
+        {
+          "content": "<p>A vector can be written as a list of components, with each component measuring movement along one axis.</p>"
+        },
+        {
+          "content": "<p>A movement of 3 steps east and 4 steps north can be written as [3, 4].</p>"
+        },
+        {
+          "content": "<p>The arrow and the list describe the same vector in different forms: one visual, one numerical.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1168",
+      "title": "Beyond the page",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "Beyond the page",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A two-component vector describes movement on a flat plane.</p>"
+        },
+        {
+          "content": "<p>A three-component vector describes movement in physical space, using directions such as east, north, and up.</p>"
+        },
+        {
+          "content": "<p>The same idea can continue beyond three components. A vector can have four, ten, or thousands of numbers.</p>"
+        },
+        {
+          "content": "<p>High-dimensional vectors cannot be pictured easily, but they can still be calculated. The mathematics does not require the space to be drawable.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1169",
+      "title": "Data as coordinates",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "Data as coordinates",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A vector can describe more than physical position. It can also store measurements about an object, signal, image, or pattern.</p>"
+        },
+        {
+          "content": "<p>A three-number vector can describe a location in space. A longer vector can describe features such as distances, colors, intensities, or proportions.</p>"
+        },
+        {
+          "content": "<p>In machine learning, data is often represented as points in high-dimensional coordinate spaces.</p>"
+        },
+        {
+          "content": "<p>Comparing two data points can become a geometry problem: measure how close their vectors are in that space.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1170",
+      "title": "The anchor point",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The anchor point",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Slope measures steepness. In an equation such as y = 2x, the line rises two steps for every one step across.</p>"
+        },
+        {
+          "content": "<p>Steepness is not enough to locate the line. Many different lines can have the same slope but sit at different heights.</p>"
+        },
+        {
+          "content": "<p>To fix the line in place, the equation also needs the height where the line crosses the y-axis.</p>"
+        },
+        {
+          "content": "<p>In y = 2x + 3, the slope is still 2, but the whole line is shifted upward so it crosses the y-axis at 3.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1171",
+      "title": "The two-number code",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The two-number code",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The equation y = mx + c describes a straight line using two controlling numbers.</p>"
+        },
+        {
+          "content": "<p>The number m controls the slope: how steeply the line rises or falls.</p>"
+        },
+        {
+          "content": "<p>Changing m rotates the line, making it steeper, flatter, rising, or falling.</p>"
+        },
+        {
+          "content": "<p>The number c controls the y-intercept: the height where the line crosses the vertical axis.</p>"
+        },
+        {
+          "content": "<p>A line stretches forever, but its position is fixed by these two features: slope and intercept.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1172",
+      "title": "Parallel lines",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "Parallel lines",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Once a line is described by slope and intercept, some relationships can be seen without drawing the graph.</p>"
+        },
+        {
+          "content": "<p>The equations y = 2x + 3 and y = 2x - 4 have different intercepts but the same slope.</p>"
+        },
+        {
+          "content": "<p>One line crosses the y-axis at 3, and the other crosses at -4. Both have slope 2.</p>"
+        },
+        {
+          "content": "<p>Because the slopes match, the two lines rise at the same angle and never meet. They are parallel.</p>"
+        },
+        {
+          "content": "<p>Equal slopes mean equal steepness. Different intercepts place the lines at different heights.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1173",
+      "title": "The diagonal gap",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate maps",
+        "concept": "The diagonal gap",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The distance between two points is easy to measure when they sit on the same horizontal or vertical grid line.</p>"
+        },
+        {
+          "content": "<p>When two points are separated diagonally, horizontal or vertical counting alone no longer gives the full distance.</p>"
+        },
+        {
+          "content": "<p>The diagonal gap can be treated as the hypotenuse of a right-angled triangle built from horizontal and vertical changes.</p>"
+        },
+        {
+          "content": "<p>Pythagoras' theorem combines the horizontal change and vertical change to calculate the diagonal distance.</p>"
+        },
+        {
+          "content": "<p>This is the same structure used in digital maps: two coordinate positions create a triangle, and the diagonal gives the distance between them.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1035",
+      "title": "Coordinates make geometry exact",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Coordinates make geometry exact",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A drawn shape can be slightly crooked, but coordinates remove the guesswork. Every important point is given an exact numerical address.</p>"
+        },
+        {
+          "content": "<p>Once points have coordinates, geometry can be checked by calculation instead of by eye. A diagram becomes data.</p>"
+        },
+        {
+          "content": "<p>The number line gives one coordinate for position on a line. The coordinate plane gives two coordinates for position on a surface.</p>"
+        },
+        {
+          "content": "<p>This is the shift coordinate geometry makes: shapes are still visual, but their properties can now be measured with arithmetic.</p>"
+        },
+        {
+          "content": "<p>The aim is no longer only to draw lines and shapes. The aim is to prove what they are using numbers.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1036",
+      "title": "The coordinate plane",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "The coordinate plane",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The coordinate plane is built from two number lines crossing at zero: a horizontal x-axis and a vertical y-axis.</p>"
+        },
+        {
+          "content": "<p>Their crossing point is the origin, written as (0, 0). Every other point is measured relative to that point.</p>"
+        },
+        {
+          "content": "<p>A point is written as an ordered pair, (x, y). The first number gives horizontal position; the second gives vertical position.</p>"
+        },
+        {
+          "content": "<p>The order matters. The points (3, 4) and (4, 3) usually land in different places because the coordinates have different roles.</p>"
+        },
+        {
+          "content": "<p>The axes divide the plane into four quadrants, giving a simple map for positive and negative x and y positions.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1038",
+      "title": "Reading and plotting points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Reading and plotting points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>To plot a point such as (3, 4), move 3 units along the x-direction and then 4 units in the y-direction.</p>"
+        },
+        {
+          "content": "<p>Negative coordinates move in the opposite direction: negative x moves left, and negative y moves downward.</p>"
+        },
+        {
+          "content": "<p>Reading a point reverses the process. Its horizontal position gives x, and its vertical position gives y.</p>"
+        },
+        {
+          "content": "<p>Plotting turns numbers into a position. Reading turns a position back into numbers.</p>"
+        },
+        {
+          "content": "<p>This two-way translation is the basic move of coordinate geometry: number pair to point, point back to number pair.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1039",
+      "title": "A line is a set of points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "A line is a set of points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>In coordinate geometry, a line is not only a stroke on a diagram. It is a set of points that obey the same rule.</p>"
+        },
+        {
+          "content": "<p>A vertical line keeps x fixed while y changes. For example, every point on x = 3 has horizontal position 3.</p>"
+        },
+        {
+          "content": "<p>A horizontal line keeps y fixed while x changes. For example, every point on y = 2 has vertical position 2.</p>"
+        },
+        {
+          "content": "<p>Slanted lines also follow rules, but both coordinates change together instead of one coordinate staying fixed.</p>"
+        },
+        {
+          "content": "<p>The central question becomes: what rule connects x and y for all points on this line?</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1040",
+      "title": "A slanted line has a rule",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "A slanted line has a rule",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A slanted line can be recognized by a steady relationship between x and y.</p>"
+        },
+        {
+          "content": "<p>On the line y = 2x, every y-value is double its x-value: (1, 2), (2, 4), (3, 6), and so on.</p>"
+        },
+        {
+          "content": "<p>The equation is not a label added afterward. It is the rule that decides which points belong on the line.</p>"
+        },
+        {
+          "content": "<p>Changing the multiplier changes the steepness. The line y = 3x rises faster than y = 2x.</p>"
+        },
+        {
+          "content": "<p>The multiplier describes how much y changes for each one-unit change in x. That number is the slope.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1041",
+      "title": "Slope from two points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Slope from two points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Slope measures the rate at which y changes compared with x along a straight line.</p>"
+        },
+        {
+          "content": "<p>Between two points, the vertical change is Δy and the horizontal change is Δx.</p>"
+        },
+        {
+          "content": "<p>The slope is written as m = Δy / Δx, or m = (y₂ - y₁) / (x₂ - x₁).</p>"
+        },
+        {
+          "content": "<p>For the points (1, 2) and (4, 8), Δy = 6 and Δx = 3, so the slope is 2.</p>"
+        },
+        {
+          "content": "<p>A straight line has the same slope between any two points on it. That constant slope is what makes it straight.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1042",
+      "title": "The equation of a line",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "The equation of a line",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Most non-vertical straight lines can be written in the form y = mx + c.</p>"
+        },
+        {
+          "content": "<p>The number m is the slope. It controls how steeply the line rises or falls.</p>"
+        },
+        {
+          "content": "<p>The number c is the y-intercept. It tells where the line crosses the y-axis.</p>"
+        },
+        {
+          "content": "<p>In y = 2x + 3, the slope is 2 and the y-intercept is 3.</p>"
+        },
+        {
+          "content": "<p>Two numbers, m and c, fix the whole line: its steepness and its vertical position.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1043",
+      "title": "Building a line from two points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Building a line from two points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Two distinct points determine exactly one straight line.</p>"
+        },
+        {
+          "content": "<p>Given two points, first find the slope using m = (y₂ - y₁) / (x₂ - x₁).</p>"
+        },
+        {
+          "content": "<p>Then place one point and the slope into y = mx + c to solve for c.</p>"
+        },
+        {
+          "content": "<p>For (2, 7) and (5, 16), the slope is 3. Substituting (2, 7) gives c = 1.</p>"
+        },
+        {
+          "content": "<p>The line through those points is y = 3x + 1. The equation can now generate every point on the line.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1044",
+      "title": "Parallel lines",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Parallel lines",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Parallel lines have the same slope. They rise or fall at the same rate.</p>"
+        },
+        {
+          "content": "<p>The lines y = 2x + 3 and y = 2x - 4 both have slope 2.</p>"
+        },
+        {
+          "content": "<p>Their y-intercepts differ, so they sit at different heights, but their steepness is identical.</p>"
+        },
+        {
+          "content": "<p>Because the slopes match, the distance between the lines never closes. They do not meet.</p>"
+        },
+        {
+          "content": "<p>Equal slopes prove parallel lines, as long as the intercepts are different.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1045",
+      "title": "Perpendicular lines",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Perpendicular lines",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Perpendicular lines meet at a right angle.</p>"
+        },
+        {
+          "content": "<p>For two non-vertical lines, perpendicular slopes are negative reciprocals.</p>"
+        },
+        {
+          "content": "<p>A line with slope 2 is perpendicular to a line with slope -1/2.</p>"
+        },
+        {
+          "content": "<p>The test is m₁ × m₂ = -1. If the product of the slopes is -1, the lines meet at 90°.</p>"
+        },
+        {
+          "content": "<p>Horizontal and vertical lines are also perpendicular, though the slope formula treats vertical lines as a special case.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1046",
+      "title": "Distance between two points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Distance between two points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The distance between two points on a grid can be found by building a right-angled triangle between them.</p>"
+        },
+        {
+          "content": "<p>The horizontal difference gives Δx. The vertical difference gives Δy.</p>"
+        },
+        {
+          "content": "<p>The straight-line distance is the hypotenuse, so Pythagoras gives d = √(Δx² + Δy²).</p>"
+        },
+        {
+          "content": "<p>From (1, 2) to (4, 6), Δx = 3 and Δy = 4, so d = √(3² + 4²) = 5.</p>"
+        },
+        {
+          "content": "<p>The distance formula is Pythagoras written for coordinates.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1047",
+      "title": "Midpoint of two points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Midpoint of two points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The midpoint is the point exactly halfway between two given points.</p>"
+        },
+        {
+          "content": "<p>On a line, the midpoint is found by averaging the two positions. On a grid, the same idea is applied twice.</p>"
+        },
+        {
+          "content": "<p>Average the x-values to get the midpoint's x-coordinate. Average the y-values to get its y-coordinate.</p>"
+        },
+        {
+          "content": "<p>From (2, 4) to (8, 10), the midpoint is ((2 + 8)/2, (4 + 10)/2) = (5, 7).</p>"
+        },
+        {
+          "content": "<p>Distance gives a segment's length. Midpoint gives its center.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1048",
+      "title": "Shapes as coordinates",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Shapes as coordinates",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A polygon on a coordinate grid can be described by listing its vertices in order.</p>"
+        },
+        {
+          "content": "<p>Three vertices form a triangle. Four vertices form a quadrilateral, depending on how the points are arranged.</p>"
+        },
+        {
+          "content": "<p>Once the vertices are known, the side lengths and slopes can be calculated.</p>"
+        },
+        {
+          "content": "<p>That means the shape's properties are not guessed from the drawing. They are checked from the coordinates.</p>"
+        },
+        {
+          "content": "<p>A coordinate shape is a visual figure with a numerical description underneath it.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1049",
+      "title": "Proving a shape with coordinates",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Proving a shape with coordinates",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Coordinates allow a shape to be proved rather than judged by appearance.</p>"
+        },
+        {
+          "content": "<p>Side lengths can be checked using the distance formula.</p>"
+        },
+        {
+          "content": "<p>Parallel and perpendicular sides can be checked using slopes.</p>"
+        },
+        {
+          "content": "<p>A quadrilateral with opposite sides equal and a right angle can be confirmed as a rectangle.</p>"
+        },
+        {
+          "content": "<p>Coordinate geometry turns visual claims into arithmetic checks.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1050",
+      "title": "Coordinate geometry recap",
+      "tags": {
+        "subject": "maths",
+        "topic": "Coordinate geometry",
+        "concept": "Coordinate geometry recap",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A point on the plane is written as (x, y), with x giving horizontal position and y giving vertical position.</p>"
+        },
+        {
+          "content": "<p>A line is a set of points satisfying a rule. Non-vertical lines can often be written as y = mx + c.</p>"
+        },
+        {
+          "content": "<p>Slope is m = Δy / Δx. It measures how much y changes for each change in x.</p>"
+        },
+        {
+          "content": "<p>Parallel lines have equal slopes. Perpendicular non-vertical lines have slopes whose product is -1.</p>"
+        },
+        {
+          "content": "<p>Distance, midpoint, slope, and equations let coordinates prove facts about lines and shapes.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1219",
+      "title": "Input, process, output",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Input, process, output",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A function can be pictured as a simple machine: an input goes in, a fixed process happens, and an output comes out.</p>"
+        },
+        {
+          "content": "<p>A vending machine makes the structure visible. A code such as A1 is the input, and the item that drops out is the output.</p>"
+        },
+        {
+          "content": "<p>The useful part is the fixed connection between the code and the item, not the metal box itself.</p>"
+        },
+        {
+          "content": "<p>A function is a rule that assigns each allowed input exactly one output.</p>"
+        },
+        {
+          "content": "<p>This makes functions a way to describe relationships between quantities rather than isolated numbers.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1220",
+      "title": "The one-output condition",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "The one-output condition",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The core condition is strict: one input cannot produce two different outputs.</p>"
+        },
+        {
+          "content": "<p>If A1 gives cola in a vending machine, A1 should give cola whenever the same machine is set the same way.</p>"
+        },
+        {
+          "content": "<p>Different inputs may still share one output. A1 and B4 could both be assigned to the same drink.</p>"
+        },
+        {
+          "content": "<p>That is allowed because each input still has one assigned result. The problem appears only when one input points to more than one output.</p>"
+        },
+        {
+          "content": "<p>A function may be many-to-one, but it cannot be one-to-many.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1221",
+      "title": "Function notation",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Function notation",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Function notation gives a compact way to name a relationship and show which input is being used.</p>"
+        },
+        {
+          "content": "<p>The input is often called x. The function itself is often named f.</p>"
+        },
+        {
+          "content": "<p>The expression f(x) is read as \"f of x.\" It means the output produced when x is placed into f.</p>"
+        },
+        {
+          "content": "<p>If the function doubles the input, it can be written as f(x) = 2x.</p>"
+        },
+        {
+          "content": "<p>Then f(5) means f acts on 5, giving f(5) = 10.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1222",
+      "title": "Domain and range",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Domain and range",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A function does not always accept every possible input.</p>"
+        },
+        {
+          "content": "<p>The set of inputs a function is allowed to use is called its domain.</p>"
+        },
+        {
+          "content": "<p>A function also has a set of outputs it can actually produce.</p>"
+        },
+        {
+          "content": "<p>The set of possible outputs is called the range.</p>"
+        },
+        {
+          "content": "<p>Domain describes what can go in. Range describes what can come out.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1223",
+      "title": "Functions on a graph",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Functions on a graph",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A function can be shown on a coordinate graph by plotting input-output pairs.</p>"
+        },
+        {
+          "content": "<p>The input usually becomes the x-coordinate, and the output becomes the y-coordinate.</p>"
+        },
+        {
+          "content": "<p>The one-output condition creates a visual test: each x-value should match at most one y-value.</p>"
+        },
+        {
+          "content": "<p>A vertical line crossing the graph should not hit the curve in more than one place.</p>"
+        },
+        {
+          "content": "<p>If one vertical line touches the graph twice, one input has two outputs, so the graph does not represent a function.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1224",
+      "title": "Linear functions",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Linear functions",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A linear function changes by a constant amount for each equal step in the input.</p>"
+        },
+        {
+          "content": "<p>If the function is f(x) = x + 2, then increasing x by 1 also increases the output by 1.</p>"
+        },
+        {
+          "content": "<p>When plotted, this steady change forms a straight line.</p>"
+        },
+        {
+          "content": "<p>A constant speed is a physical example: each extra hour adds the same distance.</p>"
+        },
+        {
+          "content": "<p>Linear functions are the function form of constant rate.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1225",
+      "title": "Exponential functions",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Exponential functions",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>An exponential function grows or shrinks by multiplying rather than adding.</p>"
+        },
+        {
+          "content": "<p>A doubling pattern goes 1, 2, 4, 8, 16, with each output becoming the base for the next step.</p>"
+        },
+        {
+          "content": "<p>In an exponential function such as f(x) = 2^x, the input appears in the exponent.</p>"
+        },
+        {
+          "content": "<p>On a graph, exponential growth may begin slowly and then rise very quickly as the input increases.</p>"
+        },
+        {
+          "content": "<p>Compound interest, population growth, radioactive decay, and repeated doubling all use exponential patterns.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1226",
+      "title": "Quadratic functions",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Quadratic functions",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A quadratic function contains a squared input, such as x^2.</p>"
+        },
+        {
+          "content": "<p>Squaring makes the output change faster as the input moves farther from zero.</p>"
+        },
+        {
+          "content": "<p>The graph of a simple quadratic function is a parabola.</p>"
+        },
+        {
+          "content": "<p>A parabola is a symmetric U-shaped curve, opening upward or downward depending on the equation.</p>"
+        },
+        {
+          "content": "<p>Projectile paths, area formulas, and many optimization problems can be modeled with quadratic functions.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1227",
+      "title": "Inverse functions",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Inverse functions",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>An inverse function reverses the action of another function.</p>"
+        },
+        {
+          "content": "<p>If a function sends an input to an output, its inverse sends that output back to the original input.</p>"
+        },
+        {
+          "content": "<p>This only works cleanly when each output came from one unique input.</p>"
+        },
+        {
+          "content": "<p>If two different inputs share the same output, the reverse direction becomes ambiguous.</p>"
+        },
+        {
+          "content": "<p>For this reason, inverse functions depend on one-to-one relationships.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1228",
+      "title": "Composite functions",
+      "tags": {
+        "subject": "maths",
+        "topic": "Functions",
+        "concept": "Composite functions",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Complex processes often happen as chains of smaller functions.</p>"
+        },
+        {
+          "content": "<p>In a composite function, the output of one function becomes the input of another.</p>"
+        },
+        {
+          "content": "<p>The notation f(g(x)) means g acts on x first, then f acts on the result.</p>"
+        },
+        {
+          "content": "<p>This allows simple functions to be combined into larger functions without losing the input-output structure.</p>"
+        },
+        {
+          "content": "<p>Software models, simulations, and multi-step calculations often rely on functions feeding outputs into other functions.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1266",
+      "title": "A line has a constant change",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "A line has a constant change",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>On a coordinate grid, a straight line is a set of points connected by one steady relationship between x and y.</p>"
+        },
+        {
+          "content": "<p>The important feature is consistency. Each equal step in x produces the same change in y.</p>"
+        },
+        {
+          "content": "<p>That steady change is what separates a straight line from a curve, where the rate of change may vary from point to point.</p>"
+        },
+        {
+          "content": "<p>Lines and gradients begin with this fact: a straight line changes at a constant rate.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1267",
+      "title": "Gradient measures steepness",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "Gradient measures steepness",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Gradient measures how steeply a line rises or falls as it moves across the grid.</p>"
+        },
+        {
+          "content": "<p>It compares vertical change with horizontal change: how much y changes for a chosen change in x.</p>"
+        },
+        {
+          "content": "<p>The common formula is gradient = rise / run, or m = Δy / Δx.</p>"
+        },
+        {
+          "content": "<p>A larger gradient means the line changes more sharply. A smaller gradient means the line changes more gently.</p>"
+        },
+        {
+          "content": "<p>Gradient turns the visual idea of steepness into a number that can be calculated.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1268",
+      "title": "Reading rise and run",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "Reading rise and run",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>To find a gradient, choose two points on the line and compare their coordinates.</p>"
+        },
+        {
+          "content": "<p>The rise is the vertical change between the points. The run is the horizontal change between the same two points.</p>"
+        },
+        {
+          "content": "<p>For points (1, 2) and (4, 8), the rise is 6 and the run is 3.</p>"
+        },
+        {
+          "content": "<p>The gradient is 6 / 3 = 2, so the line rises 2 units for every 1 unit across.</p>"
+        },
+        {
+          "content": "<p>On a straight line, any two points give the same gradient because the rate of change is constant.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1269",
+      "title": "Positive and negative gradients",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "Positive and negative gradients",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The sign of the gradient gives the line's direction.</p>"
+        },
+        {
+          "content": "<p>A positive gradient means the line rises from left to right.</p>"
+        },
+        {
+          "content": "<p>A negative gradient means the line falls from left to right.</p>"
+        },
+        {
+          "content": "<p>A gradient of 2 rises 2 units for every 1 unit across. A gradient of -2 falls 2 units for every 1 unit across.</p>"
+        },
+        {
+          "content": "<p>The size of the gradient gives steepness, while the sign gives direction.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1270",
+      "title": "Zero and undefined gradient",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "Zero and undefined gradient",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A horizontal line has no vertical change as x changes.</p>"
+        },
+        {
+          "content": "<p>Since the rise is zero, every horizontal line has gradient 0.</p>"
+        },
+        {
+          "content": "<p>A vertical line has no horizontal change as y changes.</p>"
+        },
+        {
+          "content": "<p>Since the run is zero, the gradient calculation would require division by zero.</p>"
+        },
+        {
+          "content": "<p>For that reason, a vertical line has undefined gradient rather than gradient 0.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1271",
+      "title": "The y-intercept anchors the line",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "The y-intercept anchors the line",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Gradient gives steepness and direction, but it does not fix the line's exact position.</p>"
+        },
+        {
+          "content": "<p>Many lines can share the same gradient while crossing the grid at different heights.</p>"
+        },
+        {
+          "content": "<p>The y-intercept is the point where the line crosses the y-axis.</p>"
+        },
+        {
+          "content": "<p>At the y-axis, x = 0. The y-intercept is therefore the value of y when x is 0.</p>"
+        },
+        {
+          "content": "<p>The intercept anchors the line vertically while the gradient controls its tilt.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1272",
+      "title": "The equation y = mx + c",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "The equation y = mx + c",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The equation y = mx + c stores the two key features of a non-vertical straight line.</p>"
+        },
+        {
+          "content": "<p>The m gives the gradient: the rate at which y changes as x changes.</p>"
+        },
+        {
+          "content": "<p>The c gives the y-intercept: the height where the line crosses the y-axis.</p>"
+        },
+        {
+          "content": "<p>In y = 2x + 3, the gradient is 2 and the y-intercept is 3.</p>"
+        },
+        {
+          "content": "<p>Changing m changes the tilt. Changing c shifts the line up or down without changing its tilt.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1273",
+      "title": "Lines with the same gradient",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "Lines with the same gradient",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Lines with the same gradient rise or fall at the same rate.</p>"
+        },
+        {
+          "content": "<p>If their intercepts are different, they sit at different heights but keep the same direction.</p>"
+        },
+        {
+          "content": "<p>Such lines are parallel because the gap between them never closes.</p>"
+        },
+        {
+          "content": "<p>The equations y = 2x + 3 and y = 2x - 4 are parallel because both have gradient 2.</p>"
+        },
+        {
+          "content": "<p>Matching gradients are enough to prove that two non-identical straight lines are parallel.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1274",
+      "title": "Finding a line from two points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "Finding a line from two points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Two points are enough to determine one straight line.</p>"
+        },
+        {
+          "content": "<p>First, use the two points to calculate the gradient with m = Δy / Δx.</p>"
+        },
+        {
+          "content": "<p>Then substitute one point into y = mx + c to find the intercept.</p>"
+        },
+        {
+          "content": "<p>Once m and c are known, the equation describes the whole line.</p>"
+        },
+        {
+          "content": "<p>This converts a pair of plotted points into an algebraic rule.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1275",
+      "title": "Why gradients matter",
+      "tags": {
+        "subject": "maths",
+        "topic": "Lines & gradients",
+        "concept": "Why gradients matter",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Gradient is not only a property of drawn lines. It is a way to describe constant change.</p>"
+        },
+        {
+          "content": "<p>Speed is change in position over time. Gradient is change in y over change in x.</p>"
+        },
+        {
+          "content": "<p>This is why distance-time graphs, cost graphs, growth graphs, and many scientific graphs use gradients.</p>"
+        },
+        {
+          "content": "<p>A straight line means the rate stays constant. A steeper line means the rate is larger.</p>"
+        },
+        {
+          "content": "<p>Lines and gradients prepare the ground for rates, motion graphs, and eventually calculus.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1313",
+      "title": "Exponents are compact multiplication",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Exponents are compact multiplication",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>An exponent is a compact way to write repeated multiplication, where the base is reused as a factor a specific number of times.</p>"
+        },
+        {
+          "content": "<p>For example, <span class=\"math\">2^4</span> means <span class=\"math\">2 \\times 2 \\times 2 \\times 2</span>. The base is <span class=\"math\">2</span>, and the exponent is <span class=\"math\">4</span>.</p>"
+        },
+        {
+          "content": "<p>The notation matters because multiplication chains become difficult to read once the number of repeated factors grows beyond a few terms.</p>"
+        },
+        {
+          "content": "<p>Exponents keep the structure visible. They show both the repeated number and the length of the repetition in one expression.</p>"
+        },
+        {
+          "content": "<p>Once exponents are read this way, the laws of exponents become patterns in multiplication rather than separate facts to memorize.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1314",
+      "title": "Multiplying powers adds exponents",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Multiplying powers adds exponents",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>When two powers have the same base, multiplying them joins their repeated multiplication chains into one longer chain of matching factors.</p>"
+        },
+        {
+          "content": "<p>The expression <span class=\"math\">3^2 \\times 3^4</span> means two factors of <span class=\"math\">3</span> followed by four more factors of <span class=\"math\">3</span> in the same product.</p>"
+        },
+        {
+          "content": "<p>Altogether, there are six factors of <span class=\"math\">3</span>, so the product is <span class=\"math\">3^6</span> rather than a new kind of operation.</p>"
+        },
+        {
+          "content": "<p>This is why the exponent law says <span class=\"math\">a^m \\times a^n = a^{m+n}</span> when the base is the same.</p>"
+        },
+        {
+          "content": "<p>The base does not change. Only the count of repeated factors changes, because the two multiplication chains have been joined together.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1315",
+      "title": "Negative exponents mean reciprocal",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Negative exponents mean reciprocal",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A negative exponent does not make the final value negative. It changes the position of the power inside a fraction.</p>"
+        },
+        {
+          "content": "<p>For example, <span class=\"math\">2^{-3}</span> means <span class=\"math\">\\frac{1}{2^3}</span>, which equals <span class=\"math\">\\frac{1}{8}</span> after the power in the denominator is evaluated.</p>"
+        },
+        {
+          "content": "<p>This extends the ordinary exponent pattern below zero, where each step downward divides by the base again instead of multiplying.</p>"
+        },
+        {
+          "content": "<p>Positive exponents move upward by repeated multiplication. Negative exponents move the same pattern downward by repeated division through reciprocal powers.</p>"
+        },
+        {
+          "content": "<p>Negative exponents are therefore a compact notation for reciprocal powers, especially when very small quantities need to be written cleanly.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1316",
+      "title": "Fractional exponents are roots",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Fractional exponents are roots",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Fractional exponents connect powers and roots, so roots become part of the same notation rather than a separate mathematical language.</p>"
+        },
+        {
+          "content": "<p>The denominator of the exponent tells which root is being taken. For example, <span class=\"math\">x^{1/2}</span> means <span class=\"math\">\\sqrt{x}</span>, the square root.</p>"
+        },
+        {
+          "content": "<p>Similarly, <span class=\"math\">x^{1/3}</span> means the cube root of <span class=\"math\">x</span>, because cubing reverses the cube-root operation and returns to <span class=\"math\">x</span>.</p>"
+        },
+        {
+          "content": "<p>More generally, <span class=\"math\">x^{1/n}</span> means the number that must be raised to the power <span class=\"math\">n</span> to produce <span class=\"math\">x</span> again.</p>"
+        },
+        {
+          "content": "<p>This notation lets powers and roots combine smoothly, which becomes important in algebra, graphs, physics, and rate formulas involving change.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1317",
+      "title": "Exponential growth multiplies",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Exponential growth multiplies",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Linear growth adds the same amount each step, while exponential growth multiplies by the same factor at every step instead.</p>"
+        },
+        {
+          "content": "<p>A doubling pattern goes <span class=\"math\">1, 2, 4, 8, 16</span>. Each amount is multiplied by <span class=\"math\">2</span> to produce the next amount.</p>"
+        },
+        {
+          "content": "<p>The early values can look small, but repeated multiplication compounds quickly because each new value becomes the base for the next step.</p>"
+        },
+        {
+          "content": "<p>That is why exponential graphs can appear almost flat at first, then rise sharply once the multiplied values become large.</p>"
+        },
+        {
+          "content": "<p>Compound interest, population growth, viral spread, and chain reactions all use this structure of repeated multiplication over time and scale.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1318",
+      "title": "Exponential decay shrinks by a factor",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Exponential decay shrinks by a factor",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Exponential decay is the same structure as exponential growth, but each step keeps only a fixed fraction of the previous amount.</p>"
+        },
+        {
+          "content": "<p>If a quantity halves each hour, <span class=\"math\">80</span> becomes <span class=\"math\">40</span>, then <span class=\"math\">20</span>, then <span class=\"math\">10</span>, with the same factor applied each time.</p>"
+        },
+        {
+          "content": "<p>The amount does not fall by equal subtraction. It falls by equal proportion, which makes the decrease smaller as the quantity shrinks.</p>"
+        },
+        {
+          "content": "<p>This is why decay curves drop quickly at first, then flatten as there is less remaining quantity to lose at later stages.</p>"
+        },
+        {
+          "content": "<p>Radioactive decay, cooling, capacitor discharge, and medicine leaving the bloodstream can all be modeled with exponential decay over time and quantity.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1319",
+      "title": "A logarithm asks what power",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "A logarithm asks what power",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A logarithm reverses the question asked by an exponent. It asks which power was needed to produce a given number.</p>"
+        },
+        {
+          "content": "<p>If <span class=\"math\">10^3 = 1000</span>, then <span class=\"math\">\\log_{10}(1000) = 3</span>, because <span class=\"math\">3</span> is the exponent that produces <span class=\"math\">1000</span> from base <span class=\"math\">10</span>.</p>"
+        },
+        {
+          "content": "<p>The base of the logarithm tells which number was being powered. The answer is the exponent attached to that base.</p>"
+        },
+        {
+          "content": "<p>Logarithms are not a new kind of arithmetic. They are a way of reading exponential statements from the other direction.</p>"
+        },
+        {
+          "content": "<p>This makes logarithms useful whenever an unknown value is sitting in the exponent instead of beside the base in an equation.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1320",
+      "title": "Logs turn multiplication into addition",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Logs turn multiplication into addition",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Logarithms connect multiplication and addition because multiplying powers with the same base adds their exponents rather than multiplying them directly.</p>"
+        },
+        {
+          "content": "<p>This is the reason <span class=\"math\">\\log(ab) = \\log(a) + \\log(b)</span>, as long as the logarithms use the same base throughout.</p>"
+        },
+        {
+          "content": "<p>The logarithm is reading the exponent hidden behind each number, so multiplying the numbers becomes adding those hidden exponents instead.</p>"
+        },
+        {
+          "content": "<p>This property made logarithms powerful calculation tools long before electronic calculators, because hard multiplication could be converted into easier addition.</p>"
+        },
+        {
+          "content": "<p>The same idea still matters in algebra, data scales, signal measurement, and any situation where multiplicative change needs to be compared.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1321",
+      "title": "The natural base e",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "The natural base e",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The number <span class=\"math\">e</span> appears when growth is compounded continuously, meaning the compounding is treated as happening without separate time jumps.</p>"
+        },
+        {
+          "content": "<p>Its decimal begins near <span class=\"math\">2.718</span>, but the exact decimal is less important than the continuous-change behavior it represents in formulas.</p>"
+        },
+        {
+          "content": "<p>The function <span class=\"math\">e^x</span> is special because its rate of change matches its own value at every point on the graph.</p>"
+        },
+        {
+          "content": "<p>That property makes <span class=\"math\">e</span> central in calculus, especially when describing growth, decay, cooling, charging, and many physical systems mathematically over time.</p>"
+        },
+        {
+          "content": "<p>In this sense, <span class=\"math\">e</span> is not chosen for convenience. It appears naturally when change depends on the current amount present.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1322",
+      "title": "Exponents and logs are mirrors",
+      "tags": {
+        "subject": "maths",
+        "topic": "Exponents & logarithms",
+        "concept": "Exponents and logs are mirrors",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Exponential functions and logarithmic functions undo each other, so each one reverses the action of the other in equations and graphs.</p>"
+        },
+        {
+          "content": "<p>If an exponential function sends <span class=\"math\">3</span> to <span class=\"math\">1000</span>, the matching logarithm sends <span class=\"math\">1000</span> back to <span class=\"math\">3</span> again as its exponent.</p>"
+        },
+        {
+          "content": "<p>On a coordinate graph, inverse functions mirror each other across the line <span class=\"math\">y = x</span>, swapping inputs and outputs between axes.</p>"
+        },
+        {
+          "content": "<p>This inverse relationship is what allows logarithms to solve equations where the unknown value appears in the exponent instead of the base.</p>"
+        },
+        {
+          "content": "<p>Exponents describe repeated multiplication moving forward. Logarithms recover the exponent that created the result from a chosen base in reverse.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1305",
+      "title": "A matrix is a rectangular array",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "A matrix is a rectangular array",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A matrix is a rectangular array of numbers, symbols, or expressions arranged in rows and columns as one mathematical object.</p>"
+        },
+        {
+          "content": "<p>It may look like a small table, but in mathematics the arrangement is part of the object itself, not decoration.</p>"
+        },
+        {
+          "content": "<p>Each position in the array matters. Moving a number to a different row or column can change the matrix and its meaning.</p>"
+        },
+        {
+          "content": "<p>A spreadsheet can help with the first visual idea, but a matrix is not defined by software, labels, or cells.</p>"
+        },
+        {
+          "content": "<p>The useful definition is this: a matrix is one structured object whose entries are organized by row and column position.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1306",
+      "title": "Entries have row-column positions",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "Entries have row-column positions",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Each value inside a matrix is called an entry, and every entry has a position determined by its row and column.</p>"
+        },
+        {
+          "content": "<p>Mathematicians usually name entries with indices. The notation <span class=\"math\">a_{3,2}</span> means the entry in row <span class=\"math\">3</span>, column <span class=\"math\">2</span> of matrix <span class=\"math\">A</span>.</p>"
+        },
+        {
+          "content": "<p>The row number is written first, then the column number. This order is part of the notation and should not be swapped.</p>"
+        },
+        {
+          "content": "<p>Row <span class=\"math\">2</span>, column <span class=\"math\">3</span> and row <span class=\"math\">3</span>, column <span class=\"math\">2</span> are different positions, even if the same number appears in both places.</p>"
+        },
+        {
+          "content": "<p>Once the address system is clear, a matrix becomes organized information rather than a block of disconnected symbols on a page.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1307",
+      "title": "Matrix size is rows by columns",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "Matrix size is rows by columns",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The size of a matrix is given by its number of rows followed by its number of columns, in that order.</p>"
+        },
+        {
+          "content": "<p>A matrix with <span class=\"math\">2</span> rows and <span class=\"math\">3</span> columns is called a <span class=\"math\">2 \\times 3</span> matrix, read as two by three.</p>"
+        },
+        {
+          "content": "<p>A <span class=\"math\">3 \\times 2</span> matrix also contains six entries, but it has a different shape and therefore behaves differently in operations.</p>"
+        },
+        {
+          "content": "<p>Matrix dimensions are not decoration. They decide which operations are possible and how the result of an operation will be shaped.</p>"
+        },
+        {
+          "content": "<p>This is why matrices with the same number of entries can still be different mathematical objects with different uses and meanings.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1308",
+      "title": "Matrix addition matches entries",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "Matrix addition matches entries",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Two matrices can be added only when they have the same dimensions: the same number of rows and the same number of columns.</p>"
+        },
+        {
+          "content": "<p>Addition is done entry by entry. The entry in row <span class=\"math\">1</span>, column <span class=\"math\">1</span> adds to the entry in row <span class=\"math\">1</span>, column <span class=\"math\">1</span>.</p>"
+        },
+        {
+          "content": "<p>The same pairing continues across the entire matrix, so every position in the first matrix matches one position in the second.</p>"
+        },
+        {
+          "content": "<p>If the dimensions do not match, there is no complete row-column pairing, so matrix addition is not defined for those matrices.</p>"
+        },
+        {
+          "content": "<p>The operation respects structure. Matrices add cleanly only when their shapes line up exactly from the first entry to the last.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1309",
+      "title": "Matrices can represent data",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "Matrices can represent data",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A matrix can represent data whenever information can be arranged in rows and columns with consistent meaning across the whole array.</p>"
+        },
+        {
+          "content": "<p>A black-and-white image, for example, can be represented as a matrix where each entry records the brightness of one pixel.</p>"
+        },
+        {
+          "content": "<p>A value such as <span class=\"math\">0</span> may represent black, <span class=\"math\">255</span> may represent white, and values between them represent grey levels of brightness.</p>"
+        },
+        {
+          "content": "<p>The matrix is not the picture itself. It is a numerical representation that a computer can store, process, and transform.</p>"
+        },
+        {
+          "content": "<p>This is one reason matrices appear in imaging, statistics, maps, networks, scientific measurement, engineering, economics, and numerical computation across many fields.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1310",
+      "title": "Matrices can represent transformations",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "Matrices can represent transformations",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A matrix can also represent a transformation, meaning a systematic action that sends points or vectors to new positions in space.</p>"
+        },
+        {
+          "content": "<p>For example, the matrix <span class=\"math\">\\begin{bmatrix}2 & 0 \\\\ 0 & 1\\end{bmatrix}</span> doubles the <span class=\"math\">x</span>-coordinate and leaves the <span class=\"math\">y</span>-coordinate unchanged.</p>"
+        },
+        {
+          "content": "<p>Under that transformation, the point <span class=\"math\">(3,4)</span> becomes <span class=\"math\">(6,4)</span> because the horizontal coordinate is stretched by a factor of <span class=\"math\">2</span>.</p>"
+        },
+        {
+          "content": "<p>In this setting, the entries of the matrix describe how space is stretched, compressed, reflected, rotated, or sheared by the transformation.</p>"
+        },
+        {
+          "content": "<p>This gives matrices a second major role: they can store data, but they can also describe actions on data or space.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1311",
+      "title": "The identity matrix leaves objects unchanged",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "The identity matrix leaves objects unchanged",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The identity matrix is the matrix version of doing nothing to a vector or point during a transformation in space.</p>"
+        },
+        {
+          "content": "<p>In two dimensions, the identity matrix is <span class=\"math\">\\begin{bmatrix}1 & 0 \\\\ 0 & 1\\end{bmatrix}</span>, and it sends <span class=\"math\">(x,y)</span> back to <span class=\"math\">(x,y)</span>.</p>"
+        },
+        {
+          "content": "<p>It plays a role similar to the number <span class=\"math\">1</span> in multiplication, because applying it leaves the object unchanged after the operation.</p>"
+        },
+        {
+          "content": "<p>The identity matrix matters because transformations need a clear baseline: the transformation that changes nothing at all to the object.</p>"
+        },
+        {
+          "content": "<p>Once matrices are treated as transformations, the identity matrix becomes the neutral element among those transformations under matrix multiplication in algebra.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1312",
+      "title": "Rotation can be written as a matrix",
+      "tags": {
+        "subject": "maths",
+        "topic": "Matrices",
+        "concept": "Rotation can be written as a matrix",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A rotation matrix represents a turn around the origin using entries arranged in a specific pattern inside the matrix itself.</p>"
+        },
+        {
+          "content": "<p>A <span class=\"math\">90^\\circ</span> counterclockwise rotation sends <span class=\"math\">(1,0)</span> to <span class=\"math\">(0,1)</span> and is represented by <span class=\"math\">\\begin{bmatrix}0 & -1 \\\\ 1 & 0\\end{bmatrix}</span>.</p>"
+        },
+        {
+          "content": "<p>More general rotation matrices use sine and cosine because those functions describe circular movement around the origin at different angles.</p>"
+        },
+        {
+          "content": "<p>This is where trigonometry and matrices connect: trigonometry describes the turn, and the matrix applies it consistently to every point.</p>"
+        },
+        {
+          "content": "<p>The spreadsheet comparison is only the entrance. A matrix begins as an array, then becomes a language for data and transformation.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1379",
+      "title": "The unit circle extends trigonometry",
+      "tags": {
+        "subject": "maths",
+        "topic": "Trigonometry",
+        "concept": "The unit circle extends trigonometry",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Right triangles give a useful starting point for trigonometry, but they only handle acute angles inside a triangle with fixed sides.</p>"
+        },
+        {
+          "content": "<p>The unit circle extends the same ideas to every angle by placing a circle of radius <span class=\"math\">1</span> around the origin.</p>"
+        },
+        {
+          "content": "<p>An angle <span class=\"math\">\\theta</span> is measured from the positive <span class=\"math\">x</span>-axis to a radius ending at a point on the circle.</p>"
+        },
+        {
+          "content": "<p>The <span class=\"math\">x</span>-coordinate of that point is <span class=\"math\">\\cos\\theta</span>, and the <span class=\"math\">y</span>-coordinate is <span class=\"math\">\\sin\\theta</span> for that angle on the circle.</p>"
+        },
+        {
+          "content": "<p>With this definition, sine and cosine can describe turning, rotation, waves, and repeating motion beyond right-triangle geometry alone in many contexts.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1380",
+      "title": "Special angles come from geometry",
+      "tags": {
+        "subject": "maths",
+        "topic": "Trigonometry",
+        "concept": "Special angles come from geometry",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The exact values for <span class=\"math\">30^\\circ</span>, <span class=\"math\">45^\\circ</span>, and <span class=\"math\">60^\\circ</span> come from two standard triangles, not from isolated table entries.</p>"
+        },
+        {
+          "content": "<p>Cutting a square along its diagonal creates a <span class=\"math\">45^\\circ</span>-<span class=\"math\">45^\\circ</span>-<span class=\"math\">90^\\circ</span> triangle with two equal shorter sides.</p>"
+        },
+        {
+          "content": "<p>That equality explains why <span class=\"math\">\\sin45^\\circ</span> and <span class=\"math\">\\cos45^\\circ</span> have the same value on the unit circle and in right triangles.</p>"
+        },
+        {
+          "content": "<p>Cutting an equilateral triangle in half creates a <span class=\"math\">30^\\circ</span>-<span class=\"math\">60^\\circ</span>-<span class=\"math\">90^\\circ</span> triangle with side ratio <span class=\"math\">1:\\sqrt{3}:2</span>.</p>"
+        },
+        {
+          "content": "<p>These two triangles generate the familiar exact values, so the table becomes a summary of geometry rather than memorized data.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1381",
+      "title": "Exact values preserve structure",
+      "tags": {
+        "subject": "maths",
+        "topic": "Trigonometry",
+        "concept": "Exact values preserve structure",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Trigonometry has a small set of exact reference values for sine, cosine, and tangent at common angles used repeatedly in problems.</p>"
+        },
+        {
+          "content": "<p>The usual reference angles are <span class=\"math\">0^\\circ</span>, <span class=\"math\">30^\\circ</span>, <span class=\"math\">45^\\circ</span>, <span class=\"math\">60^\\circ</span>, and <span class=\"math\">90^\\circ</span>, measured from the positive <span class=\"math\">x</span>-axis.</p>"
+        },
+        {
+          "content": "<p>Along these angles, sine rises from <span class=\"math\">0</span> to <span class=\"math\">1</span>, while cosine follows the same pattern in reverse order across the table.</p>"
+        },
+        {
+          "content": "<p>Tangent is defined by <span class=\"math\">\\tan\\theta=\\frac{\\sin\\theta}{\\cos\\theta}</span> wherever <span class=\"math\">\\cos\\theta</span> is not zero, so division is valid.</p>"
+        },
+        {
+          "content": "<p>Exact values such as <span class=\"math\">\\frac{1}{2}</span>, <span class=\"math\">\\frac{\\sqrt{2}}{2}</span>, and <span class=\"math\">\\frac{\\sqrt{3}}{2}</span> keep the geometry visible.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1382",
+      "title": "Sine and cosine form waves",
+      "tags": {
+        "subject": "maths",
+        "topic": "Trigonometry",
+        "concept": "Sine and cosine form waves",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>As a point moves around the unit circle, its vertical coordinate rises, falls, and returns to the same height after one turn.</p>"
+        },
+        {
+          "content": "<p>Plotting that vertical coordinate against the angle produces the sine wave, one of the basic periodic graphs in mathematics and physics.</p>"
+        },
+        {
+          "content": "<p>Cosine comes from the horizontal coordinate, so it follows the same repeating pattern with a different starting position on the graph.</p>"
+        },
+        {
+          "content": "<p>Both graphs have amplitude <span class=\"math\">1</span>, midline <span class=\"math\">0</span>, and period <span class=\"math\">2\\pi</span>, meaning they repeat after one full turn around the circle.</p>"
+        },
+        {
+          "content": "<p>Sound, tides, alternating current, pendulum motion, and circular motion all connect to trigonometry through repeating change over time and space.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1383",
+      "title": "Tangent measures slope and ratio",
+      "tags": {
+        "subject": "maths",
+        "topic": "Trigonometry",
+        "concept": "Tangent measures slope and ratio",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Tangent behaves differently from sine and cosine because it is not limited to values between <span class=\"math\">-1</span> and <span class=\"math\">1</span> on its graph.</p>"
+        },
+        {
+          "content": "<p>Since <span class=\"math\">\\tan\\theta=\\frac{\\sin\\theta}{\\cos\\theta}</span>, tangent grows very large when <span class=\"math\">\\cos\\theta</span> gets close to zero in the denominator.</p>"
+        },
+        {
+          "content": "<p>On its graph, tangent has vertical asymptotes where the function is undefined because division by zero would occur there at those angles.</p>"
+        },
+        {
+          "content": "<p>Tangent also measures slope: a line making angle <span class=\"math\">\\theta</span> with the positive <span class=\"math\">x</span>-axis has slope <span class=\"math\">\\tan\\theta</span> in coordinate geometry.</p>"
+        },
+        {
+          "content": "<p>This links trigonometry to gradients, direction, and steepness, not only to side lengths inside triangles or values on circles alone.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1384",
+      "title": "Radians measure angle by arc length",
+      "tags": {
+        "subject": "maths",
+        "topic": "Trigonometry",
+        "concept": "Radians measure angle by arc length",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Degrees are useful for everyday angle measurement, but radians are built from the geometry of the circle itself and its arc lengths.</p>"
+        },
+        {
+          "content": "<p>One radian is the angle formed when the arc length on a circle is equal to the radius of that circle.</p>"
+        },
+        {
+          "content": "<p>A full turn is <span class=\"math\">2\\pi</span> radians, half a turn is <span class=\"math\">\\pi</span> radians, and a quarter turn is <span class=\"math\">\\frac{\\pi}{2}</span> radians.</p>"
+        },
+        {
+          "content": "<p>Radians make circular formulas cleaner because arc length becomes <span class=\"math\">s=r\\theta</span> when <span class=\"math\">\\theta</span> is measured in radians rather than degrees.</p>"
+        },
+        {
+          "content": "<p>They also make calculus with sine and cosine work naturally, without extra conversion factors attached to the derivatives of these functions.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1423",
+      "title": "A limit studies approach",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "A limit studies approach",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A function gives outputs from inputs, but calculus often asks what happens as the input moves toward a chosen value.</p>"
+        },
+        {
+          "content": "<p>A limit describes the value a function approaches as the input gets closer and closer to a point from nearby inputs.</p>"
+        },
+        {
+          "content": "<p>The point being approached does not need to be reached for the nearby behavior of the function to become clear.</p>"
+        },
+        {
+          "content": "<p>This is the first bridge from functions to calculus: studying motion toward a value rather than only evaluating at the value.</p>"
+        },
+        {
+          "content": "<p>Limits make it possible to talk precisely about trends, gaps, curves, rates, and change near a point on a function.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1424",
+      "title": "Nearby values can reveal a pattern",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "Nearby values can reveal a pattern",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A limit is usually found by looking at function values close to the input being studied, rather than only at the input itself.</p>"
+        },
+        {
+          "content": "<p>If values from the left and right both move toward the same output, the function has a limit there at that point.</p>"
+        },
+        {
+          "content": "<p>The actual value of the function at the point may agree with the limit, differ from it, or be undefined.</p>"
+        },
+        {
+          "content": "<p>This separates local behavior from direct substitution, which is why limits are useful when formulas have gaps or undefined points.</p>"
+        },
+        {
+          "content": "<p>The important question is not only what the function equals, but what the function is approaching nearby from both sides.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1425",
+      "title": "Left and right must agree",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "Left and right must agree",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A two-sided limit exists only when the function approaches the same value from both directions around the input being studied.</p>"
+        },
+        {
+          "content": "<p>The left-hand limit studies inputs smaller than the point, while the right-hand limit studies inputs larger than the point being approached.</p>"
+        },
+        {
+          "content": "<p>If both sides approach the same output, the two-sided limit exists and equals that shared value at the point itself.</p>"
+        },
+        {
+          "content": "<p>If the left and right sides approach different values, the function has no single limit at that point on the graph.</p>"
+        },
+        {
+          "content": "<p>This matters because calculus depends on stable local behavior, not on two directions giving conflicting answers near the same input.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1426",
+      "title": "Holes and jumps behave differently",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "Holes and jumps behave differently",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A hole occurs when the nearby values approach one output, but the function is missing or defined differently at the point.</p>"
+        },
+        {
+          "content": "<p>In that case, the limit can still exist because the surrounding behavior points toward one clear value from both sides.</p>"
+        },
+        {
+          "content": "<p>A jump occurs when the function approaches one value from the left and another value from the right at the same input.</p>"
+        },
+        {
+          "content": "<p>A jump has no two-sided limit at the jump point because the two approaches disagree with each other there completely.</p>"
+        },
+        {
+          "content": "<p>Limits therefore distinguish between removable breaks, where the nearby pattern is stable, and jumps, where the pattern splits into two sides.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1427",
+      "title": "Limits handle impossible substitution",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "Limits handle impossible substitution",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Some formulas cannot be evaluated directly at a point because substitution creates an expression such as division by zero in the formula.</p>"
+        },
+        {
+          "content": "<p>A limit asks whether the formula still approaches a stable value as the input gets close to that point from nearby values.</p>"
+        },
+        {
+          "content": "<p>Algebra can sometimes simplify the expression and reveal the value that the nearby points were approaching all along in the pattern.</p>"
+        },
+        {
+          "content": "<p>This does not pretend the forbidden input is allowed. It studies the behavior around the forbidden input instead, using nearby values.</p>"
+        },
+        {
+          "content": "<p>That distinction is essential for calculus, where meaningful patterns often appear at points that direct substitution cannot handle cleanly by itself.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1428",
+      "title": "Limits can describe infinity",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "Limits can describe infinity",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Some limits study what happens as the input grows without bound instead of approaching a fixed number on the number line.</p>"
+        },
+        {
+          "content": "<p>A function may approach a horizontal level as <span class=\"math\">x</span> becomes very large or very negative over the long run in the graph.</p>"
+        },
+        {
+          "content": "<p>That horizontal level is called a horizontal asymptote when the graph gets closer to it over the long run without necessarily touching it.</p>"
+        },
+        {
+          "content": "<p>Other functions grow without bound, meaning their outputs become larger and larger instead of settling near a finite value at all.</p>"
+        },
+        {
+          "content": "<p>Limits at infinity describe long-term behavior, which is useful in graphs, models, sequences, and rates of decay over time and change.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1429",
+      "title": "Continuity means no break in the limit",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "Continuity means no break in the limit",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A function is continuous at a point when its value and its limit at that point agree exactly with each other.</p>"
+        },
+        {
+          "content": "<p>That means the function is defined there, the nearby values approach a limit, and the limit equals the function value.</p>"
+        },
+        {
+          "content": "<p>On a graph, continuity means the curve passes through the point without a hole, jump, or break in its path.</p>"
+        },
+        {
+          "content": "<p>Continuity is not only a visual idea. It is a statement about the agreement between value and approach at a point.</p>"
+        },
+        {
+          "content": "<p>This prepares the ground for differentiation, because derivatives require stable behavior near the point being studied on the curve itself.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1430",
+      "title": "Limits measure shrinking change",
+      "tags": {
+        "subject": "maths",
+        "topic": "Limits",
+        "concept": "Limits measure shrinking change",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The second bridge to differentiation begins when a limit is used to study change over smaller and smaller intervals around a point.</p>"
+        },
+        {
+          "content": "<p>A secant slope measures average change between two points on a curve by comparing vertical change with horizontal change between them.</p>"
+        },
+        {
+          "content": "<p>As the two points move closer together, the secant slope may approach one stable value at the chosen point on the curve.</p>"
+        },
+        {
+          "content": "<p>That limiting value is the slope of the tangent line at the point, if the limit exists there for the curve.</p>"
+        },
+        {
+          "content": "<p>Differentiation begins here: the derivative is a limit of average rates of change as the interval shrinks to zero at the point.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1385",
+      "title": "Differentiation finds local slope",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "Differentiation finds local slope",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A straight line has one slope everywhere, but a curve changes its steepness from point to point along its path.</p>"
+        },
+        {
+          "content": "<p>Differentiation finds the slope of a curve at one chosen point by studying slopes over shrinking intervals around that point.</p>"
+        },
+        {
+          "content": "<p>The average slope between two nearby points is called a secant slope, because the line cuts through the curve between them.</p>"
+        },
+        {
+          "content": "<p>As the second point moves closer to the first, those secant slopes may approach one stable value for the curve.</p>"
+        },
+        {
+          "content": "<p>That limiting value is the derivative, which gives the slope of the tangent line at that point on the curve.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1386",
+      "title": "The derivative is a limit of change",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "The derivative is a limit of change",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The derivative of a function records how fast the output changes compared with the input at a specific point locally.</p>"
+        },
+        {
+          "content": "<p>In symbols, the derivative can be written as <span class=\"math\">f'(x)</span> or as <span class=\"math\">\\frac{dy}{dx}</span> when <span class=\"math\">y=f(x)</span> for the same idea.</p>"
+        },
+        {
+          "content": "<p>The notation <span class=\"math\">\\frac{dy}{dx}</span> compares a small change in <span class=\"math\">y</span> with a small change in <span class=\"math\">x</span> near a point.</p>"
+        },
+        {
+          "content": "<p>The derivative becomes exact when that comparison is taken as a limit while the change in <span class=\"math\">x</span> shrinks toward zero.</p>"
+        },
+        {
+          "content": "<p>This is why differentiation belongs after limits: it is built from the limit of shrinking average rates of change near a point.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1387",
+      "title": "The derivative of x squared",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "The derivative of x squared",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The function <span class=\"math\">y=x^2</span> gives a clean first example because its slope changes smoothly from point to point along the curve.</p>"
+        },
+        {
+          "content": "<p>Near <span class=\"math\">x=3</span>, the slopes between nearby points on the curve get closer and closer to <span class=\"math\">6</span> as the interval shrinks.</p>"
+        },
+        {
+          "content": "<p>This means the tangent line to <span class=\"math\">y=x^2</span> at <span class=\"math\">x=3</span> has slope <span class=\"math\">6</span> at that exact point, not across an interval.</p>"
+        },
+        {
+          "content": "<p>More generally, the derivative of <span class=\"math\">x^2</span> is <span class=\"math\">2x</span>, so the local slope depends on the chosen input value on the graph.</p>"
+        },
+        {
+          "content": "<p>Differentiation turns a function into another function that reports the original function's rate of change at each input value in its domain.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1388",
+      "title": "The power rule is a shortcut",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "The power rule is a shortcut",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Once the derivative pattern is known, many derivatives do not need to be rebuilt from the limit definition each time.</p>"
+        },
+        {
+          "content": "<p>The power rule says that for <span class=\"math\">x^n</span>, the exponent moves in front and the exponent is reduced by one.</p>"
+        },
+        {
+          "content": "<p>In notation, <span class=\"math\">\\frac{d}{dx}x^n=nx^{n-1}</span> for powers where the rule applies in elementary differentiation and algebra.</p>"
+        },
+        {
+          "content": "<p>For example, the derivative of <span class=\"math\">x^4</span> is <span class=\"math\">4x^3</span>, and the derivative of <span class=\"math\">5x^4</span> is <span class=\"math\">20x^3</span> by the power rule.</p>"
+        },
+        {
+          "content": "<p>Constants by themselves have derivative <span class=\"math\">0</span> because a horizontal line has no change in height as <span class=\"math\">x</span> changes at all.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1389",
+      "title": "Products and quotients need structure",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "Products and quotients need structure",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>The derivative of a product is not usually the product of the derivatives, because both factors may change together at once.</p>"
+        },
+        {
+          "content": "<p>The product rule accounts for both contributions: one factor changes while the other is held, then the roles switch between factors.</p>"
+        },
+        {
+          "content": "<p>In notation, <span class=\"math\">(fg)'=f'g+fg'</span>, where each term captures one part of the product's changing behavior in the calculation of change.</p>"
+        },
+        {
+          "content": "<p>Division has its own pattern, called the quotient rule, because the numerator and denominator affect the fraction differently as they change.</p>"
+        },
+        {
+          "content": "<p>These rules matter whenever changing quantities multiply or divide, including area, revenue, density, ratios, and physical formulas in applications like these.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1390",
+      "title": "The chain rule handles layers",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "The chain rule handles layers",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Many functions are built in layers, where one function acts first and another function acts on its output afterward inside the composition.</p>"
+        },
+        {
+          "content": "<p>The chain rule differentiates the outside layer, then multiplies by the derivative of the inside layer underneath in the composition.</p>"
+        },
+        {
+          "content": "<p>For <span class=\"math\">(3x^2+5)^7</span>, the outside contributes <span class=\"math\">7(3x^2+5)^6</span>, and the inside contributes <span class=\"math\">6x</span> from differentiating <span class=\"math\">3x^2+5</span>.</p>"
+        },
+        {
+          "content": "<p>Multiplying those parts gives the derivative <span class=\"math\">42x(3x^2+5)^6</span> for the full layered expression after simplification of the product.</p>"
+        },
+        {
+          "content": "<p>The chain rule matters because layered functions appear in physics, geometry, statistics, optimization, computer-based models, and simulations of real systems.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1431",
+      "title": "Derivatives describe motion",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "Derivatives describe motion",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>Derivatives are not only geometric slopes. They also describe rates of change in quantities that vary over time or space.</p>"
+        },
+        {
+          "content": "<p>Velocity is the derivative of position because it measures how quickly position changes with respect to time or another time unit.</p>"
+        },
+        {
+          "content": "<p>Acceleration is the derivative of velocity because it measures how quickly velocity itself changes over time during motion along a path.</p>"
+        },
+        {
+          "content": "<p>Similar rate ideas appear in temperature change, medicine concentration, current flow, population change, and energy transfer in physical systems over time.</p>"
+        },
+        {
+          "content": "<p>In each case, differentiation gives a precise language for how fast one quantity is changing relative to another quantity in context.</p>"
+        }
+      ]
+    },
+    {
+      "kicker": "BB 1432",
+      "title": "Derivatives locate turning points",
+      "tags": {
+        "subject": "maths",
+        "topic": "Differentiation",
+        "concept": "Derivatives locate turning points",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": "<p>A derivative can show where a function is increasing, decreasing, or flattening out across a chosen interval on the graph itself.</p>"
+        },
+        {
+          "content": "<p>When the derivative is positive, the function is rising. When the derivative is negative, the function is falling on that interval.</p>"
+        },
+        {
+          "content": "<p>Points where the derivative equals zero can mark local maxima, local minima, or flat points that are neither in context.</p>"
+        },
+        {
+          "content": "<p>Optimization uses this information to find best values, such as maximum height, minimum cost, or most efficient design for a problem.</p>"
+        },
+        {
+          "content": "<p>This makes differentiation a tool for studying change, motion, and decisions, not only for finding slopes on graphs alone in isolation.</p>"
+        }
+      ]
+    }
+  ]
+}

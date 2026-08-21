@@ -1,0 +1,253 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "A world without rulers",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "measurement", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Imagine you wake up on a planet where measurement does not exist. There are no rulers, no scales, and no clocks.</p>" },
+        { "content": "<p>Someone hands you a rock. How heavy is it? You can feel the weight in your hand, but you have no way to describe it. You can't say it weighs 5 pounds, because 'pounds' don't exist. 'It's heavy' is just an opinion.</p>" },
+        { "content": "<p>How wide is the room? How long until sunrise? Without a way to measure, you cannot describe the physical world accurately to yourself, and you certainly cannot explain it to anyone else. Without measurement, physics cannot exist.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The agreement",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "units", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>So, you invent a system. You pick up a specific stick off the ground.</p>" },
+        { "content": "<p>You hold it up and declare: From now on, this stick is the standard. We will compare everything else in the world to this exact stick.</p>" },
+        { "content": "<p>Now you can actually communicate. This table is 4 sticks long. The river is 50 sticks across.</p>" },
+        { "content": "<p>It doesn't matter that the stick is just a random, arbitrary piece of wood you found in the dirt. What matters is that everyone agreed to use it as the reference point. That simple agreement is the invention of a 'unit.'</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Different tools",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "measurement", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The stick works perfectly for distance. But if you want to know how heavy a bucket of water is, or how long it takes for the sun to go down, a stick is completely useless.</p>" },
+        { "content": "<p>You cannot measure a heartbeat with a ruler. Length is fundamentally different from weight, and weight is fundamentally different from time.</p>" },
+        { "content": "<p>To describe the whole world, you need different standards for different properties. You need a standard rock for weight, and a standard dripping bucket for time.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The seven stones",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "base-quantities", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Over thousands of years, every civilization created their own random sticks and rocks. It was chaotic. Eventually, the global scientific community got together and cleaned it up.</p>" },
+        { "content": "<p>They stripped away all the clutter and agreed on exactly seven fundamental standards. The seven base quantities.</p>" },
+        { "content": "<p>We have a standard unit for length (the meter). A standard unit for mass (the kilogram). A standard unit for time (the second). There are four others for things like temperature and electric current.</p>" },
+        { "content": "<p>That is it. Just seven core measuring tools.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Mixing the ingredients",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "derived-units", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Wait, if there are only seven core tools, what about speed? Speed is a physical measurement, but it isn't one of the core seven.</p>" },
+        { "content": "<p>That is because speed doesn't need its own independent standard. Speed is just a combination of two things we already have: distance and time.</p>" },
+        { "content": "<p>When you drive a car, your speed is measured in miles per hour (or meters per second). That is literally just a Length unit divided by a Time unit.</p>" },
+        { "content": "<p>Speed, volume, density, force, energy — none of these require a brand new measuring tool. They are all just the 7 base units multiplied or divided together. They are the seven basic building blocks snapped together, describing every single physical event in the universe.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The revolution of measurement",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "metric-system", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Before the 1790s, measurement was a disaster. In France alone, there were over 250,000 different local units of weight and length. A foot in Paris was a completely different length than a foot in Marseille. Merchants used this chaos to cheat people constantly.</p>" },
+        { "content": "<p>During the French Revolution, the government decided to crush the chaos. They wanted a system that belonged to everyone, based on logic rather than a king's foot. They invented the metric system.</p>" },
+        { "content": "<p>By 1889, the rest of the scientific world agreed to use it. They forged a bar out of pure platinum and iridium, and a small metal cylinder of the same material.</p>" },
+        { "content": "<p>They locked both objects in an underground vault in Sèvres, just outside Paris. That metal bar became the absolute dictator of length for the entire planet. That cylinder became the dictator of mass.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Le Grand K",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "kilogram", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Using an object sounds precise, but it hides a massive flaw.</p>" },
+        { "content": "<p>Take the metal cylinder for mass. It was affectionately named Le Grand K (The Big K). To make sure the rest of the world stayed accurate, scientists forged 40 identical copies and shipped them to laboratories around the globe.</p>" },
+        { "content": "<p>Every 40 years, scientists carefully brought those copies back to Paris to put them on a scale next to Le Grand K to make sure they still matched.</p>" },
+        { "content": "<p>In 1989, they performed this check and realized something terrifying. The copies and the master cylinder were drifting apart. There was a difference of about 50 micrograms — roughly the weight of a single eyelash.</p>" },
+        { "content": "<p>Because Le Grand K was the legal definition of the kilogram, it was impossible for it to gain or lose weight. By definition, it was always exactly one kilogram. This meant the entire universe's system of mass had just silently shifted to match a fluctuating piece of metal.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Flipping the script on light",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "meter", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Physics requires absolute perfection. You cannot build microchips or navigate satellites using a measuring system that changes when a metal cylinder absorbs a microscopic speck of dust.</p>" },
+        { "content": "<p>So, starting in the late 20th century, scientists began tossing the objects in the garbage. They started with the meter.</p>" },
+        { "content": "<p>For centuries, scientists had tried to measure the exact speed of light using rulers. In 1983, they decided to flip the script. They stopped trying to measure light, and used light to measure the ruler.</p>" },
+        { "content": "<p>They legally froze the speed of light at exactly 299,792,458 meters per second. It is a universal constant.</p>" },
+        { "content": "<p>Then, they redefined the meter. One meter is now simply the distance light travels in a vacuum in exactly 1/299,792,458th of a second. The metal bar in Paris became entirely useless.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The atomic pendulum",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "second", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To make the new light-based meter work, you need to be able to measure a fraction of a second with flawless accuracy. But our definition of time was also flawed.</p>" },
+        { "content": "<p>Historically, a second was defined as 1/86,400th of a single day. It was tied to the rotation of the Earth.</p>" },
+        { "content": "<p>The problem is that the Earth is a terrible clock. Ocean tides, earthquakes, and melting ice caps cause the Earth to wobble and slow down. A day today is slightly longer than a day a century ago.</p>" },
+        { "content": "<p>So, in 1967, scientists abandoned the Earth. They tied the second to an atom. Specifically, the Cesium-133 atom.</p>" },
+        { "content": "<p>When you hit a Cesium atom with microwave energy, it vibrates exactly 9,192,631,770 times per second. It never slows down. It never speeds up. The atomic clock was born, providing a flawless rhythm for the entire universe.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The final vote",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "si-units", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>One by one, the base units were stripped away from physical objects and tied to invisible constants. But Le Grand K — the metal cylinder for mass — stubbornly remained. It was incredibly difficult to tie mass to a universal constant.</p>" },
+        { "content": "<p>Finally, physicists perfected a machine called the Kibble balance, which allowed them to define mass using the fixed rules of quantum mechanics (specifically, Planck's constant).</p>" },
+        { "content": "<p>On November 16, 2018, scientists from over 60 countries gathered in Versailles, France. They held a historic vote to officially kill Le Grand K. The vote was unanimous.</p>" },
+        { "content": "<p>On May 20, 2019, the new rules went into effect. The physical objects were officially obsolete.</p>" },
+        { "content": "<p>Today, all seven base units — Meter (length), Kilogram (mass), Second (time), Ampere (current), Kelvin (temperature), Mole (amount of substance), and Candela (brightness) — are tied entirely to the unbreakable laws of nature.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The Alphabet",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "base-units", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>There are exactly 7 base units in the universe. That is it.</p>" },
+        { "content": "<p>Think of them like the English alphabet. There are only 26 letters, but by arranging them in different orders, you can write every book that has ever existed.</p>" },
+        { "content": "<p>The base units work the exact same way. By multiplying and dividing these 7 fundamental units, you can describe a crashing galaxy, a flowing river, or a beating heart.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The Big Three",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "mks-system", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Even though there are 7 units on the list, you really only need three of them to describe almost everything you see and do on a daily basis.</p>" },
+        { "content": "<p>They are the Meter (for distance), the Kilogram (for mass), and the Second (for time).</p>" },
+        { "content": "<p>If you drop a ball, drive a car, throw a punch, or build a bridge, you are only dealing with those three concepts: how heavy it is, how far it goes, and how long it takes.</p>" },
+        { "content": "<p>In physics, this trio is so dominant that it gets its own name. It is called the MKS system (Meter-Kilogram-Second). It is the backbone of all mechanical physics.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The Other Four",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "base-units", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>So, what are the other four base units for? They handle the invisible, the extremes, and the microscopic.</p>" },
+        { "content": "<p>If you are dealing with electricity, you need the Ampere (electrical current). If you are dealing with heat, you need the Kelvin (temperature).</p>" },
+        { "content": "<p>If you need to count invisible atoms, you use the Mole (which we met in chemistry). And if you are measuring the blinding intensity of a laser, you use the Candela (brightness).</p>" },
+        { "content": "<p>They are vital tools for a scientist, but for standard, everyday motion, M, K, and S are the stars of the show.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Snapping them together",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "derived-units", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Let's look at how we actually use the MKS system. Notice that 'Speed' is not a base unit.</p>" },
+        { "content": "<p>That is because speed does not exist on its own. Speed is just a ratio. It is a specific amount of Distance divided by a specific amount of Time.</p>" },
+        { "content": "<p>So, you snap two base units together. You divide Meters by Seconds. Your unit for speed becomes meters per second (m/s).</p>" },
+        { "content": "<p>What about the size of a rug? A rug isn't a straight line. It is length multiplied by width. So you multiply a Meter by a Meter. Your unit for area becomes Meters squared (m²).</p>" },
+        { "content": "<p>When you combine base units like this, they are called Derived Units. They are just the base units stacked on top of each other.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The Disguise",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "derived-units", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Sometimes, these combinations get really long and annoying to write down.</p>" },
+        { "content": "<p>Take Force. Force is simply mass multiplied by acceleration.</p>" },
+        { "content": "<p>If you write that out in base units, it is a Kilogram multiplied by a Meter, divided by Seconds squared. It looks like this: kg·m/s².</p>" },
+        { "content": "<p>Physicists got tired of writing that messy fraction over and over again. So they put a mask on it. They took that whole chunk of letters, stuffed it inside a trench coat, and named it a Newton.</p>" },
+        { "content": "<p>Energy is disguised as a Joule. Pressure is disguised as a Pascal. But do not let the names intimidate you. Under the mask, there is no new math. A Newton is just kilograms, meters, and seconds snapped together.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The built-in lie detector",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "dimensional-analysis", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because every complex unit is just a combination of base units, physics gives you a secret weapon.</p>" },
+        { "content": "<p>You can do math with the words themselves, just like you do with numbers.</p>" },
+        { "content": "<p>If you multiply Speed (meters / second) by Time (seconds), the 'seconds' on the bottom and the 'seconds' on the top cancel each other out. The only word left is meters.</p>" },
+        { "content": "<p>This trick is called Dimensional Analysis. It is a built-in lie detector for your math.</p>" },
+        { "content": "<p>If you are taking a physics test, and you are trying to calculate the distance a car traveled, and your final answer ends up labeled in kilograms... you don't even have to look at the numbers. You instantly know your math is wrong, because distance is measured in meters.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The problem with the meter",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "prefixes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The base units (like the meter) are perfect for human-sized things. But physics doesn't just study humans.</p>" },
+        { "content": "<p>If you want to measure the distance to the moon, writing '384,400,000 meters' is exhausting. If you want to measure a red blood cell, writing '0.000008 meters' is a nightmare.</p>" },
+        { "content": "<p>When you have to write that many zeros, it is incredibly easy to make a mistake. Missing a single zero could crash a spaceship or ruin a microscopic surgery.</p>" },
+        { "content": "<p>We need a way to measure the massive and the microscopic without inventing completely new units for them.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The sliding scale",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "prefixes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Instead of inventing new words, scientists just use prefixes. You have seen them before: Kilo, Milli, Micro, Nano, Giga.</p>" },
+        { "content": "<p>These prefixes are not units themselves. They are just shorthand for multiplication and division.</p>" },
+        { "content": "<p>'Kilo' literally just means 'multiply by 1,000.' A kilometer is 1,000 meters. A kilogram is 1,000 grams.</p>" },
+        { "content": "<p>'Milli' means 'divide by 1,000.' A millimeter is simply a meter sliced into a thousand tiny pieces.</p>" },
+        { "content": "<p>By snapping a prefix onto the front of a word, you just slide the decimal point left or right. The base unit (the meter) never actually changes. You are just zooming the camera in and out.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Orders of magnitude",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "orders-of-magnitude", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because everything is based on sliding the decimal point, physicists view the universe in 'Orders of Magnitude.' That is just a fancy term for jumps of 10.</p>" },
+        { "content": "<p>In physics, one jump of 10 completely changes reality. A 1-meter animal is a dog. Jump one order of magnitude larger (10 meters) and you have a whale. Jump one order smaller (0.1 meters) and you have a mouse.</p>" },
+        { "content": "<p>When a scientist says a star is 'an order of magnitude' hotter than our sun, they don't just mean it is a little bit hotter. They mean it is exactly 10 times hotter.</p>" },
+        { "content": "<p>Two orders of magnitude means 100 times. Three orders means 1,000 times. It is a clean, simple way to scale the universe.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The blindfolded walk",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "scalars-vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>So, we have our seven base units, and we can scale them up or down perfectly. But if you try to map the physical world using just these numbers, you hit a wall.</p>" },
+        { "content": "<p>Imagine you are standing in a field wearing a blindfold. I tell you there is a million dollars exactly 10 meters away from you.</p>" },
+        { "content": "<p>You have the unit (meters) and you have the scale (10). But you still don't know how to get the money. Why?</p>" },
+        { "content": "<p>Because you don't know which way to walk. Number and unit are not enough to describe physical reality. We are missing the final piece of the puzzle: direction.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Scalars and Vectors",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "scalars-vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because direction is so important, physics splits all measurements into two strict categories.</p>" },
+        { "content": "<p>The first category is a Scalar. A scalar is just an amount. It only has a size.</p>" },
+        { "content": "<p>Mass is a scalar. Temperature is a scalar. If you weigh 70 kilograms, it doesn't matter if you are facing North, South, Up, or Down. You still weigh 70 kilograms. Direction has nothing to do with it.</p>" },
+        { "content": "<p>The second category is a Vector. A vector is an amount plus a direction.</p>" },
+        { "content": "<p>'10 meters' is a scalar. '10 meters North' is a vector.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Speed vs. Velocity",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "scalars-vectors", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This distinction is why physicists are so notoriously annoying about the words 'speed' and 'velocity.' In daily life, we use them to mean the exact same thing. In physics, they are completely different.</p>" },
+        { "content": "<p>Speed is a scalar. When a police officer shoots your car with a radar gun, it reads '60 miles per hour.' The radar gun doesn't care if you are driving toward New York or Miami. It just measures raw speed.</p>" },
+        { "content": "<p>Velocity is a vector. To have velocity, you must state exactly where you are going. '60 miles per hour, North.'</p>" },
+        { "content": "<p>This creates a mind-bending rule. If you drive a car at 60 miles per hour in a perfect, continuous circle, your speed is completely constant. But because you are constantly turning the steering wheel, your direction is constantly changing.</p>" },
+        { "content": "<p>And if your direction is changing, your velocity is changing every single second, even though your speedometer never moves.</p>" }
+      ]
+    }
+  ]
+}

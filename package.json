@@ -1,0 +1,48 @@
+{
+  "name": "qubix-university",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/build-pilot.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/check-missions.mjs && node scripts/check-assets.mjs && npm run build:library && node scripts/build-pilot.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "mobile:sync": "npm run build && cap sync",
+    "mobile:android": "cap open android",
+    "mobile:ios": "cap open ios",
+    "app:install": "npm --prefix current-app ci",
+    "app:dev": "npm --prefix current-app run dev",
+    "app:build": "npm --prefix current-app run build",
+    "app:test": "npm --prefix current-app run test:security",
+    "deploy": "node scripts/deploy.mjs",
+    "build:book": "node scripts/build-book.mjs",
+    "check:book": "node scripts/check-book-maths.mjs",
+    "build:spine": "node scripts/build-spine.mjs",
+    "build:library": "npm run build:book && npm run build:spine && node scripts/publish-library.mjs",
+    "check:assets": "node scripts/check-assets.mjs",
+    "build:pages": "node scripts/build-pages.mjs",
+    "state": "node scripts/build-state.mjs",
+    "check:missions": "node scripts/check-missions.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/edge": "^1.3.1",
+    "pixi.js": "^8.19.0",
+    "three": "^0.185.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "nodemailer": "^9.0.3",
+    "playwright": "^1.61.1",
+    "sharp": "^0.35.3",
+    "svelte": "^4.2.0",
+    "vite": "^5.4.0"
+  }
+}

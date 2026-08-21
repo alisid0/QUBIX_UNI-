@@ -1,0 +1,155 @@
+[
+  {
+    "id": "PHY_UNITS",
+    "slug": "units-and-dimensions",
+    "subject": "physics",
+    "seoTitle": "Units & Dimensions in Physics — SI Units & Dimensional Analysis | Qubix",
+    "metaDescription": "Learn physical units and dimensions: SI base and derived quantities, the seven SI units, the homogeneity principle, and dimensional analysis to check and even derive formulas.",
+    "h1": "Units & dimensions",
+    "summary": "Every measurement in physics needs a unit and a dimension. This track builds from why we standardise units all the way to using dimensional analysis to check equations and even find a formula.",
+    "bodyHtml": "<p>Physics turns the world into numbers, and a number means nothing without a <strong>unit</strong>. This track starts with why standard units exist, works through the SI system of base and derived quantities, then separates a quantity's <strong>dimension</strong> (the kind of thing it is, like length or time) from its unit (the amount, like metres or seconds).</p><p>From there you use the <strong>homogeneity principle</strong> and <strong>dimensional analysis</strong> to check whether an equation is even possible, and to reconstruct the shape of a formula from the dimensions alone.</p><p>What you will learn:</p><ul><li>Why we need standard units, and measuring length, area and derived quantities</li><li>Base quantities and the seven SI units</li><li>Dimension versus unit, and the dimensional fingerprint of a quantity</li><li>The homogeneity principle and dimensional analysis</li><li>Finding a formula from its dimensions</li></ul>",
+    "keywords": ["units and dimensions", "SI units", "dimensional analysis", "base quantities", "derived quantities", "homogeneity principle", "learn physics"],
+    "faqs": [
+      { "q": "What is the difference between a unit and a dimension?", "a": "A dimension is the kind of quantity, such as length, mass or time. A unit is the specific amount used to measure it, such as the metre, kilogram or second. Speed has the dimension length over time and can be measured in metres per second or kilometres per hour." },
+      { "q": "What is dimensional analysis used for?", "a": "It checks whether an equation is consistent, since both sides must share the same dimensions, and it can help reconstruct the form of a formula from the dimensions of the quantities involved." }
+    ],
+    "relatedSlugs": ["scale-estimation-errors", "forces-and-newtons-laws"],
+    "appCta": "Start Units & dimensions on Qubix"
+  },
+  {
+    "id": "PHY_SCALE",
+    "slug": "scale-estimation-errors",
+    "subject": "physics",
+    "seoTitle": "Scale, Estimation & Errors in Physics — Frames & Relative Velocity | Qubix",
+    "metaDescription": "Order-of-magnitude estimation, measurement error and uncertainty, frames of reference and relative velocity: the practical skills behind every real physics measurement.",
+    "h1": "Scale, estimation & errors",
+    "summary": "Real measurements are never exact and always depend on your point of view. This track covers order-of-magnitude estimation, measurement error, and how motion changes with the observer.",
+    "bodyHtml": "<p>Before you can trust a number, you need a feel for its <strong>scale</strong> and its <strong>uncertainty</strong>. This track builds order-of-magnitude thinking, shows why no instrument gives an exact reading, and introduces the idea that physics laws hold across wildly different sizes of the world.</p><p>It then tackles <strong>frames of reference</strong>: motion is always measured against something, so the same event has different velocities for different observers. That sets up relative velocity, one of the most quietly important ideas in mechanics.</p><p>What you will learn:</p><ul><li>Order of magnitude and the structure of the world at every scale</li><li>Errors in measurement and why exact readings do not exist</li><li>Frames of reference and relative velocity</li></ul>",
+    "keywords": ["order of magnitude", "measurement error", "uncertainty", "frames of reference", "relative velocity", "estimation physics", "learn physics"],
+    "faqs": [
+      { "q": "Why does every measurement have an error?", "a": "No instrument is perfectly precise, and every reading is limited by the scale of the tool and the conditions of the measurement. Physics treats a measurement as a best value plus an uncertainty, not an exact truth." },
+      { "q": "What is a frame of reference?", "a": "It is the viewpoint you measure motion against. A passenger is still relative to the train but moving relative to the platform, so velocity only has meaning once you name the frame." }
+    ],
+    "relatedSlugs": ["units-and-dimensions", "forces-and-newtons-laws"],
+    "appCta": "Start Scale, estimation & errors on Qubix"
+  },
+  {
+    "id": "PHY_INTRO",
+    "slug": "physics-foundations",
+    "subject": "physics",
+    "seoTitle": "What Physics Studies — Foundations & Frontiers | Qubix",
+    "metaDescription": "A gentle way in: what physics actually studies, where its frontier lies today, and the first puzzle of force and equilibrium that opens up mechanics.",
+    "h1": "Foundations & frontiers",
+    "summary": "Start here. What physics is really about, the open frontier of the field, and the first force puzzle that opens the door to mechanics.",
+    "bodyHtml": "<p>Physics can feel like a wall of equations, so this short track steps back to ask what the subject is actually for: finding the simplest rules that predict how the world behaves, from falling apples to distant galaxies.</p><p>It then looks at the <strong>frontier</strong>, the questions still open today, before turning to a deceptively simple puzzle: what holds a still object still? That question about balanced forces is the seed of everything in mechanics.</p><p>What you will learn:</p><ul><li>What physics studies and how it works</li><li>The open frontier of modern physics</li><li>Balanced forces: what holds a still ship still</li></ul>",
+    "keywords": ["what is physics", "physics foundations", "introduction to physics", "balanced forces", "equilibrium", "learn physics for beginners"],
+    "faqs": [
+      { "q": "Is this track good for a complete beginner?", "a": "Yes. It assumes no background and starts from what physics is and why it works, using everyday examples before any equations appear." },
+      { "q": "What does it mean for forces to be balanced?", "a": "When the forces on an object cancel out there is no net push, so a still object stays still and a moving one keeps its motion. That balance is the starting point for Newton's laws." }
+    ],
+    "relatedSlugs": ["forces-and-newtons-laws", "units-and-dimensions"],
+    "appCta": "Start Foundations & frontiers on Qubix"
+  },
+  {
+    "id": "PHY_FORCES",
+    "slug": "forces-and-newtons-laws",
+    "subject": "physics",
+    "seoTitle": "Forces & Newton's Laws — Learn Mechanics Step by Step | Qubix",
+    "metaDescription": "Master forces and motion: mass and inertia, speed, velocity and acceleration, and Newton's three laws (balanced forces, F = ma, action and reaction), built from intuition up.",
+    "h1": "Forces & Newton's laws",
+    "summary": "The core of mechanics: how forces change motion. From mass and inertia to Newton's three laws, built from everyday intuition all the way to the equations.",
+    "bodyHtml": "<p>This is the heart of classical mechanics. It begins with <strong>mass and inertia</strong>, the reluctance of matter to change its motion, then defines <strong>speed, velocity and acceleration</strong> precisely so motion can be described exactly.</p><p>From there it builds <strong>Newton's three laws</strong> from intuition to formula: a body keeps its motion unless a net force acts (balanced forces), force equals mass times acceleration (F = ma), and every action has an equal and opposite reaction.</p><p>What you will learn:</p><ul><li>Matter, mass and inertia; Newton's first law</li><li>Speed, velocity and acceleration</li><li>Newton's first, second and third laws, from words to equations</li><li>Mass versus weight, and the units of force</li></ul>",
+    "keywords": ["Newton's laws", "forces and motion", "F = ma", "inertia", "acceleration", "mechanics", "mass and weight", "learn physics"],
+    "faqs": [
+      { "q": "What are Newton's three laws in simple terms?", "a": "First: an object keeps its motion unless a net force acts on it. Second: force equals mass times acceleration (F = ma). Third: every force comes in an equal and opposite pair." },
+      { "q": "What is the difference between mass and weight?", "a": "Mass is how much matter an object contains and never changes. Weight is the force of gravity on that mass, so it changes with location, for example being lower on the Moon." }
+    ],
+    "relatedSlugs": ["physics-foundations", "scale-estimation-errors"],
+    "appCta": "Start Forces & Newton's laws on Qubix"
+  },
+  {
+    "id": "MATH_COORD",
+    "slug": "coordinate-geometry",
+    "subject": "maths",
+    "seoTitle": "Coordinate Geometry — the Cartesian Plane, Lines & Slope | Qubix",
+    "metaDescription": "Learn coordinate geometry step by step: the number line and plane, plotting points, lines as rules, slope, y = mx + c, distance, midpoint, and proving shapes with coordinates.",
+    "h1": "Coordinate geometry",
+    "summary": "Turn geometry into algebra. Build from the number line to the (x, y) plane, lines and slope, y = mx + c, distance and midpoint, and proving shapes with coordinates.",
+    "bodyHtml": "<p>Coordinate geometry is the bridge between shapes and equations. It starts with the <strong>number line</strong>, adds a second one to make the <strong>(x, y) plane</strong>, and shows how every point gets an address of across then up.</p><p>From there a line becomes a rule connecting x and y, which leads to <strong>slope</strong>, the equation <strong>y = mx + c</strong>, and building a line from two points. The track finishes with distance, midpoint, parallel and perpendicular lines, and using coordinates to prove a shape is what it claims to be.</p><p>What you will learn:</p><ul><li>The number line, the plane, and plotting points</li><li>A line as a rule, slope, and y = mx + c</li><li>Building a line from two points; parallel and perpendicular lines</li><li>Distance, midpoint, and proving shapes with coordinates</li></ul>",
+    "keywords": ["coordinate geometry", "cartesian plane", "slope of a line", "y = mx + c", "distance formula", "midpoint formula", "gradient", "learn maths"],
+    "faqs": [
+      { "q": "What does y = mx + c mean?", "a": "It is the equation of a straight line, where m is the slope (how steep the line is) and c is the y-intercept (where it crosses the y-axis). Every point on the line satisfies this relationship between x and y." },
+      { "q": "How do you find the slope of a line?", "a": "Slope is the change in y divided by the change in x between two points on the line. A larger value means a steeper line; a negative value means the line falls as you move right." }
+    ],
+    "relatedSlugs": [],
+    "appCta": "Start Coordinate geometry on Qubix"
+  },
+  {
+    "id": "CHEM_ATOMIC",
+    "slug": "atomic-structure",
+    "subject": "chemistry",
+    "seoTitle": "Atomic Structure — Atoms, Isotopes & Electron Shells | Qubix",
+    "metaDescription": "Understand atomic structure: what an atom is, protons, neutrons and electrons, atomic and mass number, isotopes, electron shells, ions, and why the noble gases are so stable.",
+    "h1": "Atomic structure",
+    "summary": "The foundation of chemistry: what atoms are made of, how to read the periodic table, isotopes, electron shells, ions, and why the noble gases are so unreactive.",
+    "bodyHtml": "<p>Everything in chemistry starts with the atom. This track builds from what chemistry studies and how the <strong>periodic table</strong> is organised, down to the three subatomic particles: protons, neutrons and electrons.</p><p>It then explains <strong>atomic number and mass number</strong>, why <strong>isotopes</strong> are the same element with different weights, how electrons fill <strong>shells</strong>, and why atoms form <strong>ions</strong> and chase the full-shell stability of the noble gases.</p><p>What you will learn:</p><ul><li>What chemistry is, elements, and the periodic table</li><li>The atom and its protons, neutrons and electrons</li><li>Atomic number, mass number and isotopes</li><li>Electron shells, ions, and the noble gases</li></ul>",
+    "keywords": ["atomic structure", "protons neutrons electrons", "isotopes", "electron shells", "ions", "periodic table", "noble gases", "learn chemistry"],
+    "faqs": [
+      { "q": "What is the difference between atomic number and mass number?", "a": "The atomic number is the number of protons, which defines the element. The mass number is the total of protons and neutrons, so subtracting the atomic number from it gives the neutron count." },
+      { "q": "What are isotopes?", "a": "Isotopes are atoms of the same element with the same number of protons but different numbers of neutrons. They are chemically identical but have different masses, which is why many periodic-table masses are not whole numbers." }
+    ],
+    "relatedSlugs": ["chemical-bonding", "reactions-and-the-mole"],
+    "appCta": "Start Atomic structure on Qubix"
+  },
+  {
+    "id": "CHEM_BONDING",
+    "slug": "chemical-bonding",
+    "subject": "chemistry",
+    "seoTitle": "Chemical Bonding — Ionic, Covalent & Metallic Bonds | Qubix",
+    "metaDescription": "Why atoms bond and the three ways they do it: ionic bonding (give and take), covalent bonding (sharing electrons), and metallic bonding (a sea of electrons).",
+    "h1": "Chemical bonding",
+    "summary": "Why atoms bond, and the three strategies they use: ionic, covalent and metallic bonding, all driven by the push to fill the outer shell.",
+    "bodyHtml": "<p>Atoms bond because a full outer shell is a lower-energy, more stable state. This track explains that drive, then works through the three ways atoms reach it.</p><p><strong>Ionic bonding</strong> transfers electrons from a metal to a non-metal so oppositely charged ions attract. <strong>Covalent bonding</strong> shares pairs of electrons between non-metals. <strong>Metallic bonding</strong> pools outer electrons into a sea that flows around fixed positive ions, which is why metals conduct and bend.</p><p>What you will learn:</p><ul><li>Why atoms bond: the drive to fill the shell</li><li>Ionic bonding: give and take</li><li>Covalent bonding: sharing electrons</li><li>Metallic bonding: a sea of electrons</li></ul>",
+    "keywords": ["chemical bonding", "ionic bonding", "covalent bonding", "metallic bonding", "octet rule", "electron sharing", "learn chemistry"],
+    "faqs": [
+      { "q": "Why do atoms form bonds?", "a": "Atoms bond to reach a lower-energy, more stable arrangement, almost always by attaining a full outer electron shell. The energy released when a bond forms is what makes the bonded state stable." },
+      { "q": "What is the difference between ionic and covalent bonding?", "a": "Ionic bonding transfers electrons from a metal to a non-metal, creating charged ions that attract. Covalent bonding shares electron pairs between non-metals, forming discrete molecules." }
+    ],
+    "relatedSlugs": ["atomic-structure", "molecular-architecture"],
+    "appCta": "Start Chemical bonding on Qubix"
+  },
+  {
+    "id": "CHEM_MOLE",
+    "slug": "reactions-and-the-mole",
+    "subject": "chemistry",
+    "seoTitle": "The Mole & Stoichiometry — Reactions and Formulas | Qubix",
+    "metaDescription": "The mole made simple: Avogadro's number, the equation n = m/M, relative atomic mass (why chlorine is 35.5), and working out empirical versus molecular formulas.",
+    "h1": "Reactions & the mole",
+    "summary": "How chemists count atoms by weighing them: the mole, the equation n = m/M, relative atomic mass, and working out empirical and molecular formulas.",
+    "bodyHtml": "<p>Atoms are far too small and too many to count, so chemists count them by weighing. The <strong>mole</strong> is the bridge: a fixed, huge number of particles (Avogadro's number) that turns grams into a count.</p><p>This track uses the core equation <strong>n = m/M</strong> to move between mass and amount, explains why <strong>relative atomic mass</strong> is often not a whole number (isotope averaging, so chlorine is 35.5), and shows how to find <strong>empirical and molecular formulas</strong> from composition.</p><p>What you will learn:</p><ul><li>The mole and Avogadro's number</li><li>The mole in practice: converting formula to grams and back</li><li>Relative atomic mass and why chlorine is 35.5</li><li>Empirical and molecular formulas</li></ul>",
+    "keywords": ["the mole", "stoichiometry", "avogadro's number", "n = m/M", "relative atomic mass", "empirical formula", "molecular formula", "learn chemistry"],
+    "faqs": [
+      { "q": "What is a mole in chemistry?", "a": "A mole is a fixed count of particles, about 6.022 x 10^23, chosen so that the mass in grams of one mole equals the substance's relative formula mass. It lets chemists count atoms by weighing." },
+      { "q": "Why is the relative atomic mass of chlorine 35.5?", "a": "Natural chlorine is a mixture of isotopes, mostly chlorine-35 and chlorine-37. The value 35.5 is the weighted average of those isotope masses, so no single atom actually weighs 35.5." }
+    ],
+    "relatedSlugs": ["atomic-structure", "molecular-architecture"],
+    "appCta": "Start Reactions & the mole on Qubix"
+  },
+  {
+    "id": "CHEM_ARCH",
+    "slug": "molecular-architecture",
+    "subject": "chemistry",
+    "seoTitle": "Molecular Architecture — Lattices, VSEPR Shapes & Bonding | Qubix",
+    "metaDescription": "How structure decides properties: ionic lattices, covalent networks (diamond vs graphite), VSEPR molecular shapes, polarity, intermolecular forces, and the molecules of life.",
+    "h1": "Molecular architecture",
+    "summary": "Structure decides properties. From giant lattices and diamond versus graphite to molecular shapes, polarity and intermolecular forces, up to the molecules that run life.",
+    "bodyHtml": "<p>The same atoms can build wildly different materials depending on how they are arranged. This track shows how <strong>structure decides properties</strong>, from giant <strong>ionic lattices</strong> to <strong>covalent networks</strong> where identical carbon atoms form either diamond or graphite.</p><p>It then covers the 3D shapes of molecules with <strong>VSEPR</strong>, why some molecules are <strong>polar</strong>, the weak <strong>intermolecular forces</strong> that set boiling points, and how all of it builds the large molecules of life such as DNA and proteins.</p><p>What you will learn:</p><ul><li>Ionic lattices and covalent networks (diamond and graphite)</li><li>Molecular shapes with VSEPR, and bond angles</li><li>Polarity and intermolecular forces</li><li>What a molecule is, up to DNA and proteins</li></ul>",
+    "keywords": ["molecular architecture", "VSEPR", "ionic lattice", "covalent network", "diamond and graphite", "polarity", "intermolecular forces", "learn chemistry"],
+    "faqs": [
+      { "q": "What is VSEPR theory?", "a": "VSEPR (valence-shell electron-pair repulsion) predicts a molecule's 3D shape by assuming electron pairs around a central atom spread as far apart as possible, giving shapes such as linear, bent, pyramidal and tetrahedral." },
+      { "q": "Why are diamond and graphite so different if both are carbon?", "a": "They are different structural forms (allotropes) of carbon. Diamond bonds each carbon to four others in a rigid 3D network, making it hard, while graphite bonds each to three in sliding sheets, making it soft and conductive." }
+    ],
+    "relatedSlugs": ["chemical-bonding", "reactions-and-the-mole"],
+    "appCta": "Start Molecular architecture on Qubix"
+  }
+]

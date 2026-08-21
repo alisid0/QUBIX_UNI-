@@ -1,0 +1,68 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The isolated machine",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "networking", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A processor packed with billions of transistors is an incredibly powerful tool, but in isolation, its usefulness is strictly limited.</p>" },
+        { "content": "<p>A machine sitting alone on a desk can crunch massive numbers, but it cannot share the answers.</p>" },
+        { "content": "<p>To scale computing power and share information, machines must be able to exchange data. The 1s and 0s generated inside one processor must be physically transported into another processor.</p>" },
+        { "content": "<p>This connection between two or more communicating machines is called a Network.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The copper and the glass",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "fiber-optics", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To move a 1 or a 0 between two machines, a physical bridge must exist.</p>" },
+        { "content": "<p>Originally, this bridge was a simple copper wire. A surge of electricity pushed down the wire equals a 1; a drop in electricity equals a 0.</p>" },
+        { "content": "<p>However, electrical current degrades over long distances. To send data globally at high speeds, engineers replaced copper with glass.</p>" },
+        { "content": "<p>Fiber optic cables use light instead of electricity. A laser flashes on and off billions of times a second, shooting bits through tubes of pure glass thinner than a human hair.</p>" },
+        { "content": "<p>The 'Internet' or the 'Cloud' is not an invisible, magical space. It is a massive, physical web of glass cables buried in trenches along highways and laid heavily across the ocean floor.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The invisible wire",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "wireless", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Physical cables are fast and secure, but they permanently tether a machine to a wall.</p>" },
+        { "content": "<p>To sever the cable, the 1s and 0s must be transmitted through the air. This is achieved using invisible electromagnetic radio waves (Wi-Fi and Cellular data).</p>" },
+        { "content": "<p>A wireless transmitter takes the electrical 1s and 0s inside the computer and converts them into physical ripples in the air.</p>" },
+        { "content": "<p>A wave pulsing at a highly specific, rapid frequency might represent a 1, while a slightly slower wave represents a 0.</p>" },
+        { "content": "<p>An antenna on a smartphone catches these invisible ripples as they pass by, and instantly translates them back into electrical switches turning on and off. Wireless networking is simply a vibrating, invisible cable.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The postal system",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "packets", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Connecting two computers is simple. Connecting billions of computers requires a highly organized traffic system.</p>" },
+        { "content": "<p>When a photograph is sent across the internet, it is not sent as one massive, heavy file. It is chopped up into thousands of tiny, uniform pieces called Packets.</p>" },
+        { "content": "<p>Every packet is stamped with a digital destination address, known as an IP Address (Internet Protocol).</p>" },
+        { "content": "<p>Specialized computers called Routers act as microscopic post offices. They sit at the intersections of the internet, reading the IP address on passing packets, and instantly forwarding them down the fastest available wire toward their destination.</p>" },
+        { "content": "<p>The receiving computer collects the thousands of arriving packets, reads their sequence numbers, and reassembles them back into the original photograph.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The open door",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cybersecurity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This global network is a miracle of engineering, but it introduces a severe structural flaw.</p>" },
+        { "content": "<p>For a computer to receive incoming packets from the internet, it must keep a digital 'port' open and listening.</p>" },
+        { "content": "<p>An open port is simply a door waiting for data to arrive. If the door is open for legitimate data, it is inherently open for any data.</p>" },
+        { "content": "<p>The physical network cannot perfectly distinguish between a packet containing a friendly text message, and a packet containing a malicious command.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The blind execution",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cybersecurity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This vulnerability leads directly to the absolute foundation of Cybersecurity.</p>" },
+        { "content": "<p>Recall that a computer processor has no intelligence. It is just billions of switches, completely blind, executing whatever algorithm it is handed.</p>" },
+        { "content": "<p>If a malicious actor sends a packet containing a destructive list of instructions (Malware) through an open network door, the processor will not question it.</p>" },
+        { "content": "<p>The machine will execute a command to delete its own files, or lock its own hard drive, with the exact same flawless, unquestioning efficiency as it executes a command to save a document.</p>" },
+        { "content": "<p>Cybersecurity is the constant, invisible war to inspect the packets at the door, verify the sender, and block malicious instructions before the blind processor can execute them.</p>" }
+      ]
+    }
+  ]
+}
