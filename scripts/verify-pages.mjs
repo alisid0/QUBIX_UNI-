@@ -1,5 +1,10 @@
 // Check the Pages mirror serves the real thing, not an empty shell or a 404.
 //
+// It checks bodies rather than status codes on purpose. Chasing a deploy
+// problem, two preview URLs answered 200 for the sheet's path and turned out to
+// be an SPA catch-all returning a 0.02 MB app shell with no figures in it,
+// which is the failure mode that looks like success.
+//
 //   node scripts/verify-pages.mjs https://alisid0.github.io/QUBIX_UNI-/
 
 const base = (process.argv[2] || '').replace(/\/$/, '');
@@ -15,28 +20,36 @@ const get = async path => {
 console.log(`checking ${base}\n`);
 
 for (const [path, expect] of [
-  ['/', /Qubix Library/],
-  ['/what-data-is.html', /What Data Is/],
-  ['/what-a-program-does.html', /What a Computer Program Does/],
-  ['/functions.html', /Calculus From The Ground Up/],
-  ['/big-sheet-of-graphs.html', /The Big Sheet of Graphs/]
+  ['/', /Qubix/],
+  ['/library/', /Qubix Library/],
+  ['/library/what-data-is.html', /What Data Is/],
+  ['/library/what-a-program-does.html', /What a Computer Program Does/],
+  ['/library/functions.html', /Calculus From The Ground Up/],
+  ['/library/big-sheet-of-graphs.html', /The Big Sheet of Graphs/]
 ]) {
   const r = await get(path);
   const title = (r.body.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
-  ok(`${path.padEnd(26)} ${r.status}`, r.status === 200 && expect.test(title), title.slice(0, 44));
+  ok(`${path.padEnd(34)} ${r.status}`, r.status === 200 && expect.test(title), title.slice(0, 40));
 }
 
-// A page that answers 200 with the wrong body is the failure mode that looks
-// like success, so count what is actually in it.
-const sheet = await get('/big-sheet-of-graphs.html');
+const sheet = await get('/library/big-sheet-of-graphs.html');
 const figs = (sheet.body.match(/<svg class="af"/g) || []).length;
 const moving = (sheet.body.match(/class="plate moving/g) || []).length;
 ok('the sheet carries its figures', figs > 400, `${figs} figures, ${moving} of them movable`);
 
 // The frames are dead without the lifted runtime beside the page.
-const js = await get('/big-sheet-of-graphs.js');
+const js = await get('/library/big-sheet-of-graphs.js');
 ok('the lifted runtime is served', js.status === 200 && js.body.includes('afr'),
   `${js.status}, ${(js.body.length / 1024).toFixed(1)} kB`);
+
+// The app is only usable on the mirror if its bundle resolves under the
+// repository subpath rather than the host root.
+const app = await get('/');
+const asset = (app.body.match(/(?:src|href)="([^"]*assets\/[^"]+)"/) || [])[1] || '';
+const prefix = new URL(base).pathname;
+ok('the app bundle is built for this subpath', asset.startsWith(prefix), asset.slice(0, 54) || 'no bundle referenced');
+const bundle = asset.startsWith(prefix) ? await get(asset.slice(prefix.length - 1)) : { status: 0, body: '' };
+ok('the app bundle is served', bundle.status === 200, `${bundle.status}, ${(bundle.body.length / 1024).toFixed(0)} kB`);
 
 console.log(`\n${bad ? `${bad} check(s) FAILED` : 'all checks pass'}`);
 process.exit(bad ? 1 : 0);

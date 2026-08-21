@@ -21,7 +21,8 @@
     "check:book": "node scripts/check-book-maths.mjs",
     "build:spine": "node scripts/build-spine.mjs",
     "build:library": "npm run build:book && npm run build:spine && node scripts/publish-library.mjs",
-    "check:assets": "node scripts/check-assets.mjs"
+    "check:assets": "node scripts/check-assets.mjs",
+    "build:pages": "node scripts/build-pages.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

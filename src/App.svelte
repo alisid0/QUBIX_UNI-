@@ -31,12 +31,14 @@
   const explicitReviewMode = params.get('mode') === 'review';
   const showWikiMode = params.get('mode') === 'wiki';
   // Authoring surface. Never reached in production: options are drafts, not curriculum.
-  const showFactoryMode = params.get('mode') === 'factory' && !import.meta.env.PROD;
-  const showStrataMigrationFactory = params.get('mode') === 'strata-factory' && !import.meta.env.PROD;
-  const showPartsSheet = params.get('mode') === 'parts' && !import.meta.env.PROD;
-  const showExerciseFactory = params.get('mode') === 'exercises' && !import.meta.env.PROD;
-  const showAssetShowcase = params.get('mode') === 'assets' && !import.meta.env.PROD;
-  const showGameMission = params.get('mode') === 'game' && !import.meta.env.PROD;
+  // Dev always, plus any build that asks for the workshop explicitly.
+  const workshop = !import.meta.env.PROD || import.meta.env.VITE_WORKSHOP === '1';
+  const showFactoryMode = params.get('mode') === 'factory' && workshop;
+  const showStrataMigrationFactory = params.get('mode') === 'strata-factory' && workshop;
+  const showPartsSheet = params.get('mode') === 'parts' && workshop;
+  const showExerciseFactory = params.get('mode') === 'exercises' && workshop;
+  const showAssetShowcase = params.get('mode') === 'assets' && workshop;
+  const showGameMission = params.get('mode') === 'game' && workshop;
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
