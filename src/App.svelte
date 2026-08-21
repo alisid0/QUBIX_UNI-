@@ -60,7 +60,9 @@
       ? import('./views/ProductAssetShowcase.svelte')
       : params.get('asset') === 'data-quality-terminal'
         ? import('./views/DataQualityAssetShowcase.svelte')
-        : import('./views/AssetShowcase.svelte');
+        : params.get('asset') === 'relational-workbench'
+          ? import('./views/RelationalAssetShowcase.svelte')
+          : import('./views/AssetShowcase.svelte');
     assetPreview.then(m => { AssetShowcase = m.default; });
   }
   if (showGameMission) {
@@ -68,7 +70,11 @@
       ? import('./views/DataClassificationMission.svelte')
       : params.get('mission') === 'missing-data'
         ? import('./views/MissingDataMission.svelte')
-        : import('./views/CheckoutMission.svelte');
+        : params.get('mission') === 'table-grain'
+          ? import('./views/TableGrainMission.svelte')
+          : params.get('mission') === 'duplicate-records'
+            ? import('./views/DuplicateRecordsMission.svelte')
+            : import('./views/CheckoutMission.svelte');
     gamePreview.then(m => { GameMission = m.default; });
   }
   if (showReviewMode) {

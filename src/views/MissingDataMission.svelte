@@ -176,7 +176,7 @@
 
     <aside class="decision-card">
       {#if missionComplete}
-        <div class="completion"><span>✓</span><p class="eyebrow">COMPETENCY DEMONSTRATED</p><h2>Meaning preserved</h2><p>{MISSING_DATA_MISSION.competency}</p><ul>{#each MISSING_DATA_MISSION.cases as item}<li><b>{item.field}</b><span>{item.classification.replaceAll('-', ' ')}</span></li>{/each}</ul><a class="next-mission" href="?mode=game&mission=classify-data">Review Mission 002</a><button on:click={resetMission}>Run mission again</button></div>
+        <div class="completion"><span>✓</span><p class="eyebrow">COMPETENCY DEMONSTRATED</p><h2>Meaning preserved</h2><p>{MISSING_DATA_MISSION.competency}</p><ul>{#each MISSING_DATA_MISSION.cases as item}<li><b>{item.field}</b><span>{item.classification.replaceAll('-', ' ')}</span></li>{/each}</ul><a class="next-mission" href="?mode=game&mission=table-grain">Continue to Mission 004</a><button on:click={resetMission}>Run mission again</button></div>
       {:else}
         <div class="theory"><p class="eyebrow">THEORY → PRACTICAL · {step === 'classification' ? 'MEANING' : 'TREATMENT'}</p><h2>{question}</h2><p>{theory}</p></div>
         <article class="evidence"><p>{caseRecord.context}</p><code>{caseRecord.evidence}</code></article>
