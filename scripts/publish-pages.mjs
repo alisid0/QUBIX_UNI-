@@ -55,8 +55,8 @@ try {
 const api = (method, path, body = '') =>
   sh(`gh api -X ${method} ${path}${body} 2>&1 || true`, { shell: true });
 let out = api('POST', `repos/${repo}/pages`, ` -f "source[branch]=${BRANCH}" -f "source[path]=/"`);
-if (/already exists/i.test(out)) out = api('PUT', `repos/${repo}/pages`, ` -f "source[branch]=${BRANCH}" -f "source[path]=/"`);
-if (/message/.test(out) && !/already exists/i.test(out)) console.log(`  pages api: ${out.slice(0, 300)}`);
+if (/already (exists|enabled)/i.test(out)) out = api('PUT', `repos/${repo}/pages`, ` -f "source[branch]=${BRANCH}" -f "source[path]=/"`);
+if (/message/.test(out) && !/already (exists|enabled)/i.test(out)) console.log(`  pages api: ${out.slice(0, 300)}`);
 
 const url = `https://${owner.toLowerCase()}.github.io/${name}/`;
 console.log(`\n  ${url}`);
