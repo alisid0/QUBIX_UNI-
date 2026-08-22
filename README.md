@@ -79,17 +79,14 @@ behind, and its output is committed so a fresh checkout builds without it.
 ## Deployment
 
 ```bash
-npm run deploy
+git push origin main
 ```
 
-Builds here, verifies that the learner bundle contains no Factory or gated-draft
-material, then publishes to the dedicated `qubix-university` Vercel project.
-The custom domain is `qubix.university`. The release refuses to run if the
-working tree is dirty, the checkout is linked to another Vercel project, the
-commit author is not the source-repository owner, or protected authoring material
-is present in the bundle.
-
-A push to this repository is **not** a release. Only `npm run deploy` is.
+Vercel is connected to this GitHub repository. Every push to `main` builds and
+publishes the dedicated `qubix-university` production project at
+`qubix.university`. Other branches create preview deployments. The optional
+`npm run deploy` command remains available for a verified manual release from a
+linked local checkout.
 
 ## Infrastructure
 
