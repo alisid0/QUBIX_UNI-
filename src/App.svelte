@@ -77,31 +77,38 @@
   }
   if (showGameMission) {
     const mission = params.get('mission') || (productionFoundationLanding ? 'foundations' : null);
-    const gamePreview = mission === 'foundations'
-      ? import('./views/RoleFoundations.svelte')
-      : mission === 'shared-book'
-        ? import('./views/SharedFoundationsBook.svelte')
-        : mission === 'role-game'
-          ? import('./views/RoleGameHub.svelte')
-        : mission === 'campaign'
-          ? import('./views/DataQualityCampaign.svelte')
-        : mission === 'units-measurement'
-          ? import('./views/UnitsMeasurementMission.svelte')
-        : mission === 'data-lineage'
-          ? import('./views/DataLineageMission.svelte')
-        : !mission
-      ? import('./views/GameHub.svelte')
-      : mission === 'join-grain'
-      ? import('./views/JoinGrainMission.svelte')
-      : mission === 'classify-data'
-      ? import('./views/DataClassificationMission.svelte')
-      : mission === 'missing-data'
-        ? import('./views/MissingDataMission.svelte')
-        : mission === 'table-grain'
-          ? import('./views/TableGrainMission.svelte')
-          : mission === 'duplicate-records'
-            ? import('./views/DuplicateRecordsMission.svelte')
-            : import('./views/CheckoutMission.svelte');
+    let gamePreview;
+
+    // Keep each dynamic import in its own branch. A nested conditional caused
+    // Vite to preload GameHub.css for every mission, leaving the selected
+    // mission's component mounted without its stylesheet in production.
+    if (mission === 'foundations') {
+      gamePreview = import('./views/RoleFoundations.svelte');
+    } else if (mission === 'shared-book') {
+      gamePreview = import('./views/SharedFoundationsBook.svelte');
+    } else if (mission === 'role-game') {
+      gamePreview = import('./views/RoleGameHub.svelte');
+    } else if (mission === 'campaign') {
+      gamePreview = import('./views/DataQualityCampaign.svelte');
+    } else if (mission === 'units-measurement') {
+      gamePreview = import('./views/UnitsMeasurementMission.svelte');
+    } else if (mission === 'data-lineage') {
+      gamePreview = import('./views/DataLineageMission.svelte');
+    } else if (!mission) {
+      gamePreview = import('./views/GameHub.svelte');
+    } else if (mission === 'join-grain') {
+      gamePreview = import('./views/JoinGrainMission.svelte');
+    } else if (mission === 'classify-data') {
+      gamePreview = import('./views/DataClassificationMission.svelte');
+    } else if (mission === 'missing-data') {
+      gamePreview = import('./views/MissingDataMission.svelte');
+    } else if (mission === 'table-grain') {
+      gamePreview = import('./views/TableGrainMission.svelte');
+    } else if (mission === 'duplicate-records') {
+      gamePreview = import('./views/DuplicateRecordsMission.svelte');
+    } else {
+      gamePreview = import('./views/CheckoutMission.svelte');
+    }
     gamePreview.then(m => { GameMission = m.default; });
   }
   if (showReviewMode) {
