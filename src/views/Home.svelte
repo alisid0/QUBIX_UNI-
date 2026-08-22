@@ -129,15 +129,12 @@
       {/if}
     </section>
 
-    <!-- The Superstore academy had no route in at all: you had to know the URL.
-         Hidden in a production build, like the missions themselves. -->
-    {#if !import.meta.env.PROD || import.meta.env.VITE_WORKSHOP === '1'}
-      <a class="academy" href="?mode=game">
-        <span class="academy-kick">ALSO IN DRAFT · DATA SCIENCE</span>
-        <b>Qubix Superstore</b>
-        <span>Learn data by working in a shop. Six missions from the checkout to the join.</span>
-      </a>
-    {/if}
+    <!-- The Superstore academy had no route in at all: you had to know the URL. -->
+    <a class="academy" href="?mode=game">
+      <span class="academy-kick">ALSO IN DRAFT · DATA SCIENCE</span>
+      <b>Qubix Superstore</b>
+      <span>Learn data by working in a shop. Six missions from the checkout to the join.</span>
+    </a>
 
     <div class="board-list-head">
       <span>CHOOSE A TOPIC</span>

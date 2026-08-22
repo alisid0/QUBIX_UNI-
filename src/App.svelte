@@ -38,7 +38,10 @@
   const showPartsSheet = params.get('mode') === 'parts' && workshop;
   const showExerciseFactory = params.get('mode') === 'exercises' && workshop;
   const showAssetShowcase = params.get('mode') === 'assets' && workshop;
-  const showGameMission = params.get('mode') === 'game' && workshop;
+  // The academy ships. The showcases and factory tools above do not: they are
+  // internal workbenches, and this is a learner-facing route carrying its own
+  // AI_DRAFT labelling.
+  const showGameMission = params.get('mode') === 'game';
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
