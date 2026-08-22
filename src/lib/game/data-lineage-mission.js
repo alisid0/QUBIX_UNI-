@@ -20,8 +20,8 @@ export const DATA_LINEAGE_MISSION = Object.freeze({
       theory: 'A useful trace begins with an identifiable source record, not only a number. The branch, sensor and observation time distinguish this reading from every other reading.',
       answer: 'B-08 · FZ-2 · 05:45', explanation: 'Correct. This composite source key points to one observation.',
       options: Object.freeze([
-        Object.freeze({ value: 'B-08 · FZ-2 · 05:45', label: 'B-08 · FZ-2 · 05:45', note: 'branch, device and observation time' }),
         Object.freeze({ value: '0', label: '0', note: 'a value without identity or unit' }),
+        Object.freeze({ value: 'B-08 · FZ-2 · 05:45', label: 'B-08 · FZ-2 · 05:45', note: 'branch, device and observation time' }),
         Object.freeze({ value: 'freezer_temperature', label: 'freezer_temperature', note: 'a field name shared by many records' })
       ])
     }),
@@ -30,9 +30,9 @@ export const DATA_LINEAGE_MISSION = Object.freeze({
       theory: 'Lineage records the processing activity between input and output. Naming and versioning the rule makes the change inspectable and repeatable.',
       answer: 'normalise_temperature_v3', explanation: 'Correct. The named transformation explains how 0 °F became −17.8 °C.',
       options: Object.freeze([
-        Object.freeze({ value: 'normalise_temperature_v3', label: 'normalise_temperature_v3', note: '(°F − 32) × 5 ÷ 9' }),
         Object.freeze({ value: 'morning_freezer_report', label: 'morning_freezer_report', note: 'the destination, not the change' }),
-        Object.freeze({ value: 'overwrite_source', label: 'overwrite_source', note: 'would remove the original evidence' })
+        Object.freeze({ value: 'overwrite_source', label: 'overwrite_source', note: 'would remove the original evidence' }),
+        Object.freeze({ value: 'normalise_temperature_v3', label: 'normalise_temperature_v3', note: '(°F − 32) × 5 ÷ 9' })
       ])
     }),
     Object.freeze({
