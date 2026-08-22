@@ -15,6 +15,7 @@
   let completed = [];
   let renderer, scene, camera, controls, terminal, cartridge, frame, resizeObserver, THREE;
   let reducedMotion = false;
+  let lightweightMode = false;
 
   $: caseRecord = MISSING_DATA_MISSION.cases[caseIndex];
   $: missionComplete = completed.length === MISSING_DATA_MISSION.cases.length;
@@ -90,6 +91,12 @@
   onMount(async () => {
     try {
       reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      lightweightMode = window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+      if (lightweightMode) {
+        reducedMotion = true;
+        ready = true;
+        return;
+      }
       THREE = await import('three');
       const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
       scene = new THREE.Scene();
@@ -166,13 +173,13 @@
 <svelte:head><title>Missing Values Are Not Zero | Qubix University</title><meta name="description" content="Local AI draft of Qubix Superstore missing-data mission." /></svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header><div class="identity"><span class="role">PRE<br />INTERN</span><div><p>{MISSING_DATA_MISSION.id} · {MISSING_DATA_MISSION.status}</p><h1>{MISSING_DATA_MISSION.title}</h1></div></div><nav><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=data-quality-terminal">New assets</a><a href="?mode=wiki">Library</a></nav></header>
+  <header><div class="identity"><span class="role">PRE<br />INTERN</span><div><p>{MISSING_DATA_MISSION.id} · {MISSING_DATA_MISSION.status}</p><h1>{MISSING_DATA_MISSION.title}</h1></div></div><nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=data-quality-terminal">New assets</a><a href="?mode=wiki">Library</a></nav></header>
   <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
 
   <main>
     <section class="stage-card">
       <div class="stage-heading"><div><p class="eyebrow">CORPORATE HQ · BRANCH FEED DESK</p><h2>{missionComplete ? 'Daily feed reviewed' : caseRecord.source}</h2></div><span>{missionComplete ? '6 / 6' : `${caseIndex + 1} / ${MISSING_DATA_MISSION.cases.length}`}</span></div>
-      <div class="viewport" bind:this={host}>{#if !ready && !loadError}<div class="loading">Starting data quality terminal…</div>{/if}{#if loadError}<div class="loading" role="alert">{loadError}</div>{/if}</div>
+      {#if !lightweightMode}<div class="viewport" bind:this={host}>{#if !ready && !loadError}<div class="loading">Starting data quality terminal…</div>{/if}{#if loadError}<div class="loading" role="alert">{loadError}</div>{/if}</div>{/if}
       {#if !missionComplete}
         <article class="record-strip"><div><small>TABLE</small><b>{caseRecord.table}</b></div><div><small>FIELD</small><b>{caseRecord.field}</b></div><div class="value"><small>VALUE</small><b>{caseRecord.displayValue}</b></div></article>
       {/if}

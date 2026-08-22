@@ -41,7 +41,8 @@
   // The academy ships. The showcases and factory tools above do not: they are
   // internal workbenches, and this is a learner-facing route carrying its own
   // AI_DRAFT labelling.
-  const showGameMission = params.get('mode') === 'game';
+  const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype');
+  const showGameMission = params.get('mode') === 'game' || productionFoundationLanding;
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
@@ -61,7 +62,9 @@
     import('./views/ExerciseFactory.svelte').then(m => { ExerciseFactory = m.default; });
   }
   if (showAssetShowcase) {
-    const assetPreview = params.get('asset') === 'world'
+    const assetPreview = params.get('asset') === 'computer-screen'
+      ? import('./views/MissionOperationsStudio.svelte')
+      : params.get('asset') === 'world'
       ? import('./views/WorldAssetShowcase.svelte')
       : params.get('asset') === 'product-package'
       ? import('./views/ProductAssetShowcase.svelte')
@@ -73,17 +76,30 @@
     assetPreview.then(m => { AssetShowcase = m.default; });
   }
   if (showGameMission) {
-    const gamePreview = !params.get('mission')
+    const mission = params.get('mission') || (productionFoundationLanding ? 'foundations' : null);
+    const gamePreview = mission === 'foundations'
+      ? import('./views/RoleFoundations.svelte')
+      : mission === 'shared-book'
+        ? import('./views/SharedFoundationsBook.svelte')
+        : mission === 'role-game'
+          ? import('./views/RoleGameHub.svelte')
+        : mission === 'campaign'
+          ? import('./views/DataQualityCampaign.svelte')
+        : mission === 'units-measurement'
+          ? import('./views/UnitsMeasurementMission.svelte')
+        : mission === 'data-lineage'
+          ? import('./views/DataLineageMission.svelte')
+        : !mission
       ? import('./views/GameHub.svelte')
-      : params.get('mission') === 'join-grain'
+      : mission === 'join-grain'
       ? import('./views/JoinGrainMission.svelte')
-      : params.get('mission') === 'classify-data'
+      : mission === 'classify-data'
       ? import('./views/DataClassificationMission.svelte')
-      : params.get('mission') === 'missing-data'
+      : mission === 'missing-data'
         ? import('./views/MissingDataMission.svelte')
-        : params.get('mission') === 'table-grain'
+        : mission === 'table-grain'
           ? import('./views/TableGrainMission.svelte')
-          : params.get('mission') === 'duplicate-records'
+          : mission === 'duplicate-records'
             ? import('./views/DuplicateRecordsMission.svelte')
             : import('./views/CheckoutMission.svelte');
     gamePreview.then(m => { GameMission = m.default; });

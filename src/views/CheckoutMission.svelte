@@ -22,6 +22,7 @@
   let scanStart = 0;
   let outcomeCreated = false;
   let reducedMotion = false;
+  let lightweightMode = false;
 
   $: currentOrder = CHECKOUT_MISSION.order[missionIndex] || null;
   $: currentProduct = currentOrder ? productFor(currentOrder.sku) : null;
@@ -133,6 +134,12 @@
   onMount(async () => {
     try {
       reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      lightweightMode = window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+      if (lightweightMode) {
+        reducedMotion = true;
+        ready = true;
+        return;
+      }
       THREE = await import('three');
       const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
       scene = new THREE.Scene();
@@ -239,7 +246,7 @@
 <section class="game-shell qx-shell">
   <header>
     <div class="identity"><span class="role">{CHECKOUT_MISSION.role}</span><div><p>{CHECKOUT_MISSION.id} · {CHECKOUT_MISSION.status}</p><h1>{CHECKOUT_MISSION.title}</h1></div></div>
-    <nav><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=checkout-station">Assets</a><a href="?mode=wiki">Library</a></nav>
+    <nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=checkout-station">Assets</a><a href="?mode=wiki">Library</a></nav>
   </header>
 
   <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
@@ -256,10 +263,10 @@
         {/if}
       </div>
 
-      <div class="viewport" bind:this={host}>
+      {#if !lightweightMode}<div class="viewport" bind:this={host}>
         {#if !ready && !loadError}<div class="loading">Opening checkout three…</div>{/if}
         {#if loadError}<p class="loading" role="alert">{loadError}</p>{/if}
-      </div>
+      </div>{/if}
 
       {#if currentProduct}
         <div class="checkout-controls">

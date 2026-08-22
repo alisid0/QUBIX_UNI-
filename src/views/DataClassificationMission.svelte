@@ -83,7 +83,7 @@
 <section class="mission-shell qx-shell">
   <header>
     <div class="identity"><span class="role">PRE<br />INTERN</span><div><p>{CLASSIFICATION_MISSION.id} · {CLASSIFICATION_MISSION.status}</p><h1>{CLASSIFICATION_MISSION.title}</h1></div></div>
-    <nav><a href="?mode=game&mission=checkout-basics&fresh=1">Mission 001</a><a href="?mode=game&mission=missing-data">Mission 003</a><a href="?mode=wiki">Library</a></nav>
+    <nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=checkout-basics&fresh=1">Mission 001</a><a href="?mode=game&mission=missing-data">Mission 003</a><a href="?mode=wiki">Library</a></nav>
   </header>
 
   <div class="progress" aria-label={`Four-variation mission ${overallProgress}% complete`}><span style={`width:${overallProgress}%`}></span></div>
