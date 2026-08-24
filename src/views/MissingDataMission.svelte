@@ -23,9 +23,6 @@
   $: options = step === 'classification' ? MISSINGNESS_OPTIONS : TREATMENT_OPTIONS;
   $: progress = Math.round(((completed.length * 2 + (step === 'action' ? 1 : 0) + (correct ? 1 : 0)) / (MISSING_DATA_MISSION.cases.length * 2)) * 100);
   $: question = step === 'classification' ? 'What does this value mean in context?' : 'What should the data team do?';
-  $: theory = step === 'classification'
-    ? 'An empty cell does not explain itself. Use the process evidence to distinguish unknown, not applicable, pending, and deliberately uncollected data from a true zero.'
-    : 'Preserve what is known and why it is missing. Never replace uncertainty with a convenient number unless a justified method is explicitly recorded.';
 
   function openWorkstation() {
     workstationOpen = true;
@@ -214,9 +211,8 @@
           {/if}
           <div class="intro-copy">
             <p class="eyebrow">MISSION BRIEF · LEARN BY DOING</p>
-            <h3>An empty cell does not explain itself.</h3>
-            <p>A branch feed has arrived with values that look blank, delayed or zero. Open the workstation, inspect the operational evidence, then preserve what each value actually means.</p>
-            <ul><li>Inspect the record</li><li>Classify its meaning</li><li>Choose a defensible treatment</li></ul>
+            <h3>Six feed records need review.</h3>
+            <p>Open the terminal and resolve each flagged value.</p>
             <button on:click={openWorkstation}>Enter the workstation <span aria-hidden="true">→</span></button>
           </div>
         </section>
@@ -230,20 +226,25 @@
           {:else}
             <div class="screen-layout">
               <section class="case-pane">
-                <p class="pane-label">LIVE RECORD</p>
-                <article class="record-strip"><div><small>TABLE</small><b>{caseRecord.table}</b></div><div><small>FIELD</small><b>{caseRecord.field}</b></div><div class="value"><small>VALUE</small><b>{caseRecord.displayValue}</b></div></article>
-                <article class="evidence"><p>{caseRecord.context}</p><code>{caseRecord.evidence}</code></article>
-                <div class="case-note"><b>Why the monitor matters</b><span>The cell is only one clue. The event trail and collection process establish its meaning.</span></div>
+                <p class="pane-label">DATA PREVIEW</p>
+                <div class="data-table-wrap record-strip">
+                  <table>
+                    <caption>{caseRecord.table} · 1 row</caption>
+                    <thead><tr>{#each caseRecord.preview.columns as column}<th class:flagged={column === caseRecord.field}>{column}</th>{/each}</tr></thead>
+                    <tbody><tr>{#each caseRecord.preview.row as value, index}<td class:flagged={caseRecord.preview.columns[index] === caseRecord.field}>{value}</td>{/each}</tr></tbody>
+                  </table>
+                </div>
+                <article class="evidence"><small>ACTIVITY LOG</small><code>{caseRecord.evidence}</code></article>
               </section>
 
               <section class="decision-card">
-                <div class="theory"><p class="eyebrow">{step === 'classification' ? 'STEP 1 · CLASSIFY THE MEANING' : 'STEP 2 · CHOOSE THE TREATMENT'}</p><h2>{question}</h2><p>{theory}</p></div>
+                <div class="theory"><p class="eyebrow">{step === 'classification' ? 'STEP 1 · CLASSIFY' : 'STEP 2 · TREAT'}</p><h2>{question}</h2></div>
                 <div class="options">
                   {#each options as option}
-                    <button class:selected={selected === option.value} class:right={correct && selected === option.value} class:wrong={checked && !correct && selected === option.value} on:click={() => choose(option.value)} disabled={correct}><b>{option.label}</b><span>{option.note}</span></button>
+                    <button class:selected={selected === option.value} class:right={correct && selected === option.value} class:wrong={checked && !correct && selected === option.value} on:click={() => choose(option.value)} disabled={correct}><b>{option.label}</b></button>
                   {/each}
                 </div>
-                {#if checked}<div class:success={correct} class:retry={!correct} class="feedback" role="status">{#if correct}<b>Correct.</b> {step === 'classification' ? caseRecord.explanation : caseRecord.treatment}{:else}<b>Try again.</b> Use the operational evidence; the visible cell alone is not enough.{/if}</div>{/if}
+                {#if checked}<div class:success={correct} class:retry={!correct} class="feedback" role="status">{#if correct}<b>Correct.</b> {step === 'classification' ? caseRecord.explanation : caseRecord.treatment}{:else}<b>Try again.</b> Check the activity log.{/if}</div>{/if}
                 {#if correct}<button class="continue" on:click={continueMission}>{step === 'classification' ? 'Choose the treatment' : caseIndex === MISSING_DATA_MISSION.cases.length - 1 ? 'Complete mission' : 'Review next record'} →</button>{/if}
               </section>
             </div>
@@ -268,15 +269,14 @@
   .monitor-prompt:hover{background:#25231f}.monitor-prompt:focus-visible,.intro-copy button:focus-visible,.mobile-monitor:focus-visible{outline:3px solid #a85a34;outline-offset:3px}
   .intro-copy{padding:clamp(28px,4vw,52px);display:flex;flex-direction:column;justify-content:center;border-left:1px solid #d4cbb9;background:#fbf8f1}
   .intro-copy h3{margin:4px 0 12px;font:700 clamp(27px,3vw,38px)/1.08 Georgia,serif;letter-spacing:-.02em}.intro-copy>p:not(.eyebrow){margin:0;color:#625a49;font:650 15px/1.65 var(--qx-font)}
-  .intro-copy ul{list-style:none;margin:24px 0;padding:0;display:grid;gap:8px;counter-reset:brief}.intro-copy li{counter-increment:brief;display:flex;align-items:center;gap:10px;color:#40392e;font:800 13.5px var(--qx-font)}.intro-copy li:before{content:counter(brief);display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#e6eee0;color:#3c6427;font-size:11px}
-  .intro-copy button{min-height:48px;border:0;border-radius:11px;background:#a85a34;color:#fff;font:900 14px var(--qx-font);cursor:pointer}.intro-copy button:hover{background:#25231f}
+  .intro-copy button{min-height:48px;margin-top:24px;border:0;border-radius:11px;background:#a85a34;color:#fff;font:900 14px var(--qx-font);cursor:pointer}.intro-copy button:hover{background:#25231f}
   .mobile-monitor{min-height:280px;margin:18px;padding:24px;display:grid;place-items:center;align-content:center;gap:12px;border:10px solid #25231f;border-bottom-width:30px;border-radius:14px;background:#bfe8d6;color:#20382e;cursor:pointer}.mobile-monitor .screen-icon{font:900 42px/1 var(--qx-font);letter-spacing:.04em}.mobile-monitor .screen-icon small{font-size:10px}.mobile-monitor>b{font:900 17px var(--qx-font)}.mobile-monitor>small{font:700 13px var(--qx-font)}
   .workstation-screen{margin:0 14px 14px;padding:12px;border:8px solid #25231f;border-radius:12px;background:#17201f;box-shadow:inset 0 0 0 1px #47665a,0 18px 50px rgba(0,0,0,.25);color:#e9f0e9}
   .screen-bar{min-height:42px;padding:0 12px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;border-bottom:1px solid #47665a;color:#a9bdb3;font:850 11px var(--qx-font);letter-spacing:.08em}.screen-bar>div{display:flex;gap:6px}.screen-bar i{width:8px;height:8px;border-radius:50%;background:#a85a34}.screen-bar i:nth-child(2){background:#e2a42d}.screen-bar i:nth-child(3){background:#63b13b}.screen-bar b{color:#e9f0e9}.screen-bar>span{text-align:right}
   .screen-layout{display:grid;grid-template-columns:minmax(330px,.84fr) minmax(0,1.16fr);gap:1px;background:#47665a}
   .case-pane,.workstation-screen .decision-card{min-width:0;border:0;border-radius:0;background:#edf1ed;color:#25231f}
-  .case-pane{padding:clamp(18px,2.6vw,30px)}.pane-label{margin:0 0 10px;color:#55756f;font:900 11px var(--qx-font);letter-spacing:.12em}.case-pane .record-strip{overflow:hidden;border:1px solid #c7d1ca;border-radius:11px;background:#fff}.case-pane .evidence{margin:16px 0 0;background:#dfe7e2;border-color:#c1cec5}.case-note{margin-top:16px;padding-top:14px;display:grid;gap:5px;border-top:1px solid #c7d1ca}.case-note b{color:#375a4e;font:900 12px var(--qx-font);letter-spacing:.05em}.case-note span{color:#5e6d67;font:650 12.5px/1.45 var(--qx-font)}
-  .workstation-screen .decision-card{padding:clamp(18px,2.6vw,30px);overflow:visible}.workstation-screen .theory{border-color:#c7d1ca}.workstation-screen .options{grid-template-columns:repeat(2,minmax(0,1fr))}.workstation-screen .options button{min-height:67px}.workstation-screen .options button:last-child:nth-child(odd){grid-column:1/-1}.completion-panel{max-width:760px;margin:0 auto}.completion-panel .completion{padding:18px}
+  .case-pane{padding:clamp(18px,2.6vw,30px)}.pane-label{margin:0 0 10px;color:#55756f;font:900 11px var(--qx-font);letter-spacing:.12em}.data-table-wrap.record-strip{display:block;max-width:100%;overflow-x:auto;border:1px solid #c7d1ca;border-radius:11px;background:#fff}.data-table-wrap table{width:100%;border-collapse:collapse;font:750 12px var(--qx-font);white-space:nowrap}.data-table-wrap caption{padding:10px 12px;border-bottom:1px solid #d5ddd7;background:#f7f9f6;color:#375a4e;font:900 11px var(--qx-font);letter-spacing:.06em;text-align:left}.data-table-wrap th,.data-table-wrap td{padding:11px 12px;border-right:1px solid #d5ddd7;text-align:left}.data-table-wrap th:last-child,.data-table-wrap td:last-child{border-right:0}.data-table-wrap th{color:#61706a;font-size:10.5px;letter-spacing:.04em}.data-table-wrap td{border-top:1px solid #d5ddd7;color:#25231f}.data-table-wrap .flagged{background:#f8e4df;color:#a02d1d;font-weight:900}.case-pane .evidence{margin:16px 0 0;background:#dfe7e2;border-color:#c1cec5}.case-pane .evidence small{display:block;margin-bottom:7px;color:#55756f;font:900 10.5px var(--qx-font);letter-spacing:.1em}
+  .workstation-screen .decision-card{padding:clamp(18px,2.6vw,30px);overflow:visible}.workstation-screen .theory{border-color:#c7d1ca}.workstation-screen .options{grid-template-columns:repeat(2,minmax(0,1fr))}.workstation-screen .options button{min-height:54px}.workstation-screen .options button:last-child:nth-child(odd){grid-column:1/-1}.completion-panel{max-width:760px;margin:0 auto}.completion-panel .completion{padding:18px}
   @media(max-width:940px){main{grid-template-columns:1fr}.mission-intro,.screen-layout{grid-template-columns:1fr}.intro-copy{border-top:1px solid #d4cbb9;border-left:0}.viewport{min-height:500px}.decision-card{min-height:0}footer{flex-direction:column}}
   @media(max-width:600px){.mission-shell{padding:13px 10px 25px}header{align-items:flex-start}.identity h1{font-size:20px}.role{width:42px;height:42px}nav{flex-direction:column;align-items:flex-end;gap:6px}.viewport{min-height:360px}.intro-copy{padding:24px 18px}.mobile-monitor{margin:10px}.workstation-screen{margin:0 6px 8px;padding:5px;border-width:5px}.screen-bar{grid-template-columns:1fr auto;padding:8px}.screen-bar>b{display:none}.screen-layout{display:block}.record-strip{grid-template-columns:1fr}.record-strip div{border-right:0;border-bottom:1px solid #d8d0be}.record-strip div:last-child{border-bottom:0}.decision-card{padding:16px}.workstation-screen .options{grid-template-columns:1fr}.workstation-screen .options button:last-child:nth-child(odd){grid-column:auto}}
   @media(prefers-reduced-motion:reduce){.progress span{transition:none}}

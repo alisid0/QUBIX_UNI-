@@ -74,6 +74,15 @@ async function checkClassification() {
   }
 }
 
+async function checkMissingDataPreviews() {
+  const { MISSING_DATA_MISSION: M } = await import(`file://${join(GAME, 'missing-data-mission.js')}`);
+  ok('missing-data previews are rectangular tables',
+    M.cases.every(c => c.preview?.columns?.length > 1 && c.preview.columns.length === c.preview.row?.length),
+    `${M.cases.length} case previews`);
+  ok('missing-data previews include the questioned field',
+    M.cases.every(c => c.preview.columns.includes(c.field)));
+}
+
 const files = readdirSync(GAME).filter(f => f.endsWith('-mission.js')).sort();
 console.log(`the missions (${files.length} modules)\n`);
 
@@ -137,6 +146,7 @@ for (const file of files) {
 }
 
 await checkClassification();
+await checkMissingDataPreviews();
 console.log('');
 
 // The arithmetic mission 006 prints has to be the arithmetic it means.
