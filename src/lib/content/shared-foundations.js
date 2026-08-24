@@ -13,11 +13,13 @@
 
 import { SHARED_FOUNDATIONS_PART_ONE } from './shared-foundations-part-one.js';
 import { SHARED_FOUNDATIONS_PART_TWO } from './shared-foundations-part-two.js';
+import { SHARED_FOUNDATIONS_PART_THREE } from './shared-foundations-part-three.js';
 
 /** Keyed by the chapter number shown on the contents page, counting from 1. */
 export const SHARED_FOUNDATIONS = Object.freeze([
   Object.freeze({ chapter: 1, book: SHARED_FOUNDATIONS_PART_ONE }),
-  Object.freeze({ chapter: 2, book: SHARED_FOUNDATIONS_PART_TWO })
+  Object.freeze({ chapter: 2, book: SHARED_FOUNDATIONS_PART_TWO }),
+  Object.freeze({ chapter: 3, book: SHARED_FOUNDATIONS_PART_THREE })
 ]);
 
 export const bookForChapter = n => SHARED_FOUNDATIONS.find(c => c.chapter === n)?.book || null;

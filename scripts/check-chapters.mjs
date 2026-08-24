@@ -11,6 +11,7 @@
 //
 //   npm run check:chapters
 
+import { readFileSync } from 'node:fs';
 import { SHARED_FOUNDATIONS, volumeMinutes } from '../src/lib/content/shared-foundations.js';
 
 let bad = 0;
@@ -71,6 +72,22 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
   }
   console.log('');
 }
+
+// Every session ends by sending the learner somewhere. A practice link that
+// names a mission the app does not route is a dead end that looks like a
+// destination, and only the router knows what exists.
+const app = readFileSync(new URL('../src/App.svelte', import.meta.url), 'utf8');
+const routed = new Set([...app.matchAll(/mission === '([a-z-]+)'/g)].map(m => m[1]));
+for (const { chapter, book } of SHARED_FOUNDATIONS) {
+  for (const s of book.sessions) {
+    const href = s.practice.href;
+    const named = (href.match(/mission=([a-z-]+)/) || [])[1];
+    const fine = href.startsWith('/library/') || (named && routed.has(named));
+    ok(`ch${String(chapter).padStart(2, '0')}.${s.number} practice link is routed`, fine,
+      fine ? href : `${href} names "${named}", which App.svelte does not route`);
+  }
+}
+console.log('');
 
 // No two chapters may claim the same storage key, or finishing one would mark
 // the other as read.

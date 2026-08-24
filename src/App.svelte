@@ -106,7 +106,10 @@
       gamePreview = import('./views/TableGrainMission.svelte');
     } else if (mission === 'duplicate-records') {
       gamePreview = import('./views/DuplicateRecordsMission.svelte');
+    } else if (mission === 'checkout') {
+      gamePreview = import('./views/CheckoutMission.svelte');
     } else {
+      // Anything unrecognised opens the first mission rather than nothing.
       gamePreview = import('./views/CheckoutMission.svelte');
     }
     gamePreview.then(m => { GameMission = m.default; });

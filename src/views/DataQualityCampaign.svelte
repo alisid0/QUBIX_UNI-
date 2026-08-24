@@ -4,7 +4,7 @@
   const params = new URLSearchParams(window.location.search);
   const complete = params.get('screen') === 'complete';
   const missions = [
-    { id: '001', title: 'Process a Sale', task: 'Scan a basket and separate observations, stored facts and calculated values.', interaction: '3D checkout', icon: 'branch', href: '?mode=game&mission=checkout-basics&fresh=1' },
+    { id: '001', title: 'Process a Sale', task: 'Scan a basket and separate observations, stored facts and calculated values.', interaction: '3D checkout', icon: 'branch', href: '?mode=game&mission=checkout' },
     { id: '002', title: 'Classify Store Data', task: 'Classify variables by meaning, subtype and measurement scale.', interaction: 'Decision desk', icon: 'folder', href: '?mode=game&mission=classify-data' },
     { id: '003', title: 'What Is Missing?', task: 'Interpret blank values without turning uncertainty into zero.', interaction: 'Feed terminal', icon: 'alert', href: '?mode=game&mission=missing-data' },
     { id: '004', title: 'What Does One Row Represent?', task: 'Declare table grain before counting or joining records.', interaction: '3D workbench', icon: 'database', href: '?mode=game&mission=table-grain' },
@@ -22,7 +22,7 @@
   {#if complete}
     <main class="ending">
       <div class="ending-art"><div class="sun"></div><div class="hq"><span></span><b>Q</b></div><div class="road"></div></div>
-      <section><p>SHIFT COMPLETE</p><h2>You did not memorise a checklist.</h2><strong>You inspected what the data meant, changed it carefully, and kept the evidence needed to explain why.</strong><div class="skills">{#each ['Observe', 'Classify', 'Interpret', 'Define', 'Detect', 'Normalise', 'Trace'] as skill}<span>✓ {skill}</span>{/each}</div><div class="actions"><a class="primary" href="?mode=game&mission=campaign">Return to mission map</a><a href="?mode=game&mission=checkout-basics&fresh=1">Play again</a></div><small>Authoring prototype complete. This screen records no curriculum approval or certification.</small></section>
+      <section><p>SHIFT COMPLETE</p><h2>You did not memorise a checklist.</h2><strong>You inspected what the data meant, changed it carefully, and kept the evidence needed to explain why.</strong><div class="skills">{#each ['Observe', 'Classify', 'Interpret', 'Define', 'Detect', 'Normalise', 'Trace'] as skill}<span>✓ {skill}</span>{/each}</div><div class="actions"><a class="primary" href="?mode=game&mission=campaign">Return to mission map</a><a href="?mode=game&mission=checkout">Play again</a></div><small>Authoring prototype complete. This screen records no curriculum approval or certification.</small></section>
     </main>
   {:else}
     <section class="brief"><div class="brief-icon"><PixelAsset kind="clipboard" /></div><div><p>HQ BRIEFING · 05:55</p><h2>Seven systems feed the morning report.</h2><span>Your job is not to make every warning disappear. Your job is to understand what happened, correct what can be corrected, and preserve what the next person needs to verify.</span></div><a href={missions[0].href}>Start Mission 001 →</a></section>

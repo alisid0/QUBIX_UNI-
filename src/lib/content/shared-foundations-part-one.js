@@ -28,7 +28,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       ]) }),
       workbook: Object.freeze({ title: 'Ten-minute observation inventory', prompt: 'Choose an ordinary process such as making tea, taking a bus or buying lunch.', steps: Object.freeze(['Write down one event that happens.', 'List three details a system might record about it.', 'List two real details the record would probably omit.', 'Mark each recorded value as observed, stored or derived.']) }),
       check: Object.freeze({ prompt: 'A checkout stores quantity 2 and unit price £3.40, then calculates £6.80. What is £6.80?', answer: 'derived', options: Object.freeze([['observation','A value captured directly from the event'],['master','A value already governed in a reference record'],['derived','A value calculated from other recorded values']]), explanation: '£6.80 is derived because the system calculates it from quantity and unit price.' }),
-      practice: Object.freeze({ title: 'Process a Sale', href: '?mode=game&mission=checkout-basics&fresh=1', instruction: 'Scan the basket and watch one event become observed, stored and derived records.' }),
+      practice: Object.freeze({ title: 'Process a Sale', href: '?mode=game&mission=checkout', instruction: 'Scan the basket and watch one event become observed, stored and derived records.' }),
       sources: Object.freeze([Object.freeze({label:'W3C PROV Overview',url:'https://www.w3.org/TR/prov-overview/'})])
     }),
     Object.freeze({
