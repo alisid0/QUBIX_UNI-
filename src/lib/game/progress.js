@@ -41,7 +41,7 @@ export const MISSIONS = Object.freeze([
     teaches: 'Where a reported number came from, and what changed it.' },
   { slug: 'units-measurement', mission: UNITS_MEASUREMENT_MISSION, xp: 70,
     teaches: 'What a value measures, and converting it without losing the original.' },
-  { slug: 'analyst-desk', mission: ANALYST_DESK_MISSION, xp: 120,
+  { slug: 'analyst-desk', mission: ANALYST_DESK_MISSION, xp: 200,
     teaches: 'Turning an unclear question into a unit, evidence, a chart and a defensible sentence.' },
   { slug: 'sql-console', mission: SQL_CONSOLE_MISSION, xp: 160,
     teaches: 'Building a query clause by clause, and reading what it did to the grain.' }

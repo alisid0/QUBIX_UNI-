@@ -35,7 +35,9 @@
     'line-rate': { bars: false, of: p => (1000 * p.count) / p.sales, zero: true, unit: '', name: 'per 1,000' },
     'line-single': { bars: false, of: p => p.count, zero: true, unit: '', name: 'count' },
     'line-mean': { bars: false, of: p => p.count, zero: true, unit: '', name: 'mean' },
-    'line-both': { bars: false, of: p => p.count, zero: true, unit: '', name: 'mean and median', second: p => 21 }
+    'line-both': { bars: false, of: p => p.count, zero: true, unit: '', name: 'mean and median', second: p => p.median },
+    'bar-value': { bars: true, of: p => p.count, zero: true, unit: '', name: 'mean basket, £' },
+    'bar-truncated-value': { bars: true, of: p => p.count, zero: false, unit: '', name: 'mean basket, axis cut' }
   };
   $: kind = KINDS[drawn] || KINDS['bar-count'];
   $: series = c ? c.series : [];
@@ -79,7 +81,7 @@
     <section class="stage">
       {#if missionComplete}
         <div class="done-panel">
-          <span>✓</span><h2>Four questions answered</h2>
+          <span>✓</span><h2>{M.cases.length} questions answered</h2>
           <p>{M.competency}</p>
           <ol>{#each M.cases as item}<li><b>{item.asked}</b><em>{optionsFor(item, 'sentence').find(o => o[0] === item.sentence)[1]}</em></li>{/each}</ol>
           <button on:click={restart}>Work the desk again</button>
@@ -118,6 +120,10 @@
               {#if kind.second}
                 <polyline fill="none" stroke="#397f86" stroke-width="2.4" stroke-dasharray="5 4"
                   points={series.map((p, i) => `${PAD.l + i * bw + bw / 2},${y(kind.second(p))}`).join(' ')}/>
+                {#each series as p, i}
+                  <circle cx={PAD.l + i * bw + bw / 2} cy={y(kind.second(p))} r="3.4" fill="#397f86"/>
+                  <text x={PAD.l + i * bw + bw / 2} y={y(kind.second(p)) + 16} font-size="11.5" text-anchor="middle" fill="#397f86">{fmt(kind.second(p))}</text>
+                {/each}
               {/if}
             {/if}
 
@@ -127,6 +133,10 @@
           </svg>
           <figcaption>
             <b>{kind.name}</b>
+            {#if kind.second}
+              <span class="key"><i class="solid"></i>mean</span>
+              <span class="key"><i class="dash"></i>median</span>
+            {/if}
             {#if !kind.zero}<em class="warn">axis does not start at zero</em>{/if}
           </figcaption>
         </figure>
@@ -197,6 +207,9 @@
   figcaption{margin-top:9px;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
   figcaption b{font:850 13px var(--qx-font);color:#4e473b;text-transform:capitalize}
   .warn{padding:3px 9px;border-radius:14px;background:#f6ddd8;color:#912c1e;font:850 12px var(--qx-font);font-style:normal}
+  .key{display:inline-flex;align-items:center;gap:6px;color:#625a49;font:700 12px var(--qx-font)}
+  .key i{width:18px;height:0;border-top:2.4px solid #a85a34}
+  .key i.dash{border-top-style:dashed;border-color:#397f86}
   aside{padding:clamp(18px,2.4vw,26px)}
   .steps{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
   .steps span{padding:5px 10px;border-radius:14px;background:#e6dfd0;color:#8a8172;font:900 11px var(--qx-font);letter-spacing:.06em}
