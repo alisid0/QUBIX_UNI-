@@ -14,12 +14,20 @@
 import { SHARED_FOUNDATIONS_PART_ONE } from './shared-foundations-part-one.js';
 import { SHARED_FOUNDATIONS_PART_TWO } from './shared-foundations-part-two.js';
 import { SHARED_FOUNDATIONS_PART_THREE } from './shared-foundations-part-three.js';
+import { SHARED_FOUNDATIONS_PART_FOUR } from './shared-foundations-part-four.js';
+import { SHARED_FOUNDATIONS_PART_FIVE } from './shared-foundations-part-five.js';
+import { SHARED_FOUNDATIONS_PART_SIX } from './shared-foundations-part-six.js';
+import { SHARED_FOUNDATIONS_PART_SEVEN } from './shared-foundations-part-seven.js';
 
 /** Keyed by the chapter number shown on the contents page, counting from 1. */
 export const SHARED_FOUNDATIONS = Object.freeze([
   Object.freeze({ chapter: 1, book: SHARED_FOUNDATIONS_PART_ONE }),
   Object.freeze({ chapter: 2, book: SHARED_FOUNDATIONS_PART_TWO }),
-  Object.freeze({ chapter: 3, book: SHARED_FOUNDATIONS_PART_THREE })
+  Object.freeze({ chapter: 3, book: SHARED_FOUNDATIONS_PART_THREE }),
+  Object.freeze({ chapter: 4, book: SHARED_FOUNDATIONS_PART_FOUR }),
+  Object.freeze({ chapter: 5, book: SHARED_FOUNDATIONS_PART_FIVE }),
+  Object.freeze({ chapter: 6, book: SHARED_FOUNDATIONS_PART_SIX }),
+  Object.freeze({ chapter: 7, book: SHARED_FOUNDATIONS_PART_SEVEN })
 ]);
 
 export const bookForChapter = n => SHARED_FOUNDATIONS.find(c => c.chapter === n)?.book || null;
