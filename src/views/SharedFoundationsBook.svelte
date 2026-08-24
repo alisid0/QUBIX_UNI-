@@ -58,6 +58,13 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // The contents page links to a session directly, so a chapter button can open
+  // the part it names rather than always landing on the first one.
+  {
+    const asked = Number(new URLSearchParams(window.location.search).get('session'));
+    if (Number.isInteger(asked) && asked >= 1 && asked <= book.sessions.length) activeIndex = asked - 1;
+  }
+
   function formatTime(minutes) {
     if (minutes < 60) return `${minutes} min`;
     const hours = Math.floor(minutes / 60);
