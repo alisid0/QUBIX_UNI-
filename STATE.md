@@ -1,6 +1,6 @@
 # Qubix, measured
 
-Generated 2026-08-22 from 6b338e3 on foundation.
+Generated 2026-08-24 from 426925f on foundation.
 Do not edit: run `npm run state`.
 
 ## The coordinate spine
@@ -35,11 +35,11 @@ across 799 frames.
 ## Data science
 
 379 topics planned across 17 phases.
-7 missions built. 12 Three.js assets.
+11 missions built. 12 Three.js assets.
 
 ## The review gate
 
-**0 approved. 6 boards waiting. 52 files marked AI_DRAFT.**
+**0 approved. 6 boards waiting. 69 files marked AI_DRAFT.**
 
 The declaration allows one board through at a time and requires the founder to
 read, test, amend and approve each one. Nothing has passed it yet.
@@ -55,5 +55,5 @@ read, test, amend and approve each one. Nothing has passed it yet.
 - live: Pages mirror (200) https://alisid0.github.io/QUBIX_UNI-/library/big-sheet-of-graphs.html
 - live: qubix.university (200) https://qubix.university/library/
 
-124 commits in the last fortnight.
-193 planning documents against 116 source files.
+89 commits in the last fortnight.
+194 planning documents against 141 source files.
