@@ -1,6 +1,8 @@
 <script>
   import { partsForChapter, writtenChapters, volumeMinutes } from '../lib/content/shared-foundations.js';
   import { MISSIONS } from '../lib/game/progress.js';
+  import SiteNav from '../lib/components/SiteNav.svelte';
+  import SiteFooter from '../lib/components/SiteFooter.svelte';
   const shared = {
     id: 'shared', number: '0', title: 'Shared Foundations', subtitle: 'What every data role should understand before specialising', colour: '#5f7355',
     bookHref: '?mode=game&mission=shared-book',
@@ -92,6 +94,7 @@
 <svelte:head><title>Role Foundations | Qubix University</title><meta name="description" content="Play ten data missions, then read the foundations behind them." /></svelte:head>
 
 <section class="library qx-shell" style={`--volume:${volume.colour}`}>
+  <SiteNav current="read" />
   <header>
     <p>QUBIX UNIVERSITY · AI_DRAFT</p>
     <h1>Foundations before specialisation.</h1>
@@ -173,10 +176,9 @@
       : volume.outcome}{#if selected !== 'shared'} Begins after Volume 0 · Shared Foundations.{/if}</p>
   </main>
 
-  <footer>
-    <span>Everyone completes Volume 0, then a role foundation, then deeper projects.</span>
-    <span>Every chapter: explain one idea · show one worked example · ask one focused question · recall it later.</span>
-  </footer>
+  <p class="rule">Everyone completes Volume 0, then a role foundation, then deeper projects. Every chapter: explain one idea · show one worked example · ask one focused question · recall it later.</p>
+
+  <SiteFooter />
 </section>
 
 <style>
@@ -260,8 +262,9 @@
 
   .outcome{margin:24px 0 0;max-width:62ch;color:var(--soft);font:400 15px/1.6 var(--qx-font)}
 
-  footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--rule);display:grid;gap:8px;
-         color:var(--soft);font:400 14px/1.55 var(--qx-font)}
+  .rule{margin:34px 0 0;max-width:70ch;color:var(--soft);font:400 14px/1.6 var(--qx-font)}
+  /* The shared nav and site map take their colours from the volume in view. */
+  .library{--nav-ink:var(--ink);--nav-soft:var(--soft);--nav-rule:var(--rule);--nav-accent:var(--volume)}
 
   @media(max-width:620px){
     header{padding:40px 0 20px}

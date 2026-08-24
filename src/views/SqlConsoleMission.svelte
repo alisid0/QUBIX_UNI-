@@ -135,7 +135,7 @@
 </section>
 
 <style>
-  :global(.qubix-university){height:auto!important;overflow:visible!important}:global(html),:global(body){overflow:auto;background:#0f1216}:global(body){position:static}
+  :global(.qubix-university){height:auto!important;overflow:visible!important}:global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:auto!important;background:#0f1216}:global(body){position:static}
   .console{min-height:100vh;max-width:none;padding:18px clamp(12px,3vw,34px) 30px;color:#e8eef2;background:radial-gradient(circle at 42% 0,#1d2731,#0f1216 58%);overflow:auto}
   header{max-width:1320px;margin:0 auto 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .identity{display:flex;align-items:center;gap:12px}

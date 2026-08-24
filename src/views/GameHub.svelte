@@ -4,6 +4,8 @@
   // to, so finishing a mission and pressing back shows the new state.
   import { onMount } from 'svelte';
   import { MISSIONS, RANKS, TOTAL_XP, load, reset, statusOf, xpOf, rankOf, nextRankOf } from '../lib/game/progress.js';
+  import SiteNav from '../lib/components/SiteNav.svelte';
+  import SiteFooter from '../lib/components/SiteFooter.svelte';
 
   let state = { completed: [], started: null };
   let confirming = false;
@@ -38,6 +40,7 @@
 <meta name="description" content="Learn data by working inside a synthetic retailer. Six missions from the checkout to the join." /></svelte:head>
 
 <section class="hub qx-shell">
+  <SiteNav current="play" />
   <header>
     <div class="identity">
       <span class="badge">QX</span>
@@ -46,11 +49,6 @@
         <h1>Learn data by working in a shop</h1>
       </div>
     </div>
-    <nav>
-      <a href="?mode=wiki">The wiki</a>
-      <a href="/library/index.html">Library</a>
-      <a href="/">Mathematics</a>
-    </nav>
   </header>
 
   <div class="standing">
@@ -111,6 +109,8 @@
     </ul>
   </div>
 
+  <SiteFooter />
+
   <footer>
     <p>Progress is kept in this browser only. There is no account and nothing is sent anywhere.</p>
     {#if confirming}
@@ -126,9 +126,11 @@
 </section>
 
 <style>
-  :global(html),:global(body){overflow:auto;background:#171510}:global(body){position:static}
-  .hub{min-height:100vh;max-width:none;padding:20px clamp(12px,3vw,34px) 60px;color:#f1ede4;
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:auto!important;background:#171510}:global(body){position:static}
+  .hub{--nav-ink:#f1ede4;--nav-soft:#a89e8d;--nav-rule:rgba(255,255,255,.14);--nav-accent:#c98c5e;
+       min-height:100vh;max-width:none;padding:20px clamp(12px,3vw,34px) 60px;color:#f1ede4;
        background:radial-gradient(circle at 40% 0,#3f3428,#171510 58%);overflow:auto}
+  :global(.hub .site),:global(.hub .site-foot){max-width:1080px;margin-inline:auto}
   header{max-width:1080px;margin:0 auto 26px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
   .identity{display:flex;align-items:center;gap:13px;min-width:0}
   .badge{display:grid;place-items:center;width:50px;height:50px;border-radius:14px;background:#a85a34;color:#fff;font:900 15px var(--qx-font);flex:none}
