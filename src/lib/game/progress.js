@@ -43,7 +43,7 @@ export const MISSIONS = Object.freeze([
     teaches: 'What a value measures, and converting it without losing the original.' },
   { slug: 'analyst-desk', mission: ANALYST_DESK_MISSION, xp: 120,
     teaches: 'Turning an unclear question into a unit, evidence, a chart and a defensible sentence.' },
-  { slug: 'sql-console', mission: SQL_CONSOLE_MISSION, xp: 110,
+  { slug: 'sql-console', mission: SQL_CONSOLE_MISSION, xp: 160,
     teaches: 'Building a query clause by clause, and reading what it did to the grain.' }
 ].map(Object.freeze));
 

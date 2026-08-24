@@ -36,12 +36,19 @@ export function runQuery({ where, groupBy, having }) {
   // Rows are filtered before grouping. That order is the whole of chapter 05.
   if (where === 'over20') rows = rows.filter(r => r.basket_total > 20);
   if (where === 'branch17') rows = rows.filter(r => r.branch_id === 'B-17');
+  if (where === 'under10') rows = rows.filter(r => r.basket_total < 10);
+  if (where === 'may06') rows = rows.filter(r => r.business_date === '2026-05-06');
 
   if (!groupBy) {
     return { grain: 'one completed sale', columns: ['sale_id', 'branch_id', 'business_date', 'basket_total'], rows };
   }
 
-  const key = groupBy === 'branch' ? r => r.branch_id : r => `${r.branch_id} · ${r.business_date}`;
+  const KEYS = {
+    branch: r => r.branch_id,
+    date: r => r.business_date,
+    'branch-date': r => `${r.branch_id} · ${r.business_date}`
+  };
+  const key = KEYS[groupBy] || KEYS.branch;
   const map = new Map();
   for (const r of rows) {
     const k = key(r);
@@ -56,31 +63,42 @@ export function runQuery({ where, groupBy, having }) {
   // here and could not be used above.
   if (having === 'over2') grouped = grouped.filter(g => g.sales > 2);
   if (having === 'over3') grouped = grouped.filter(g => g.sales > 3);
+  // A condition on a sum rather than a count: still a group filter, and still
+  // impossible to write before the groups exist.
+  if (having === 'total50') grouped = grouped.filter(g => g.total > 50);
 
+  const GRAINS = { branch: 'one branch', date: 'one business date', 'branch-date': 'one branch on one business date' };
+  const COLS = { branch: 'branch_id', date: 'business_date', 'branch-date': 'branch_id · business_date' };
+  const col = COLS[groupBy] || COLS.branch;
   return {
-    grain: groupBy === 'branch' ? 'one branch' : 'one branch on one business date',
-    columns: [groupBy === 'branch' ? 'branch_id' : 'branch_id · business_date', 'sales', 'total'],
-    rows: grouped.map(g => ({ [groupBy === 'branch' ? 'branch_id' : 'branch_id · business_date']: g.group, sales: g.sales, total: g.total }))
+    grain: GRAINS[groupBy] || GRAINS.branch,
+    columns: [col, 'sales', 'total'],
+    rows: grouped.map(g => ({ [col]: g.group, sales: g.sales, total: g.total }))
   };
 }
 
 export function queryText({ where, groupBy, having }) {
+  const NAMED = { branch: 'branch_id', date: 'business_date', 'branch-date': 'branch_id, business_date' };
   const select = groupBy
-    ? `SELECT ${groupBy === 'branch' ? 'branch_id' : 'branch_id, business_date'}, COUNT(*) AS sales, SUM(basket_total) AS total`
+    ? `SELECT ${NAMED[groupBy]}, COUNT(*) AS sales, SUM(basket_total) AS total`
     : 'SELECT *';
   const lines = [select, 'FROM sale'];
   if (where === 'over20') lines.push('WHERE basket_total > 20');
   if (where === 'branch17') lines.push("WHERE branch_id = 'B-17'");
+  if (where === 'under10') lines.push('WHERE basket_total < 10');
+  if (where === 'may06') lines.push("WHERE business_date = '2026-05-06'");
   if (groupBy === 'branch') lines.push('GROUP BY branch_id');
+  if (groupBy === 'date') lines.push('GROUP BY business_date');
   if (groupBy === 'branch-date') lines.push('GROUP BY branch_id, business_date');
   if (having === 'over2') lines.push('HAVING COUNT(*) > 2');
   if (having === 'over3') lines.push('HAVING COUNT(*) > 3');
+  if (having === 'total50') lines.push('HAVING SUM(basket_total) > 50');
   return lines.join('\n');
 }
 
 export const SQL_CONSOLE_MISSION = Object.freeze({
   id: 'MISSION 102', status: 'AI_DRAFT', role: 'ANALYST', title: 'The SQL Console',
-  competency: 'Assemble a query one clause at a time and say what one row of the result represents.',
+  competency: 'Assemble a query one clause at a time, across eight tasks, and say what one row of each result represents.',
   sources: Object.freeze([
     Object.freeze({ label: 'PostgreSQL — SELECT', url: 'https://www.postgresql.org/docs/current/sql-select.html' }),
     Object.freeze({ label: 'PostgreSQL — joined tables', url: 'https://www.postgresql.org/docs/current/queries-table-expressions.html' }),
@@ -173,6 +191,94 @@ export const SQL_CONSOLE_MISSION = Object.freeze({
         ['sale', 'One completed sale', 'grouping has happened']
       ]),
       grainWhy: 'Neither column alone identifies a row: a branch appears on several days and a day covers several branches. The pair is the grain.'
+    }),
+
+    Object.freeze({
+      id: 'date', slot: 'where',
+      brief: 'How many sales happened on 6 May?',
+      hint: 'The same shape as the first task, against a different column.',
+      target: { where: 'may06', groupBy: null, having: null },
+      expectRows: 5,
+      clause: 'may06',
+      clauseOptions: Object.freeze([
+        ['under10', 'WHERE basket_total < 10', 'filters by size, not by day'],
+        ['may06', "WHERE business_date = '2026-05-06'", 'keeps one day of trading'],
+        ['none', 'No filter', 'returns all three days']
+      ]),
+      clauseWhy: 'Five of the twelve sales fall on 6 May. A date is compared like any other value, and the grain is untouched.',
+      grain: 'sale',
+      grainOptions: Object.freeze([
+        ['date', 'One business date', 'nothing has been grouped by date'],
+        ['sale', 'One completed sale', 'still one row per sale'],
+        ['branch', 'One branch', 'no grouping at all']
+      ]),
+      grainWhy: 'Filtering to one day narrows which sales are present. It does not turn the table into a table of days.'
+    }),
+
+    Object.freeze({
+      id: 'perday', slot: 'groupBy',
+      brief: 'How many sales did the shop take each day?',
+      hint: 'Group by something other than the branch this time.',
+      target: { where: null, groupBy: 'date', having: null },
+      expectRows: 3,
+      clause: 'date',
+      clauseOptions: Object.freeze([
+        ['date', 'GROUP BY business_date', 'one row per trading day'],
+        ['branch', 'GROUP BY branch_id', 'answers a different question'],
+        ['branch-date', 'GROUP BY branch_id, business_date', 'splits each day by branch as well']
+      ]),
+      clauseWhy: 'Three trading days, so three rows: 3, 4 and 5 sales. The same clause as task 2, pointed at another column.',
+      grain: 'date',
+      grainOptions: Object.freeze([
+        ['branch', 'One branch', 'the branch is not in the grouping'],
+        ['sale', 'One completed sale', 'grouping has already happened'],
+        ['date', 'One business date', 'the grouping column is the grain']
+      ]),
+      grainWhy: 'Whatever you group by becomes the grain. Counting rows here counts days, not sales and not branches.'
+    }),
+
+    Object.freeze({
+      id: 'sum', slot: 'having',
+      brief: 'Which branches took more than £50 in total?',
+      hint: 'A group filter again, but on a sum rather than a count.',
+      target: { where: null, groupBy: 'branch', having: 'total50' },
+      expectRows: 2,
+      clause: 'total50',
+      clauseOptions: Object.freeze([
+        ['over2', 'HAVING COUNT(*) > 2', 'filters on how many, not how much'],
+        ['where', 'WHERE SUM(basket_total) > 50', 'rejected: no sum exists when rows are filtered'],
+        ['total50', 'HAVING SUM(basket_total) > 50', 'filters the groups on their total']
+      ]),
+      clauseWhy: 'B-17 took £138.30 and B-08 £79.44, so two branches survive. B-02 took £49.10 and does not. A sum is an aggregate, so it belongs where the count did.',
+      grain: 'branch',
+      grainOptions: Object.freeze([
+        ['branch', 'One branch', 'filtering groups leaves the grain alone'],
+        ['sale', 'One completed sale', 'the grouping moved past that'],
+        ['big', 'One branch over £50', 'a description of the filter, not the grain']
+      ]),
+      grainWhy: 'Exactly as in task 3: removing groups changes which rows are present and never what a row means.'
+    }),
+
+    Object.freeze({
+      id: 'compound', slot: 'groupBy',
+      brief: 'Which branch-days took more than £50?',
+      hint: 'Both parts of the grain, and the filter from the previous task.',
+      target: { where: null, groupBy: 'branch-date', having: 'total50' },
+      expectRows: 1,
+      clause: 'branch-date',
+      clauseOptions: Object.freeze([
+        ['date', 'GROUP BY business_date', 'loses the branch'],
+        ['branch', 'GROUP BY branch_id', 'loses the day'],
+        ['branch-date', 'GROUP BY branch_id, business_date', 'both, which is what a branch-day is']
+      ]),
+      clauseWhy: 'Only B-17 on 6 May clears £50, at £63.65. Grouping by either column alone answers a different question, and both alone looked reasonable.',
+      grain: 'branch-date',
+      grainOptions: Object.freeze([
+        ['date', 'One business date', 'a day covers several branches'],
+        ['branch-date', 'One branch on one business date', 'the pair identifies the row'],
+        ['branch', 'One branch', 'a branch appears on several days']
+      ]),
+      grainWhy: 'Neither column alone is unique. The pair is, which is what makes a composite grain necessary rather than tidy.'
     })
   ])
 });

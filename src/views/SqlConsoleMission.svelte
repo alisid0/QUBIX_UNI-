@@ -59,7 +59,7 @@
     <section class="stage">
       {#if missionComplete}
         <div class="done-panel">
-          <span>✓</span><h2>Four queries assembled</h2>
+          <span>✓</span><h2>{M.cases.length} queries assembled</h2>
           <p>{M.competency}</p>
           <ol>{#each M.cases as item}<li><b>{item.brief}</b><em>{item.expectRows} row{item.expectRows === 1 ? '' : 's'} · {runQuery(item.target).grain}</em></li>{/each}</ol>
           <button on:click={restart}>Run the console again</button>
