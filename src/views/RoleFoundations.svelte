@@ -89,103 +89,185 @@
   $: written = volume.id === 'shared' ? writtenChapters : 0;
 </script>
 
-<svelte:head><title>Role Foundations | Qubix University</title><meta name="description" content="Authoring proposal for a book-first shared and role-specific foundations curriculum." /></svelte:head>
+<svelte:head><title>Role Foundations | Qubix University</title><meta name="description" content="Play ten data missions, then read the foundations behind them." /></svelte:head>
 
 <section class="library qx-shell" style={`--volume:${volume.colour}`}>
-  <header><div><p>QUBIX UNIVERSITY · CURRICULUM PROPOSAL · AI_DRAFT</p><h1>Foundations before specialisation.</h1><span>Read in order. Understand the idea. Work one example. Answer from memory. Then continue.</span></div><a href="?mode=game">Play the missions</a></header>
+  <header>
+    <p>QUBIX UNIVERSITY · AI_DRAFT</p>
+    <h1>Foundations before specialisation.</h1>
+    <span>Play a mission. Read the chapter behind it. Then continue.</span>
+  </header>
 
-  <!-- The games were live but reachable only from a link in the header, on a
-       page that opens with a table of contents. Reading is the slower half of
-       this curriculum and it was the only half with a front door. -->
-  <section class="play">
-    <div class="play-lead">
-      <p>PLAY FIRST · NO READING REQUIRED</p>
+  <!-- One band, not three. The ten mission links are all still here, one press
+       away, rather than ten cards competing with the contents below them. -->
+  <section class="start">
+    <div>
       <h2>{MISSIONS.length} playable missions</h2>
-      <span>Work a shift in the Superstore. Each one is fifteen minutes, keeps your progress, and teaches one idea you can use the same day.</span>
+      <span>Fifteen minutes each. Progress is kept. No reading required first.</span>
     </div>
-    <ol class="play-list">
-      {#each MISSIONS as m, i}
+    <div class="start-actions">
+      <a class="primary" href="?mode=game">Open the academy <span aria-hidden="true">→</span></a>
+      <a href="?mode=game&mission=campaign">Story mode</a>
+    </div>
+    <details class="all-missions">
+      <summary>All {MISSIONS.length} missions</summary>
+      <ol>{#each MISSIONS as m, i}
         <li><a href={`?mode=game&mission=${m.slug}`}><b>{String(i + 1).padStart(2, '0')}</b><span>{m.mission.title}</span><em>{m.xp} XP</em></a></li>
-      {/each}
-    </ol>
-    <div class="play-actions">
-      <a class="play-primary" href="?mode=game">Open the academy <span aria-hidden="true">→</span></a>
-      <a class="play-second" href="?mode=game&mission=campaign">Story mode: one connected shift</a>
-    </div>
+      {/each}</ol>
+    </details>
   </section>
 
-  <section class="principle"><b>THEN READ</b><span>Everyone completes Volume 0.</span><i>→</i><span>Choose a role foundation.</span><i>→</i><span>Build deeper projects later.</span></section>
-
   <nav aria-label="Foundation volumes">
-    <button class:active={selected === 'shared'} on:click={() => selected = 'shared'}><span>0</span><div><b>Shared</b><small>Start here</small></div></button>
-    {#each roles as role}<button class:active={selected === role.id} on:click={() => selected = role.id}><span>{role.number}</span><div><b>{role.title.replace(' Foundations','')}</b><small>Foundation volume</small></div></button>{/each}
+    <button class:active={selected === 'shared'} on:click={() => selected = 'shared'}>Volume 0 · Shared</button>
+    {#each roles as role}<button class:active={selected === role.id} on:click={() => selected = role.id}>Volume {role.number} · {role.title.replace(' Foundations','')}</button>{/each}
   </nav>
 
   <main>
-    <aside><div class="book"><span>VOLUME {volume.number}</span><b>{volume.title}</b><i>{selected === 'shared' ? '◎' : volume.icon}</i></div><p>{volume.subtitle}</p>{#if selected !== 'shared'}<strong>{volume.outcome}</strong><div class="requires"><b>Begins after</b><span>Volume 0 · Shared Foundations</span></div>{:else}<strong>This volume prevents learners from entering a role path with hidden gaps in maths, data, SQL, Python or communication.</strong>{/if}<section class="companion"><small>COMPANION GAME · {volume.game.state}</small><h3>{volume.game.title}</h3><p>{volume.game.description}</p><a href={volume.game.href}>{selected === 'shared' ? 'Play the connected draft' : 'Open the game plan'} →</a></section></aside>
+    <div class="volume-head">
+      <div>
+        <p>VOLUME {volume.number} · {volume.chapters.length} CHAPTERS · {written} WRITTEN</p>
+        <h2>{volume.title}</h2>
+        <span>{volume.subtitle}</span>
+      </div>
+      {#if volume.bookHref}<a class="primary" href={volume.bookHref}>Begin Part One · {readingTime} <span aria-hidden="true">→</span></a>{/if}
+    </div>
 
-    <section class="contents"><div class="contents-head"><div><p>TABLE OF CONTENTS</p><h2>{volume.title}</h2></div><div class="contents-actions"><span>{volume.chapters.length} CHAPTERS · {written} WRITTEN</span>{#if volume.bookHref}<a href={volume.bookHref}>Begin Part One · {readingTime} →</a>{/if}</div></div>
-      <ol>{#each volume.chapters as chapter,index}
-        {@const part = partsFor(volume, index)}
-        <li class:planned={!part.length}>
-          <span>{String(index + 1).padStart(2,'0')}</span>
-          <div>
-            <h3>{chapter[0]}</h3>
-            <p>{chapter[1]}</p>
-            {#if part.length}
-              <!-- The chapter's own parts, each opening the page it names.
-                   Before this the whole volume had one button and no chapter
-                   had any, so there was no way to reach a chapter directly. -->
-              <ul class="parts">{#each part as session}
+    <ol class="contents">{#each volume.chapters as chapter,index}
+      {@const part = partsFor(volume, index)}
+      <li class:planned={!part.length}>
+        {#if part.length}
+          <!-- The parts are collapsed. Seven chapters expanded at once put
+               twenty-eight rows on the page before anybody had chosen one. -->
+          <details>
+            <summary>
+              <span class="num">{String(index + 1).padStart(2,'0')}</span>
+              <span class="name"><b>{chapter[0]}</b><em>{chapter[1]}</em></span>
+              <span class="meta">{part.length} parts</span>
+            </summary>
+            <ul class="parts">
+              {#each part as session}
                 <li><a href={`${volume.bookHref}&chapter=${index + 1}&session=${session.n}`}>{session.n}. {session.title}<em>{minutes(session.minutes)}</em></a></li>
-              {/each}</ul>
-            {/if}
+              {/each}
+              <li><a class="read" href={`${volume.bookHref}&chapter=${index + 1}&session=1`}>Read the chapter <span aria-hidden="true">→</span></a></li>
+            </ul>
+          </details>
+        {:else}
+          <div class="row">
+            <span class="num">{String(index + 1).padStart(2,'0')}</span>
+            <span class="name"><b>{chapter[0]}</b><em>{chapter[1]}</em></span>
+            <span class="meta">Not written yet</span>
           </div>
-          {#if part.length}
-            <a class="open" href={`${volume.bookHref}&chapter=${index + 1}&session=1`}>Read <span aria-hidden="true">→</span></a>
-          {:else}
-            <em class="soon">Not written yet</em>
-          {/if}
-        </li>
-      {/each}</ol>
+        {/if}
+      </li>
+    {/each}</ol>
+
+    <section class="companion">
+      <p>COMPANION GAME · {volume.game.state}</p>
+      <h3>{volume.game.title}</h3>
+      <span>{volume.game.description}</span>
+      <a href={volume.game.href}>{selected === 'shared' ? 'Play the connected draft' : 'Open the game plan'} <span aria-hidden="true">→</span></a>
     </section>
+
+    <p class="outcome">{selected === 'shared'
+      ? 'This volume prevents learners from entering a role path with hidden gaps in maths, data, SQL, Python or communication.'
+      : volume.outcome}{#if selected !== 'shared'} Begins after Volume 0 · Shared Foundations.{/if}</p>
   </main>
 
-  <section class="page-rule"><p>Every eventual chapter uses the same calm page structure.</p><div><span>1</span><b>Explain one idea</b></div><i>→</i><div><span>2</span><b>Show one worked example</b></div><i>→</i><div><span>3</span><b>Ask one focused question</b></div><i>→</i><div><span>4</span><b>Recall it later</b></div></section>
-  <footer><span>Planning surface only. Topics remain locked until individually sourced, drafted and reviewed.</span><span>Role foundations proposal · 22 August 2026</span></footer>
+  <footer>
+    <span>Everyone completes Volume 0, then a role foundation, then deeper projects.</span>
+    <span>Every chapter: explain one idea · show one worked example · ask one focused question · recall it later.</span>
+  </footer>
 </section>
 
 <style>
-  :global(.qubix-university){height:auto!important;overflow:visible!important}:global(html),:global(body){overflow:auto;background:#f1ede4}:global(body){position:static}.library{min-height:100vh;max-width:none;padding:25px clamp(12px,4vw,52px) 40px;background:#f1ede4;color:#241f16;overflow:auto}header{max-width:1220px;margin:0 auto 22px;display:flex;align-items:end;justify-content:space-between;gap:20px;border-bottom:1px solid #d8d0be;padding-bottom:19px}header p,.contents-head p{margin:0 0 6px;color:#8c4c2e;font:900 12px var(--qx-font);letter-spacing:.13em}header h1{margin:0;font:700 clamp(31px,5vw,54px) Georgia,serif}header span{display:block;margin-top:8px;color:#625a49;font:650 14.5px var(--qx-font)}header a{color:#8c4c2e;font:850 13px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;white-space:nowrap}.principle{max-width:1180px;margin:0 auto 16px;padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:13px;border-radius:12px;background:#241f16;color:#f1ede4;font:750 13px var(--qx-font)}.principle b{color:#e4a17b;letter-spacing:.1em}
-  .play{max-width:1180px;margin:0 auto 16px;padding:24px clamp(16px,3vw,28px);border-radius:16px;background:#241f16;color:#f1ede4;display:grid;gap:18px}
-  .play-lead p{margin:0 0 7px;color:#e4a17b;font:900 12px var(--qx-font);letter-spacing:.13em}
-  .play-lead h2{margin:0;font:700 clamp(25px,3.4vw,34px) Georgia,serif;color:#fff}
-  .play-lead span{display:block;margin-top:8px;max-width:62ch;color:#bcb19e;font:650 14.5px/1.5 var(--qx-font)}
-  .play-list{list-style:none;margin:0;padding:0;display:grid;gap:7px;grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
-  .play-list a{display:flex;align-items:center;gap:11px;padding:12px 14px;border:1px solid rgba(255,255,255,.15);border-radius:11px;background:rgba(255,255,255,.05);color:#f1ede4;text-decoration:none}
-  .play-list a:hover{background:rgba(255,255,255,.12);border-color:#e4a17b}
-  .play-list a:focus-visible{outline:3px solid #e4a17b;outline-offset:2px}
-  .play-list b{flex:none;color:#8d8474;font:900 13px var(--qx-font);font-variant-numeric:tabular-nums}
-  .play-list span{flex:1;min-width:0;font:750 14px var(--qx-font)}
-  .play-list em{flex:none;color:#e4a17b;font:900 12px var(--qx-font);font-style:normal}
-  .play-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
-  .play-primary{padding:13px 22px;border-radius:11px;background:#e4a17b;color:#241f16;text-decoration:none;font:900 14px var(--qx-font)}
-  .play-primary:hover{background:#fff}
-  .play-second{color:#bcb19e;font:750 13px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
-  .play-primary:focus-visible,.play-second:focus-visible{outline:3px solid #e4a17b;outline-offset:3px}.principle i{color:#83bc68;font-style:normal}nav{max-width:1180px;margin:0 auto 18px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}nav button{min-height:65px;padding:9px 11px;display:flex;align-items:center;gap:9px;border:1px solid #d8d0be;border-radius:11px;background:#fff;color:#241f16;text-align:left;cursor:pointer}nav button>span{display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:7px;background:#ece7dc;color:#625a49;font:900 12px var(--qx-font)}nav button div{display:grid;gap:2px}nav b{font:850 12px var(--qx-font)}nav small{color:#756c5c;font:650 11px var(--qx-font)}nav button.active{border:2px solid var(--volume);background:#fbf8f1}nav button.active>span{background:var(--volume);color:#fff}nav button:focus-visible{outline:3px solid var(--volume);outline-offset:2px}main{max-width:1180px;margin:auto;display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}main>aside,.contents{border:1px solid #d8d0be;border-radius:16px;background:#fff;overflow:hidden}main>aside{position:sticky;top:14px;padding:20px}.book{position:relative;min-height:310px;padding:25px;display:flex;flex-direction:column;justify-content:space-between;border-radius:5px 15px 15px 5px;background:var(--volume);color:#fff;box-shadow:inset 8px 0 rgba(0,0,0,.13),6px 8px 0 #ded5c5}.book:after{content:'';position:absolute;left:22px;right:18px;top:60px;height:1px;background:rgba(255,255,255,.4)}.book span{font:900 11.5px var(--qx-font);letter-spacing:.13em}.book b{max-width:180px;font:700 29px/1.05 Georgia,serif}.book i{align-self:flex-end;font:normal 45px Georgia,serif}aside>p{margin:22px 0 9px;font:700 14px/1.45 Georgia,serif}aside>strong{color:#625a49;font:650 13px/1.55 var(--qx-font)}.requires{margin-top:16px;padding:11px;border-left:4px solid var(--volume);background:#f1ede4}.requires b,.requires span{display:block}.requires b{font:900 11.5px var(--qx-font)}.requires span{margin-top:3px;font:700 12px var(--qx-font)}.contents{padding:22px}.contents-head{display:flex;align-items:end;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid #d8d0be}.contents-head h2{margin:0;font:700 27px Georgia,serif}.contents ol{list-style:none;margin:0;padding:0}.contents li{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:13px;padding:17px 4px;border-bottom:1px solid #e4ddce}.contents li>span{color:var(--volume);font:900 13.5px var(--qx-font)}.contents h3{margin:0 0 4px;font:700 17px Georgia,serif}.contents li p{margin:0;color:#625a49;font:650 12px/1.45 var(--qx-font)}.contents em{color:#8c4c2e;font:850 11px var(--qx-font);letter-spacing:.07em;white-space:nowrap}
-  .contents li.planned{opacity:.62}
-  .contents li>div{min-width:0}
-  .parts{list-style:none;margin:11px 0 0;padding:0;display:grid;gap:5px}
-  .parts li{display:block;padding:0;border:0}
-  .parts a{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:8px 11px;border:1px solid #e4ddce;border-radius:9px;background:#fbf8f1;color:#241f16;text-decoration:none;font:700 13px var(--qx-font)}
-  .parts a:hover{border-color:var(--volume);background:#fff}
-  .parts a:focus-visible{outline:3px solid var(--volume);outline-offset:2px}
-  .parts em{color:#756c5c;font:700 12px var(--qx-font);font-style:normal;white-space:nowrap}
-  a.open{display:grid;place-items:center;min-height:40px;padding:0 17px;border-radius:9px;background:var(--volume);color:#fff;text-decoration:none;font:900 13px var(--qx-font);white-space:nowrap}
-  a.open:hover{background:#241f16}
-  a.open:focus-visible{outline:3px solid #241f16;outline-offset:2px}
-  em.soon{color:#8a8172;font:800 12px var(--qx-font);font-style:normal;white-space:nowrap}.page-rule{max-width:1140px;margin:17px auto 0;padding:16px 20px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:13px;background:#e7efdc}.page-rule>p{margin:0 15px 0 0;font:700 13.5px Georgia,serif}.page-rule div{display:flex;align-items:center;gap:6px}.page-rule div span{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#3e9e2a;color:#fff;font:900 11.5px var(--qx-font)}.page-rule div b{font:800 11.5px var(--qx-font)}.page-rule>i{color:#759166;font-style:normal}footer{max-width:1180px;margin:15px auto 0;display:flex;justify-content:space-between;gap:15px;color:#746c5e;font:650 11.5px var(--qx-font)}@media(max-width:900px){nav{grid-template-columns:repeat(3,1fr)}main{grid-template-columns:1fr}main>aside{position:static;display:grid;grid-template-columns:230px 1fr;gap:0 20px}.book{grid-row:1/5;min-height:270px}.page-rule{flex-wrap:wrap}}@media(max-width:600px){.library{padding:15px 9px 28px}header{align-items:flex-start;flex-direction:column}.principle{align-items:flex-start;flex-direction:column}.principle i{transform:rotate(90deg);align-self:center}nav{display:flex;overflow-x:auto;padding-bottom:4px}nav button{flex:0 0 145px}.contents{padding:15px}.contents-head{align-items:flex-start;flex-direction:column}.contents li{grid-template-columns:32px 1fr}.contents em{grid-column:2}.book{min-height:230px}main>aside{display:block}.book{margin-bottom:18px}.page-rule{align-items:flex-start;justify-content:flex-start;flex-direction:column}.page-rule>i{transform:rotate(90deg);align-self:center}footer{flex-direction:column}}
-  .companion{margin-top:16px;padding:14px;border-radius:11px;background:#241f16;color:#f1ede4}.companion small{color:#d9a07f;font:900 11px var(--qx-font);letter-spacing:.1em}.companion h3{margin:6px 0 5px;font:700 17px Georgia,serif}.companion p{margin:0;color:#c8c0b2;font:650 11.5px/1.45 var(--qx-font)}.companion a{display:grid;place-items:center;min-height:38px;margin-top:10px;border-radius:8px;background:var(--volume);color:#fff;font:900 11.5px var(--qx-font);text-decoration:none}.companion a:focus-visible{outline:3px solid var(--volume);outline-offset:2px}
-  .contents-actions{display:grid;justify-items:end;gap:8px}.contents-actions>span{color:#756c5c;font:850 11px var(--qx-font);letter-spacing:.08em}.contents-actions>a{padding:9px 11px;border-radius:7px;background:var(--volume);color:#fff;font:900 11.5px var(--qx-font);text-decoration:none}
-  .principle i{color:#9aaf8f}.page-rule{background:#e8ede3}.page-rule div span{background:#5f7355}
+  /* Minimalist pass. One accent, one surface, one rule colour, four type
+     sizes. The page scrolls as a document: the previous version scrolled
+     inside .library, so document.scrollHeight stayed at the viewport height
+     and the rest of the contents was reachable only by a nested scrollbar. */
+  :global(.qubix-university){height:auto!important;overflow:visible!important}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:auto!important;background:#f4f1ea}
+  :global(body){position:static}
+
+  .library{--rule:#ddd6c6;--ink:#241f16;--soft:#6d6558;
+           min-height:100vh;max-width:none;padding:0 clamp(16px,5vw,40px) 72px;
+           background:#f4f1ea;color:var(--ink)}
+  .library>*{max-width:820px;margin-inline:auto}
+
+  header{padding:64px 0 26px}
+  header p{margin:0 0 14px;color:var(--volume);font:800 12px var(--qx-font);letter-spacing:.14em}
+  header h1{margin:0;font:400 clamp(34px,5.4vw,52px)/1.08 Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
+  header span{display:block;margin-top:14px;color:var(--soft);font:400 16px/1.6 var(--qx-font)}
+
+  .start{padding:26px 0 30px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+         display:grid;gap:18px}
+  .start h2{margin:0;font:400 24px Georgia,serif}
+  .start>div>span{display:block;margin-top:6px;color:var(--soft);font:400 15px/1.55 var(--qx-font)}
+  .start-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  a.primary{display:inline-block;padding:12px 22px;border-radius:6px;background:var(--volume);color:#fff;
+            text-decoration:none;font:600 15px var(--qx-font);white-space:nowrap}
+  a.primary:hover{background:var(--ink)}
+  .start-actions>a:not(.primary){color:var(--soft);font:500 15px var(--qx-font);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px}
+  .start-actions>a:not(.primary):hover{color:var(--ink);border-color:var(--ink)}
+
+  details summary{cursor:pointer;min-height:24px;list-style:none}
+  details summary::-webkit-details-marker{display:none}
+  .all-missions>summary{color:var(--soft);font:500 15px var(--qx-font)}
+  .all-missions>summary::before{content:'+ ';color:var(--volume)}
+  .all-missions[open]>summary::before{content:'– '}
+  .all-missions ol{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+  .all-missions li{background:#f4f1ea}
+  .all-missions a{display:flex;align-items:baseline;gap:14px;padding:11px 14px;color:var(--ink);text-decoration:none;font:400 15px var(--qx-font)}
+  .all-missions a:hover{background:#fff}
+  .all-missions b{color:var(--soft);font:500 14px var(--qx-font);font-variant-numeric:tabular-nums}
+  .all-missions span{flex:1;min-width:0}
+  .all-missions em{color:var(--soft);font:500 14px var(--qx-font);font-style:normal}
+
+  nav{display:flex;gap:14px 24px;padding:22px 0;flex-wrap:wrap}
+  nav button{padding:0 0 6px;border:0;border-bottom:2px solid transparent;background:none;color:var(--soft);
+             font:500 15px var(--qx-font);white-space:nowrap;cursor:pointer}
+  nav button.active{color:var(--ink);border-bottom-color:var(--volume)}
+  nav button:hover{color:var(--ink)}
+  nav button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--volume);outline-offset:3px}
+
+  .volume-head{padding:34px 0 22px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .volume-head p{margin:0 0 10px;color:var(--volume);font:700 12px var(--qx-font);letter-spacing:.12em}
+  .volume-head h2{margin:0;font:400 32px Georgia,serif;letter-spacing:-.015em}
+  .volume-head span{display:block;margin-top:8px;max-width:46ch;color:var(--soft);font:400 15px/1.55 var(--qx-font)}
+
+  ol.contents{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+  ol.contents>li{border-bottom:1px solid var(--rule)}
+  ol.contents>li.planned{color:var(--soft)}
+  summary,.row{display:grid;grid-template-columns:34px 1fr auto;align-items:baseline;gap:16px;padding:18px 0}
+  summary:hover .name b{color:var(--volume)}
+  .num{color:var(--soft);font:500 14px var(--qx-font);font-variant-numeric:tabular-nums}
+  .name b{display:block;font:400 19px Georgia,serif}
+  .name em{display:block;margin-top:5px;color:var(--soft);font:400 14.5px/1.5 var(--qx-font);font-style:normal}
+  .meta{color:var(--soft);font:500 14px var(--qx-font);white-space:nowrap}
+  details[open] .meta::after{content:' ▾'}
+
+  ul.parts{list-style:none;margin:0 0 20px;padding:0 0 0 50px;display:grid;gap:1px}
+  ul.parts a{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:10px 0;
+             color:var(--ink);text-decoration:none;font:400 15px var(--qx-font);border-bottom:1px solid var(--rule)}
+  ul.parts a:hover{color:var(--volume)}
+  ul.parts em{color:var(--soft);font:500 14px var(--qx-font);font-style:normal;white-space:nowrap}
+  ul.parts a.read{color:var(--volume);font-weight:600;border-bottom:0}
+
+  .companion{margin-top:38px;padding:24px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .companion p{margin:0 0 10px;color:var(--volume);font:700 12px var(--qx-font);letter-spacing:.12em}
+  .companion h3{margin:0;font:400 22px Georgia,serif}
+  .companion span{display:block;margin-top:8px;max-width:56ch;color:var(--soft);font:400 15px/1.55 var(--qx-font)}
+  .companion a{display:inline-block;margin-top:14px;color:var(--volume);font:600 15px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;white-space:nowrap}
+
+  .outcome{margin:24px 0 0;max-width:62ch;color:var(--soft);font:400 15px/1.6 var(--qx-font)}
+
+  footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--rule);display:grid;gap:8px;
+         color:var(--soft);font:400 14px/1.55 var(--qx-font)}
+
+  @media(max-width:620px){
+    header{padding:40px 0 20px}
+    summary,.row{grid-template-columns:28px 1fr;row-gap:8px}
+    .meta{grid-column:2}
+    ul.parts{padding-left:28px}
+    .volume-head{align-items:flex-start}
+  }
 </style>
