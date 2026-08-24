@@ -15,7 +15,7 @@
     { id: 'read', label: 'Read', href: '?mode=game&mission=foundations' },
     { id: 'library', label: 'Library', href: '/library/index.html' },
     { id: 'wiki', label: 'Wiki', href: '?mode=wiki' },
-    { id: 'maths', label: 'Mathematics', href: '/' }
+    { id: 'maths', label: 'Mathematics', href: '/?prototype=variables-and-rates' }
   ];
 </script>
 

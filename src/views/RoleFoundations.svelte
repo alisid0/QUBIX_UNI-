@@ -1,5 +1,5 @@
 <script>
-  import { partsForChapter, writtenChapters, volumeMinutes } from '../lib/content/shared-foundations.js';
+  import { partsForChapter, writtenChapters } from '../lib/content/shared-foundations.js';
   import { MISSIONS } from '../lib/game/progress.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
@@ -86,8 +86,8 @@
   const partsFor = (v, chapterIndex) => (v.id === 'shared' ? partsForChapter(chapterIndex + 1) : []);
 
   const minutes = m => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`);
-  // Read from the book rather than typed here, so the two cannot disagree.
-  $: readingTime = minutes(volumeMinutes);
+  const firstSession = partsForChapter(1)[0];
+  const firstSessionTime = minutes(firstSession.minutes);
   $: written = volume.id === 'shared' ? writtenChapters : 0;
 </script>
 
@@ -98,19 +98,33 @@
   <header>
     <p>QUBIX UNIVERSITY · AI_DRAFT</p>
     <h1>Foundations before specialisation.</h1>
-    <span>Play a mission. Read the chapter behind it. Then continue.</span>
+    <span>Choose reading or learn by doing. Switch whenever another explanation would help.</span>
   </header>
 
-  <!-- One band, not three. The ten mission links are all still here, one press
-       away, rather than ten cards competing with the contents below them. -->
-  <section class="start">
-    <div>
-      <h2>{MISSIONS.length} playable missions</h2>
-      <span>Fifteen minutes each. Progress is kept. No reading required first.</span>
+  <section class="start" aria-labelledby="choose-mode">
+    <div class="start-copy">
+      <p>NEW HERE? NO PRIOR DATA EXPERIENCE IS ASSUMED</p>
+      <h2 id="choose-mode">Choose how to begin.</h2>
+      <span>Both routes teach the same foundations. Reading explains the idea; missions let you use it inside Qubix Superstore.</span>
     </div>
+    <div class="mode-cards">
+      <article>
+        <span class="mode-number">01 · READING MODE</span>
+        <h3>Read, check, then practise.</h3>
+        <p>Start with one worked example and one focused question. The first session takes about {firstSessionTime}.</p>
+        <a class="primary" href="?mode=game&mission=shared-book&chapter=1&session=1">Start reading <span aria-hidden="true">→</span></a>
+      </article>
+      <article>
+        <span class="mode-number">02 · LEARN BY DOING</span>
+        <h3>Try the job, then inspect the idea.</h3>
+        <p>Process a sale in a guided mission. No reading is required first, and feedback explains every decision.</p>
+        <a class="primary" href="?mode=game&mission=checkout">Start the first mission <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+    <p class="switch-note"><b>Switch at any time.</b> Every reading session points to practice, and every academy mission links back to the chapter behind it.</p>
     <div class="start-actions">
-      <a class="primary" href="?mode=game">Open the academy <span aria-hidden="true">→</span></a>
-      <a href="?mode=game&mission=campaign">Story mode</a>
+      <a href="?mode=game">Browse all {MISSIONS.length} missions</a>
+      <a href="?mode=game&mission=campaign">Open story mode</a>
     </div>
     <details class="all-missions">
       <summary>All {MISSIONS.length} missions</summary>
@@ -132,7 +146,7 @@
         <h2>{volume.title}</h2>
         <span>{volume.subtitle}</span>
       </div>
-      {#if volume.bookHref}<a class="primary" href={volume.bookHref}>Begin Part One · {readingTime} <span aria-hidden="true">→</span></a>{/if}
+      {#if volume.bookHref}<a class="primary" href={`${volume.bookHref}&chapter=1&session=1`}>Start Session 1 · {firstSessionTime} <span aria-hidden="true">→</span></a>{/if}
     </div>
 
     <ol class="contents">{#each volume.chapters as chapter,index}
@@ -200,16 +214,24 @@
   header h1{margin:0;font:400 clamp(34px,5.4vw,52px)/1.08 Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
   header span{display:block;margin-top:14px;color:var(--soft);font:400 16px/1.6 var(--qx-font)}
 
-  .start{padding:26px 0 30px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
-         display:grid;gap:18px}
-  .start h2{margin:0;font:400 24px Georgia,serif}
-  .start>div>span{display:block;margin-top:6px;color:var(--soft);font:400 15px/1.55 var(--qx-font)}
+  .start{padding:26px 0 30px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);display:grid;gap:20px}
+  .start-copy>p{margin:0 0 9px;color:var(--volume);font:800 11px var(--qx-font);letter-spacing:.12em}
+  .start h2{margin:0;font:400 27px Georgia,serif}
+  .start-copy>span{display:block;margin-top:7px;max-width:65ch;color:var(--soft);font:400 15px/1.55 var(--qx-font)}
+  .mode-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .mode-cards article{padding:22px;border:1px solid var(--rule);border-radius:8px;background:rgba(255,255,255,.36)}
+  .mode-number{color:var(--volume);font:800 11px var(--qx-font);letter-spacing:.1em}
+  .mode-cards h3{margin:9px 0 7px;font:400 21px/1.2 Georgia,serif}
+  .mode-cards p{min-height:66px;margin:0 0 17px;color:var(--soft);font:400 14.5px/1.55 var(--qx-font)}
+  .mode-cards a.primary{padding:10px 16px;font-size:14px}
+  .switch-note{margin:0;max-width:68ch;color:var(--soft);font:400 14px/1.55 var(--qx-font)}
+  .switch-note b{color:var(--ink);font-weight:700}
   .start-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
   a.primary{display:inline-block;padding:12px 22px;border-radius:6px;background:var(--volume);color:#fff;
             text-decoration:none;font:600 15px var(--qx-font);white-space:nowrap}
   a.primary:hover{background:var(--ink)}
-  .start-actions>a:not(.primary){color:var(--soft);font:500 15px var(--qx-font);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px}
-  .start-actions>a:not(.primary):hover{color:var(--ink);border-color:var(--ink)}
+  .start-actions>a{color:var(--soft);font:500 15px var(--qx-font);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px}
+  .start-actions>a:hover{color:var(--ink);border-color:var(--ink)}
 
   details summary{cursor:pointer;min-height:24px;list-style:none}
   details summary::-webkit-details-marker{display:none}
@@ -268,6 +290,8 @@
 
   @media(max-width:620px){
     header{padding:40px 0 20px}
+    .mode-cards{grid-template-columns:1fr}
+    .mode-cards p{min-height:0}
     summary,.row{grid-template-columns:28px 1fr;row-gap:8px}
     .meta{grid-column:2}
     ul.parts{padding-left:28px}

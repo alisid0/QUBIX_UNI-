@@ -39,7 +39,7 @@
       <li><a href="/library/index.html">The library</a></li>
       <li><a href="/library/big-sheet-of-graphs.html">The Big Sheet of Graphs</a></li>
       <li><a href="/library/functions.html">Calculus From The Ground Up</a></li>
-      <li><a href="/">Mathematics pilot</a></li>
+      <li><a href="/?prototype=variables-and-rates">Mathematics pilot</a></li>
     </ul>
   </nav>
 

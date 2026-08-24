@@ -6,6 +6,7 @@
   import { MISSIONS, RANKS, TOTAL_XP, load, reset, statusOf, xpOf, rankOf, nextRankOf } from '../lib/game/progress.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
+  import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
 
   let state = { completed: [], started: null };
   let confirming = false;
@@ -37,7 +38,7 @@
 </script>
 
 <svelte:head><title>Qubix Superstore | Qubix University</title>
-<meta name="description" content="Learn data by working inside a synthetic retailer. Six missions from the checkout to the join." /></svelte:head>
+<meta name="description" content="Learn data by working inside a synthetic retailer. Ten missions from the checkout to the SQL console." /></svelte:head>
 
 <section class="hub qx-shell">
   <SiteNav current="play" />
@@ -50,6 +51,15 @@
       </div>
     </div>
   </header>
+
+  <section class="mode-intro">
+    <div>
+      <p class="eyebrow">CHOOSE YOUR MODE</p>
+      <h2>Learn by doing</h2>
+      <span>Make decisions in the Superstore, then open the short reading behind any mission when you need it.</span>
+    </div>
+    <LearningModeSwitch current="do" readHref="?mode=game&mission=shared-book&chapter=1&session=1" />
+  </section>
 
   <div class="standing">
     <div class="rank">
@@ -91,11 +101,14 @@
           <span>{row.teaches}</span>
         </div>
         <span class="xp">{row.xp} XP</span>
-        {#if row.open}
-          <a href={`?mode=game&mission=${row.slug}`}>{row.done ? 'Replay' : 'Play'}</a>
-        {:else}
-          <span class="lock" aria-label="Locked until the mission before it is finished">Locked</span>
-        {/if}
+        <div class="actions">
+          {#if row.open}
+            <a class="play" href={`?mode=game&mission=${row.slug}`}>{row.done ? 'Replay' : 'Play'}</a>
+          {:else}
+            <span class="lock" aria-label="Locked until the mission before it is finished">Locked</span>
+          {/if}
+          <a class="read" href={`?mode=game&mission=shared-book&chapter=${row.reading.chapter}&session=${row.reading.session}`}>Read <span class="sr-only">{row.reading.label}</span></a>
+        </div>
       </li>
     {/each}
   </ol>
@@ -136,8 +149,12 @@
   .badge{display:grid;place-items:center;width:50px;height:50px;border-radius:14px;background:#a85a34;color:#fff;font:900 15px var(--qx-font);flex:none}
   .identity p{margin:0 0 5px;color:#bcb19e;font:800 12px var(--qx-font);letter-spacing:.11em}
   .identity h1{margin:0;color:#fff;font:700 clamp(24px,4vw,34px)/1.1 Georgia,serif;text-wrap:balance}
-  nav{display:flex;gap:15px;flex-wrap:wrap}
-  nav a{color:#e2c7b7;font:800 13.5px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px}
+  .mode-intro{--mode-rule:rgba(255,255,255,.16);--mode-surface:rgba(255,255,255,.04);--mode-soft:#c1b7a6;
+              --mode-ink:#fff;--mode-active:#a85a34;--mode-focus:#f1ede4;
+              max-width:1080px;margin:0 auto 18px;padding:18px 20px;display:flex;align-items:center;
+              justify-content:space-between;gap:18px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.035)}
+  .mode-intro h2{margin:0;color:#fff;font:700 22px Georgia,serif}
+  .mode-intro>div>span{display:block;margin-top:5px;max-width:62ch;color:#a89e8d;font:600 14px/1.5 var(--qx-font)}
 
   .standing{max-width:1080px;margin:0 auto 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
             gap:20px;padding:22px 24px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(255,255,255,.04)}
@@ -171,12 +188,16 @@
   .body b{display:block;font:700 17px Georgia,serif;color:#fff}
   .body span{display:block;margin-top:3px;color:#a89e8d;font:600 14.5px/1.45 var(--qx-font)}
   .xp{font:900 13.5px var(--qx-font);color:#c98c5e;font-variant-numeric:tabular-nums}
-  ol.missions a,.lock{min-height:38px;display:grid;place-items:center;padding:0 17px;border-radius:9px;
-                      font:900 13.5px var(--qx-font);text-decoration:none}
-  ol.missions a{background:#f1ede4;color:#25231f}
-  ol.missions a:hover{background:#fff}
+  .actions{display:flex;align-items:center;gap:7px}
+  ol.missions .actions a,.lock{min-height:38px;display:grid;place-items:center;padding:0 14px;border-radius:9px;
+                               font:900 13px var(--qx-font);text-decoration:none}
+  ol.missions a.play{background:#f1ede4;color:#25231f}
+  ol.missions a.play:hover{background:#fff}
+  ol.missions a.read{border:1px solid rgba(255,255,255,.22);color:#d7cfc1;background:transparent}
+  ol.missions a.read:hover{border-color:#d7cfc1;color:#fff}
   ol.missions a:focus-visible{outline:3px solid #a85a34;outline-offset:2px}
   .lock{color:#8d8474;border:1px dashed rgba(255,255,255,.2)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
   .ranks{max-width:1080px;margin:0 auto 30px}
   .ranks ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;
@@ -198,10 +219,11 @@
   button:focus-visible{outline:3px solid #a85a34;outline-offset:2px}
 
   @media(max-width:820px){
+    .mode-intro{align-items:flex-start;flex-direction:column}
     .standing{grid-template-columns:1fr}
     ol.missions li{grid-template-columns:auto minmax(0,1fr);row-gap:11px}
-    .xp,ol.missions a,.lock{grid-column:2}
-    ol.missions a,.lock{justify-self:start}
+    .xp,.actions{grid-column:2}
+    .actions{justify-self:start;flex-wrap:wrap}
   }
   @media(prefers-reduced-motion:reduce){.bar span{transition:none}}
 </style>

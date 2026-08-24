@@ -1,12 +1,14 @@
 <script>
   import { onMount } from 'svelte';
   import { bookForChapter } from '../lib/content/shared-foundations.js';
+  import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
   // first, so a stale link opens something rather than nothing.
-  const asked = Number(new URLSearchParams(window.location.search).get('chapter'));
-  const book = bookForChapter(Number.isInteger(asked) ? asked : 1) || bookForChapter(1);
+  const askedChapter = Number(new URLSearchParams(window.location.search).get('chapter'));
+  const chapterNumber = Number.isInteger(askedChapter) && bookForChapter(askedChapter) ? askedChapter : 1;
+  const book = bookForChapter(chapterNumber);
 
   // Progress is kept per chapter, so finishing chapter 1 does not mark chapter 2.
   const storageKey = `qubix-shared-foundations-${book.id}-v1`;
@@ -100,7 +102,10 @@
 <div class="reader qx-shell">
   <header class="topbar">
     <a class="back" href="?mode=game&mission=foundations">← Foundations</a>
-    <div class="identity"><b>QUBIX UNIVERSITY</b><span>{book.status}</span></div>
+    <div class="mode-centre">
+      <div class="identity"><b>QUBIX UNIVERSITY</b><span>{book.status}</span></div>
+      <LearningModeSwitch compact current="read" readHref={`?mode=game&mission=shared-book&chapter=${chapterNumber}&session=${activeIndex + 1}`} doHref={session.practice.href} />
+    </div>
     <div class="overall" aria-label={`${progressPercent}% complete`}><span>{progressPercent}%</span><i><em style={`width:${progressPercent}%`}></em></i></div>
   </header>
 
@@ -207,13 +212,14 @@
   .identity { display: flex; align-items: center; gap: 9px; }
   .identity b { color: #8c4c2e; font: 900 12px var(--qx-font); letter-spacing: .13em; }
   .identity span { color: #746c5e; font: 800 11.5px var(--qx-font); letter-spacing: .08em; }
+  .mode-centre { --mode-active: #5f7355; --mode-focus: #8c4c2e; display: grid; justify-items: center; gap: 6px; }
   .overall { justify-self: end; display: flex; align-items: center; gap: 9px; }
   .overall span { font: 900 12px var(--qx-font); }
   .overall i { width: 90px; height: 6px; overflow: hidden; border-radius: 99px; background: #d8d0be; }
   .overall em { display: block; height: 100%; border-radius: inherit; background: #5f7355; transition: width .25s ease; }
 
   .layout { width: min(100%, 1240px); margin: 0 auto; padding: 28px clamp(14px, 3vw, 34px) 54px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 22px; align-items: start; }
-  .toc { position: sticky; top: 88px; padding: 21px; border: 1px solid #d8d0be; border-radius: 16px; background: #fff; }
+  .toc { min-width: 0; position: sticky; top: 88px; padding: 21px; border: 1px solid #d8d0be; border-radius: 16px; background: #fff; }
   .toc > p { margin: 0 0 7px; color: #8c4c2e; font: 900 11.5px var(--qx-font); letter-spacing: .12em; }
   .toc h1 { margin: 0; font: 700 31px/1.05 Georgia, serif; letter-spacing: -.02em; }
   .toc > span { display: block; margin-top: 7px; color: #625a49; font: 700 13px var(--qx-font); }
@@ -301,6 +307,7 @@
 
   @media (max-width: 900px) {
     .topbar { grid-template-columns: 1fr auto; }
+    .mode-centre { grid-column: 1 / -1; grid-row: 2; width: 100%; }
     .identity { display: none; }
     .layout { grid-template-columns: 1fr; }
     .toc { position: static; }
@@ -313,7 +320,7 @@
     .layout { padding: 12px 8px 30px; gap: 10px; }
     .toc { padding: 16px; border-radius: 12px; }
     .toc h1 { font-size: 27px; }
-    .toc nav { display: flex; overflow-x: auto; padding-bottom: 4px; }
+    .toc nav { width: 100%; min-width: 0; display: flex; overflow-x: auto; padding-bottom: 4px; }
     .toc nav button { flex: 0 0 215px; }
     article { border-radius: 12px; }
     .chapter-head { padding-top: 30px; align-items: flex-start; flex-direction: column; }
