@@ -29,6 +29,12 @@ export const JOIN_GRAIN_MISSION = Object.freeze({
   cases: Object.freeze([
     Object.freeze({
       id: 'sale-branch',
+      leftTable: Object.freeze({ table: 'sale',
+        columns: Object.freeze(["sale_id","branch_id","basket_total"]),
+        rows: Object.freeze([Object.freeze(["S-1041","B-17","18.70"]), Object.freeze(["S-1042","B-17","6.25"]), Object.freeze(["S-1043","B-08","31.40"])]) }),
+      rightTable: Object.freeze({ table: 'branch',
+        columns: Object.freeze(["branch_id","branch_name"]),
+        rows: Object.freeze([Object.freeze(["B-17","Northgate"]), Object.freeze(["B-08","Eastfield"])]) }),
       left: 'sale', right: 'branch', key: 'branch_id',
       leftGrain: 'one completed sale', leftRows: 4312, rightRows: 48,
       columns: ['sale_id', 'branch_id', 'basket_total', 'branch_name'],
@@ -44,6 +50,12 @@ export const JOIN_GRAIN_MISSION = Object.freeze({
     }),
     Object.freeze({
       id: 'sale-line',
+      leftTable: Object.freeze({ table: 'sale',
+        columns: Object.freeze(["sale_id","basket_total"]),
+        rows: Object.freeze([Object.freeze(["S-1041","18.70"]), Object.freeze(["S-1042","6.25"])]) }),
+      rightTable: Object.freeze({ table: 'sale_line',
+        columns: Object.freeze(["sale_id","line_no","sku"]),
+        rows: Object.freeze([Object.freeze(["S-1041","1","QX-CER-001"]), Object.freeze(["S-1041","2","QX-DRK-014"]), Object.freeze(["S-1042","1","QX-TIN-032"])]) }),
       left: 'sale', right: 'sale_line', key: 'sale_id',
       leftGrain: 'one completed sale', leftRows: 4312, rightRows: 11983,
       columns: ['sale_id', 'basket_total', 'line_no', 'sku'],
@@ -59,6 +71,12 @@ export const JOIN_GRAIN_MISSION = Object.freeze({
     }),
     Object.freeze({
       id: 'line-product',
+      leftTable: Object.freeze({ table: 'sale_line',
+        columns: Object.freeze(["sale_id","sku","quantity"]),
+        rows: Object.freeze([Object.freeze(["S-1041","QX-CER-001","1"]), Object.freeze(["S-1041","QX-DRK-014","2"]), Object.freeze(["S-1042","QX-TIN-032","3"])]) }),
+      rightTable: Object.freeze({ table: 'product',
+        columns: Object.freeze(["sku","product_name"]),
+        rows: Object.freeze([Object.freeze(["QX-CER-001","Oat Crunch"]), Object.freeze(["QX-DRK-014","Orchard Juice"]), Object.freeze(["QX-TIN-032","Garden Peas"])]) }),
       left: 'sale_line', right: 'product', key: 'sku',
       leftGrain: 'one product line within one sale', leftRows: 11983, rightRows: 2140,
       columns: ['sale_id', 'sku', 'quantity', 'product_name'],
@@ -74,6 +92,12 @@ export const JOIN_GRAIN_MISSION = Object.freeze({
     }),
     Object.freeze({
       id: 'sale-return',
+      leftTable: Object.freeze({ table: 'sale',
+        columns: Object.freeze(["sale_id","basket_total"]),
+        rows: Object.freeze([Object.freeze(["S-1041","18.70"]), Object.freeze(["S-1042","6.25"]), Object.freeze(["S-1044","22.10"])]) }),
+      rightTable: Object.freeze({ table: 'return',
+        columns: Object.freeze(["sale_id","return_id","refunded"]),
+        rows: Object.freeze([Object.freeze(["S-1041","R-0091","3.40"]), Object.freeze(["S-1044","R-0092","22.10"]), Object.freeze(["S-1044","R-0093","0.00"])]) }),
       left: 'sale', right: 'return', key: 'sale_id',
       leftGrain: 'one completed sale', leftRows: 4312, rightRows: 176,
       columns: ['sale_id', 'basket_total', 'return_id', 'refunded'],
@@ -89,6 +113,12 @@ export const JOIN_GRAIN_MISSION = Object.freeze({
     }),
     Object.freeze({
       id: 'product-price',
+      leftTable: Object.freeze({ table: 'product',
+        columns: Object.freeze(["sku","product_name"]),
+        rows: Object.freeze([Object.freeze(["QX-CER-001","Oat Crunch"]), Object.freeze(["QX-DRK-014","Orchard Juice"])]) }),
+      rightTable: Object.freeze({ table: 'price_history',
+        columns: Object.freeze(["sku","valid_from","unit_price"]),
+        rows: Object.freeze([Object.freeze(["QX-CER-001","2025-01-01","3.10"]), Object.freeze(["QX-CER-001","2026-02-14","3.40"]), Object.freeze(["QX-DRK-014","2025-06-30","1.85"])]) }),
       left: 'product', right: 'price_history', key: 'sku',
       leftGrain: 'one product SKU', leftRows: 2140, rightRows: 9605,
       columns: ['sku', 'product_name', 'valid_from', 'unit_price'],
@@ -104,6 +134,12 @@ export const JOIN_GRAIN_MISSION = Object.freeze({
     }),
     Object.freeze({
       id: 'promotion-product',
+      leftTable: Object.freeze({ table: 'promotion',
+        columns: Object.freeze(["promotion_id","promotion_name"]),
+        rows: Object.freeze([Object.freeze(["P-014","Autumn Breakfast"]), Object.freeze(["P-021","Juice Week"])]) }),
+      rightTable: Object.freeze({ table: 'promotion_product',
+        columns: Object.freeze(["promotion_id","sku","discount_pct"]),
+        rows: Object.freeze([Object.freeze(["P-014","QX-CER-001","15"]), Object.freeze(["P-014","QX-CER-002","15"]), Object.freeze(["P-021","QX-DRK-014","20"])]) }),
       left: 'promotion', right: 'promotion_product', key: 'promotion_id',
       leftGrain: 'one promotion campaign', leftRows: 63, rightRows: 1874,
       columns: ['promotion_id', 'promotion_name', 'sku', 'discount_pct'],
@@ -121,6 +157,36 @@ export const JOIN_GRAIN_MISSION = Object.freeze({
 });
 
 /** What the learner has to pick, for whichever half of the case they are on. */
+/**
+ * Runs the case's join over its sample rows. Inner join on the named key: a
+ * left row appears once per match and vanishes when it has none, which is the
+ * whole lesson made countable. Computed rather than written down, so the
+ * result table can never disagree with the two tables printed above it.
+ */
+export function joinSample(caseRecord) {
+  if (!caseRecord?.leftTable || !caseRecord?.rightTable) return null;
+  const { leftTable: left, rightTable: right, key } = caseRecord;
+  const li = left.columns.indexOf(key);
+  const ri = right.columns.indexOf(key);
+  const columns = [...left.columns, ...right.columns.filter((_, i) => i !== ri)];
+  const rows = [];
+  // `from` records which left row produced each result row. Fan-out is one
+  // left row producing several, which is not the same as a key value appearing
+  // twice: two different sales at the same branch repeat the branch and are a
+  // perfectly safe many-to-one join.
+  for (const [index, l] of left.rows.entries()) {
+    for (const r of right.rows) {
+      if (l[li] !== r[ri]) continue;
+      rows.push({ cells: [...l, ...r.filter((_, i) => i !== ri)], from: index });
+    }
+  }
+  const dropped = left.rows.filter(l => !right.rows.some(r => r[ri] === l[li])).length;
+  const fanned = new Set(
+    left.rows.map((_, i) => i).filter(i => rows.filter(r => r.from === i).length > 1)
+  );
+  return { columns, rows, dropped, fanned, key, keyIndex: li };
+}
+
 export function answerForJoinCase(caseRecord, step) {
   if (!caseRecord) return undefined;
   return step === 'matches' ? caseRecord.matchAnswer : caseRecord.grain;
