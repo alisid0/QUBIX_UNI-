@@ -53,7 +53,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         ]),
         explanation: 'A comparison with null is unknown, not false, so those 50 rows are excluded by both conditions. They have to be asked for explicitly with a test for absence.'
       }),
-      practice: Object.freeze({ title: 'What Does One Row Represent?', href: '?mode=game&mission=table-grain', instruction: 'Before writing a query, state the grain of the table you are querying.' }),
+      practice: Object.freeze({ title: 'The SQL Console', href: '?mode=game&mission=sql-console', instruction: 'Assemble the query one clause at a time and watch the row count answer you.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'PostgreSQL — SELECT', url: 'https://www.postgresql.org/docs/current/sql-select.html' }),
         Object.freeze({ label: 'PostgreSQL — comparison functions and NULL', url: 'https://www.postgresql.org/docs/current/functions-comparison.html' })
@@ -99,7 +99,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         ]),
         explanation: 'Rows are filtered before grouping, so no count exists at that point. A condition on an aggregate has to wait until the groups have been formed, which is what the HAVING clause is for.'
       }),
-      practice: Object.freeze({ title: 'Keys and Duplicate Records', href: '?mode=game&mission=duplicate-records', instruction: 'Group by a key and keep the groups appearing more than once: the duplicate check is a grouping query.' }),
+      practice: Object.freeze({ title: 'The SQL Console', href: '?mode=game&mission=sql-console', instruction: 'Group twelve sales into three branches, and watch the grain move while you do it.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'PostgreSQL — SELECT', url: 'https://www.postgresql.org/docs/current/sql-select.html' }),
         Object.freeze({ label: 'Statistics Canada — statistical units', url: 'https://www150.statcan.gc.ca/n1/pub/11-634-x/2016001/section1/chap3-eng.htm' })
@@ -192,7 +192,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         ]),
         explanation: 'An unchanged row count rules out the fan-out. If the rows did not multiply but the total did, the arithmetic is being done over different columns than it was before.'
       }),
-      practice: Object.freeze({ title: 'Trace the Number', href: '?mode=game&mission=data-lineage', instruction: 'Keep the query with the answer: the entity, the activity and the derivation, in SQL.' }),
+      practice: Object.freeze({ title: 'The SQL Console', href: '?mode=game&mission=sql-console', instruction: 'Read every result before believing it: row count, grain, and whether the clause could run at all.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'PostgreSQL — SELECT', url: 'https://www.postgresql.org/docs/current/sql-select.html' }),
         Object.freeze({ label: 'W3C PROV Overview', url: 'https://www.w3.org/TR/prov-overview/' })

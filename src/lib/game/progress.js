@@ -18,6 +18,7 @@ import { JOIN_GRAIN_MISSION } from './join-grain-mission.js';
 import { UNITS_MEASUREMENT_MISSION } from './units-measurement-mission.js';
 import { DATA_LINEAGE_MISSION } from './data-lineage-mission.js';
 import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
+import { SQL_CONSOLE_MISSION } from './sql-console-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -41,7 +42,9 @@ export const MISSIONS = Object.freeze([
   { slug: 'units-measurement', mission: UNITS_MEASUREMENT_MISSION, xp: 70,
     teaches: 'What a value measures, and converting it without losing the original.' },
   { slug: 'analyst-desk', mission: ANALYST_DESK_MISSION, xp: 120,
-    teaches: 'Turning an unclear question into a unit, evidence, a chart and a defensible sentence.' }
+    teaches: 'Turning an unclear question into a unit, evidence, a chart and a defensible sentence.' },
+  { slug: 'sql-console', mission: SQL_CONSOLE_MISSION, xp: 110,
+    teaches: 'Building a query clause by clause, and reading what it did to the grain.' }
 ].map(Object.freeze));
 
 export const TOTAL_XP = MISSIONS.reduce((n, m) => n + m.xp, 0);

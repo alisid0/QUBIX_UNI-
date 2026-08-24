@@ -89,6 +89,27 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
 }
 console.log('');
 
+// Reading and playing are meant to run in parallel, so the balance is measured
+// rather than asserted. A chapter whose four sessions all borrow missions
+// written for other chapters has no game of its own, and this says so by name
+// instead of letting it look covered.
+const { MISSIONS } = await import('../src/lib/game/progress.js');
+const OWN = { 5: 'sql-console' };  // chapters with a mission written for them
+console.log('reading and playing\n');
+let owned = 0;
+for (const { chapter, book } of SHARED_FOUNDATIONS) {
+  const links = [...new Set(book.sessions.map(s => (s.practice.href.match(/mission=([a-z-]+)/) || [])[1]).filter(Boolean))];
+  const own = OWN[chapter];
+  if (own) owned += 1;
+  console.log(`   ch${String(chapter).padStart(2, '0')}  ${book.title.padEnd(28)}`
+    + `${own ? `own game: ${own}` : `borrows ${links.length}: ${links.join(', ')}`}`);
+}
+ok('every chapter sends the learner to a game', SHARED_FOUNDATIONS.every(
+  ({ book }) => book.sessions.every(s => /mission=|\/library\//.test(s.practice.href))));
+console.log(`   ${MISSIONS.length} missions against `
+  + `${SHARED_FOUNDATIONS.reduce((n, c) => n + c.book.sessions.length, 0)} reading sessions, `
+  + `${owned} chapter(s) with a game of their own\n`);
+
 // No two chapters may claim the same storage key, or finishing one would mark
 // the other as read.
 const ids = SHARED_FOUNDATIONS.map(c => c.book.id);
