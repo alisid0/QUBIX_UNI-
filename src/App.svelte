@@ -82,7 +82,9 @@
     // Keep each dynamic import in its own branch. A nested conditional caused
     // Vite to preload GameHub.css for every mission, leaving the selected
     // mission's component mounted without its stylesheet in production.
-    if (mission === 'foundations') {
+    if (mission === 'analyst-desk') {
+      gamePreview = import('./views/AnalystDeskMission.svelte');
+    } else if (mission === 'foundations') {
       gamePreview = import('./views/RoleFoundations.svelte');
     } else if (mission === 'shared-book') {
       gamePreview = import('./views/SharedFoundationsBook.svelte');

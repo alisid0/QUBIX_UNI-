@@ -17,6 +17,7 @@ import { DUPLICATE_RECORDS_MISSION } from './duplicate-records-mission.js';
 import { JOIN_GRAIN_MISSION } from './join-grain-mission.js';
 import { UNITS_MEASUREMENT_MISSION } from './units-measurement-mission.js';
 import { DATA_LINEAGE_MISSION } from './data-lineage-mission.js';
+import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -38,7 +39,9 @@ export const MISSIONS = Object.freeze([
   { slug: 'data-lineage', mission: DATA_LINEAGE_MISSION, xp: 60,
     teaches: 'Where a reported number came from, and what changed it.' },
   { slug: 'units-measurement', mission: UNITS_MEASUREMENT_MISSION, xp: 70,
-    teaches: 'What a value measures, and converting it without losing the original.' }
+    teaches: 'What a value measures, and converting it without losing the original.' },
+  { slug: 'analyst-desk', mission: ANALYST_DESK_MISSION, xp: 120,
+    teaches: 'Turning an unclear question into a unit, evidence, a chart and a defensible sentence.' }
 ].map(Object.freeze));
 
 export const TOTAL_XP = MISSIONS.reduce((n, m) => n + m.xp, 0);
@@ -50,7 +53,8 @@ export const RANKS = Object.freeze([
   { at: 220, title: 'Pre-Intern, Data Quality', note: 'Can tell an absence from a zero.' },
   { at: 290, title: 'Pre-Intern, Senior', note: 'Can state a table’s grain.' },
   { at: 380, title: 'Pre-Intern, Lead', note: 'Can predict what a join does before running it.' },
-  { at: TOTAL_XP, title: 'Data Intern', note: 'Can trace a number to its source and state its unit.' }
+  { at: 510, title: 'Data Intern', note: 'Can trace a number to its source and state its unit.' },
+  { at: TOTAL_XP, title: 'Analyst, Volume I', note: 'Can answer an unclear question without outrunning the evidence.' }
 ].map(Object.freeze));
 
 const blank = () => ({ completed: [], started: null });

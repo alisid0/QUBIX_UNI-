@@ -31,8 +31,14 @@ const ok = (label, pass, detail = '') => {
 };
 
 const valueOf = o => (o && typeof o === 'object' ? (o.value ?? o.id ?? JSON.stringify(o)) : o);
-const same = (a, b) => valueOf(a) === valueOf(b)
-  || (Array.isArray(a) && Array.isArray(b) && JSON.stringify(a) === JSON.stringify(b));
+const same = (a, b) =>
+  valueOf(a) === valueOf(b)
+  // An answer that is itself a list, such as a composite key.
+  || (Array.isArray(a) && Array.isArray(b) && JSON.stringify(a) === JSON.stringify(b))
+  // The [value, label] and [value, label, hint] option shape used across these
+  // missions: the answer names the value, which is the first element.
+  || (Array.isArray(a) && !Array.isArray(b) && a[0] === b)
+  || (Array.isArray(b) && !Array.isArray(a) && b[0] === a);
 
 /** Every (options, answer) pair a mission offers, however it happens to spell it. */
 function questionsIn(item) {
