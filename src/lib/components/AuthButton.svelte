@@ -147,23 +147,23 @@
   button { min-height: 36px; border: 1px solid var(--qx-border-2); border-radius: 999px; background: var(--qx-surface); color: var(--qx-text); font: inherit; cursor: pointer; }
   button:focus-visible { outline: 2px solid var(--qx-accent); outline-offset: 2px; }
   button:disabled { cursor: wait; opacity: .65; }
-  .google { padding: 0 13px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 900; }
+  .google { padding: 0 13px; display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 900; }
   .google span { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: #fff; color: #4285f4; box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); font-weight: 900; }
   .account { max-width: 210px; padding: 3px 10px 3px 4px; display: flex; align-items: center; gap: 7px; text-align: left; }
-  .avatar { flex: 0 0 28px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 11px; font-weight: 900; }
+  .avatar { flex: 0 0 28px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 13.5px; font-weight: 900; }
   .account-copy { min-width: 0; display: flex; flex-direction: column; }
-  .account-copy b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
-  .account-copy small { color: var(--qx-text-faint); font-size: 8px; font-weight: 800; }
+  .account-copy b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+  .account-copy small { color: var(--qx-text-faint); font-size: 11.5px; font-weight: 800; }
   .account-menu { position: absolute; z-index: 61; top: calc(100% + 8px); right: 0; width: 190px; display: grid; gap: 4px; padding: 6px; border: 1px solid var(--qx-border); border-radius: 12px; background: var(--qx-surface); box-shadow: var(--qx-shadow-card); }
-  .account-menu button { width: 100%; min-height: 38px; padding: 8px 10px; border: 0; border-radius: 8px; text-align: left; font-size: 10px; font-weight: 800; }
+  .account-menu button { width: 100%; min-height: 38px; padding: 8px 10px; border: 0; border-radius: 8px; text-align: left; font-size: 13px; font-weight: 800; }
   .account-menu button:hover { background: var(--qx-surface-2); }
   .account-menu button.confirming { color: var(--qx-danger, #a83232); }
-  .auth-message { position: absolute; z-index: 60; top: calc(100% + 8px); right: 0; width: min(280px, calc(100vw - 32px)); padding: 9px 11px; border: 1px solid var(--qx-border); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-2); box-shadow: var(--qx-shadow-card); font-size: 10px; line-height: 1.4; }
+  .auth-message { position: absolute; z-index: 60; top: calc(100% + 8px); right: 0; width: min(280px, calc(100vw - 32px)); padding: 9px 11px; border: 1px solid var(--qx-border); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-2); box-shadow: var(--qx-shadow-card); font-size: 13px; line-height: 1.4; }
   .age-gate { position: absolute; z-index: 62; top: calc(100% + 8px); right: 0; width: min(290px, calc(100vw - 32px)); padding: 13px; border: 1px solid var(--qx-border); border-radius: 12px; background: var(--qx-surface); box-shadow: var(--qx-shadow-card); display: grid; gap: 9px; }
-  .age-gate p { margin: 0; font-size: 11.5px; line-height: 1.5; color: var(--qx-text); }
-  .age-gate small { font-size: 9.5px; line-height: 1.45; color: var(--qx-text-faint); }
+  .age-gate p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--qx-text); }
+  .age-gate small { font-size: 12px; line-height: 1.45; color: var(--qx-text-faint); }
   .age-actions { display: grid; gap: 5px; }
-  .age-actions button { min-height: 36px; padding: 8px 11px; font-size: 10.5px; font-weight: 800; border-radius: 9px; }
+  .age-actions button { min-height: 36px; padding: 8px 11px; font-size: 13px; font-weight: 800; border-radius: 9px; }
   .age-yes { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
   @media (max-width: 420px) {
     .google { padding: 0 10px; }

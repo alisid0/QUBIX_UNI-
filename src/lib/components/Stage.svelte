@@ -477,23 +477,23 @@
 <style>
   .st { display: flex; flex-direction: column; gap: 11px; width: 100%; align-items: stretch; }
   .st.centre { align-items: center; }
-  .hint { font-size: 12px; color: var(--qx-text-faint); margin: 0; line-height: 1.4; }
+  .hint { font-size: 14.5px; color: var(--qx-text-faint); margin: 0; line-height: 1.4; }
   .row { display: flex; align-items: center; gap: 9px; }
-  .row small { font-size: 9.5px; letter-spacing: .07em; font-weight: 800; color: var(--qx-text-faint); min-width: 46px; }
+  .row small { font-size: 12px; letter-spacing: .07em; font-weight: 800; color: var(--qx-text-faint); min-width: 46px; }
   .row b { font-size: 19px; min-width: 34px; text-align: center; color: var(--qx-accent-text); }
   .row button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--qx-border-2); background: transparent; color: var(--qx-text); font-size: 16px; cursor: pointer; }
-  .range { display: flex; align-items: center; gap: 9px; font-size: 10px; color: var(--qx-text-faint); font-weight: 800; }
+  .range { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--qx-text-faint); font-weight: 800; }
   .range input { flex: 1; accent-color: var(--qx-accent); }
   .big { display: flex; align-items: baseline; gap: 8px; }
   .big b { font-size: 27px; color: var(--qx-accent-text); }
-  .big small { font-size: 11px; color: var(--qx-text-faint); }
+  .big small { font-size: 13.5px; color: var(--qx-text-faint); }
   .bar { height: 9px; border-radius: 5px; background: var(--qx-surface-2); overflow: hidden; }
   .bar i { display: block; height: 100%; background: var(--qx-accent); }
 
-  .lamp { width: 78px; height: 78px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 900; letter-spacing: .08em; border: 2px solid var(--qx-border-2); color: var(--qx-text-faint); }
+  .lamp { width: 78px; height: 78px; border-radius: 50%; display: grid; place-items: center; font-size: 14.5px; font-weight: 900; letter-spacing: .08em; border: 2px solid var(--qx-border-2); color: var(--qx-text-faint); }
   .lamp.lit { background: var(--qx-accent-soft); border-color: var(--qx-accent); color: var(--qx-accent-text); box-shadow: 0 0 0 8px var(--qx-accent-soft); }
   .switch { display: flex; flex-direction: column; border: 1px solid var(--qx-border-2); border-radius: 11px; overflow: hidden; width: 104px; }
-  .switch button { padding: 10px 0; font-size: 12px; font-weight: 800; background: transparent; border: 0; color: var(--qx-text-dim); cursor: pointer; }
+  .switch button { padding: 10px 0; font-size: 14.5px; font-weight: 800; background: transparent; border: 0; color: var(--qx-text-dim); cursor: pointer; }
   .switch button + button { border-top: 1px solid var(--qx-border-2); }
   .switch button.on { background: var(--qx-accent); color: #fff; }
 
@@ -504,12 +504,12 @@
   .machine { flex: 1; min-width: 122px; display: flex; flex-direction: column; align-items: center; gap: 7px; border: 1px solid var(--qx-border-2); border-radius: 12px; padding: 10px 8px; }
   .machine .port { font-size: 16px; font-weight: 800; color: var(--qx-text-2); }
   .machine .out { font-size: 21px; color: var(--qx-accent-text); }
-  .machine .plate { font-size: 10.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--qx-text-dim); border-top: 1px dashed var(--qx-border-2); border-bottom: 1px dashed var(--qx-border-2); padding: 5px 0; width: 100%; text-align: center; }
+  .machine .plate { font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--qx-text-dim); border-top: 1px dashed var(--qx-border-2); border-bottom: 1px dashed var(--qx-border-2); padding: 5px 0; width: 100%; text-align: center; }
   .plates { display: flex; gap: 6px; flex-wrap: wrap; }
-  .chip { font-size: 11.5px; font-weight: 800; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--qx-border-2); background: transparent; color: var(--qx-text-dim); cursor: pointer; }
+  .chip { font-size: 13.5px; font-weight: 800; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--qx-border-2); background: transparent; color: var(--qx-text-dim); cursor: pointer; }
   .chip.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
-  .io { border-collapse: collapse; font-size: 13px; align-self: flex-start; }
-  .io th { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--qx-text-faint); text-align: left; padding: 0 15px 4px 0; }
+  .io { border-collapse: collapse; font-size: 15px; align-self: flex-start; }
+  .io th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--qx-text-faint); text-align: left; padding: 0 15px 4px 0; }
   .io td { padding: 2px 15px 2px 0; color: var(--qx-text-2); }
   .io b { color: var(--qx-accent-text); font-size: 15px; }
   .io b.two { background: var(--qx-accent-soft); border-radius: 5px; padding: 1px 5px; }
@@ -521,18 +521,18 @@
   .ladder .brick { stroke: var(--qx-text-faint); stroke-width: .6; opacity: .55; }
   .ladder .floor { stroke: var(--qx-text-dim); stroke-width: 2; }
   .ladder .plaque { fill: var(--qx-surface); stroke: var(--qx-text-faint); stroke-width: .8; }
-  .ladder .ptext { fill: var(--qx-text-dim); font-size: 7px; font-weight: 800; text-anchor: middle; }
+  .ladder .ptext { fill: var(--qx-text-dim); font-size: 11px; font-weight: 800; text-anchor: middle; }
   .ladder .rung { stroke: var(--qx-accent); stroke-width: 3.5; stroke-linecap: round; }
   .ladder .rung.rail { stroke-width: 2; opacity: .55; }
   .ladder .foot { fill: var(--qx-accent); }
   .ladder .hmark { stroke: var(--qx-accent); stroke-width: 1.5; stroke-dasharray: 3 2; }
-  .ladder .htext { fill: var(--qx-accent-text); font-size: 9px; font-weight: 800; }
+  .ladder .htext { fill: var(--qx-accent-text); font-size: 12px; font-weight: 800; }
   .outs { display: flex; gap: 8px; flex-wrap: wrap; }
   .out-box { flex: 1; min-width: 96px; border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 8px 9px; }
-  .out-box small { display: block; font-size: 9px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
+  .out-box small { display: block; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--qx-text-faint); font-weight: 800; }
   .out-box b { font-size: 18px; color: var(--qx-accent-text); }
   .guess { display: flex; gap: 4px; margin-top: 4px; }
-  .guess .chip { font-size: 10px; padding: 3px 7px; }
+  .guess .chip { font-size: 13px; padding: 3px 7px; }
   .forms { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; }
   .form { font-size: 17px; font-weight: 800; color: var(--qx-accent-text); border: 1px solid var(--qx-border-2); border-radius: 10px; padding: 9px 13px; }
 
@@ -554,12 +554,12 @@
   .coordinate-grid button.x-axis { border-bottom: 2px solid var(--qx-text); }
   .coordinate-grid button.y-axis { border-right: 2px solid var(--qx-text); }
   .coordinate-grid button.hit { background: var(--qx-accent-soft); font-weight: 900; }
-  .coordinate-grid button small { position: absolute; left: 3px; top: 3px; color: var(--qx-text-faint); font-size: 8px; }
-  .coordinate-labels { position: absolute; left: 0; right: 0; bottom: -16px; display: grid; grid-template-columns: repeat(7, 1fr); color: var(--qx-text-faint); font-size: 8px; text-align: center; }
+  .coordinate-grid button small { position: absolute; left: 3px; top: 3px; color: var(--qx-text-faint); font-size: 11.5px; }
+  .coordinate-labels { position: absolute; left: 0; right: 0; bottom: -16px; display: grid; grid-template-columns: repeat(7, 1fr); color: var(--qx-text-faint); font-size: 11.5px; text-align: center; }
   .drill-result { margin-top: 16px; }
   .drill-status { width: 100%; max-width: 390px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-  .drill-status span, .drill-status strong { font-size: 13px; }
-  .drill-status small { font-size: 10px; color: var(--qx-text-faint); }
+  .drill-status span, .drill-status strong { font-size: 15px; }
+  .drill-status small { font-size: 13px; color: var(--qx-text-faint); }
   .curve { fill: none; stroke: var(--qx-green); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-line { stroke: var(--qx-accent); stroke-width: 3; stroke-linecap: round; }
   .ghost-line { stroke: var(--qx-text-faint); stroke-width: 2; stroke-dasharray: 5 4; }
@@ -568,24 +568,24 @@
   .small-triangle { fill: none; stroke: var(--qx-text-faint); stroke-width: 1.5; stroke-dasharray: 4 3; }
   .line-controls { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; }
   .line-controls span { display: flex; align-items: center; gap: 6px; border: 1px solid var(--qx-border-2); border-radius: 9px; padding: 5px 7px; }
-  .line-controls small { font-size: 8.5px; letter-spacing: .08em; color: var(--qx-text-faint); font-weight: 900; }
+  .line-controls small { font-size: 11.5px; letter-spacing: .08em; color: var(--qx-text-faint); font-weight: 900; }
   .line-controls button { width: 28px; height: 28px; border: 1px solid var(--qx-border-2); border-radius: 7px; background: transparent; color: var(--qx-text); cursor: pointer; }
   .line-controls b { min-width: 18px; text-align: center; color: var(--qx-accent-text); }
   .ratio-read { display: flex; align-items: center; gap: 7px; font-size: 17px; }
   .ratio-read i { font-style: normal; color: var(--qx-text-faint); }
   .ratio-read b { color: var(--qx-accent-text); font-size: 23px; }
   .ratio-read b.hit { color: var(--qx-green-text); }
-  .target { margin: 0; font-size: 9px; letter-spacing: .1em; color: var(--qx-text-faint); font-weight: 900; }
+  .target { margin: 0; font-size: 12px; letter-spacing: .1em; color: var(--qx-text-faint); font-weight: 900; }
   .target b { color: var(--qx-accent-text); font-size: 18px; margin-left: 5px; }
 
   .physics-stage { width: 100%; }
   .physics-constant { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; border: 1px solid var(--qx-green); border-radius: 11px; padding: 8px 11px; background: var(--qx-green-soft); }
-  .physics-constant small { color: var(--qx-green-text); font-size: 8px; letter-spacing: .09em; font-weight: 900; }
+  .physics-constant small { color: var(--qx-green-text); font-size: 11.5px; letter-spacing: .09em; font-weight: 900; }
   .physics-constant b { color: var(--qx-green-text); font-size: 19px; }
-  .physics-constant span { color: var(--qx-text-dim); font-size: 10px; }
+  .physics-constant span { color: var(--qx-text-dim); font-size: 13px; }
   .physics-track { position: relative; width: min(100%, 560px); height: 170px; overflow: hidden; border: 1px solid var(--qx-border-2); border-radius: 14px; background: linear-gradient(to bottom, var(--qx-surface-2) 0 71%, var(--qx-surface-3) 71% 100%); }
   .physics-ground { position: absolute; left: 0; right: 0; top: 121px; height: 2px; background: var(--qx-text-faint); }
-  .physics-track > small { position: absolute; left: 18%; top: 129px; color: var(--qx-text-faint); font-size: 8px; letter-spacing: .1em; font-weight: 900; transform: translateX(-50%); }
+  .physics-track > small { position: absolute; left: 18%; top: 129px; color: var(--qx-text-faint); font-size: 11.5px; letter-spacing: .1em; font-weight: 900; transform: translateX(-50%); }
   .physics-person { position: absolute; left: 4%; top: 51px; width: 54px; height: 72px; transition: transform .15s ease; }
   .physics-person i { position: absolute; left: 16px; top: 0; width: 19px; height: 19px; border: 3px solid var(--qx-accent); border-radius: 50%; }
   .physics-person b { position: absolute; left: 26px; top: 22px; width: 3px; height: 31px; background: var(--qx-accent); }
@@ -595,38 +595,38 @@
   .physics-person.push { transform: translateX(4px) rotate(3deg); }
   .physics-arrow { position: absolute; left: 11%; top: 40px; height: 3px; width: var(--arrow); background: var(--qx-accent); }
   .physics-arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border-left: 8px solid var(--qx-accent); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
-  .physics-arrow span { position: absolute; left: 50%; bottom: 7px; white-space: nowrap; transform: translateX(-50%); color: var(--qx-accent-text); font-size: 10px; font-weight: 900; }
+  .physics-arrow span { position: absolute; left: 50%; bottom: 7px; white-space: nowrap; transform: translateX(-50%); color: var(--qx-accent-text); font-size: 13px; font-weight: 900; }
   .physics-block { position: absolute; left: calc(18% + var(--travel)); top: 76px; width: 48px; height: 46px; display: grid; place-items: center; border: 2px solid var(--qx-accent); border-radius: 5px; background: var(--qx-accent-soft); color: var(--qx-accent-text); transition: left .9s cubic-bezier(.55,.05,.92,.45); }
-  .physics-block b { font-size: 12px; }
+  .physics-block b { font-size: 14.5px; }
   .physics-picks { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
   .physics-picks button { min-width: 64px; min-height: 44px; border: 1px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text); font-weight: 900; cursor: pointer; }
   .physics-picks button.on { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
-  .physics-run { min-height: 44px; border: 0; border-radius: 11px; padding: 9px 17px; background: var(--qx-accent); color: #fff; font-size: 11px; letter-spacing: .06em; font-weight: 900; cursor: pointer; }
+  .physics-run { min-height: 44px; border: 0; border-radius: 11px; padding: 9px 17px; background: var(--qx-accent); color: #fff; font-size: 13.5px; letter-spacing: .06em; font-weight: 900; cursor: pointer; }
   .physics-run:disabled { opacity: .65; cursor: default; }
   .physics-readouts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
   .physics-readouts span { min-width: 82px; border: 1px solid var(--qx-border); border-radius: 9px; padding: 7px 9px; display: flex; flex-direction: column; gap: 2px; background: var(--qx-surface-2); }
-  .physics-readouts small { color: var(--qx-text-faint); font-size: 7.5px; letter-spacing: .08em; font-weight: 900; }
-  .physics-readouts b { color: var(--qx-text); font-size: 13px; }
+  .physics-readouts small { color: var(--qx-text-faint); font-size: 11px; letter-spacing: .08em; font-weight: 900; }
+  .physics-readouts b { color: var(--qx-text); font-size: 15px; }
   .physics-bars { width: min(100%, 390px); display: flex; flex-direction: column; gap: 6px; }
   .physics-bars span { display: grid; grid-template-columns: 76px 1fr 58px; align-items: center; gap: 7px; }
-  .physics-bars small { color: var(--qx-text-faint); font-size: 9px; font-weight: 800; }
+  .physics-bars small { color: var(--qx-text-faint); font-size: 12px; font-weight: 800; }
   .physics-bars i { display: block; height: 10px; max-width: 100%; border-radius: 5px; background: var(--qx-accent); }
   .physics-bars span + span i { background: var(--qx-green); }
-  .physics-bars b { color: var(--qx-text); font-size: 10px; }
-  .physics-result { margin: 0; border-radius: 9px; padding: 7px 10px; background: var(--qx-surface-2); color: var(--qx-text-2); font-size: 12px; font-weight: 800; }
+  .physics-bars b { color: var(--qx-text); font-size: 13px; }
+  .physics-result { margin: 0; border-radius: 9px; padding: 7px 10px; background: var(--qx-surface-2); color: var(--qx-text-2); font-size: 14.5px; font-weight: 800; }
   .physics-result.success { background: var(--qx-green-soft); color: var(--qx-green-text); }
   .physics-trials { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
   .physics-trials span { display: grid; grid-template-columns: auto auto; gap: 2px 7px; border: 1px solid var(--qx-border-2); border-radius: 9px; padding: 6px 9px; }
-  .physics-trials b { color: var(--qx-accent-text); font-size: 12px; }
-  .physics-trials i { color: var(--qx-text); font-size: 11px; font-style: normal; }
-  .physics-trials small { grid-column: 1 / -1; color: var(--qx-text-faint); font-size: 9px; }
+  .physics-trials b { color: var(--qx-accent-text); font-size: 14.5px; }
+  .physics-trials i { color: var(--qx-text); font-size: 13.5px; font-style: normal; }
+  .physics-trials small { grid-column: 1 / -1; color: var(--qx-text-faint); font-size: 12px; }
   .mass-race { width: min(100%, 560px); display: grid; gap: 8px; border: 1px solid var(--qx-border-2); border-radius: 14px; padding: 10px; background: var(--qx-surface-2); }
   .mass-lane { position: relative; min-height: 88px; overflow: hidden; border-radius: 9px; background: var(--qx-surface); }
-  .mass-lane > strong { position: absolute; left: 10px; top: 35px; color: var(--qx-accent-text); font-size: 12px; }
-  .mass-lane > span { position: absolute; right: 9px; top: 7px; color: var(--qx-text-dim); font-size: 10px; font-weight: 900; }
+  .mass-lane > strong { position: absolute; left: 10px; top: 35px; color: var(--qx-accent-text); font-size: 14.5px; }
+  .mass-lane > span { position: absolute; right: 9px; top: 7px; color: var(--qx-text-dim); font-size: 13px; font-weight: 900; }
   .mass-ground { position: absolute; left: 64px; right: 12px; top: 59px; height: 2px; background: var(--qx-text-faint); }
-  .mass-ground i { position: absolute; left: 7px; bottom: 7px; color: var(--qx-accent-text); font-size: 9px; font-style: normal; font-weight: 900; }
+  .mass-ground i { position: absolute; left: 7px; bottom: 7px; color: var(--qx-accent-text); font-size: 12px; font-style: normal; font-weight: 900; }
   .mass-block { position: absolute; left: 64px; top: 28px; width: var(--mass-width); height: 32px; display: grid; place-items: center; border: 2px solid var(--qx-accent); border-radius: 5px; background: var(--qx-accent-soft); color: var(--qx-accent-text); transition: left .9s cubic-bezier(.55,.05,.92,.45); }
   .mass-block.moved { left: calc(64px + var(--race-travel)); }
-  .mass-block b { font-size: 10px; }
+  .mass-block b { font-size: 13px; }
 </style>
