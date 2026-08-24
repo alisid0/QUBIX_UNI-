@@ -52,7 +52,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
         ]),
         explanation: 'With two clusters the mean lands in the gap, describing a typical case that does not occur. The right answer is to report the two groups, or to find what separates them.'
       }),
-      practice: Object.freeze({ title: 'The Big Sheet of Graphs', href: '/library/big-sheet-of-graphs.html', instruction: 'Find the plates for data on the plane and watch a shape change as its picture changes.' }),
+      practice: Object.freeze({ title: 'The Distribution Desk', href: '?mode=game&mission=distribution-desk', instruction: 'Draw the values at three bin widths and see which features survive all of them.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' }),
         Object.freeze({ label: 'Statistics Canada — statistical units', url: 'https://www150.statcan.gc.ca/n1/pub/11-634-x/2016001/section1/chap3-eng.htm' })
@@ -99,7 +99,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
         ]),
         explanation: 'The mean is sensitive to large values and the median is not, so a mean far above a median is the signature of a long upper tail. For a typical price, the median is the honest figure to quote.'
       }),
-      practice: Object.freeze({ title: 'Units and Measurement', href: '?mode=game&mission=units-measurement', instruction: 'Before summarising anything, confirm the values share a unit: a mean over mixed units is not a number.' }),
+      practice: Object.freeze({ title: 'The Distribution Desk', href: '?mode=game&mission=distribution-desk', instruction: 'Choose a centre and a spread the shape can actually support.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' }),
         Object.freeze({ label: 'NIST — SI units', url: 'https://www.nist.gov/pml/owm/metric-si/si-units' })
@@ -191,7 +191,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
         ]),
         explanation: 'Among 10,000 deliveries, 99 of the 100 late ones are flagged, and 1% of the 9,900 on-time ones gives another 99 false flags. Of 198 flags, about half are genuine.'
       }),
-      practice: Object.freeze({ title: 'Missing Values Are Not Zero', href: '?mode=game&mission=missing-data', instruction: 'Reason from the evidence available rather than the value in front of you: the same habit, applied to absence.' }),
+      practice: Object.freeze({ title: 'The Distribution Desk', href: '?mode=game&mission=distribution-desk', instruction: 'Judge which sentence eight values can support, and which needs more of them.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Government Analysis Function — communicating uncertainty', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/communicating-quality-uncertainty-and-change/' }),
         Object.freeze({ label: 'Statistics Canada — statistical units', url: 'https://www150.statcan.gc.ca/n1/pub/11-634-x/2016001/section1/chap3-eng.htm' })

@@ -19,6 +19,7 @@ import { UNITS_MEASUREMENT_MISSION } from './units-measurement-mission.js';
 import { DATA_LINEAGE_MISSION } from './data-lineage-mission.js';
 import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
 import { SQL_CONSOLE_MISSION } from './sql-console-mission.js';
+import { DISTRIBUTION_DESK_MISSION } from './distribution-desk-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -54,7 +55,10 @@ export const MISSIONS = Object.freeze([
     reading: { chapter: 7, session: 3, label: 'Separating what you found from what you think' } },
   { slug: 'sql-console', mission: SQL_CONSOLE_MISSION, xp: 160,
     teaches: 'Building a query clause by clause, and reading what it did to the grain.',
-    reading: { chapter: 5, session: 1, label: 'Asking a table a question' } }
+    reading: { chapter: 5, session: 1, label: 'Asking a table a question' } },
+  { slug: 'distribution-desk', mission: DISTRIBUTION_DESK_MISSION, xp: 150,
+    teaches: 'Reading the shape of a set of values before choosing a summary for it.',
+    reading: { chapter: 4, session: 1, label: 'Look at the shape before the summary' } }
 ].map(Object.freeze));
 
 export const TOTAL_XP = MISSIONS.reduce((n, m) => n + m.xp, 0);
