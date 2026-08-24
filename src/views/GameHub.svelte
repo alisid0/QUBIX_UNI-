@@ -139,7 +139,7 @@
 </section>
 
 <style>
-  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:auto!important;background:#171510}:global(body){position:static}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}:global(body){position:static}
   .hub{--nav-ink:#f1ede4;--nav-soft:#a89e8d;--nav-rule:rgba(255,255,255,.14);--nav-accent:#c98c5e;
        min-height:100vh;max-width:none;padding:20px clamp(12px,3vw,34px) 60px;color:#f1ede4;
        background:radial-gradient(circle at 40% 0,#3f3428,#171510 58%);overflow:auto}

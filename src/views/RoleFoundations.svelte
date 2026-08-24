@@ -201,7 +201,7 @@
      inside .library, so document.scrollHeight stayed at the viewport height
      and the rest of the contents was reachable only by a nested scrollbar. */
   :global(.qubix-university){height:auto!important;overflow:visible!important}
-  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:auto!important;background:#f4f1ea}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#f4f1ea}
   :global(body){position:static}
 
   .library{--rule:#ddd6c6;--ink:#241f16;--soft:#6d6558;

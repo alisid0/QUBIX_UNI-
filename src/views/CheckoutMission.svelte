@@ -145,6 +145,8 @@
       host.appendChild(renderer.domElement);
 
       controls = new OrbitControls(camera, renderer.domElement);
+      // The page scrolls, so the wheel belongs to the page. Drag still rotates.
+      controls.enableZoom = false;
       controls.enableDamping = true;
       controls.enablePan = false;
       controls.minDistance = 5;
@@ -301,7 +303,7 @@
 
 <style>
   :global(.qubix-university){height:auto!important;overflow:visible!important}
-  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:auto!important;background:#171510}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}
   :global(body){position:static}
   .game-shell{min-height:100vh;max-width:none;padding:18px clamp(14px,3vw,36px) 40px;background:radial-gradient(circle at 50% 0,#3b3023,#171510 56%);overflow:auto;color:#f1ede4}
   header{max-width:1380px;margin:0 auto 14px;display:flex;align-items:center;justify-content:space-between;gap:18px}.identity{display:flex;align-items:center;gap:13px}.role{display:grid;place-items:center;width:48px;height:48px;border-radius:13px;background:#a85a34;color:#fff;font:900 13.5px var(--qx-font);text-align:center}.identity p{margin:0 0 3px;color:#bcb19e;font:800 12px var(--qx-font);letter-spacing:.1em}.identity h1{margin:0;color:#fff;font:700 27px Georgia,serif}nav{display:flex;gap:15px}nav a{color:#e2c7b7;font:800 14.5px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px}.progress{max-width:1380px;height:5px;margin:0 auto 16px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden}.progress span{display:block;height:100%;background:#6bc93f;transition:width .4s ease}

@@ -124,7 +124,7 @@
 
 <style>
   :global(.qubix-university){height:auto!important;overflow:visible!important}
-  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:auto!important;background:#171510}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}
   :global(body){position:static}
   .mission-shell{min-height:100vh;max-width:none;padding:18px clamp(12px,3vw,34px) 30px;background:radial-gradient(circle at 42% 0,#3f3428,#171510 58%);color:#f1ede4}
   header,.progress,main,footer{width:min(1320px,100%);margin-inline:auto}
