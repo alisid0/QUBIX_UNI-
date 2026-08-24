@@ -15,6 +15,8 @@ import { MISSING_DATA_MISSION } from './missing-data-mission.js';
 import { TABLE_GRAIN_MISSION } from './table-grain-mission.js';
 import { DUPLICATE_RECORDS_MISSION } from './duplicate-records-mission.js';
 import { JOIN_GRAIN_MISSION } from './join-grain-mission.js';
+import { UNITS_MEASUREMENT_MISSION } from './units-measurement-mission.js';
+import { DATA_LINEAGE_MISSION } from './data-lineage-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -32,7 +34,11 @@ export const MISSIONS = Object.freeze([
   { slug: 'duplicate-records', mission: DUPLICATE_RECORDS_MISSION, xp: 70,
     teaches: 'Which columns make a row unique, and what a duplicate is.' },
   { slug: 'join-grain', mission: JOIN_GRAIN_MISSION, xp: 90,
-    teaches: 'What a join does to the row before you run it.' }
+    teaches: 'What a join does to the row before you run it.' },
+  { slug: 'data-lineage', mission: DATA_LINEAGE_MISSION, xp: 60,
+    teaches: 'Where a reported number came from, and what changed it.' },
+  { slug: 'units-measurement', mission: UNITS_MEASUREMENT_MISSION, xp: 70,
+    teaches: 'What a value measures, and converting it without losing the original.' }
 ].map(Object.freeze));
 
 export const TOTAL_XP = MISSIONS.reduce((n, m) => n + m.xp, 0);
@@ -43,7 +49,8 @@ export const RANKS = Object.freeze([
   { at: 90, title: 'Pre-Intern', note: 'Can trace a value from event to record.' },
   { at: 220, title: 'Pre-Intern, Data Quality', note: 'Can tell an absence from a zero.' },
   { at: 290, title: 'Pre-Intern, Senior', note: 'Can state a table’s grain.' },
-  { at: TOTAL_XP, title: 'Data Intern', note: 'Can predict what a join does before running it.' }
+  { at: 380, title: 'Pre-Intern, Lead', note: 'Can predict what a join does before running it.' },
+  { at: TOTAL_XP, title: 'Data Intern', note: 'Can trace a number to its source and state its unit.' }
 ].map(Object.freeze));
 
 const blank = () => ({ completed: [], started: null });

@@ -1,5 +1,6 @@
 <script>
   import { partsForChapter, writtenChapters, volumeMinutes } from '../lib/content/shared-foundations.js';
+  import { MISSIONS } from '../lib/game/progress.js';
   const shared = {
     id: 'shared', number: '0', title: 'Shared Foundations', subtitle: 'What every data role should understand before specialising', colour: '#5f7355',
     bookHref: '?mode=game&mission=shared-book',
@@ -91,9 +92,29 @@
 <svelte:head><title>Role Foundations | Qubix University</title><meta name="description" content="Authoring proposal for a book-first shared and role-specific foundations curriculum." /></svelte:head>
 
 <section class="library qx-shell" style={`--volume:${volume.colour}`}>
-  <header><div><p>QUBIX UNIVERSITY · CURRICULUM PROPOSAL · AI_DRAFT</p><h1>Foundations before specialisation.</h1><span>Read in order. Understand the idea. Work one example. Answer from memory. Then continue.</span></div><a href="?mode=game&mission=campaign">Existing mission prototype</a></header>
+  <header><div><p>QUBIX UNIVERSITY · CURRICULUM PROPOSAL · AI_DRAFT</p><h1>Foundations before specialisation.</h1><span>Read in order. Understand the idea. Work one example. Answer from memory. Then continue.</span></div><a href="?mode=game">Play the missions</a></header>
 
-  <section class="principle"><b>ONE CLEAR PATH</b><span>Everyone completes Volume 0.</span><i>→</i><span>Choose a role foundation.</span><i>→</i><span>Build deeper projects later.</span></section>
+  <!-- The games were live but reachable only from a link in the header, on a
+       page that opens with a table of contents. Reading is the slower half of
+       this curriculum and it was the only half with a front door. -->
+  <section class="play">
+    <div class="play-lead">
+      <p>PLAY FIRST · NO READING REQUIRED</p>
+      <h2>{MISSIONS.length} playable missions</h2>
+      <span>Work a shift in the Superstore. Each one is fifteen minutes, keeps your progress, and teaches one idea you can use the same day.</span>
+    </div>
+    <ol class="play-list">
+      {#each MISSIONS as m, i}
+        <li><a href={`?mode=game&mission=${m.slug}`}><b>{String(i + 1).padStart(2, '0')}</b><span>{m.mission.title}</span><em>{m.xp} XP</em></a></li>
+      {/each}
+    </ol>
+    <div class="play-actions">
+      <a class="play-primary" href="?mode=game">Open the academy <span aria-hidden="true">→</span></a>
+      <a class="play-second" href="?mode=game&mission=campaign">Story mode: one connected shift</a>
+    </div>
+  </section>
+
+  <section class="principle"><b>THEN READ</b><span>Everyone completes Volume 0.</span><i>→</i><span>Choose a role foundation.</span><i>→</i><span>Build deeper projects later.</span></section>
 
   <nav aria-label="Foundation volumes">
     <button class:active={selected === 'shared'} on:click={() => selected = 'shared'}><span>0</span><div><b>Shared</b><small>Start here</small></div></button>
@@ -135,7 +156,23 @@
 </section>
 
 <style>
-  :global(.qubix-university){height:auto!important;overflow:visible!important}:global(html),:global(body){overflow:auto;background:#f1ede4}:global(body){position:static}.library{min-height:100vh;max-width:none;padding:25px clamp(12px,4vw,52px) 40px;background:#f1ede4;color:#241f16;overflow:auto}header{max-width:1220px;margin:0 auto 22px;display:flex;align-items:end;justify-content:space-between;gap:20px;border-bottom:1px solid #d8d0be;padding-bottom:19px}header p,.contents-head p{margin:0 0 6px;color:#8c4c2e;font:900 12px var(--qx-font);letter-spacing:.13em}header h1{margin:0;font:700 clamp(31px,5vw,54px) Georgia,serif}header span{display:block;margin-top:8px;color:#625a49;font:650 14.5px var(--qx-font)}header a{color:#8c4c2e;font:850 13px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;white-space:nowrap}.principle{max-width:1180px;margin:0 auto 16px;padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:13px;border-radius:12px;background:#241f16;color:#f1ede4;font:750 13px var(--qx-font)}.principle b{color:#e4a17b;letter-spacing:.1em}.principle i{color:#83bc68;font-style:normal}nav{max-width:1180px;margin:0 auto 18px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}nav button{min-height:65px;padding:9px 11px;display:flex;align-items:center;gap:9px;border:1px solid #d8d0be;border-radius:11px;background:#fff;color:#241f16;text-align:left;cursor:pointer}nav button>span{display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:7px;background:#ece7dc;color:#625a49;font:900 12px var(--qx-font)}nav button div{display:grid;gap:2px}nav b{font:850 12px var(--qx-font)}nav small{color:#756c5c;font:650 11px var(--qx-font)}nav button.active{border:2px solid var(--volume);background:#fbf8f1}nav button.active>span{background:var(--volume);color:#fff}nav button:focus-visible{outline:3px solid var(--volume);outline-offset:2px}main{max-width:1180px;margin:auto;display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}main>aside,.contents{border:1px solid #d8d0be;border-radius:16px;background:#fff;overflow:hidden}main>aside{position:sticky;top:14px;padding:20px}.book{position:relative;min-height:310px;padding:25px;display:flex;flex-direction:column;justify-content:space-between;border-radius:5px 15px 15px 5px;background:var(--volume);color:#fff;box-shadow:inset 8px 0 rgba(0,0,0,.13),6px 8px 0 #ded5c5}.book:after{content:'';position:absolute;left:22px;right:18px;top:60px;height:1px;background:rgba(255,255,255,.4)}.book span{font:900 11.5px var(--qx-font);letter-spacing:.13em}.book b{max-width:180px;font:700 29px/1.05 Georgia,serif}.book i{align-self:flex-end;font:normal 45px Georgia,serif}aside>p{margin:22px 0 9px;font:700 14px/1.45 Georgia,serif}aside>strong{color:#625a49;font:650 13px/1.55 var(--qx-font)}.requires{margin-top:16px;padding:11px;border-left:4px solid var(--volume);background:#f1ede4}.requires b,.requires span{display:block}.requires b{font:900 11.5px var(--qx-font)}.requires span{margin-top:3px;font:700 12px var(--qx-font)}.contents{padding:22px}.contents-head{display:flex;align-items:end;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid #d8d0be}.contents-head h2{margin:0;font:700 27px Georgia,serif}.contents ol{list-style:none;margin:0;padding:0}.contents li{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:13px;padding:17px 4px;border-bottom:1px solid #e4ddce}.contents li>span{color:var(--volume);font:900 13.5px var(--qx-font)}.contents h3{margin:0 0 4px;font:700 17px Georgia,serif}.contents li p{margin:0;color:#625a49;font:650 12px/1.45 var(--qx-font)}.contents em{color:#8c4c2e;font:850 11px var(--qx-font);letter-spacing:.07em;white-space:nowrap}
+  :global(.qubix-university){height:auto!important;overflow:visible!important}:global(html),:global(body){overflow:auto;background:#f1ede4}:global(body){position:static}.library{min-height:100vh;max-width:none;padding:25px clamp(12px,4vw,52px) 40px;background:#f1ede4;color:#241f16;overflow:auto}header{max-width:1220px;margin:0 auto 22px;display:flex;align-items:end;justify-content:space-between;gap:20px;border-bottom:1px solid #d8d0be;padding-bottom:19px}header p,.contents-head p{margin:0 0 6px;color:#8c4c2e;font:900 12px var(--qx-font);letter-spacing:.13em}header h1{margin:0;font:700 clamp(31px,5vw,54px) Georgia,serif}header span{display:block;margin-top:8px;color:#625a49;font:650 14.5px var(--qx-font)}header a{color:#8c4c2e;font:850 13px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;white-space:nowrap}.principle{max-width:1180px;margin:0 auto 16px;padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:13px;border-radius:12px;background:#241f16;color:#f1ede4;font:750 13px var(--qx-font)}.principle b{color:#e4a17b;letter-spacing:.1em}
+  .play{max-width:1180px;margin:0 auto 16px;padding:24px clamp(16px,3vw,28px);border-radius:16px;background:#241f16;color:#f1ede4;display:grid;gap:18px}
+  .play-lead p{margin:0 0 7px;color:#e4a17b;font:900 12px var(--qx-font);letter-spacing:.13em}
+  .play-lead h2{margin:0;font:700 clamp(25px,3.4vw,34px) Georgia,serif;color:#fff}
+  .play-lead span{display:block;margin-top:8px;max-width:62ch;color:#bcb19e;font:650 14.5px/1.5 var(--qx-font)}
+  .play-list{list-style:none;margin:0;padding:0;display:grid;gap:7px;grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
+  .play-list a{display:flex;align-items:center;gap:11px;padding:12px 14px;border:1px solid rgba(255,255,255,.15);border-radius:11px;background:rgba(255,255,255,.05);color:#f1ede4;text-decoration:none}
+  .play-list a:hover{background:rgba(255,255,255,.12);border-color:#e4a17b}
+  .play-list a:focus-visible{outline:3px solid #e4a17b;outline-offset:2px}
+  .play-list b{flex:none;color:#8d8474;font:900 13px var(--qx-font);font-variant-numeric:tabular-nums}
+  .play-list span{flex:1;min-width:0;font:750 14px var(--qx-font)}
+  .play-list em{flex:none;color:#e4a17b;font:900 12px var(--qx-font);font-style:normal}
+  .play-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
+  .play-primary{padding:13px 22px;border-radius:11px;background:#e4a17b;color:#241f16;text-decoration:none;font:900 14px var(--qx-font)}
+  .play-primary:hover{background:#fff}
+  .play-second{color:#bcb19e;font:750 13px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+  .play-primary:focus-visible,.play-second:focus-visible{outline:3px solid #e4a17b;outline-offset:3px}.principle i{color:#83bc68;font-style:normal}nav{max-width:1180px;margin:0 auto 18px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}nav button{min-height:65px;padding:9px 11px;display:flex;align-items:center;gap:9px;border:1px solid #d8d0be;border-radius:11px;background:#fff;color:#241f16;text-align:left;cursor:pointer}nav button>span{display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:7px;background:#ece7dc;color:#625a49;font:900 12px var(--qx-font)}nav button div{display:grid;gap:2px}nav b{font:850 12px var(--qx-font)}nav small{color:#756c5c;font:650 11px var(--qx-font)}nav button.active{border:2px solid var(--volume);background:#fbf8f1}nav button.active>span{background:var(--volume);color:#fff}nav button:focus-visible{outline:3px solid var(--volume);outline-offset:2px}main{max-width:1180px;margin:auto;display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}main>aside,.contents{border:1px solid #d8d0be;border-radius:16px;background:#fff;overflow:hidden}main>aside{position:sticky;top:14px;padding:20px}.book{position:relative;min-height:310px;padding:25px;display:flex;flex-direction:column;justify-content:space-between;border-radius:5px 15px 15px 5px;background:var(--volume);color:#fff;box-shadow:inset 8px 0 rgba(0,0,0,.13),6px 8px 0 #ded5c5}.book:after{content:'';position:absolute;left:22px;right:18px;top:60px;height:1px;background:rgba(255,255,255,.4)}.book span{font:900 11.5px var(--qx-font);letter-spacing:.13em}.book b{max-width:180px;font:700 29px/1.05 Georgia,serif}.book i{align-self:flex-end;font:normal 45px Georgia,serif}aside>p{margin:22px 0 9px;font:700 14px/1.45 Georgia,serif}aside>strong{color:#625a49;font:650 13px/1.55 var(--qx-font)}.requires{margin-top:16px;padding:11px;border-left:4px solid var(--volume);background:#f1ede4}.requires b,.requires span{display:block}.requires b{font:900 11.5px var(--qx-font)}.requires span{margin-top:3px;font:700 12px var(--qx-font)}.contents{padding:22px}.contents-head{display:flex;align-items:end;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid #d8d0be}.contents-head h2{margin:0;font:700 27px Georgia,serif}.contents ol{list-style:none;margin:0;padding:0}.contents li{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:13px;padding:17px 4px;border-bottom:1px solid #e4ddce}.contents li>span{color:var(--volume);font:900 13.5px var(--qx-font)}.contents h3{margin:0 0 4px;font:700 17px Georgia,serif}.contents li p{margin:0;color:#625a49;font:650 12px/1.45 var(--qx-font)}.contents em{color:#8c4c2e;font:850 11px var(--qx-font);letter-spacing:.07em;white-space:nowrap}
   .contents li.planned{opacity:.62}
   .contents li>div{min-width:0}
   .parts{list-style:none;margin:11px 0 0;padding:0;display:grid;gap:5px}

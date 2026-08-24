@@ -1,7 +1,8 @@
 <script>
   import PixelAsset from '../lib/components/game/PixelAsset.svelte';
   import { DATA_LINEAGE_MISSION, completedLineage } from '../lib/game/data-lineage-mission.js';
-
+
+  import { recordCompletion } from '../lib/game/progress.js';
   let stepIndex = 0;
   let selected = '';
   let checked = false;
@@ -38,6 +39,9 @@
     correct = false;
     missionComplete = false;
   }
+
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (missionComplete) recordCompletion('data-lineage');
 </script>
 
 <svelte:head><title>Trace the Number | Qubix University</title><meta name="description" content="Authoring-only Qubix data-lineage mission prototype." /></svelte:head>

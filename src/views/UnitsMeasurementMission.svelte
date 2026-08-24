@@ -1,5 +1,6 @@
 <script>
-  import {UNIT_DECISIONS,UNITS_MEASUREMENT_MISSION,answerForUnitCase,auditEntry} from '../lib/game/units-measurement-mission.js';
+  import {UNIT_DECISIONS,UNITS_MEASUREMENT_MISSION,answerForUnitCase,auditEntry} from '../lib/game/units-measurement-mission.js';
+  import { recordCompletion } from '../lib/game/progress.js';
   const steps=['dimension','value','decision'];
   let caseIndex=0,step='dimension',selected='',checked=false,correct=false,completed=[];
   $: caseRecord=UNITS_MEASUREMENT_MISSION.cases[caseIndex]; $: missionComplete=completed.length===UNITS_MEASUREMENT_MISSION.cases.length; $: stepIndex=steps.indexOf(step);
@@ -12,6 +13,9 @@
   function advance(){if(!correct)return;if(stepIndex<steps.length-1){step=steps[stepIndex+1];selected='';checked=false;correct=false;return}completed=[...completed,audit];caseIndex+=1;step='dimension';selected='';checked=false;correct=false}
   function resetMission(){caseIndex=0;step='dimension';selected='';checked=false;correct=false;completed=[]}
   function explanation(){return step==='dimension'?caseRecord.dimensionExplanation:step==='value'?caseRecord.valueExplanation:caseRecord.decisionExplanation}
+
+  // Remembered, so the hub knows and closing the tab does not undo it.
+  $: if (missionComplete) recordCompletion('units-measurement');
 </script>
 <svelte:head><title>Units and Measurement | Qubix University</title><meta name="description" content="Local AI draft of a Qubix Superstore measurement-unit data quality mission." /></svelte:head>
 <section class="mission-shell qx-shell"><header><div class="identity"><span class="role">PRE<br/>INTERN</span><div><p>{UNITS_MEASUREMENT_MISSION.id} · {UNITS_MEASUREMENT_MISSION.status}</p><h1>{UNITS_MEASUREMENT_MISSION.title}</h1></div></div><nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=duplicate-records">Mission 005</a><a href="?mode=wiki">Library</a></nav></header><div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>

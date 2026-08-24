@@ -5,7 +5,7 @@ export const UNIT_DECISIONS = Object.freeze([
 ]);
 
 export const UNITS_MEASUREMENT_MISSION = Object.freeze({
-  id: 'MISSION 006', status: 'AI_DRAFT', role: 'PRE-INTERN', title: 'Units and Measurement',
+  id: 'MISSION 008', status: 'AI_DRAFT', role: 'PRE-INTERN', title: 'Units and Measurement',
   competency: 'Check that a value and unit describe the required quantity, convert compatible units, and retain the original measurement in an audit trail.',
   sources: Object.freeze([
     Object.freeze({ label: 'BIPM — The International System of Units (9th edition)', url: 'https://www.bipm.org/en/publications/si-brochure/' }),
