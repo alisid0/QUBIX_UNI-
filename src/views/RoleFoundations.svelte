@@ -1,5 +1,5 @@
 <script>
-  import { SHARED_FOUNDATIONS_PART_ONE as book } from '../lib/content/shared-foundations-part-one.js';
+  import { partsForChapter, writtenChapters, volumeMinutes } from '../lib/content/shared-foundations.js';
   const shared = {
     id: 'shared', number: '0', title: 'Shared Foundations', subtitle: 'What every data role should understand before specialising', colour: '#5f7355',
     bookHref: '?mode=game&mission=shared-book',
@@ -78,18 +78,14 @@
   let selected = roles.some(role => role.id === requestedRole) ? requestedRole : 'shared';
   $: volume = selected === 'shared' ? shared : roles.find(role => role.id === selected);
 
-  // Part One of Volume 0 is chapter 01, and its four sessions are that
-  // chapter's parts. Everything else in every volume is still unwritten, and
-  // says so rather than offering a button that goes nowhere.
-  const parts = book.sessions.map((s, i) => ({
-    n: i + 1, title: s.title, minutes: s.studyMinutes + s.playMinutes
-  }));
-  const partsFor = (v, chapterIndex) => (v.id === 'shared' && chapterIndex === 0 ? parts : []);
+  // Asked, not hardcoded. A chapter becomes clickable here by being added to
+  // the registry, which is the only place that knows what exists.
+  const partsFor = (v, chapterIndex) => (v.id === 'shared' ? partsForChapter(chapterIndex + 1) : []);
 
   const minutes = m => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`);
   // Read from the book rather than typed here, so the two cannot disagree.
-  $: readingTime = minutes(book.totalMinutes);
-  $: written = volume.chapters.filter((_, i) => partsFor(volume, i).length).length;
+  $: readingTime = minutes(volumeMinutes);
+  $: written = volume.id === 'shared' ? writtenChapters : 0;
 </script>
 
 <svelte:head><title>Role Foundations | Qubix University</title><meta name="description" content="Authoring proposal for a book-first shared and role-specific foundations curriculum." /></svelte:head>
@@ -120,12 +116,12 @@
                    Before this the whole volume had one button and no chapter
                    had any, so there was no way to reach a chapter directly. -->
               <ul class="parts">{#each part as session}
-                <li><a href={`${volume.bookHref}&session=${session.n}`}>{session.n}. {session.title}<em>{minutes(session.minutes)}</em></a></li>
+                <li><a href={`${volume.bookHref}&chapter=${index + 1}&session=${session.n}`}>{session.n}. {session.title}<em>{minutes(session.minutes)}</em></a></li>
               {/each}</ul>
             {/if}
           </div>
           {#if part.length}
-            <a class="open" href={`${volume.bookHref}&session=1`}>Read <span aria-hidden="true">→</span></a>
+            <a class="open" href={`${volume.bookHref}&chapter=${index + 1}&session=1`}>Read <span aria-hidden="true">→</span></a>
           {:else}
             <em class="soon">Not written yet</em>
           {/if}

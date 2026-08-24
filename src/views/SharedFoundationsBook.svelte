@@ -1,8 +1,15 @@
 <script>
   import { onMount } from 'svelte';
-  import { SHARED_FOUNDATIONS_PART_ONE as book } from '../lib/content/shared-foundations-part-one.js';
+  import { bookForChapter } from '../lib/content/shared-foundations.js';
 
-  const storageKey = 'qubix-shared-foundations-part-one-v1';
+  // Which chapter of Volume 0 to read. The contents page links here with both
+  // numbers; asking for a chapter that is not written yet falls back to the
+  // first, so a stale link opens something rather than nothing.
+  const asked = Number(new URLSearchParams(window.location.search).get('chapter'));
+  const book = bookForChapter(Number.isInteger(asked) ? asked : 1) || bookForChapter(1);
+
+  // Progress is kept per chapter, so finishing chapter 1 does not mark chapter 2.
+  const storageKey = `qubix-shared-foundations-${book.id}-v1`;
   let activeIndex = 0;
   let selectedAnswers = {};
   let checkedAnswers = {};
@@ -87,7 +94,7 @@
 
 <svelte:head>
   <title>{book.title} | Qubix University</title>
-  <meta name="description" content="The first guided study block of Qubix University Shared Foundations." />
+  <meta name="description" content={`${book.subtitle} of Qubix University Shared Foundations.`} />
 </svelte:head>
 
 <div class="reader qx-shell">
@@ -99,10 +106,10 @@
 
   <div class="layout">
     <aside class="toc">
-      <p>VOLUME 0 · PART ONE</p>
+      <p>{book.subtitle.toUpperCase()}</p>
       <h1>{book.title}</h1>
       <span>{book.subtitle}</span>
-      <div class="time"><small>EXPECTED TIME FOR PART ONE</small><b>3 h 55 min</b><small>Your pace may vary</small></div>
+      <div class="time"><small>EXPECTED TIME FOR THIS PART</small><b>{formatTime(book.totalMinutes)}</b><small>Your pace may vary</small></div>
       <nav aria-label="Book sessions">
         {#each book.sessions as item, index}
           <button class:active={activeIndex === index} on:click={() => openSession(index)}>
@@ -117,7 +124,7 @@
 
     <main>
       {#if partComplete}
-        <section class="complete-banner"><span>PART ONE COMPLETE</span><b>You have finished the first four sessions.</b><p>This is saved progress in an authoring draft. It is not a certificate or a released qualification.</p></section>
+        <section class="complete-banner"><span>{book.subtitle.toUpperCase()} COMPLETE</span><b>You have finished all {book.sessions.length} sessions of this part.</b><p>This is saved progress in an authoring draft. It is not a certificate or a released qualification.</p></section>
       {/if}
 
       <article>
