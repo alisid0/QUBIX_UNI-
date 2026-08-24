@@ -94,7 +94,7 @@ console.log('');
 // written for other chapters has no game of its own, and this says so by name
 // instead of letting it look covered.
 const { MISSIONS } = await import('../src/lib/game/progress.js');
-const OWN = { 4: 'distribution-desk', 5: 'sql-console' };  // chapters with a mission written for them
+const OWN = { 4: 'distribution-desk', 5: 'sql-console', 6: 'python-trace' };  // chapters with a mission written for them
 console.log('reading and playing\n');
 let owned = 0;
 for (const { chapter, book } of SHARED_FOUNDATIONS) {

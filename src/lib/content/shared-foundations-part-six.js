@@ -100,7 +100,7 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
         ]),
         explanation: 'Declaring the accumulator inside the loop resets it on every pass, so the final answer reflects only the last row. Accumulators belong outside the loop that fills them.'
       }),
-      practice: Object.freeze({ title: 'Missing Values Are Not Zero', href: '?mode=game&mission=missing-data', instruction: 'Decide what a rule should do when the value it needs is absent, before the rule meets real data.' }),
+      practice: Object.freeze({ title: 'Read the Program', href: '?mode=game&mission=python-trace', instruction: 'Predict what the loop leaves in each name, then step through it one line at a time and watch the values move.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Python — the tutorial', url: 'https://docs.python.org/3/tutorial/index.html' }),
         Object.freeze({ label: 'Python — control flow tools', url: 'https://docs.python.org/3/tutorial/controlflow.html' })
@@ -193,7 +193,7 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
         ]),
         explanation: 'A numeric column arriving as text usually means some rows are not numeric: a blank, a dash, a footnote marker or a thousands separator. Those rows are the information, and converting blindly discards it.'
       }),
-      practice: Object.freeze({ title: 'What Does One Row Represent?', href: '?mode=game&mission=table-grain', instruction: 'A list of dictionaries is still a table: state its grain before operating on it.' }),
+      practice: Object.freeze({ title: 'Read the Program', href: '?mode=game&mission=python-trace', instruction: 'A list of dictionaries is still a table: trace a loop that sums one field, and read its grain off the code.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Python — data structures', url: 'https://docs.python.org/3/tutorial/datastructures.html' }),
         Object.freeze({ label: 'Python — reading and writing files', url: 'https://docs.python.org/3/tutorial/inputoutput.html' })

@@ -20,6 +20,7 @@ import { DATA_LINEAGE_MISSION } from './data-lineage-mission.js';
 import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
 import { SQL_CONSOLE_MISSION } from './sql-console-mission.js';
 import { DISTRIBUTION_DESK_MISSION } from './distribution-desk-mission.js';
+import { PYTHON_TRACE_MISSION } from './python-trace-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -58,7 +59,10 @@ export const MISSIONS = Object.freeze([
     reading: { chapter: 5, session: 1, label: 'Asking a table a question' } },
   { slug: 'distribution-desk', mission: DISTRIBUTION_DESK_MISSION, xp: 150,
     teaches: 'Reading the shape of a set of values before choosing a summary for it.',
-    reading: { chapter: 4, session: 1, label: 'Look at the shape before the summary' } }
+    reading: { chapter: 4, session: 1, label: 'Look at the shape before the summary' } },
+  { slug: 'python-trace', mission: PYTHON_TRACE_MISSION, xp: 170,
+    teaches: 'Predicting what a program leaves in each name, then stepping through to see it happen.',
+    reading: { chapter: 6, session: 1, label: 'Telling a machine what to do' } }
 ].map(Object.freeze));
 
 export const TOTAL_XP = MISSIONS.reduce((n, m) => n + m.xp, 0);
