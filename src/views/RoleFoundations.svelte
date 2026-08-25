@@ -200,6 +200,7 @@
             {/each}
           </ol>
           <div class="also">
+            <a href="?mode=game&mission=store">The Superstore floor · every mission in its room</a>
             <a href="?mode=game">The academy · progress and ranks</a>
             <a href="?mode=game&mission=campaign">Story mode · the connected draft</a>
             <a href="?mode=game&mission=role-game">Role games · plans, not built yet</a>
