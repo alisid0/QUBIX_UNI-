@@ -303,7 +303,7 @@
   .rehearsal .lead, .rehearsal .closing { color: #4f493e; font: 600 13.5px/1.55 var(--qx-font); margin: 0; }
   .rehearsal .closing { margin-top: 16px; padding-top: 14px; border-top: 1px solid #ddd4c0; }
   .rehearsal article { margin-top: 14px; padding: 14px 15px; border: 1px solid #ddd4c0; border-radius: 10px; background: #fffdf8; }
-  .rehearsal pre { margin: 0 0 12px; padding: 12px 14px; border-radius: 9px; background: #0d1116; color: #cfe0ea;
+  .rehearsal pre { margin: 0 0 12px; padding: 12px 14px; border-radius: 9px; background: #16120d; color: #eaddcf;
                    font: 600 13px/1.65 ui-monospace, "SF Mono", Menlo, Consolas, monospace; overflow-x: auto; }
   .rehearsal dl { display: grid; gap: 6px; margin: 0 0 12px; }
   .rehearsal dl div { display: grid; grid-template-columns: minmax(120px, 34%) 1fr; gap: 10px; align-items: baseline; }

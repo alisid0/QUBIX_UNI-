@@ -177,7 +177,7 @@
   :global(body){position:static}
 
   .mission-shell{min-height:100vh;max-width:none;padding:18px clamp(12px,3vw,34px) 40px;color:#f1ede4;
-                 background:radial-gradient(circle at 42% 0,#33402f,#171510 58%)}
+                 background:radial-gradient(circle at 42% 0,#3f3428,#171510 58%)}
   header{max-width:1320px;margin:0 auto 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .identity{display:flex;align-items:center;gap:12px}
   .role{display:grid;place-items:center;width:48px;height:48px;border-radius:13px;background:#5f7355;color:#fff;font:900 12px var(--qx-font)}

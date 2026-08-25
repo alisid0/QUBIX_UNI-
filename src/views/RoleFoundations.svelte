@@ -282,12 +282,12 @@
      container, so document.scrollHeight stayed at the viewport height and the
      rest of the page was reachable only by a nested scrollbar. */
   :global(.qubix-university){height:auto!important;overflow:visible!important}
-  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#f4f1ea}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#f1ede4}
   :global(body){position:static}
 
   .landing{--rule:#ddd6c6;--ink:#241f16;--soft:#6d6558;--accent:#5f7355;
            min-height:100vh;max-width:none;padding:0 clamp(16px,5vw,40px) 72px;
-           background:#f4f1ea;color:var(--ink)}
+           background:#f1ede4;color:var(--ink)}
   .landing>*{max-width:860px;margin-inline:auto}
 
   header{padding:60px 0 30px}
@@ -304,7 +304,7 @@
   .journey{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
   .journey li{position:relative;padding:26px 16px 0 0}
   .journey li::before{content:'';position:absolute;top:7px;left:0;width:11px;height:11px;border-radius:50%;
-                      border:2px solid var(--rule);background:#f4f1ea}
+                      border:2px solid var(--rule);background:#f1ede4}
   .journey li::after{content:'';position:absolute;top:12px;left:11px;right:0;height:1px;background:var(--rule)}
   .journey li:last-child::after{display:none}
   .journey li.here::before{border-color:var(--accent);background:var(--accent)}

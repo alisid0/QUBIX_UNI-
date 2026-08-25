@@ -209,7 +209,7 @@
   .warn{padding:3px 9px;border-radius:14px;background:#f6ddd8;color:#912c1e;font:850 12px var(--qx-font);font-style:normal}
   .key{display:inline-flex;align-items:center;gap:6px;color:#625a49;font:700 12px var(--qx-font)}
   .key i{width:18px;height:0;border-top:2.4px solid #a85a34}
-  .key i.dash{border-top-style:dashed;border-color:#397f86}
+  .key i.dash{border-top-style:dashed;border-color:#866239}
   aside{padding:clamp(18px,2.4vw,26px)}
   .steps{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
   .steps span{padding:5px 10px;border-radius:14px;background:#e6dfd0;color:#8a8172;font:900 11px var(--qx-font);letter-spacing:.06em}

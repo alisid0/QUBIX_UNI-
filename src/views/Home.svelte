@@ -303,15 +303,15 @@
 
   }
 
-  .library-link:hover { border-color: #10796e; }
+  .library-link:hover { border-color: #794810; }
 
-  .library-link:focus-visible { outline: 2px solid #10796e; outline-offset: 3px; }
+  .library-link:focus-visible { outline: 2px solid #794810; outline-offset: 3px; }
 
   .library-kick {
 
     display: block; font-size: 13.5px; letter-spacing: .13em; text-transform: uppercase;
 
-    color: #10796e; font-weight: 700; margin-bottom: 6px;
+    color: #794810; font-weight: 700; margin-bottom: 6px;
 
   }
 

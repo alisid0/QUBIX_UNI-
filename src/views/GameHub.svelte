@@ -142,7 +142,7 @@
   :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}:global(body){position:static}
   .hub{--nav-ink:#f1ede4;--nav-soft:#a89e8d;--nav-rule:rgba(255,255,255,.14);--nav-accent:#c98c5e;
        min-height:100vh;max-width:none;padding:20px clamp(12px,3vw,34px) 60px;color:#f1ede4;
-       background:radial-gradient(circle at 40% 0,#3f3428,#171510 58%);overflow:auto}
+       background:radial-gradient(circle at 42% 0,#3f3428,#171510 58%);overflow:auto}
   :global(.hub .site),:global(.hub .site-foot){max-width:1080px;margin-inline:auto}
   header{max-width:1080px;margin:0 auto 26px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
   .identity{display:flex;align-items:center;gap:13px;min-width:0}

@@ -68,6 +68,43 @@
   --qx-danger-text: #A02D1D;
 
   --qx-shadow-card: 0 10px 22px -10px rgba(36,31,22,0.16);
+
+  /* ── Workbench ──────────────────────────────────────────────────────────
+     The dark side of the same paper: the surfaces you work on rather than read.
+     Missions, the academy, the campaign.
+
+     Deliberately not the [data-qx-theme="dark"] block below. That one is a
+     theme override, and a mission is dark whichever theme the reader chose, so
+     it needs tokens that are always available.
+
+     These exist because the missions had drifted into four different dark
+     backgrounds (#171510, #151515, #10191a, #0f1216) and five different accents
+     across screens meant to read as one product. Every hue here is the Qubix
+     terracotta over a warm near-black, lifted enough to hold contrast on it. */
+  --qx-ink: #171510;             /* the workbench itself */
+  --qx-ink-rise: #241f16;        /* the lift behind a mission header */
+  --qx-ink-panel: #1f1c15;       /* a panel sitting on the workbench */
+  --qx-ink-well: #100e0a;        /* a recess: code, terminals, output */
+  --qx-ink-line: rgba(255, 255, 255, 0.11);
+  --qx-ink-line-2: rgba(255, 255, 255, 0.18);
+
+  --qx-ink-text: #ece7dc;
+  --qx-ink-text-2: #a89e8d;
+  --qx-ink-text-dim: #766d5b;
+
+  --qx-ink-accent: #c77e61;      /* terracotta, lifted to carry on near-black */
+  --qx-ink-accent-2: #a85a34;    /* the same terracotta the light surfaces use */
+  --qx-ink-accent-soft: rgba(199, 126, 97, 0.16);
+
+  /* Judgement colours, shared so right and wrong never change between missions. */
+  --qx-ink-good: #9fd0b4;
+  --qx-ink-bad: #f0a99e;
+
+  /* The slip a decision is made on: paper, laid on the workbench. */
+  --qx-slip: #f1ede4;
+  --qx-slip-ink: #25231f;
+  --qx-slip-dim: #625a49;
+  --qx-slip-line: #d8d0be;
 }
 
 /* ── Dark — Ink background, Canvas-warm text; accents lightened ── */

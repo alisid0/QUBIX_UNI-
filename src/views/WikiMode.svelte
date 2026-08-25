@@ -235,7 +235,7 @@
 </div>
 
 <style>
-  :global(html), :global(body) { overflow: hidden; }
+  :global(html), :global(body) { overflow: hidden; background: #f1ede4; }
   :global(body::before), :global(body::after) { display: none; }
   .wiki-shell { --ink:#221f1a; --paper:#f4f0e8; --card:#fbf9f4; --clay:#a85836; --olive:#67704b; --line:#d8d1c3; height:100%; display:grid; grid-template:72px 1fr / 258px 1fr; color:var(--ink); background:var(--paper); font-family:var(--qx-font); }
   button, input { font:inherit; }
