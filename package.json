@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/check-chapters.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-assets.mjs && npm run build:library && node scripts/build-pilot.mjs",
+    "prebuild": "node scripts/check-chapters.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-assets.mjs && npm run build:library && node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -29,7 +29,8 @@
     "check:rehearsals": "node scripts/check-rehearsals.mjs",
     "check:rates": "node scripts/check-rates.mjs",
     "check:palette": "node scripts/check-palette.mjs",
-    "check:map": "node scripts/check-store-map.mjs"
+    "check:map": "node scripts/check-store-map.mjs",
+    "check:figures": "node scripts/check-figures.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

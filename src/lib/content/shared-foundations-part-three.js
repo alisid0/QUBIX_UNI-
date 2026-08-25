@@ -39,6 +39,12 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
         Object.freeze(['returned_units', 'return window still open', 'pending: expected, do not treat as zero']),
         Object.freeze(['customer_age', 'policy: never collected in store', 'not collected: stop asking for it'])
       ]) }),
+      figure: Object.freeze({
+        kind: 'absence',
+        cases: Object.freeze(['returns-zero', 'stock-unknown', 'pickup-distance', 'invoice-pending', 'age-not-collected']),
+        caption: 'Figure 1 · Five cells, one measurement',
+        note: 'Read straight off mission 003. Four of these are blank and one is a zero, and no amount of staring at the column tells them apart: the difference lives in the operational record, not in the cell.'
+      }),
       rehearsal: Object.freeze({
         mission: 'missing-data',
         lead: 'Both of these cells are waiting in the mission at the end of this session. Decide them here first, so the mission is a second look rather than a first.',

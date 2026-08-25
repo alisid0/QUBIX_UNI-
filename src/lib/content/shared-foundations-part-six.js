@@ -84,6 +84,11 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
         Object.freeze(['if value is None', 'skipped = skipped + 1', 'absence is handled, not compared']),
         Object.freeze(['elif value > −18', 'kept = kept + 1', 'the actual decision'])
       ]) }),
+      figure: Object.freeze({
+        kind: 'trace', case: 'accumulate', name: 'total',
+        caption: 'Figure 1 · What total holds, pass by pass',
+        note: 'Taken from running the program rather than from reading it. total is set to 0 once before the loop and keeps its value between passes. Move that line inside the loop and every bar here would be the basket for that pass alone.'
+      }),
       rehearsal: Object.freeze({
         mission: 'python-trace',
         lead: 'Two of the six programs in the mission at the end of this session are printed here. They differ by one line, and that line is the whole lesson of this chapter.',

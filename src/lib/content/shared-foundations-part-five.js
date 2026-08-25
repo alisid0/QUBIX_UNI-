@@ -37,6 +37,16 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         Object.freeze(['SELECT sale_id, branch_id', 'chooses columns', 'same rows, fewer columns']),
         Object.freeze(['ORDER BY basket_total DESC', 'arranges', 'presentation only'])
       ]) }),
+      figure: Object.freeze({
+        kind: 'query',
+        stages: Object.freeze([
+          Object.freeze({ clause: 'FROM sales' }),
+          Object.freeze({ clause: 'WHERE basket_total > 20', where: 'over20' }),
+          Object.freeze({ clause: 'GROUP BY branch_id', where: 'over20', groupBy: 'branch' })
+        ]),
+        caption: 'Figure 1 · What each clause does to a row',
+        note: 'Every count here is the SQL Console actually running that clause over the same twelve sales. Filtering removes rows and leaves each one meaning a sale. Grouping replaces them, and one row now means a branch.'
+      }),
       rehearsal: Object.freeze({
         mission: 'sql-console',
         lead: 'The first task in the console at the end of this session is below. The console runs your clause against twelve real sales rows, so decide the clause here and you will already know what the result should be.',
