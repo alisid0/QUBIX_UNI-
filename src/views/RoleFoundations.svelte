@@ -122,15 +122,18 @@
       </article>
     </div>
     <p class="switch-note"><b>Switch at any time.</b> Every reading session points to practice, and every academy mission links back to the chapter behind it.</p>
-    <div class="start-actions">
-      <a href="?mode=game">Browse all {MISSIONS.length} missions</a>
-      <a href="?mode=game&mission=campaign">Open story mode</a>
-    </div>
+    <!-- One list, not two. A "browse all missions" link sitting directly above a
+         disclosure containing all the missions was the same twelve destinations
+         offered twice, a few pixels apart. -->
     <details class="all-missions">
       <summary>All {MISSIONS.length} missions</summary>
       <ol>{#each MISSIONS as m, i}
         <li><a href={`?mode=game&mission=${m.slug}`}><b>{String(i + 1).padStart(2, '0')}</b><span>{m.mission.title}</span><em>{m.xp} XP</em></a></li>
       {/each}</ol>
+      <div class="start-actions">
+        <a href="?mode=game">Open the academy</a>
+        <a href="?mode=game&mission=campaign">Open story mode</a>
+      </div>
     </details>
   </section>
 
@@ -192,7 +195,7 @@
 
   <p class="rule">Everyone completes Volume 0, then a role foundation, then deeper projects. Every chapter: explain one idea · show one worked example · ask one focused question · recall it later.</p>
 
-  <SiteFooter />
+  <SiteFooter compact />
 </section>
 
 <style>
@@ -226,7 +229,7 @@
   .mode-cards a.primary{padding:10px 16px;font-size:14px}
   .switch-note{margin:0;max-width:68ch;color:var(--soft);font:400 14px/1.55 var(--qx-font)}
   .switch-note b{color:var(--ink);font-weight:700}
-  .start-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .start-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--rule)}
   a.primary{display:inline-block;padding:12px 22px;border-radius:6px;background:var(--volume);color:#fff;
             text-decoration:none;font:600 15px var(--qx-font);white-space:nowrap}
   a.primary:hover{background:var(--ink)}
@@ -235,7 +238,8 @@
 
   details summary{cursor:pointer;min-height:24px;list-style:none}
   details summary::-webkit-details-marker{display:none}
-  .all-missions>summary{color:var(--soft);font:500 15px var(--qx-font)}
+  .all-missions{margin-top:22px}
+  .all-missions>summary{display:block;padding:0;color:var(--soft);font:500 15px var(--qx-font)}
   .all-missions>summary::before{content:'+ ';color:var(--volume)}
   .all-missions[open]>summary::before{content:'– '}
   .all-missions ol{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule)}
@@ -261,8 +265,11 @@
   ol.contents{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
   ol.contents>li{border-bottom:1px solid var(--rule)}
   ol.contents>li.planned{color:var(--soft)}
-  summary,.row{display:grid;grid-template-columns:34px 1fr auto;align-items:baseline;gap:16px;padding:18px 0}
-  summary:hover .name b{color:var(--volume)}
+  /* Scoped to the contents list. Unscoped, this three-column grid also caught
+     the missions disclosure above and pushed its marker a column away from its
+     own label. */
+  ol.contents summary,.row{display:grid;grid-template-columns:34px 1fr auto;align-items:baseline;gap:16px;padding:18px 0}
+  ol.contents summary:hover .name b{color:var(--volume)}
   .num{color:var(--soft);font:500 14px var(--qx-font);font-variant-numeric:tabular-nums}
   .name b{display:block;font:400 19px Georgia,serif}
   .name em{display:block;margin-top:5px;color:var(--soft);font:400 14.5px/1.5 var(--qx-font);font-style:normal}
@@ -280,7 +287,7 @@
   .companion p{margin:0 0 10px;color:var(--volume);font:700 12px var(--qx-font);letter-spacing:.12em}
   .companion h3{margin:0;font:400 22px Georgia,serif}
   .companion span{display:block;margin-top:8px;max-width:56ch;color:var(--soft);font:400 15px/1.55 var(--qx-font)}
-  .companion a{display:inline-block;margin-top:14px;color:var(--volume);font:600 15px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;white-space:nowrap}
+  .companion a{display:inline-flex;align-items:baseline;gap:.4em;width:max-content;margin-top:14px;color:var(--volume);font:600 15px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;white-space:nowrap}
 
   .outcome{margin:24px 0 0;max-width:62ch;color:var(--soft);font:400 15px/1.6 var(--qx-font)}
 

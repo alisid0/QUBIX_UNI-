@@ -153,6 +153,29 @@
           <div class="table-wrap"><table><thead><tr>{#each session.example.headers as header}<th>{header}</th>{/each}</tr></thead><tbody>{#each session.example.rows as row}<tr>{#each row as cell}<td>{cell}</td>{/each}</tr>{/each}</tbody></table></div>
         </section>
 
+        {#if session.rehearsal}
+          <!-- The cases here are lifted out of the mission this session points
+               at, so the mission is a second look rather than a first.
+               check-rehearsals holds the two in agreement. -->
+          <section class="rehearsal">
+            <div class="section-label"><span>YOU WILL MEET THIS</span><b>{session.practice.title}</b></div>
+            <p class="lead">{session.rehearsal.lead}</p>
+            {#each session.rehearsal.cases as item, i}
+              <article>
+                {#if item.code}<pre>{item.code.join('\n')}</pre>{/if}
+                <dl>{#each item.facts as [label, value]}<div><dt>{label}</dt><dd>{value}</dd></div>{/each}</dl>
+                <p class="ask"><b>{i + 1}.</b> {item.question}</p>
+                <details>
+                  <summary>Work it out, then check</summary>
+                  <p class="answer">{item.answer}</p>
+                  <p>{item.why}</p>
+                </details>
+              </article>
+            {/each}
+            <p class="closing">{session.rehearsal.closing}</p>
+          </section>
+        {/if}
+
         <section class="workbook">
           <div class="section-label"><span>WORKBOOK</span><b>{session.workbook.title}</b></div>
           <p>{session.workbook.prompt}</p>
@@ -261,7 +284,27 @@
   .section-label { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
   .section-label span { color: #8c4c2e; font: 900 11.5px var(--qx-font); letter-spacing: .1em; }
   .section-label b { font: 700 18px Georgia, serif; }
-  .example, .workbook, .check { margin-top: 32px; padding: 22px; border: 1px solid #ded7c8; border-radius: 13px; background: #fbf9f4; }
+  .example, .workbook, .check, .rehearsal { margin-top: 32px; padding: 22px; border: 1px solid #ded7c8; border-radius: 13px; background: #fbf9f4; }
+
+  /* The rehearsal reads as the mission it previews rather than as more prose,
+     so the facts sit in a panel the way the mission shows them. */
+  .rehearsal { border-color: #cbbfa6; background: #f6f1e5; }
+  .rehearsal .lead, .rehearsal .closing { color: #4f493e; font: 600 13.5px/1.55 var(--qx-font); margin: 0; }
+  .rehearsal .closing { margin-top: 16px; padding-top: 14px; border-top: 1px solid #ddd4c0; }
+  .rehearsal article { margin-top: 14px; padding: 14px 15px; border: 1px solid #ddd4c0; border-radius: 10px; background: #fffdf8; }
+  .rehearsal pre { margin: 0 0 12px; padding: 12px 14px; border-radius: 9px; background: #0d1116; color: #cfe0ea;
+                   font: 600 13px/1.65 ui-monospace, "SF Mono", Menlo, Consolas, monospace; overflow-x: auto; }
+  .rehearsal dl { display: grid; gap: 6px; margin: 0 0 12px; }
+  .rehearsal dl div { display: grid; grid-template-columns: minmax(120px, 34%) 1fr; gap: 10px; align-items: baseline; }
+  .rehearsal dt { color: #8a7f6a; font: 800 11.5px var(--qx-font); letter-spacing: .04em; }
+  .rehearsal dd { margin: 0; font: 700 13px ui-monospace, "SF Mono", Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+  .rehearsal .ask { margin: 0; font: 700 14px/1.5 Georgia, serif; }
+  .rehearsal .ask b { color: #8c4c2e; }
+  .rehearsal details { margin-top: 10px; }
+  .rehearsal summary { cursor: pointer; color: #8c4c2e; font: 850 12px var(--qx-font); letter-spacing: .04em; }
+  .rehearsal details p { margin: 9px 0 0; color: #4f493e; font: 600 13.5px/1.55 var(--qx-font); }
+  .rehearsal .answer { color: #25231f; font-weight: 850; }
+  @media (max-width: 520px) { .rehearsal dl div { grid-template-columns: 1fr; gap: 2px; } }
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font: 650 13px/1.45 var(--qx-font); }
   th, td { padding: 10px 11px; border-bottom: 1px solid #ded7c8; text-align: left; vertical-align: top; }

@@ -8,12 +8,37 @@
   import { MISSIONS } from '../game/progress.js';
   import { SHARED_FOUNDATIONS } from '../content/shared-foundations.js';
 
+  // On a page that already lists every mission and every chapter, repeating both
+  // in the footer is the same twenty-four links a second time, and that is most
+  // of what made the home page feel crowded. Compact drops the two lists the
+  // page already carries and keeps the destinations nothing else links to, so
+  // everything stays reachable from the same screen without being said twice.
+  export let compact = false;
+
   const CHAPTERS = [
     'What data represents', 'Numbers, ratios and change', 'Quality and evidence',
     'Statistics before models', 'SQL foundations', 'Python foundations', 'Explain what you found'
   ];
+
+  const ELSEWHERE = [
+    ['?mode=game&mission=campaign', 'Story mode'],
+    ['?mode=wiki', 'Data science wiki'],
+    ['/library/index.html', 'The library'],
+    ['/library/big-sheet-of-graphs.html', 'The Big Sheet of Graphs'],
+    ['/library/functions.html', 'Calculus From The Ground Up'],
+    ['/?prototype=variables-and-rates', 'Mathematics pilot']
+  ];
 </script>
 
+{#if compact}
+  <footer class="site-foot compact">
+    <nav aria-label="Elsewhere on the site">
+      <h2>Elsewhere</h2>
+      <ul>{#each ELSEWHERE as [href, label]}<li><a {href}>{label}</a></li>{/each}</ul>
+    </nav>
+    <p class="note">Qubix University · published by Arcave Technologies · every board here is an AI draft under founder review.</p>
+  </footer>
+{:else}
 <footer class="site-foot">
   <nav aria-label="All missions">
     <h2>Play</h2>
@@ -45,6 +70,7 @@
 
   <p class="note">Qubix University · published by Arcave Technologies · every board here is an AI draft under founder review.</p>
 </footer>
+{/if}
 
 <style>
   .site-foot { margin-top: 64px; padding-top: 30px; border-top: 1px solid var(--nav-rule, #ddd6c6);
@@ -58,6 +84,11 @@
   a:hover { color: var(--nav-accent, #5f7355); }
   a:focus-visible { outline: 2px solid var(--nav-accent, #5f7355); outline-offset: 3px; }
   span { flex: none; color: var(--nav-soft, #6d6558); font-variant-numeric: tabular-nums; }
+  /* One row of links rather than three columns of them. */
+  .compact { grid-template-columns: 1fr; gap: 18px; }
+  .compact ul { grid-auto-flow: column; grid-template-columns: none;
+                justify-content: start; gap: 8px 26px; flex-wrap: wrap; }
+  @media (max-width: 760px) { .compact ul { grid-auto-flow: row; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); } }
   .note { grid-column: 1 / -1; margin: 6px 0 0; padding-top: 22px;
           border-top: 1px solid var(--nav-rule, #ddd6c6);
           color: var(--nav-soft, #6d6558); font: 400 13.5px/1.6 var(--qx-font); }

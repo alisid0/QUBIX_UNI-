@@ -36,6 +36,25 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
         Object.freeze(['B-17', 'quiet, then a sharp evening peak', '40', 'concentrate staff after 17:00']),
         Object.freeze(['Both', 'invisible in the summary', 'identical', 'the mean cannot tell them apart'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'distribution-desk',
+        lead: 'The first case in the mission at the end of this session is a real request with real numbers. Look at the values before you meet the histogram.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'baskets',
+            facts: Object.freeze([
+              Object.freeze(['What was asked', 'What is a typical basket at Northgate?']),
+              Object.freeze(['The sample', 'Forty baskets from one Saturday afternoon.']),
+              Object.freeze(['Smallest and largest', '6 · 210']),
+              Object.freeze(['Bin widths you can try', '5 · 10 · 25'])
+            ]),
+            question: 'Forty values running from 6 to 210. Before drawing anything, where do you expect most of them to sit, and what will the few at the top do to a mean?',
+            answer: 'Most sit low, and the few large ones drag the mean above them.',
+            why: 'Most baskets sit under £30 and a handful stretch to £210. The tail is long and it is all on one side. A mean has to be somewhere between the crowd and the outliers, which means it lands where almost no actual basket is, and answering "typical" with it would describe a basket nobody had.'
+          })
+        ]),
+        closing: 'The mission lets you redraw this at three bin widths. A feature that survives all three is in the data; one that appears at a single width is in the drawing.'
+      }),
       workbook: Object.freeze({ title: 'Twenty-minute shape sketch', prompt: 'Collect twenty values of something you can count: messages per day, minutes of a commute, spend per shop.', steps: Object.freeze([
         'Draw them as a histogram by hand, choosing any bin width.',
         'Redraw with bins twice as wide, and again with bins half as wide.',

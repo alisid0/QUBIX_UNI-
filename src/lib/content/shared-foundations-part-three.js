@@ -19,9 +19,10 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
       objective: 'Distinguish a recorded zero from the several different reasons a value can be absent.',
       opening: 'A stock count reads 0. Another reads nothing at all. One of those says the shelf was empty. The other says nobody looked, and the two must not be averaged together.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Zero is a measurement, blank is not', paragraphs: Object.freeze([
-          'A zero is a value somebody recorded: the count was taken and the answer was none. A blank is the absence of a value, which means the measurement is not there to be used. Software will happily add them together, treating every blank as nothing, and the resulting total looks entirely normal.',
-          'This is the most common way a number becomes quietly wrong. An average over a column with blanks either drops those rows or counts them as zero, and the two answers differ. Which behaviour you get depends on the tool rather than on the question you asked.'
+        Object.freeze({ heading: 'Zero is something somebody measured', paragraphs: Object.freeze([
+          'Zero is a reading. Somebody counted the shelf, the count came to none, and that fact is now on the record. A blank is not a reading at all: it says only that no measurement is available, and it does not say why. The two sit in the same column and look equally tidy, but they mean opposite things, because one describes the world and the other describes the record.',
+          'The distinction turns up in any measurement you care to take. A rain gauge reading 0 mm means it did not rain, while an empty cell means nobody went out to read the gauge. A balance of £0 means the account is empty, while a blank means the balance did not load. A test score of 0 means the paper was marked and nothing on it was right, while a blank means the student never sat the paper: average that blank in as a zero and the class average falls on a mark nobody earned.',
+          'Tools will not settle this for you, and they do not agree with each other. A SUM usually skips blanks, so a total over ten rows with three blanks is really a total over seven. An AVERAGE usually skips them too, and so divides by seven rather than ten. Divide that same sum by a row count of ten yourself and you get a third answer. All three look perfectly ordinary on the page, which is why this is the most common way a number becomes quietly wrong: the behaviour you get depends on the tool rather than on the question you asked.'
         ]) }),
         Object.freeze({ heading: 'Absences have different causes', paragraphs: Object.freeze([
           'Missing and unknown means a value exists in the world but was not captured: the scanner lost power before the count finished. Not applicable means no value could exist: a delivery date on an order that was cancelled before dispatch. Pending means the value is expected later. Not collected by design means a policy decided never to record it.',
@@ -38,6 +39,37 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
         Object.freeze(['returned_units', 'return window still open', 'pending: expected, do not treat as zero']),
         Object.freeze(['customer_age', 'policy: never collected in store', 'not collected: stop asking for it'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'missing-data',
+        lead: 'Both of these cells are waiting in the mission at the end of this session. Decide them here first, so the mission is a second look rather than a first.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'returns-zero',
+            facts: Object.freeze([
+              Object.freeze(['Where it comes from', 'Checkout · sale_line']),
+              Object.freeze(['Field', 'returned_unit_count']),
+              Object.freeze(['The cell shows', '0']),
+              Object.freeze(['Operational evidence', 'Return-event count: 0 · Feed arrived normally'])
+            ]),
+            question: 'Is that 0 a measurement, or a gap that happens to look like one?',
+            answer: 'A measurement. Keep it.',
+            why: 'Zero is observed information here: the count is known and none occurred. Replacing it with a blank would throw away a fact the returns system is certain about.'
+          }),
+          Object.freeze({
+            caseId: 'stock-unknown',
+            facts: Object.freeze([
+              Object.freeze(['Where it comes from', 'Branch 17 · inventory_snapshot']),
+              Object.freeze(['Field', 'closing_stock_units']),
+              Object.freeze(['The cell shows', 'NULL']),
+              Object.freeze(['Operational evidence', 'Scanner outage: 20:51–21:18 · Closing feed incomplete'])
+            ]),
+            question: 'Some number of units sat on that shelf at closing. Does the record know it?',
+            answer: 'No, and nobody may fill it in with zero.',
+            why: 'The quantity exists, but the branch does not know it from this feed. Writing 0 would claim the shelf was empty, which is a measurement nobody took.'
+          })
+        ]),
+        closing: 'Two cells of the same shape, needing opposite treatment. The 0 stays because it is a fact. The NULL stays because inventing a zero would turn a gap into a measurement, and the outage reason is recorded beside it so the next person does not have to rediscover it.'
+      }),
       workbook: Object.freeze({ title: 'Fifteen-minute blank hunt', prompt: 'Find a form you have filled in, or a spreadsheet you keep.', steps: Object.freeze([
         'Find three fields left empty.',
         'For each, write which of the four kinds of absence it is.',

@@ -37,6 +37,25 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         Object.freeze(['SELECT sale_id, branch_id', 'chooses columns', 'same rows, fewer columns']),
         Object.freeze(['ORDER BY basket_total DESC', 'arranges', 'presentation only'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'sql-console',
+        lead: 'The first task in the console at the end of this session is below. The console runs your clause against twelve real sales rows, so decide the clause here and you will already know what the result should be.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'filter',
+            facts: Object.freeze([
+              Object.freeze(['The request', 'How many sales were over £20?']),
+              Object.freeze(['What you are given', 'Twelve sales are in the table. Keep the rows that qualify and nothing else.']),
+              Object.freeze(['Which clause it fills', 'where']),
+              Object.freeze(['Rows the console will return', '6'])
+            ]),
+            question: 'Twelve rows go in and six come out. Has the grain changed: does one row still mean one sale?',
+            answer: 'No. One row still means one sale.',
+            why: 'Six of the twelve baskets are over £20. Filtering keeps rows and changes nothing about what a row means, which is what separates WHERE from GROUP BY: one removes rows, the other replaces them with rows about groups.'
+          })
+        ]),
+        closing: 'Keep asking that question after every clause you add. A query that has quietly changed what one row represents will still return a number, and the number will still look reasonable.'
+      }),
       workbook: Object.freeze({ title: 'Fifteen-minute query in words', prompt: 'Take any table you can picture: a contacts list, a bank statement, a fixture list.', steps: Object.freeze([
         'Write a question you would ask it, in plain language.',
         'Underline the part that decides which rows.',

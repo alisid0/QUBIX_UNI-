@@ -84,6 +84,40 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
         Object.freeze(['if value is None', 'skipped = skipped + 1', 'absence is handled, not compared']),
         Object.freeze(['elif value > −18', 'kept = kept + 1', 'the actual decision'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'python-trace',
+        lead: 'Two of the six programs in the mission at the end of this session are printed here. They differ by one line, and that line is the whole lesson of this chapter.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'accumulate',
+            code: Object.freeze([
+              'total = 0',
+              'for b in baskets:',
+              '    total = total + b',
+              'print(total)'
+            ]),
+            facts: Object.freeze([Object.freeze(['baskets', '18 · 6 · 22 · 9'])]),
+            question: 'Follow it one pass at a time. What is in total when the loop ends?',
+            answer: '55.',
+            why: 'total is set to 0 once, before the loop, and keeps its value between passes: 0, then 18, then 24, then 46, then 55. Move that first line inside the loop and it resets on every pass, so the program prints 9, the last basket, and the mistake is invisible in the output.'
+          }),
+          Object.freeze({
+            caseId: 'compare',
+            code: Object.freeze([
+              'high = 0',
+              'for r in readings:',
+              '    if r > 3:',
+              '        high = high + 1',
+              'print(high)'
+            ]),
+            facts: Object.freeze([Object.freeze(['readings', '4 · null · 9 · 2'])]),
+            question: 'One reading never arrived. Does this print 2, print 3, or not print at all?',
+            answer: 'It does not print. It stops on the missing reading.',
+            why: 'The first reading passes the test, then r is None and there is nothing to compare against 3, so Python raises rather than guessing. A rule written without deciding what an absence means meets one eventually.'
+          })
+        ]),
+        closing: 'The absence in the second program is the same absence chapter 03 was about, met by a rule that did not expect it. Deciding what it means is part of writing the rule, not a repair to make afterwards.'
+      }),
       workbook: Object.freeze({ title: 'Twenty-minute rule in words', prompt: 'Take a rule you already follow: which emails to archive, which receipts to keep.', steps: Object.freeze([
         'Write the rule as a single condition.',
         'Write what happens when the information needed is missing.',
@@ -177,6 +211,30 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
         Object.freeze(['add a computed column', 'SELECT expression', 'unchanged']),
         Object.freeze(['collapse to one row per group', 'GROUP BY', 'changed, deliberately'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'python-trace',
+        lead: 'This is the fifth program in the mission at the end of this session, printed here in full. Read it now, decide what it prints, and the mission becomes a check rather than a surprise.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'rows',
+            code: Object.freeze([
+              'units = 0',
+              'for row in rows:',
+              '    units = units + row["qty"]',
+              'print(units)'
+            ]),
+            facts: Object.freeze([
+              Object.freeze(['What rows holds', 'A table in code: a list of rows, each a set of named values.']),
+              Object.freeze(['The three SKUs', 'QX-CER-001 · QX-DRK-014 · QX-TIN-032']),
+              Object.freeze(['Their qty values', '2 · 1 · 3'])
+            ]),
+            question: 'Three rows go in. Does this print 3 or 6, and what is the other number a count of?',
+            answer: 'It prints 6.',
+            why: 'Each row is reached by name, so row["qty"] is the quantity rather than the row itself. Three rows, six units: len(rows) counts product lines and the sum counts units, and only one of them answers "how much did we sell".'
+          })
+        ]),
+        closing: 'This is the grain question from chapter 01 wearing different clothes. A list of dictionaries is a table, one entry in it is one row, and what that row represents decides which of the two numbers you are allowed to report.'
+      }),
       workbook: Object.freeze({ title: 'Twenty-minute table by hand', prompt: 'Take five rows from any real table: a receipt, a timetable, a scoreboard.', steps: Object.freeze([
         'Write each row as a set of name-and-value pairs.',
         'Write the whole table as a list of those rows.',
