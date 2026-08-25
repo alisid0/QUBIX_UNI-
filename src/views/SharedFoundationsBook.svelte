@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { bookForChapter } from '../lib/content/shared-foundations.js';
   import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
+  import SiteNav from '../lib/components/SiteNav.svelte';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
@@ -100,6 +101,7 @@
 </svelte:head>
 
 <div class="reader qx-shell">
+  <div class="sticky-head">
   <header class="topbar">
     <a class="back" href="?mode=game&mission=foundations">← Foundations</a>
     <div class="mode-centre">
@@ -108,6 +110,11 @@
     </div>
     <div class="overall" aria-label={`${progressPercent}% complete`}><span>{progressPercent}%</span><i><em style={`width:${progressPercent}%`}></em></i></div>
   </header>
+
+  <!-- Every other chapter, one click away, from inside the one you are reading.
+       Before this, changing subject meant going back to the landing page. -->
+  <div class="subject-rail"><SiteNav links={false} chapter={chapterNumber} /></div>
+  </div>
 
   <div class="layout">
     <aside class="toc">
@@ -230,7 +237,11 @@
   :global(body) { position: static; }
 
   .reader { width: 100%; max-width: none; min-height: 100vh; background: #f1ede4; color: #241f16; }
-  .topbar { position: sticky; top: 0; z-index: 20; min-height: 62px; padding: 12px clamp(16px, 4vw, 52px); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px; border-bottom: 1px solid #d8d0be; background: rgba(241, 237, 228, .96); backdrop-filter: blur(12px); }
+  .sticky-head { position: sticky; top: 0; z-index: 20; }
+  .subject-rail { padding: 0 clamp(16px, 4vw, 52px);
+                  background: rgba(241, 237, 228, .96); backdrop-filter: blur(12px);
+                  --nav-rule: #d8d0be; --nav-ink: #241f16; --nav-soft: #6d6558; --nav-accent: #8c4c2e; }
+  .topbar { min-height: 62px; padding: 12px clamp(16px, 4vw, 52px); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px; border-bottom: 1px solid #d8d0be; background: rgba(241, 237, 228, .96); backdrop-filter: blur(12px); }
   .back { justify-self: start; color: #8c4c2e; font: 850 13px var(--qx-font); text-decoration: none; border-bottom: 1px solid currentColor; }
   .identity { display: flex; align-items: center; gap: 9px; }
   .identity b { color: #8c4c2e; font: 900 12px var(--qx-font); letter-spacing: .13em; }

@@ -117,12 +117,13 @@
 </svelte:head>
 
 <section class="landing qx-shell">
-  <SiteNav />
+  <div class="nav-wrap"><SiteNav /></div>
 
   <header>
     <p>QUBIX UNIVERSITY</p>
     <h1>Learn data science from zero.</h1>
     <span>No prior data, maths or programming experience is assumed. You read an idea, then use it inside a working store until it is yours.</span>
+    <p class="free">No account needed, nothing to pay. Your progress saves on this device.</p>
   </header>
 
   <!-- The map. A beginner's first question is not "reading or doing", it is
@@ -293,6 +294,7 @@
   header p{margin:0 0 14px;color:var(--accent);font:800 12px var(--qx-font);letter-spacing:.14em}
   header h1{margin:0;font:400 clamp(34px,5.4vw,52px)/1.08 Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
   header span{display:block;margin-top:16px;max-width:62ch;color:var(--soft);font:400 16px/1.6 var(--qx-font)}
+  .free{margin:14px 0 0;color:var(--accent);font:600 14.5px var(--qx-font)}
 
   .eyebrow{margin:0 0 14px;color:var(--accent);font:800 11px var(--qx-font);letter-spacing:.13em}
   .orient{margin:0;max-width:70ch;color:var(--soft);font:400 14.5px/1.6 var(--qx-font)}
@@ -367,7 +369,7 @@
   .plan>a{display:inline-block;margin-top:14px;color:var(--role);font:600 14px var(--qx-font);
           text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
 
-  .foot-wrap{max-width:860px;margin-inline:auto}
+  .nav-wrap,  .foot-wrap{max-width:860px;margin-inline:auto}
   .rule{margin:44px auto 0;padding-top:22px;border-top:1px solid var(--rule);
         color:var(--soft);font:400 13.5px/1.6 var(--qx-font)}
 
