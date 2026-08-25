@@ -11,10 +11,10 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'SQL Foundations',
   subtitle: 'Part Five of Volume 0',
-  totalMinutes: 255,
+  totalMinutes: 43,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'select', number: '01', title: 'Asking a table a question', studyMinutes: 35, playMinutes: 25,
+      id: 'select', number: '01', title: 'Asking a table a question', studyMinutes: 8, playMinutes: 5,
       objective: 'Read a simple query as choosing rows first and columns second.',
       opening: 'A query is not a program that walks through the table. It is a description of the result you want, and the database decides how to get it.',
       sections: Object.freeze([
@@ -90,7 +90,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'group', number: '02', title: 'Grouping changes the grain on purpose', studyMinutes: 35, playMinutes: 30,
+      id: 'group', number: '02', title: 'Grouping changes the grain on purpose', studyMinutes: 5, playMinutes: 5,
       objective: 'Say what one row of a grouped result represents, and why filtering happens twice.',
       opening: 'Grouping is the first thing in SQL that changes what a row means. Before it, one row was one sale. After it, one row is one branch, and everything you can ask has changed with it.',
       sections: Object.freeze([
@@ -136,7 +136,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'join', number: '03', title: 'Joining without changing what a row is', studyMinutes: 40, playMinutes: 30,
+      id: 'join', number: '03', title: 'Joining without changing what a row is', studyMinutes: 5, playMinutes: 5,
       objective: 'Predict a join’s effect on the row count before running it.',
       opening: 'Two tables, one key, and a query that succeeds. The row count went from four thousand to twelve thousand, nothing raised an error, and the revenue figure computed afterwards is now three times too large.',
       sections: Object.freeze([
@@ -182,7 +182,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'verify', number: '04', title: 'Checking a result before believing it', studyMinutes: 35, playMinutes: 25,
+      id: 'verify', number: '04', title: 'Checking a result before believing it', studyMinutes: 5, playMinutes: 5,
       objective: 'Run a short set of checks on any query result before it leaves your screen.',
       opening: 'The query ran. That is evidence about the syntax and nothing else. Whether the answer is right is a separate question, and it has to be asked deliberately.',
       sections: Object.freeze([

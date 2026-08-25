@@ -11,10 +11,10 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'Numbers, Ratios and Change',
   subtitle: 'Part Two of Volume 0',
-  totalMinutes: 230,
+  totalMinutes: 52,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'units', number: '01', title: 'A number needs a unit', studyMinutes: 30, playMinutes: 15,
+      id: 'units', number: '01', title: 'A number needs a unit', studyMinutes: 6, playMinutes: 5,
       objective: 'State what a recorded number measures, in what unit, and what its zero means.',
       opening: 'A field holds 4. Four what? Four units on the shelf, four degrees, four pounds, four days late. The digit is the least informative part of the value.',
       sections: Object.freeze([
@@ -60,7 +60,7 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'ratios', number: '02', title: 'Ratios, rates and percentages', studyMinutes: 35, playMinutes: 20,
+      id: 'ratios', number: '02', title: 'Ratios, rates and percentages', studyMinutes: 7, playMinutes: 6,
       objective: 'Read any ratio by naming its numerator, its denominator and the population it covers.',
       opening: 'Two branches each report a 12% return rate. One sold forty items and returned five. The other sold twelve thousand and returned fourteen hundred. The percentages agree and the situations do not.',
       sections: Object.freeze([
@@ -131,7 +131,7 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'change', number: '03', title: 'Absolute change, relative change and rate of change', studyMinutes: 30, playMinutes: 20,
+      id: 'change', number: '03', title: 'Absolute change, relative change and rate of change', studyMinutes: 7, playMinutes: 6,
       objective: 'Say which of the three kinds of change a figure describes, and why the choice changes the conclusion.',
       opening: 'Sales went up by 200. Sales went up by 4%. Sales are rising by 30 a day. All three can describe the same fortnight, and they answer different questions.',
       sections: Object.freeze([
@@ -202,7 +202,7 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'functions', number: '04', title: 'From table to rule to graph', studyMinutes: 45, playMinutes: 35,
+      id: 'functions', number: '04', title: 'From table to rule to graph', studyMinutes: 5, playMinutes: 10,
       objective: 'Move the same relationship between a table, a rule and a graph without changing what it claims.',
       opening: 'A table of deliveries and cost, a formula, and a line on a pair of axes can all say the same thing. Being able to move between them is most of what algebra is for.',
       sections: Object.freeze([

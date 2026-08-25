@@ -12,10 +12,10 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'Quality and Evidence',
   subtitle: 'Part Three of Volume 0',
-  totalMinutes: 245,
+  totalMinutes: 45,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'absence', number: '01', title: 'An empty cell does not explain itself', studyMinutes: 30, playMinutes: 25,
+      id: 'absence', number: '01', title: 'An empty cell does not explain itself', studyMinutes: 10, playMinutes: 5,
       objective: 'Distinguish a recorded zero from the several different reasons a value can be absent.',
       opening: 'A stock count reads 0. Another reads nothing at all. One of those says the shelf was empty. The other says nobody looked, and the two must not be averaged together.',
       sections: Object.freeze([
@@ -100,7 +100,7 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'types', number: '02', title: 'What kind of thing is this value?', studyMinutes: 30, playMinutes: 20,
+      id: 'types', number: '02', title: 'What kind of thing is this value?', studyMinutes: 5, playMinutes: 5,
       objective: 'Classify a column by what it measures, and say which operations that permits.',
       opening: 'A postcode, a shoe size, a satisfaction rating and a temperature are all written with characters, and almost nothing you can do to one of them is legitimate for another.',
       sections: Object.freeze([
@@ -147,7 +147,7 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'grain', number: '03', title: 'One row, one thing', studyMinutes: 35, playMinutes: 30,
+      id: 'grain', number: '03', title: 'One row, one thing', studyMinutes: 5, playMinutes: 5,
       objective: 'State a table’s grain precisely enough that a row count answers a real question.',
       opening: 'Someone asks how many sales there were. You count the rows and answer three thousand. Whether that is right depends entirely on what one row of that table represents.',
       sections: Object.freeze([
@@ -193,7 +193,7 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'provenance', number: '04', title: 'Where did this number come from?', studyMinutes: 45, playMinutes: 30,
+      id: 'provenance', number: '04', title: 'Where did this number come from?', studyMinutes: 5, playMinutes: 5,
       objective: 'Trace a reported figure back to the record it came from and the steps that changed it.',
       opening: 'A report says the freezer ran at minus seventeen point eight. Somewhere behind that is a sensor, a reading, a conversion and a decision to publish. Any one of them can be the reason the number is wrong.',
       sections: Object.freeze([

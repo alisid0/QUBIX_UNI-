@@ -11,10 +11,10 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'Statistics Before Models',
   subtitle: 'Part Four of Volume 0',
-  totalMinutes: 250,
+  totalMinutes: 43,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'distribution', number: '01', title: 'Look at the shape before the summary', studyMinutes: 35, playMinutes: 25,
+      id: 'distribution', number: '01', title: 'Look at the shape before the summary', studyMinutes: 8, playMinutes: 5,
       objective: 'Describe a set of values by its shape, and say what a single summary of it would hide.',
       opening: 'Two branches both average forty baskets an hour. One is steady all day. The other is empty until five and then overwhelmed. The average is identical and the staffing decision is not.',
       sections: Object.freeze([
@@ -84,7 +84,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'centre-spread', number: '02', title: 'Centre, spread and the values that break them', studyMinutes: 35, playMinutes: 25,
+      id: 'centre-spread', number: '02', title: 'Centre, spread and the values that break them', studyMinutes: 5, playMinutes: 5,
       objective: 'Choose a measure of centre and spread that suits the shape, and justify the choice.',
       opening: 'Nine baskets of about twenty pounds and one of nine hundred. The mean says one hundred and eight. Not one basket was anywhere near it.',
       sections: Object.freeze([
@@ -131,7 +131,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'sampling', number: '03', title: 'Who is in the data, and who is not', studyMinutes: 35, playMinutes: 25,
+      id: 'sampling', number: '03', title: 'Who is in the data, and who is not', studyMinutes: 5, playMinutes: 5,
       objective: 'Name the population a dataset can speak for, and the ways it may fail to.',
       opening: 'A satisfaction survey on the website gives ninety-two per cent positive. Everybody who could not use the website is not in it, and that is the group the question was really about.',
       sections: Object.freeze([
@@ -177,7 +177,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'probability', number: '04', title: 'The language of chance', studyMinutes: 40, playMinutes: 30,
+      id: 'probability', number: '04', title: 'The language of chance', studyMinutes: 5, playMinutes: 5,
       objective: 'State what a probability is attached to, and read a conditional claim in the right direction.',
       opening: 'A test that is ninety-nine per cent accurate returns a positive result. Whether that means you are probably affected depends on something the sentence does not mention: how common the thing is.',
       sections: Object.freeze([

@@ -11,10 +11,10 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'Python Foundations',
   subtitle: 'Part Six of Volume 0',
-  totalMinutes: 250,
+  totalMinutes: 45,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'values', number: '01', title: 'Values, names and types', studyMinutes: 35, playMinutes: 25,
+      id: 'values', number: '01', title: 'Values, names and types', studyMinutes: 5, playMinutes: 5,
       objective: 'Say what kind of thing a value is, and why a name is not the value.',
       opening: 'A program has no idea what a basket is. It has numbers, pieces of text and true-or-false answers, and everything else is built from those.',
       sections: Object.freeze([
@@ -61,7 +61,7 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'decisions', number: '02', title: 'Decisions and repetition', studyMinutes: 35, playMinutes: 25,
+      id: 'decisions', number: '02', title: 'Decisions and repetition', studyMinutes: 8, playMinutes: 5,
       objective: 'Express a rule as a condition, and apply it to every row without writing it out repeatedly.',
       opening: 'Every data rule you have met so far is a decision applied many times. Flag the reading if it is above the threshold. Do that for four hundred thousand readings.',
       sections: Object.freeze([
@@ -147,7 +147,7 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'functions', number: '03', title: 'Giving a piece of work a name', studyMinutes: 35, playMinutes: 25,
+      id: 'functions', number: '03', title: 'Giving a piece of work a name', studyMinutes: 5, playMinutes: 5,
       objective: 'Package a rule as a named function with stated inputs and one clear output.',
       opening: 'The conversion from Fahrenheit to Celsius appeared three times in the pipeline and two of them were subtly different. That is what a function is for.',
       sections: Object.freeze([
@@ -194,7 +194,7 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'tables', number: '04', title: 'Collections, and a table in code', studyMinutes: 40, playMinutes: 30,
+      id: 'tables', number: '04', title: 'Collections, and a table in code', studyMinutes: 7, playMinutes: 5,
       objective: 'Represent rows and columns in code, and keep the grain intact while working on them.',
       opening: 'A table in code is a collection of rows, and a row is a collection of named values. Once that clicks, everything from chapter 03 arrives intact.',
       sections: Object.freeze([

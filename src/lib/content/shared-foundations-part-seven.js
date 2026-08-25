@@ -11,10 +11,10 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'Explain What You Found',
   subtitle: 'Part Seven of Volume 0',
-  totalMinutes: 240,
+  totalMinutes: 58,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'tables', number: '01', title: 'A table someone can actually read', studyMinutes: 30, playMinutes: 20,
+      id: 'tables', number: '01', title: 'A table someone can actually read', studyMinutes: 5, playMinutes: 5,
       objective: 'Lay out a table so its meaning survives being sent to somebody else.',
       opening: 'The analysis was right and the table was unreadable, so a decision was made from the one row somebody happened to understand.',
       sections: Object.freeze([
@@ -61,7 +61,7 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'charts', number: '02', title: 'A chart that does not flatter', studyMinutes: 35, playMinutes: 25,
+      id: 'charts', number: '02', title: 'A chart that does not flatter', studyMinutes: 5, playMinutes: 10,
       objective: 'Choose a chart for the comparison being made, and label it so it cannot mislead.',
       opening: 'The same two numbers can be a modest difference or a dramatic one, and the difference between those two pictures is where the axis was cut.',
       sections: Object.freeze([
@@ -108,7 +108,7 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'reasoning', number: '03', title: 'Separating what you found from what you think', studyMinutes: 35, playMinutes: 25,
+      id: 'reasoning', number: '03', title: 'Separating what you found from what you think', studyMinutes: 5, playMinutes: 18,
       objective: 'Write a finding, an interpretation and a recommendation as three distinct statements.',
       opening: 'Returns rose four per cent. Returns rose because the new packaging is weak. We should change supplier. Only the first of those is in the data.',
       sections: Object.freeze([
@@ -155,7 +155,7 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'reproducible', number: '04', title: 'Work somebody else can run', studyMinutes: 45, playMinutes: 25,
+      id: 'reproducible', number: '04', title: 'Work somebody else can run', studyMinutes: 5, playMinutes: 5,
       objective: 'Package an analysis so another person can reproduce the number without asking you.',
       opening: 'The number was right. Four months later nobody could produce it again, including the person who made it, and it stopped being evidence.',
       sections: Object.freeze([

@@ -180,7 +180,8 @@
     </div>
 
     <p class="together"><b>Together: {bothTime}</b>
-      <span>Taken at one session a day, Volume 0 is about a month. Nothing is timed and nothing expires.</span></p>
+      <span>{volumeSessions} sessions of about ten minutes each, and the mission that follows it.
+        One a day is a month; a couple of focused evenings will also do it. Nothing is timed and nothing expires.</span></p>
   </section>
 
   <!-- What you will actually be able to do, chapter by chapter. -->

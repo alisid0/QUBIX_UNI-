@@ -3,10 +3,10 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'How Data Represents the World',
   subtitle: 'Part One of Volume 0',
-  totalMinutes: 235,
+  totalMinutes: 40,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'representation', number: '01', title: 'Data is a record, not reality', studyMinutes: 25, playMinutes: 15,
+      id: 'representation', number: '01', title: 'Data is a record, not reality', studyMinutes: 5, playMinutes: 5,
       objective: 'Distinguish a real thing or event from the record created about it.',
       opening: 'A sale happens in a shop. A row about that sale is created in a system. The event and the record are connected, but they are not the same thing.',
       sections: Object.freeze([
@@ -32,7 +32,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sources: Object.freeze([Object.freeze({label:'W3C PROV Overview',url:'https://www.w3.org/TR/prov-overview/'})])
     }),
     Object.freeze({
-      id: 'observations-variables', number: '02', title: 'Observations and variables', studyMinutes: 35, playMinutes: 45,
+      id: 'observations-variables', number: '02', title: 'Observations and variables', studyMinutes: 5, playMinutes: 5,
       objective: 'Explain what a row observes and what each variable means before choosing an analysis.',
       opening: 'A table becomes understandable when you can finish two sentences: “one row represents…” and “this column records…”.',
       sections: Object.freeze([
@@ -58,7 +58,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sources: Object.freeze([Object.freeze({label:'NIST Engineering Statistics Handbook',url:'https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc135.htm'}),Object.freeze({label:'Penn State STAT 504',url:'https://online.stat.psu.edu/stat504/Lesson01'})])
     }),
     Object.freeze({
-      id: 'rows-grain', number: '03', title: 'One row means one thing', studyMinutes: 30, playMinutes: 25,
+      id: 'rows-grain', number: '03', title: 'One row means one thing', studyMinutes: 5, playMinutes: 5,
       objective: 'State a table’s grain precisely and use it to interpret row counts.',
       opening: 'Before counting, joining or removing duplicates, define exactly what makes one legitimate row different from another.',
       sections: Object.freeze([
@@ -84,7 +84,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sources: Object.freeze([Object.freeze({label:'Statistics Canada: observations and variables',url:'https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch1/definitions/5214853-eng.htm'}),Object.freeze({label:'Australian Bureau of Statistics: data units and records',url:'https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/data'})])
     }),
     Object.freeze({
-      id: 'context-quality', number: '04', title: 'A value needs context', studyMinutes: 35, playMinutes: 25,
+      id: 'context-quality', number: '04', title: 'A value needs context', studyMinutes: 5, playMinutes: 5,
       objective: 'Distinguish zero from missing information and judge whether a value, type and unit fit the field definition.',
       opening: 'A cell is trustworthy only when its value, meaning, type, unit and missingness agree with the variable it claims to record.',
       sections: Object.freeze([
