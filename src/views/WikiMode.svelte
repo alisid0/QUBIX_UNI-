@@ -235,6 +235,8 @@
 </div>
 
 <style>
+  /* scroll: internal — this view is a fixed viewport with its own scroll panes,
+     so html and body deliberately do not scroll. */
   :global(html), :global(body) { overflow: hidden; background: #f1ede4; }
   :global(body::before), :global(body::after) { display: none; }
   .wiki-shell { --ink:#221f1a; --paper:#f4f0e8; --card:#fbf9f4; --clay:#a85836; --olive:#67704b; --line:#d8d1c3; height:100%; display:grid; grid-template:72px 1fr / 258px 1fr; color:var(--ink); background:var(--paper); font-family:var(--qx-font); }

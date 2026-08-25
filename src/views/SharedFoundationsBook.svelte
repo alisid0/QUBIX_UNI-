@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { bookForChapter } from '../lib/content/shared-foundations.js';
   import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
   import SiteNav from '../lib/components/SiteNav.svelte';
@@ -73,9 +73,18 @@
     save({ ...progress, notes: { ...progress.notes, [session.id]: value } });
   }
 
-  function openSession(index) {
+  // Wait for the new session to render before moving, or the offset is measured
+  // against the page that is on its way out.
+  async function openSession(index) {
     activeIndex = index;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    await tick();
+    const target = document.querySelector('.reader main .chapter-head');
+    const head = document.querySelector('.sticky-head');
+    if (!target) { window.scrollTo({ top: 0 }); return; }
+    // Land on the session heading rather than the very top, so the chapter
+    // opener is not re-read four times a chapter, and clear the sticky bar.
+    const y = target.getBoundingClientRect().top + window.scrollY - (head?.offsetHeight ?? 0) - 14;
+    window.scrollTo({ top: Math.max(0, y) });
   }
 
   // The contents page links to a session directly, so a chapter button can open
@@ -282,7 +291,14 @@
     .chapter-hero { grid-template-columns: 1fr; gap: 4px; padding-bottom: 4px; }
     .hero-art { order: -1; max-width: 460px; }
   }
-  :global(html), :global(body) { overflow: auto; background: #f1ede4; }
+  /* overflow:auto here made body a viewport-height scroll container, so the
+     document never scrolled and window.scrollTo was a no-op: clicking Next
+     session changed the session and left you at the bottom of the page.
+     visible is the value that keeps the viewport scrolling, and the height
+     override is needed too because global.css pins html and body to 100%. */
+  :global(html), :global(body), :global(#app) {
+    height: auto !important; min-height: 100%; overflow: visible !important; background: #f1ede4;
+  }
   :global(body) { position: static; }
 
   .reader { width: 100%; max-width: none; min-height: 100vh; background: #f1ede4; color: #241f16; }

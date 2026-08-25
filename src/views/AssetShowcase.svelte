@@ -243,7 +243,7 @@
 </section>
 
 <style>
-  :global(html), :global(body) { overflow: auto; background: #f1ede4; }
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important; background: #f1ede4; }
   :global(body) { position: static; }
   .asset-shell { min-height: 100vh; max-width: none; padding: clamp(18px, 4vw, 52px); background: radial-gradient(circle at 76% 4%, #fbf8f1, #f1ede4 58%); overflow:auto; }
   header { max-width: 1240px; margin: 0 auto 24px; display:flex; align-items:flex-end; justify-content:space-between; gap:24px; }
