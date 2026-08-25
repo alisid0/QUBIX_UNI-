@@ -94,7 +94,15 @@ console.log('');
 // written for other chapters has no game of its own, and this says so by name
 // instead of letting it look covered.
 const { MISSIONS } = await import('../src/lib/game/progress.js');
-const OWN = { 2: 'rate-desk', 4: 'distribution-desk', 5: 'sql-console', 6: 'python-trace' };  // chapters with a mission written for them
+// Worked out rather than listed. A hand-kept map said four chapters owned a
+// game when six did, and hid that the Analyst Decision Desk names chapter 07
+// as its home while chapter 07 linked elsewhere.
+const OWN = Object.fromEntries(SHARED_FOUNDATIONS.map(({ chapter, book }) => {
+  const slug = book.sessions
+    .map(s => (s.practice.href.match(/mission=([a-z-]+)/) || [])[1])
+    .find(sl => sl && MISSIONS.some(m => m.slug === sl && m.reading?.chapter === chapter));
+  return [chapter, slug];
+}).filter(([, slug]) => slug));
 console.log('reading and playing\n');
 let owned = 0;
 for (const { chapter, book } of SHARED_FOUNDATIONS) {

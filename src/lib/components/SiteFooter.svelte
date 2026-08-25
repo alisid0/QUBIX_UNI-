@@ -20,13 +20,12 @@
     'Statistics before models', 'SQL foundations', 'Python foundations', 'Explain what you found'
   ];
 
+  // Only what nothing else on the page links to. Story mode, the wiki and the
+  // library sat here as well as in the landing page's own row, which is the same
+  // destination offered twice on one screen.
   const ELSEWHERE = [
-    ['?mode=game&mission=campaign', 'Story mode'],
-    ['?mode=wiki', 'Data science wiki'],
-    ['/library/index.html', 'The library'],
     ['/library/big-sheet-of-graphs.html', 'The Big Sheet of Graphs'],
-    ['/library/functions.html', 'Calculus From The Ground Up'],
-    ['/?prototype=variables-and-rates', 'Mathematics pilot']
+    ['/library/functions.html', 'Calculus From The Ground Up']
   ];
 </script>
 

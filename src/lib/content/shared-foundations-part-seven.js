@@ -147,7 +147,7 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
         ]),
         explanation: 'The association is real and worth stating. What the data cannot do is choose between explanations, and here a third factor, warm weather, plainly drives both.'
       }),
-      practice: Object.freeze({ title: 'Join Without Changing the Grain', href: '?mode=game&mission=join-grain', instruction: 'Before interpreting any figure, confirm the grain it was computed at supports the sentence you want to write.' }),
+      practice: Object.freeze({ title: 'Analyst Decision Desk', href: '?mode=game&mission=analyst-desk', instruction: 'Eight requests, each one asking you to separate what the evidence shows from what you would like to say about it.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Government Analysis Function — communicating uncertainty', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/communicating-quality-uncertainty-and-change/' }),
         Object.freeze({ label: 'Statistics Canada — statistical units', url: 'https://www150.statcan.gc.ca/n1/pub/11-634-x/2016001/section1/chap3-eng.htm' })

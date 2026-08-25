@@ -11,7 +11,8 @@
   // belongs to rather than competing on the front page, and the role volumes
   // keep their planned chapters, marked as unwritten rather than quietly implied
   // to be ready.
-  import { partsForChapter, writtenChapters, volumeMinutes } from '../lib/content/shared-foundations.js';
+  import { SHARED_FOUNDATIONS, partsForChapter, writtenChapters, volumeMinutes, volumeStudyMinutes,
+    volumePlayMinutes, volumeSessions } from '../lib/content/shared-foundations.js';
   import { MISSIONS, TOTAL_XP, RANKS } from '../lib/game/progress.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
@@ -101,7 +102,22 @@
   const minutes = m => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`);
   const sessionsFor = i => partsForChapter(i + 1);
   const totalSessions = CHAPTERS.reduce((n, _, i) => n + sessionsFor(i).length, 0);
-  const readingTime = minutes(volumeMinutes);
+  // The two halves, quoted apart. Every session declares reading minutes and
+  // doing minutes; only their sum was ever shown, which told a newcomer how
+  // long the whole thing takes without saying what kind of time it is.
+  const readingTime = minutes(volumeStudyMinutes);
+  const doingTime = minutes(volumePlayMinutes);
+  const bothTime = minutes(volumeMinutes);
+  // Chapters that send you to a mission written for them, rather than one
+  // borrowed from elsewhere. Derived, because a hardcoded count drifts silently:
+  // this one was written as 4 and was really 6, and working it out found that
+  // the Analyst Decision Desk names chapter 07 session 03 as its home while that
+  // session was linking somewhere else entirely.
+  const ownGames = SHARED_FOUNDATIONS.filter(({ chapter, book }) =>
+    book.sessions.some(s => {
+      const slug = (s.practice.href.match(/mission=([a-z-]+)/) || [])[1];
+      return slug && MISSIONS.some(m => m.slug === slug && m.reading?.chapter === chapter);
+    })).length;
   const firstSessionTime = minutes(partsForChapter(1)[0].minutes);
   const finalRank = RANKS[RANKS.length - 1].title;
 
@@ -117,137 +133,95 @@
 </svelte:head>
 
 <section class="landing qx-shell">
-  <div class="nav-wrap"><SiteNav /></div>
+  <div class="nav-wrap"><SiteNav subjects={false} /></div>
 
   <header>
-    <p>QUBIX UNIVERSITY</p>
+    <p>WELCOME TO QUBIX UNIVERSITY</p>
     <h1>Learn data science from zero.</h1>
-    <span>No prior data, maths or programming experience is assumed. You read an idea, then use it inside a working store until it is yours.</span>
+    <span>No prior data, maths or programming experience is assumed. Start at chapter one and
+      work forward: by the end you can take a messy question, get a trustworthy number out of it,
+      and say what it does and does not show.</span>
     <p class="free">No account needed, nothing to pay. Your progress saves on this device.</p>
   </header>
 
-  <!-- The map. A beginner's first question is not "reading or doing", it is
-       "what is this and where does it end", so that is answered before any
-       choice is offered. -->
-  <section class="map" aria-labelledby="map-heading">
-    <p class="eyebrow" id="map-heading">WHERE THIS GOES</p>
-    <ol class="journey">
-      <li class="here">
-        <b>Volume 0</b>
-        <em>Shared Foundations. What every data role needs before specialising.</em>
-        <span class="state on">Written · you are here</span>
-      </li>
-      <li>
-        <b>A role</b>
-        <em>Analyst, Data Engineer, Data Scientist or Machine Learning Engineer.</em>
-        <span class="state">Planned</span>
-      </li>
-      <li>
-        <b>Deeper projects</b>
-        <em>Longer work that uses everything above it.</em>
-        <span class="state">Planned</span>
-      </li>
-    </ol>
-    <p class="orient">Start at the left. Volume 0 is {totalSessions} sessions of reading and {MISSIONS.length} missions, and finishing it earns the rank of {finalRank}.</p>
+  <!-- The premise, before anything else. The course is two kinds of material and
+       a newcomer cannot choose between them until somebody says so plainly. -->
+  <section class="premise" aria-labelledby="premise-heading">
+    <p class="eyebrow" id="premise-heading">HOW THE COURSE WORKS</p>
+    <h2>Two kinds of material, and you need both.</h2>
+    <p class="lede">Every session gives you something to understand and something to do with it.
+      Reading on its own leaves you able to recognise an idea but not use it. Doing on its own
+      leaves you able to follow steps without knowing when they stop applying.</p>
+
+    <div class="halves">
+      <article class="half">
+        <p class="tag">INFORMATION</p>
+        <h3>Material you read</h3>
+        <p>Written explanations with worked examples and computed figures. {CHAPTERS.length} chapters,
+          {volumeSessions} sessions, each one ending in a single question you answer without looking back.</p>
+        <dl>
+          <div><dt>Time to read it all</dt><dd>{readingTime}</dd></div>
+          <div><dt>First session</dt><dd>{partsForChapter(1)[0].minutes} min</dd></div>
+        </dl>
+        <a class="primary" href="?mode=game&mission=shared-book&chapter=1&session=1">Start reading <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="half">
+        <p class="tag">PRACTICAL</p>
+        <h3>Material you do</h3>
+        <p>{MISSIONS.length} missions inside Qubix Superstore, a working shop with real tables and real
+          mistakes in them. You make the decision, and the mission tells you what it cost.</p>
+        <dl>
+          <div><dt>Time to do them all</dt><dd>{doingTime}</dd></div>
+          <div><dt>Earns</dt><dd>{TOTAL_XP.toLocaleString()} XP · {RANKS.length} ranks</dd></div>
+        </dl>
+        <a class="primary alt" href="?mode=game&mission=checkout">Play the first mission <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+
+    <p class="together"><b>Together: {bothTime}</b>
+      <span>Taken at one session a day, Volume 0 is about a month. Nothing is timed and nothing expires.</span></p>
   </section>
 
-  <!-- Four shelves for the four things that exist. Story mode, the role games
-       and the mathematics pilot open from inside the shelf they belong to,
-       rather than taking a slot of their own on the front page. -->
-  <div class="shelf">
-    <section class="unit" class:open={open === 'chapters'}>
-      <button aria-expanded={open === 'chapters'} on:click={() => toggle('chapters')}>
-        <span class="label">CHAPTERS</span>
-        <b>Read the idea</b>
-        <em>{CHAPTERS.length} chapters · {totalSessions} sessions · {readingTime}</em>
-      </button>
-      {#if open === 'chapters'}
-        <div class="body">
-          <ol class="rows">
-            {#each CHAPTERS as [title, blurb], i}
-              {@const parts = sessionsFor(i)}
-              <li>
-                <a href={`?mode=game&mission=shared-book&chapter=${i + 1}&session=1`}>
-                  <span class="num">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="text"><b>{title}</b><em>{blurb}</em></span>
-                  <span class="meta">{parts.length} parts</span>
-                </a>
-              </li>
-            {/each}
-          </ol>
-          <a class="primary" href="?mode=game&mission=shared-book&chapter=1&session=1">Start chapter 01 · {firstSessionTime} <span aria-hidden="true">→</span></a>
-        </div>
-      {/if}
-    </section>
+  <!-- What you will actually be able to do, chapter by chapter. -->
+  <section class="learn" aria-labelledby="learn-heading">
+    <p class="eyebrow" id="learn-heading">WHAT YOU WILL LEARN</p>
+    <ol class="subjects">
+      {#each CHAPTERS as [title, blurb], i}
+        {@const parts = sessionsFor(i)}
+        <li>
+          <a href={`?mode=game&mission=shared-book&chapter=${i + 1}&session=1`}>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="text"><b>{title}</b><em>{blurb}</em></span>
+            <span class="meta">{parts.length} sessions</span>
+          </a>
+        </li>
+      {/each}
+    </ol>
+  </section>
 
-    <section class="unit" class:open={open === 'missions'}>
-      <button aria-expanded={open === 'missions'} on:click={() => toggle('missions')}>
-        <span class="label">MISSIONS</span>
-        <b>Use it in the store</b>
-        <em>{MISSIONS.length} missions · {TOTAL_XP.toLocaleString()} XP · {RANKS.length} ranks</em>
-      </button>
-      {#if open === 'missions'}
-        <div class="body">
-          <ol class="rows compact">
-            {#each MISSIONS as m, i}
-              <li>
-                <a href={`?mode=game&mission=${m.slug}`}>
-                  <span class="num">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="text"><b>{m.mission.title}</b><em>{m.teaches}</em></span>
-                  <span class="meta">{m.xp} XP</span>
-                </a>
-              </li>
-            {/each}
-          </ol>
-          <div class="also">
-            <a href="?mode=game&mission=store">The Superstore floor · every mission in its room</a>
-            <a href="?mode=game">The academy · progress and ranks</a>
-            <a href="?mode=game&mission=campaign">Story mode · the connected draft</a>
-            <a href="?mode=game&mission=role-game">Role games · plans, not built yet</a>
-          </div>
-          <a class="primary" href="?mode=game&mission=checkout">Play mission 01 · no reading needed <span aria-hidden="true">→</span></a>
-        </div>
-      {/if}
-    </section>
+  <!-- Where the course actually stands. Written plainly, including the parts
+       that are not built, because the alternative is a learner finding out. -->
+  <section class="stands" aria-labelledby="stands-heading">
+    <p class="eyebrow" id="stands-heading">WHERE THE COURSE STANDS TODAY</p>
+    <ul class="stats">
+      <li><b>{writtenChapters} of {CHAPTERS.length}</b><span>Volume 0 chapters written</span></li>
+      <li><b>{volumeSessions}</b><span>reading sessions</span></li>
+      <li><b>{MISSIONS.length}</b><span>missions playable</span></li>
+      <li><b>{ownGames} of {CHAPTERS.length}</b><span>chapters with their own game</span></li>
+    </ul>
+    <p class="honest">Volume 0 is complete and playable end to end. The four role volumes after it are
+      planned and described but not written, and three of their games are plans rather than games.
+      Everything here is an AI draft under founder review.</p>
+    <div class="also-row">
+      <!-- Only what the nav above does not already carry. Play, Library, Wiki
+           and Mathematics live there, and repeating them here put the same four
+           destinations on one screen twice. -->
+      <a href="?mode=game&mission=store">The Superstore floor · every mission in its room</a>
+      <a href="?mode=game&mission=campaign">Story mode · the connected draft</a>
+    </div>
+  </section>
 
-    <section class="unit" class:open={open === 'library'}>
-      <button aria-expanded={open === 'library'} on:click={() => toggle('library')}>
-        <span class="label">LIBRARY</span>
-        <b>Standing references</b>
-        <em>{BOOKS.length} books you can read in any order</em>
-      </button>
-      {#if open === 'library'}
-        <div class="body">
-          <ol class="rows">
-            {#each BOOKS as [title, href, blurb], i}
-              <li><a {href}><span class="num">{String(i + 1).padStart(2, '0')}</span><span class="text"><b>{title}</b><em>{blurb}</em></span></a></li>
-            {/each}
-          </ol>
-          <div class="also">
-            <a href="/library/index.html">The library shelf</a>
-            <a href="/?prototype=variables-and-rates">Mathematics pilot · an experiment in progress</a>
-          </div>
-        </div>
-      {/if}
-    </section>
-
-    <section class="unit" class:open={open === 'wiki'}>
-      <button aria-expanded={open === 'wiki'} on:click={() => toggle('wiki')}>
-        <span class="label">WIKI</span>
-        <b>Look something up</b>
-        <em>The whole curriculum, ordered by what it needs first</em>
-      </button>
-      {#if open === 'wiki'}
-        <div class="body">
-          <p class="plain">Every topic the university intends to teach, in the order its prerequisites allow. Use it to find where a term you have met sits, and what has to come before it.</p>
-          <a class="primary" href="?mode=wiki">Open the wiki <span aria-hidden="true">→</span></a>
-        </div>
-      {/if}
-    </section>
-  </div>
-
-  <!-- Kept, and marked. These are real plans with described chapters, and none
-       of them is written, so the strip says so on every row. -->
   <section class="after" aria-labelledby="after-heading">
     <p class="eyebrow" id="after-heading">WHAT COMES AFTER VOLUME 0</p>
     <p class="orient">Four role volumes, {ROLES.length * 7} chapters planned and described. None is written yet. Volume 0 is the prerequisite for all of them.</p>
@@ -273,7 +247,6 @@
     </ol>
   </section>
 
-  <p class="rule">Every board here is an AI draft under founder review. {writtenChapters} of {CHAPTERS.length} Volume 0 chapters are written.</p>
 
   <div class="foot-wrap"><SiteFooter compact /></div>
 </section>
@@ -375,6 +348,52 @@
         color:var(--soft);font:400 13.5px/1.6 var(--qx-font)}
 
   button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  /* The premise. One idea per block, in the order a newcomer asks them. */
+  .premise{padding:30px 0 34px;border-top:1px solid var(--rule)}
+  .premise h2{margin:0;font:400 clamp(23px,3.4vw,30px)/1.15 Georgia,serif;letter-spacing:-.015em;text-wrap:balance}
+  .lede{margin:11px 0 0;max-width:66ch;color:var(--soft);font:400 15.5px/1.6 var(--qx-font)}
+  .halves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
+  .half{padding:20px;border:1px solid var(--rule);border-radius:11px;background:rgba(255,255,255,.4);
+        display:flex;flex-direction:column;gap:9px}
+  .tag{margin:0;color:var(--accent);font:900 10.5px var(--qx-font);letter-spacing:.14em}
+  .half h3{margin:0;font:400 21px Georgia,serif}
+  .half>p{margin:0;color:var(--soft);font:400 14px/1.55 var(--qx-font)}
+  .half dl{margin:6px 0 0;display:grid;gap:7px;padding-top:12px;border-top:1px solid var(--rule)}
+  .half dl div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .half dt{color:var(--soft);font:600 13px var(--qx-font)}
+  .half dd{margin:0;color:var(--ink);font:800 14px var(--qx-font);font-variant-numeric:tabular-nums}
+  .half .primary{margin-top:12px}
+  .primary.alt{background:#8c4c2e}
+  .primary.alt:hover{background:#743d24}
+  .together{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:20px 0 0;padding:14px 16px;
+            border-radius:10px;background:var(--accent-soft, #efe8dc)}
+  .together b{font:800 16px var(--qx-font);font-variant-numeric:tabular-nums}
+  .together span{color:var(--soft);font:400 14px var(--qx-font)}
+
+  .learn{padding:30px 0 0;border-top:1px solid var(--rule)}
+  .subjects{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--rule)}
+  .subjects li{border-bottom:1px solid var(--rule)}
+  .subjects a{display:grid;grid-template-columns:34px 1fr auto;align-items:baseline;gap:16px;
+              padding:13px 0;color:var(--ink);text-decoration:none}
+  .subjects a:hover .text b{color:var(--accent)}
+
+  .stands{padding:32px 0 0;border-top:1px solid var(--rule);margin-top:32px}
+  .stats{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 0;padding:0}
+  .stats li{display:flex;flex-direction:column;gap:3px}
+  .stats b{font:400 26px Georgia,serif;font-variant-numeric:tabular-nums}
+  .stats span{color:var(--soft);font:400 13px/1.4 var(--qx-font)}
+  .honest{margin:20px 0 0;max-width:70ch;color:var(--soft);font:400 14px/1.6 var(--qx-font)}
+  .also-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--rule)}
+  .also-row a{color:var(--soft);font:500 14px var(--qx-font);text-decoration:none;
+              border-bottom:1px solid var(--rule);padding-bottom:2px}
+  .also-row a:hover{color:var(--ink);border-color:var(--ink)}
+
+  @media(max-width:720px){
+    .halves{grid-template-columns:1fr}
+    .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .subjects a{grid-template-columns:28px 1fr;row-gap:5px}
+    .subjects .meta{grid-column:2}
+  }
 
   @media (max-width:760px){
     .journey{grid-template-columns:1fr;gap:4px}

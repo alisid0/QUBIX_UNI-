@@ -45,3 +45,12 @@ export const partsForChapter = n => {
 
 export const writtenChapters = SHARED_FOUNDATIONS.length;
 export const volumeMinutes = SHARED_FOUNDATIONS.reduce((n, c) => n + c.book.totalMinutes, 0);
+
+// Reading and doing, separately. Every session declares both, and the volume
+// total has always been their sum, so the two halves of the course could never
+// be quoted apart from each other. They are the first thing somebody deciding
+// whether to start wants to know.
+const allSessions = SHARED_FOUNDATIONS.flatMap(c => c.book.sessions);
+export const volumeStudyMinutes = allSessions.reduce((n, s) => n + s.studyMinutes, 0);
+export const volumePlayMinutes = allSessions.reduce((n, s) => n + s.playMinutes, 0);
+export const volumeSessions = allSessions.length;
