@@ -3,6 +3,9 @@
   import { bookForChapter } from '../lib/content/shared-foundations.js';
   import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
   import SiteNav from '../lib/components/SiteNav.svelte';
+  import Figure from '../lib/components/Figure.svelte';
+  import { roomForChapter } from '../lib/game/store-map.js';
+  import { MISSIONS } from '../lib/game/progress.js';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
@@ -10,6 +13,13 @@
   const askedChapter = Number(new URLSearchParams(window.location.search).get('chapter'));
   const chapterNumber = Number.isInteger(askedChapter) && bookForChapter(askedChapter) ? askedChapter : 1;
   const book = bookForChapter(chapterNumber);
+
+  // The room this chapter is set in, worked out from where its missions stand
+  // on the floor plan. No second list to keep in step.
+  const room = roomForChapter(chapterNumber, MISSIONS);
+  const roomSpot = room
+    ? room.spots.find(sp => MISSIONS.some(m => m.slug === sp.slug && m.reading?.chapter === chapterNumber))
+    : null;
 
   // Progress is kept per chapter, so finishing chapter 1 does not mark chapter 2.
   const storageKey = `qubix-shared-foundations-${book.id}-v1`;
@@ -116,11 +126,27 @@
   <div class="subject-rail"><SiteNav links={false} chapter={chapterNumber} /></div>
   </div>
 
+  {#if room}
+    <!-- The chapter opens on the place it is practised, so reading and playing
+         are visibly the same building rather than two products. -->
+    <header class="chapter-hero">
+      <div class="hero-text">
+        <p class="hero-eyebrow">CHAPTER {String(chapterNumber).padStart(2, '0')} · {book.subtitle.toUpperCase()}</p>
+        <h1>{book.title}</h1>
+        <p class="hero-sub">{book.subtitle}</p>
+        {#if roomSpot}
+          <p class="hero-where">You practise this at <b>{roomSpot.at}</b> in the <b>{room.name}</b>.
+            <a href={`?mode=game&mission=store`}>See it on the floor →</a></p>
+        {/if}
+      </div>
+      <div class="hero-art">
+        <img src={`/rooms/${room.id}.webp`} alt="" loading="lazy" />
+      </div>
+    </header>
+  {/if}
   <div class="layout">
     <aside class="toc">
-      <p>{book.subtitle.toUpperCase()}</p>
-      <h1>{book.title}</h1>
-      <span>{book.subtitle}</span>
+      {#if !room}<p>{book.subtitle.toUpperCase()}</p><h1>{book.title}</h1><span>{book.subtitle}</span>{/if}
       <div class="time"><small>EXPECTED TIME FOR THIS PART</small><b>{formatTime(book.totalMinutes)}</b><small>Your pace may vary</small></div>
       <nav aria-label="Book sessions">
         {#each book.sessions as item, index}
@@ -154,6 +180,8 @@
             {#each section.paragraphs as paragraph}<p>{paragraph}</p>{/each}
           </section>
         {/each}
+
+        {#if session.figure}<Figure spec={session.figure} />{/if}
 
         <section class="example">
           <div class="section-label"><span>WORKED EXAMPLE</span><b>{session.example.title}</b></div>
@@ -233,6 +261,27 @@
 
 <style>
   :global(.qubix-university) { height: auto !important; overflow: visible !important; }
+  /* The chapter opener. Rich furniture, but it sits above the prose rather
+     than inside it, so the reading column is untouched. */
+  .chapter-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .92fr);
+                  gap: clamp(16px, 3vw, 40px); align-items: center;
+                  max-width: 1240px; margin: 0 auto; padding: clamp(20px, 3vw, 40px) clamp(16px, 4vw, 52px) 0; }
+  .hero-text { display: flex; flex-direction: column; gap: 10px; }
+  .hero-eyebrow { margin: 0; color: #8c4c2e; font: 900 11.5px var(--qx-font); letter-spacing: .14em; }
+  .chapter-hero h1 { margin: 0; font: 400 clamp(30px, 4.6vw, 46px)/1.06 Georgia, serif;
+                     letter-spacing: -.02em; color: #241f16; text-wrap: balance; }
+  .hero-sub { margin: 0; max-width: 46ch; color: #625a49; font: 400 16px/1.55 var(--qx-font); }
+  .hero-where { margin: 6px 0 0; max-width: 46ch; color: #625a49; font: 400 14.5px/1.6 var(--qx-font); }
+  .hero-where b { color: #241f16; font-weight: 700; }
+  .hero-where a { color: #8c4c2e; text-decoration: none; border-bottom: 1px solid currentColor;
+                  white-space: nowrap; padding-bottom: 1px; }
+  .hero-art { position: relative; }
+  .hero-art img { display: block; width: 100%; height: auto; }
+
+  @media (max-width: 860px) {
+    .chapter-hero { grid-template-columns: 1fr; gap: 4px; padding-bottom: 4px; }
+    .hero-art { order: -1; max-width: 460px; }
+  }
   :global(html), :global(body) { overflow: auto; background: #f1ede4; }
   :global(body) { position: static; }
 

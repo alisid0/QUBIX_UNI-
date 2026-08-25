@@ -36,6 +36,11 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
         Object.freeze(['B-17', 'quiet, then a sharp evening peak', '40', 'concentrate staff after 17:00']),
         Object.freeze(['Both', 'invisible in the summary', 'identical', 'the mean cannot tell them apart'])
       ]) }),
+      figure: Object.freeze({
+        kind: 'histogram', case: 'baskets', width: 10,
+        caption: 'Figure 1 · Forty Saturday baskets at Northgate',
+        note: 'Drawn by the same function the Distribution Desk draws with, at the same bin width. The mean sits to the right of almost every basket, because a few large ones pull it there.'
+      }),
       rehearsal: Object.freeze({
         mission: 'distribution-desk',
         lead: 'The first case in the mission at the end of this session is a real request with real numbers. Look at the values before you meet the histogram.',

@@ -82,6 +82,11 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         Object.freeze(['B-17', '1,400 / 12,000', '11.7%', 'a stable figure worth acting on']),
         Object.freeze(['Both', 'quoted as "12%"', 'identical', 'the reason counts travel with rates'])
       ]) }),
+      figure: Object.freeze({
+        kind: 'rates', case: 'complaints',
+        caption: 'Figure 1 · Two branches, counted and then divided',
+        note: 'Northgate has three times the complaints and a quarter of the complaint rate. The bars are computed from the same values the Rate Desk uses.'
+      }),
       rehearsal: Object.freeze({
         mission: 'rate-desk',
         lead: 'The first figure in the mission at the end of this session is below. Decide the denominator here, and the mission becomes a check on your reasoning rather than a first meeting with it.',

@@ -152,3 +152,23 @@ export function planWith(statuses) {
 /** Which room a learner should walk into next. */
 export const nextRoom = plan =>
   plan.find(r => r.state === 'open') || plan.find(r => r.state !== 'done' && r.total) || null;
+
+/**
+ * Which room a chapter is set in, worked out from where its missions stand
+ * rather than declared. A chapter whose missions are spread over several rooms
+ * takes the room holding the most of them; ties go to the earliest room on the
+ * plan, so the answer is stable.
+ *
+ * This is what lets the reader open a chapter on the place you will practise it,
+ * without a second list to keep in step with the first.
+ */
+export function roomForChapter(chapter, missions) {
+  const here = new Set(missions.filter(m => m.reading?.chapter === chapter).map(m => m.slug));
+  if (!here.size) return null;
+  let best = null, bestCount = 0;
+  for (const room of ROOMS) {
+    const n = room.spots.filter(s => here.has(s.slug)).length;
+    if (n > bestCount) { best = room; bestCount = n; }
+  }
+  return best;
+}
