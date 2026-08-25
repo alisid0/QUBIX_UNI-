@@ -30,6 +30,10 @@ const casesOf = m => m.cases || m.tasks || m.requests || [];
 // part is checked separately rather than the joined string.
 const parts = value => String(value).split(' · ').map(s => s.trim()).filter(Boolean);
 
+// "60,000" and 60000 are the same figure; the separator is a reading aid the
+// mission data does not carry.
+const unformat = s => s.replace(/(\d),(?=\d{3}\b)/g, '$1');
+
 let rehearsed = 0, quoted = 0;
 
 for (const { chapter, book } of SHARED_FOUNDATIONS) {
@@ -59,7 +63,7 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
       for (const [label, value] of rc.facts) {
         for (const part of parts(value)) {
           quoted += 1;
-          if (!blob.includes(part)) missing.push(`${label}: "${part}"`);
+          if (!unformat(blob).includes(unformat(part))) missing.push(`${label}: "${part}"`);
         }
       }
       ok(`${where} · ${rc.caseId} states only what the case says`, !missing.length,

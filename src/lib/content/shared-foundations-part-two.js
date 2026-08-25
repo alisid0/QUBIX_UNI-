@@ -82,6 +82,26 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         Object.freeze(['B-17', '1,400 / 12,000', '11.7%', 'a stable figure worth acting on']),
         Object.freeze(['Both', 'quoted as "12%"', 'identical', 'the reason counts travel with rates'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'rate-desk',
+        lead: 'The first figure in the mission at the end of this session is below. Decide the denominator here, and the mission becomes a check on your reasoning rather than a first meeting with it.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'complaints',
+            facts: Object.freeze([
+              Object.freeze(['What was asked', 'Which branch has the bigger complaints problem?']),
+              Object.freeze(['Northgate complaints', '120']),
+              Object.freeze(['Northgate transactions', '60,000']),
+              Object.freeze(['Riverside complaints', '40']),
+              Object.freeze(['Riverside transactions', '5,000'])
+            ]),
+            question: 'Northgate has three times the complaints. Which branch would you send help to first?',
+            answer: 'Riverside, which has a third of the complaints.',
+            why: 'Northgate is 120 over 60,000, which is 2.0 per 1,000 transactions. Riverside is 40 over 5,000, which is 8.0 per 1,000. Dividing by the population each count came from reverses the answer completely.'
+          })
+        ]),
+        closing: 'This is the whole of this session in one pair of numbers. A count is not a rate, and until it is divided by the population it came from it cannot be compared with anything.'
+      }),
       workbook: Object.freeze({ title: 'Fifteen-minute denominator hunt', prompt: 'Find three percentages in a news article, a report or an advert.', steps: Object.freeze([
         'For each one, write down what was divided by what.',
         'Find or estimate the size of the denominator.',
@@ -98,7 +118,7 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         ]),
         explanation: 'Forty per cent of five visits is two people. The trend and the target both depend on the base being large enough for the figure to mean anything, so the count comes first.'
       }),
-      practice: Object.freeze({ title: 'What Does One Row Represent?', href: '?mode=game&mission=table-grain', instruction: 'Name the denominator by naming the grain: a rate is only as clear as the row it counts.' }),
+      practice: Object.freeze({ title: 'The Rate Desk', href: '?mode=game&mission=rate-desk', instruction: 'Name the denominator under six figures, then compute the comparison each one actually allows.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Statistics Canada — statistical units', url: 'https://www150.statcan.gc.ca/n1/pub/11-634-x/2016001/section1/chap3-eng.htm' }),
         Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' })
@@ -128,6 +148,31 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         Object.freeze(['Compared with what?', '200 ÷ 5,000', '4% relative change']),
         Object.freeze(['How fast?', '200 ÷ 14 days', '≈ 14.3 units per day'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'rate-desk',
+        lead: 'Two of the six figures in the mission are movements rather than comparisons. Work them out here first.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'points',
+            facts: Object.freeze([
+              Object.freeze(['What was asked', 'Card payments were 40% of transactions in January and 44% in June. How much did they rise?'])
+            ]),
+            question: 'Is that a rise of 4, or a rise of 10? Both are defensible.',
+            answer: 'Both, and they are different measurements.',
+            why: 'The share rose by 4 percentage points, which is the gap between the two figures. Measured against where it started, 4 divided by 40 is a rise of 10%. Writing a 4% rise states the point difference in the language of relative change, which is a smaller and different claim.'
+          }),
+          Object.freeze({
+            caseId: 'updown',
+            facts: Object.freeze([
+              Object.freeze(['What was asked', 'A price rose 10% in spring, then fell 10% in autumn. Is it back where it started?'])
+            ]),
+            question: 'Equal percentages, opposite directions. Where does it end?',
+            answer: 'Below where it began.',
+            why: 'The rise is taken from the original price and the fall is taken from the raised one, so the second change is the larger amount of money. A 10% rise followed by a 10% fall always lands 1% under the start, whatever the starting figure was.'
+          })
+        ]),
+        closing: 'Both cases turn on the same question this session asks: what is the change measured against? Percentages that look like they cancel do not, because each one has a different base underneath it.'
+      }),
       workbook: Object.freeze({ title: 'Fifteen-minute change triple', prompt: 'Take any quantity you can measure twice: steps walked, money spent, a battery percentage.', steps: Object.freeze([
         'Record the value at two moments and note the gap between them.',
         'Compute the absolute change, keeping the unit.',
@@ -144,7 +189,7 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         ]),
         explanation: '£100 rises to £150, and 50% of 150 is 75, so it finishes at £75. The two percentages are taken of different bases, so they do not cancel.'
       }),
-      practice: Object.freeze({ title: 'Trace the Number', href: '?mode=game&mission=data-lineage', instruction: 'Follow a value through observation and calculation, and name what each step changed.' }),
+      practice: Object.freeze({ title: 'The Rate Desk', href: '?mode=game&mission=rate-desk', instruction: 'Take the same movement three ways: absolute, relative, and per unit of time.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' }),
         Object.freeze({ label: 'NIST — SI units', url: 'https://www.nist.gov/pml/owm/metric-si/si-units' })

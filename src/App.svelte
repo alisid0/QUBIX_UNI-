@@ -82,7 +82,9 @@
     // Keep each dynamic import in its own branch. A nested conditional caused
     // Vite to preload GameHub.css for every mission, leaving the selected
     // mission's component mounted without its stylesheet in production.
-    if (mission === 'python-trace') {
+    if (mission === 'rate-desk') {
+      gamePreview = import('./views/RateDeskMission.svelte');
+    } else if (mission === 'python-trace') {
       gamePreview = import('./views/PythonTraceMission.svelte');
     } else if (mission === 'distribution-desk') {
       gamePreview = import('./views/DistributionDeskMission.svelte');

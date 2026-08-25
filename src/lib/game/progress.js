@@ -21,6 +21,7 @@ import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
 import { SQL_CONSOLE_MISSION } from './sql-console-mission.js';
 import { DISTRIBUTION_DESK_MISSION } from './distribution-desk-mission.js';
 import { PYTHON_TRACE_MISSION } from './python-trace-mission.js';
+import { RATE_DESK_MISSION } from './rate-desk-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -62,7 +63,10 @@ export const MISSIONS = Object.freeze([
     reading: { chapter: 4, session: 1, label: 'Look at the shape before the summary' } },
   { slug: 'python-trace', mission: PYTHON_TRACE_MISSION, xp: 170,
     teaches: 'Predicting what a program leaves in each name, then stepping through to see it happen.',
-    reading: { chapter: 6, session: 1, label: 'Telling a machine what to do' } }
+    reading: { chapter: 6, session: 1, label: 'Telling a machine what to do' } },
+  { slug: 'rate-desk', mission: RATE_DESK_MISSION, xp: 150,
+    teaches: 'Naming the denominator under a figure before comparing anything with it.',
+    reading: { chapter: 2, session: 2, label: 'Ratios, rates and percentages' } }
 ].map(Object.freeze));
 
 export const TOTAL_XP = MISSIONS.reduce((n, m) => n + m.xp, 0);
