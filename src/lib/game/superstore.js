@@ -77,6 +77,31 @@ export const SYSTEMS = Object.freeze([
   Object.freeze({ id: 'digital', name: 'Digital orders', produces: 'customer_order' })
 ]);
 
+
+/* ── The chain ──────────────────────────────────────────────────────────────
+   The six branches above are the ones missions name and describe. They are not
+   the chain. Join Without Changing the Grain has always quoted 48 branches and
+   2,140 products, and superstore.js quietly said six and nine, so the fiction
+   promised a supermarket group and the world delivered a corner shop.
+
+   The larger number is the true one. These are the counts the generated dataset
+   builds to; the named six and nine are a described subset of them, the way a
+   real analyst knows a handful of stores by name and the rest by id. */
+export const CHAIN = Object.freeze({
+  branches: 48,
+  products: 2140,
+  tillsPerLargeBranch: 12,
+  quarterStart: '2026-04-01',
+  quarterDays: 91
+});
+
+/** Formats the rest of the estate comes in, and how big each one trades. */
+export const FORMATS = Object.freeze([
+  Object.freeze({ format: 'Superstore', count: 8, transactions: 48000, staff: 70, tills: 12 }),
+  Object.freeze({ format: 'Supermarket', count: 17, transactions: 19000, staff: 29, tills: 7 }),
+  Object.freeze({ format: 'Express', count: 23, transactions: 6200, staff: 11, tills: 3 })
+]);
+
 export const branch = id => BRANCHES.find(b => b.id === id) || null;
 export const product = sku => PRODUCTS.find(p => p.sku === sku) || null;
 
