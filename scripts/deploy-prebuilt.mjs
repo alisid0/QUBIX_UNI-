@@ -20,6 +20,11 @@ import { execSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+// Pinned rather than @latest. On 2026-08-27 vercel@latest could not install at
+// all: it depends on @vercel/container@3.0.2, which is not published, so every
+// deploy failed on npx before reaching Vercel. A deploy tool that breaks when
+// somebody else publishes is not a deploy tool. Raise this deliberately.
+const VERCEL = 'vercel@59.6.2';
 const PROD = process.argv.includes('--prod');
 const sh = (cmd, o = {}) => (execSync(cmd, { encoding: 'utf8', ...o }) || '').trim();
 const die = (m, fix) => { console.error(`\n  Refusing to deploy: ${m}`); if (fix) console.error(`  ${fix}`); process.exit(1); };
@@ -51,5 +56,5 @@ console.log(`  prepared ${routes.length - 1} header rules from vercel.json`);
 for (const r of routes.slice(0, -1)) console.log(`    ${r.src.padEnd(22)} ${Object.keys(r.headers).length} headers`);
 console.log(`  uploading dist/ as a finished build (${PROD ? 'PRODUCTION' : 'preview'})…\n`);
 
-sh(`npx --yes vercel@latest deploy --prebuilt --yes${PROD ? ' --prod' : ''}`, { stdio: 'inherit' });
+sh(`npx --yes ${VERCEL} deploy --prebuilt --yes${PROD ? ' --prod' : ''}`, { stdio: 'inherit' });
 console.log(`\n  shipped ${commit}. Now run: node scripts/verify-deploy.mjs <url>`);

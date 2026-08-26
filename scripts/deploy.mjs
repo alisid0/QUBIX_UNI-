@@ -11,6 +11,11 @@ const PROJECT = 'qubix-university';
 const DOMAIN = 'qubix.university';
 
 // execSync returns null when stdio is inherited, so there is nothing to trim.
+// Pinned rather than @latest. On 2026-08-27 vercel@latest could not install at
+// all: it depends on @vercel/container@3.0.2, which is not published, so every
+// deploy failed on npx before reaching Vercel. A deploy tool that breaks when
+// somebody else publishes is not a deploy tool. Raise this deliberately.
+const VERCEL = 'vercel@59.6.2';
 const sh = (cmd, opts = {}) => (execSync(cmd, { encoding: 'utf8', ...opts }) || '').trim();
 const die = (msg, fix) => {
   console.error(`\n  Refusing to deploy: ${msg}`);
@@ -92,8 +97,8 @@ console.log('  publishing to Vercel…');
 const execPath = JSON.stringify(process.execPath);
 const packagePath = process.env.npm_execpath && JSON.stringify(process.env.npm_execpath);
 const vercel = packagePath && /pnpm/i.test(process.env.npm_execpath)
-  ? `${execPath} ${packagePath} dlx vercel@latest`
-  : 'npx --yes vercel@latest';
+  ? `${execPath} ${packagePath} dlx ${VERCEL}`
+  : 'npx --yes ${VERCEL}';
 sh(`${vercel} deploy --prod --yes`, { stdio: 'inherit' });
 
 console.log(`  deployed ${sourceCommit} from ${sourceBranch}.`);
