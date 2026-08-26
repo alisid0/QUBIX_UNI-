@@ -17,3 +17,17 @@ these exact names, all lowercase, `.png`, 1024 × 1024:
 
 Objects need clear space around each one so they can be cut apart into
 individual sprites. Everything paper must be blank: no writing, ruling or print.
+
+## How these assets are used
+
+The sheets are source material, not page backgrounds. A prop is cut out and
+placed only when it represents a real object in the task: a scanner at a till,
+a scale in Goods In, a server in a lineage path. Labels, values, charts, code,
+tables, warning states and completion state remain live HTML/SVG so they stay
+legible, accessible and truthful to the exercise data.
+
+Room `.webp` files belong to navigation and location context. Small SVG
+`PixelAsset` symbols belong to semantic data paths (source → activity → output).
+Neither is used to fill an otherwise empty panel. Until a prop sheet exists and
+has been reviewed, missions keep their current browser-drawn workstations rather
+than fabricating a substitute sprite.

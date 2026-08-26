@@ -5,6 +5,7 @@
   // warned about. Everything is computed SVG: no image is drawn by hand.
   import { ANALYST_DESK_MISSION as M, DESK_STEPS, answerFor, optionsFor, whyFor } from '../lib/game/analyst-desk-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
 
   let caseIndex = 0, stepIndex = 0, selected = '', checked = false, correct = false, done = [];
 
@@ -70,15 +71,13 @@
 <svelte:head><title>{M.title} | Qubix University</title>
 <meta name="description" content="Playable Volume I companion mission: turn an unclear question into a defensible answer." /></svelte:head>
 
-<section class="desk qx-shell">
-  <header>
-    <div class="identity"><span class="role">VOL<br/>I</span><div><p>{M.id} · {M.status} · {M.role}</p><h1>{M.title}</h1></div></div>
-    <nav><a href="?mode=game">Academy</a><a href="?mode=game&mission=foundations&role=analyst">The book</a></nav>
-  </header>
-  <div class="progress" aria-label={`${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+<section class="desk mission-shell qx-shell">
+  <MissionMasthead eyebrow={`${M.id} · BOARDROOM ASSIGNMENT`} title={M.title}
+    roomId="boardroom" roomName="Boardroom · Meeting table" progress={progress}
+    meta={`${missionComplete ? M.cases.length : caseIndex + 1} OF ${M.cases.length} REQUESTS · ${M.role}`} />
 
   <main>
-    <section class="stage">
+    <section class="stage m1-workarea">
       {#if missionComplete}
         <div class="done-panel">
           <span>✓</span><h2>{M.cases.length} questions answered</h2>

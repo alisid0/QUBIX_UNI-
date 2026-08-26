@@ -6,6 +6,7 @@
   import { DISTRIBUTION_DESK_MISSION as M, DESK_STEPS, histogram, summarise,
     answerForShape, optionsForShape, whyForShape } from '../lib/game/distribution-desk-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
 
   let caseIndex = 0, stepIndex = 0, selected = '', checked = false, correct = false, done = [];
   let width = null;
@@ -59,22 +60,12 @@
 <meta name="description" content="Look at the shape of a set of values before summarising it." /></svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header>
-    <div class="identity">
-      <span class="role">STAT</span>
-      <div><p>{M.id} · {M.status} · CHAPTER 04</p><h1>{M.title}</h1></div>
-    </div>
-    <nav aria-label="Mission navigation">
-      <a href="?mode=game">Academy</a>
-      <a href="?mode=game&mission=shared-book&chapter=4&session=1">Chapter 04</a>
-      <a href="?mode=game&mission=analyst-desk">Decision Desk</a>
-    </nav>
-  </header>
-
-  <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+  <MissionMasthead eyebrow={`${M.id} · REPORTING ASSIGNMENT`} title={M.title}
+    roomId="reporting" roomName="Reporting · Collation table" progress={progress}
+    meta={`${missionComplete ? M.cases.length : caseIndex + 1} OF ${M.cases.length} DISTRIBUTIONS · CHAPTER 04`} />
 
   <main>
-    <section class="workbench-card">
+    <section class="workbench-card m1-workarea">
       <div class="stage-heading">
         <div><p class="eyebrow">CORPORATE HQ · DISTRIBUTION DESK</p>
           <h2>{missionComplete ? 'Six distributions read' : c.asked}</h2></div>

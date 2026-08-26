@@ -5,6 +5,7 @@
   // they would. Nothing here is a canned answer.
   import { SQL_CONSOLE_MISSION as M, SALES, runQuery, queryText, answerForSql, optionsForSql, whyForSql } from '../lib/game/sql-console-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
 
   const STEPS = [
     { key: 'clause', label: 'WRITE', question: 'Which clause does this need?',
@@ -48,15 +49,13 @@
 <svelte:head><title>{M.title} | Qubix University</title>
 <meta name="description" content="Playable SQL console: assemble a query clause by clause and watch the grain change." /></svelte:head>
 
-<section class="console qx-shell">
-  <header>
-    <div class="identity"><span class="role">SQL</span><div><p>{M.id} · {M.status} · CHAPTER 05</p><h1>{M.title}</h1></div></div>
-    <nav><a href="?mode=game">Academy</a><a href="?mode=game&mission=shared-book&chapter=5&session=1">Chapter 05</a></nav>
-  </header>
-  <div class="progress" aria-label={`${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+<section class="console mission-shell qx-shell">
+  <MissionMasthead eyebrow={`${M.id} · DATA OFFICE ASSIGNMENT`} title={M.title}
+    roomId="data-office" roomName="Data Office · Near desk" progress={progress}
+    meta={`${missionComplete ? M.cases.length : caseIndex + 1} OF ${M.cases.length} QUERIES · CHAPTER 05`} />
 
   <main>
-    <section class="stage">
+    <section class="stage m1-workarea">
       {#if missionComplete}
         <div class="done-panel">
           <span>✓</span><h2>{M.cases.length} queries assembled</h2>

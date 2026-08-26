@@ -1,6 +1,7 @@
 <script>
   import{ACTION_OPTIONS,DUPLICATE_RECORDS_MISSION,VERDICT_OPTIONS,duplicateGroups,keyValue,sqlForDuplicateCheck}from'../lib/game/duplicate-records-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
   // Remembered, so the hub knows and closing the tab does not undo it.
   $: if (missionComplete) recordCompletion('duplicate-records');
   let caseIndex=0,step='key',selected='',checked=false,correct=false,queryRan=false,completed=[];
@@ -16,9 +17,9 @@
   function resetMission(){caseIndex=0;step='key';selected='';checked=false;correct=false;queryRan=false;completed=[]}
 </script>
 <svelte:head><title>Keys and Duplicate Records | Qubix University</title><meta name="description" content="Local AI draft of a Qubix Superstore SQL duplicate-detection mission."/></svelte:head>
-<section class="mission-shell qx-shell"><header><div class="identity"><span class="role">PRE<br/>INTERN</span><div><p>{DUPLICATE_RECORDS_MISSION.id} · {DUPLICATE_RECORDS_MISSION.status}</p><h1>{DUPLICATE_RECORDS_MISSION.title}</h1></div></div><nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=table-grain">Mission 004</a><a href="?mode=game&mission=join-grain">Mission 006</a><a href="?mode=wiki">Wiki</a></nav></header><div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+<section class="mission-shell qx-shell"><MissionMasthead eyebrow={`${DUPLICATE_RECORDS_MISSION.id} · CUSTOMER RECORD ASSIGNMENT`} title={DUPLICATE_RECORDS_MISSION.title} roomId="customer-desk" roomName="Customer Desk · Service counter" progress={progress} meta={`${missionComplete ? DUPLICATE_RECORDS_MISSION.cases.length : caseIndex + 1} OF ${DUPLICATE_RECORDS_MISSION.cases.length} TABLES`} />
   <main>
-    <section class="sql-window"><div class="window-bar"><span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span><b>Qubix SQL Data Quality Workbench</b><em>{missionComplete?'review complete':caseRecord.table}</em></div>
+    <section class="sql-window m1-workarea"><div class="window-bar"><span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span><b>Qubix SQL Data Quality Workbench</b><em>{missionComplete?'review complete':caseRecord.table}</em></div>
       {#if missionComplete}<div class="complete-screen"><span>✓</span><h2>Duplicate checks complete</h2><p>Six table keys documented and every repeated-key result treated without discarding evidence.</p></div>
       {:else}<div class="tabs"><span class:active={!queryRan}>Source data</span><span class:active={queryRan}>Duplicate check</span><span class:active={queryRan}>Results {groups.length?`(${groups.length})`:'(0)'}</span></div><div class="source-grid"><table><thead><tr>{#each caseRecord.columns as column}<th class:keycol={queryRan&&caseRecord.key.includes(column)}>{column}</th>{/each}</tr></thead><tbody>{#each caseRecord.rows as row}<tr>{#each row as value,columnIndex}<td class:keycol={queryRan&&caseRecord.key.includes(caseRecord.columns[columnIndex])}>{value}</td>{/each}</tr>{/each}</tbody></table></div><div class="editor"><div class="line-numbers">1<br/>2<br/>3<br/>4</div><pre>{queryRan?sql:'-- Choose the key fields to generate a duplicate check.'}</pre></div>{#if queryRan}<div class="results"><div class="result-head">QUERY RESULT · {groups.length} REPEATED KEY {groups.length===1?'GROUP':'GROUPS'}</div>{#if groups.length}<table><thead><tr>{#each caseRecord.key as column}<th>{column}</th>{/each}<th>row_count</th></tr></thead><tbody>{#each groups as group}<tr>{#each group.values as value}<td>{value}</td>{/each}<td class="bad">{group.row_count}</td></tr>{/each}</tbody></table>{:else}<p>0 rows — no key combination occurs more than once.</p>{/if}</div>{/if}{/if}
     </section>

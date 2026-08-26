@@ -1,4 +1,5 @@
 import './lib/styles/global.css';
+import './lib/styles/mission-system.css';
 import { inject } from '@vercel/analytics';
 import App from './App.svelte';
 

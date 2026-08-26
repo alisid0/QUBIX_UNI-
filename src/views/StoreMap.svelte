@@ -16,11 +16,19 @@
   import SiteNav from '../lib/components/SiteNav.svelte';
 
   let state = { completed: [], started: null };
-  let chosen = '';
+  const requestedRoom = new URLSearchParams(window.location.search).get('room');
+  let chosen = requestedRoom || '';
+  let roomNav;
   let missing = {};      // rooms whose art failed to load
   let hovered = '';
 
-  onMount(() => { state = load(); });
+  onMount(() => {
+    state = load();
+    // A mission links directly to its room. On a phone that tab may sit beyond
+    // the initial horizontal viewport, so reveal it instead of showing Goods In
+    // selected-looking while a different room is open below.
+    requestAnimationFrame(() => roomNav?.querySelector('.room-tab.on')?.scrollIntoView({ block: 'nearest', inline: 'center' }));
+  });
 
   $: statuses = statusOf(state);
   $: plan = planWith(statuses);
@@ -63,7 +71,7 @@
     </header>
 
     <!-- Every room, always reachable. Nothing is hidden behind progress. -->
-    <nav class="rooms" aria-label="Rooms">
+    <nav class="rooms" aria-label="Rooms" bind:this={roomNav}>
       {#each plan as r}
         <button class={`room-tab ${r.state}`} class:on={room && r.id === room.id}
           aria-current={room && r.id === room.id ? 'true' : undefined}
@@ -119,7 +127,9 @@
                 {@const spot = room.spots.find(s => s.slug === m.slug)}
                 <li class:done={m.done} class:locked={!m.open}>
                   <svelte:element this={m.open ? 'a' : 'div'} href={m.open ? `?mode=game&mission=${m.slug}` : undefined}
-                    on:mouseenter={() => (hovered = m.slug)} on:mouseleave={() => (hovered = '')}>
+                    role={m.open ? 'link' : 'group'}
+                    on:mouseenter={() => (hovered = m.slug)} on:mouseleave={() => (hovered = '')}
+                    on:focus={() => (hovered = m.slug)} on:blur={() => (hovered = '')}>
                     <span class="tick">{m.done ? '✓' : m.open ? '○' : '·'}</span>
                     <span class="text"><b>{m.mission.title}</b><em>{m.open ? m.teaches : 'Opens when the one before it is done.'}</em></span>
                     <span class="meta">{m.xp} XP</span>
@@ -233,4 +243,34 @@
     .where{padding-left:31px}
   }
   @media(prefers-reduced-motion:reduce){.pin,.tip{transition:none}}
+
+  /* H1 map treatment: room art is the navigable evidence layer, not a hero
+     decoration. Labels and state remain live HTML on top of it. */
+  :global(html),:global(body),:global(#app){background:#e6e0d2}
+  .floor{--line:#d8d0be;--line2:#9c998d;--ink:#20241f;--ink2:#62695f;--dim:#817b70;
+         --clay:#b85530;--good:#315f48;--nav-ink:#20241f;--nav-soft:#62695f;
+         --nav-rule:#c8c1b1;--nav-accent:#315f48;padding:0 0 60px;background:#e6e0d2;color:var(--ink)}
+  .wrap{width:min(100%,1120px);max-width:none;padding-inline:clamp(16px,5vw,56px);box-sizing:border-box}
+  header{padding:48px 0 30px;align-items:end}
+  h1{font-size:clamp(42px,7vw,70px);line-height:.98;letter-spacing:-.035em}
+  .eyebrow{color:var(--clay);font-size:10px}.lede{color:var(--ink2)}
+  .standing{padding:14px 16px;border-left:3px solid #315f48;background:#f7f3e9}
+  .standing>span{color:var(--ink2)}.standing i{height:5px;border-radius:0;background:#c8c1b1}.standing em{background:#315f48}
+  .rooms{width:max-content;max-width:100%;gap:1px;margin-bottom:22px;padding:0;background:#9c998d;border:1px solid #9c998d}
+  .room-tab{border:0;border-radius:0;background:#f7f3e9;color:var(--ink2);padding:11px 14px}
+  .room-tab b{color:var(--ink);font-size:12px}.room-tab:hover{background:#ece6da}.room-tab.on{background:#20241f;color:#f7f3e9}
+  .room-tab.on b{color:#f7f3e9}.room-tab.done b{color:#315f48}.room-tab.on.done b{color:#dce8dc}
+  .stage{gap:24px;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr)}
+  .scene{border:6px solid #20241f;border-radius:0;background:#f7f3e9;box-shadow:11px 11px 0 rgba(32,36,31,.16)}
+  .scene img{background:#f7f3e9;image-rendering:auto}
+  .pin{border-radius:0;border-color:#20241f;background:#b85530;color:#fff;box-shadow:4px 4px 0 rgba(32,36,31,.28)}
+  .spot.done .pin{background:#315f48}.spot.locked .pin{border-color:#20241f;background:rgba(32,36,31,.76)}
+  .tip{border-radius:0;background:#20241f;color:#f7f3e9}.tip b{color:#f7f3e9}.tip em{color:#c8c1b1}
+  .detail{border:1px solid #9c998d;border-radius:0;background:#f7f3e9;padding:22px 20px 10px}
+  .detail h2{font-size:30px}.blurb,.text em,.meta{color:var(--ink2)}
+  .missions li{border-color:#d8d0be}.missions a,.missions div{color:var(--ink)}.missions a:hover .text b{color:#b85530}
+  .tick{color:#817b70}.missions li.done .tick{color:#315f48}.where{color:#817b70}
+  .foot{border-color:#c8c1b1;color:#817b70}.foot a{color:#315f48;border-color:#315f48}
+  @media(max-width:900px){.stage{grid-template-columns:1fr}.scene{box-shadow:8px 8px 0 rgba(32,36,31,.16)}}
+  @media(max-width:620px){.wrap{padding-inline:16px}header{padding-top:34px}h1{font-size:46px}.rooms{margin-inline:-16px;padding-inline:16px}.scene{border-width:5px}}
 </style>

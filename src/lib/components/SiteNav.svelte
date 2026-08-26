@@ -82,7 +82,7 @@
   .subjects { border-top: 1px solid var(--nav-rule, #ddd6c6);
               border-bottom: 1px solid var(--nav-rule, #ddd6c6);
               overflow-x: auto; scrollbar-width: thin; }
-  .subjects ul { display: flex; gap: 0; margin: 0; padding: 0; list-style: none; }
+  .subjects ul { display: flex; flex-wrap: nowrap; width: max-content; gap: 0; margin: 0; padding: 0; list-style: none; }
   .subjects a { display: inline-flex; align-items: baseline; gap: 7px; white-space: nowrap;
                 padding: 11px clamp(11px, 1.6vw, 18px); border-bottom: 2px solid transparent;
                 color: var(--nav-soft, #6d6558);

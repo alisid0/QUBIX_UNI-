@@ -85,7 +85,10 @@
 
       // The academy already labels later missions as locked. Apply the same
       // rule to direct URLs instead of letting a copied link bypass the path.
-      if (rostered && !missionIsOpen(load(), mission)) {
+      // Production keeps the learning sequence honest. Local authoring needs
+      // every mission directly reachable so layout and interaction QA does not
+      // require completing the whole course before each review.
+      if (import.meta.env.PROD && rostered && !missionIsOpen(load(), mission)) {
         window.history.replaceState(null, '', `?mode=game&locked=${encodeURIComponent(mission)}`);
         mission = null;
       }

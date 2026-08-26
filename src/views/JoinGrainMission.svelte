@@ -9,6 +9,7 @@
   // Same shape as missions 003 and 004, which were both rebuilt this way.
   import { JOIN_GRAIN_MISSION, answerForJoinCase, joinChangesGrain, joinSample } from '../lib/game/join-grain-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
 
   let caseIndex = 0, step = 'matches', selected = '', checked = false, correct = false, completed = [];
 
@@ -53,22 +54,12 @@
 <meta name="description" content="Predict what a join does to the row count, then watch it happen to real rows." /></svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header>
-    <div class="identity">
-      <span class="role">PRE<br />INTERN</span>
-      <div><p>{JOIN_GRAIN_MISSION.id} · {JOIN_GRAIN_MISSION.status}</p><h1>{JOIN_GRAIN_MISSION.title}</h1></div>
-    </div>
-    <nav aria-label="Mission navigation">
-      <a href="?mode=game&mission=foundations">Foundations</a>
-      <a href="?mode=game&mission=duplicate-records">Mission 005</a>
-      <a href="?mode=game&mission=sql-console">SQL console</a>
-    </nav>
-  </header>
-
-  <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+  <MissionMasthead eyebrow={`${JOIN_GRAIN_MISSION.id} · DATA OFFICE ASSIGNMENT`} title={JOIN_GRAIN_MISSION.title}
+    roomId="data-office" roomName="Data Office · Back desk" progress={progress}
+    meta={`${missionComplete ? JOIN_GRAIN_MISSION.cases.length : caseIndex + 1} OF ${JOIN_GRAIN_MISSION.cases.length} JOINS`} />
 
   <main>
-    <section class="workbench-card">
+    <section class="workbench-card m1-workarea">
       <div class="stage-heading">
         <div><p class="eyebrow">CORPORATE HQ · JOIN WORKBENCH</p>
           <h2>{missionComplete ? 'Join review complete' : `${caseRecord.left} ⋈ ${caseRecord.right}`}</h2></div>

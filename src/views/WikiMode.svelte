@@ -167,7 +167,7 @@
       {#if query}<button on:click={() => { query = ''; updateSearchUrl(); }} aria-label="Clear search">×</button>{/if}
     </label>
 
-    <div class="status"><i></i><span>Draft knowledge base</span></div>
+    <nav class="site-shortcuts" aria-label="Qubix sections"><a href="/">Home</a><a href="?mode=game">Play</a><a href="/library/index.html">Library</a></nav>
     <button class="nav-toggle" on:click={() => mobileNavOpen = !mobileNavOpen} aria-label="Open curriculum navigation">{mobileNavOpen ? '×' : '☰'}</button>
   </header>
 
@@ -336,8 +336,6 @@
   .search span { color:var(--clay); font-size:22px; transform:rotate(-15deg); }
   .search input { min-width:0; flex:1; border:0; outline:0; background:none; color:var(--ink); font-size:15px; }
   .search button { border:0; background:none; cursor:pointer; font-size:20px; color:#7d7468; }
-  .status { justify-self:end; display:flex; align-items:center; gap:7px; color:#71695e; font-size:13.5px; }
-  .status i { width:7px; height:7px; border-radius:50%; background:var(--clay); }
   .nav-toggle { display:none; margin-right:16px; border:0; background:none; font-size:22px; cursor:pointer; }
   .sidebar { min-height:0; overflow-y:auto; border-right:1px solid var(--line); background:#ece7dd; padding:18px 12px 28px; }
   .sidebar nav { display:flex; flex-direction:column; gap:3px; }
@@ -474,7 +472,7 @@
     .wiki-shell { display:block; }
     .topbar { height:64px; display:grid; grid-template-columns:auto 1fr auto; position:relative; }
     .brand { border-right:0; }
-    .brand > span:last-child, .status { display:none; }
+    .brand > span:last-child { display:none; }
     .search { height:38px; }
     .nav-toggle { display:block; }
     .sidebar { position:fixed; z-index:19; top:64px; bottom:0; left:0; width:min(88vw,320px); transform:translateX(-102%); transition:transform .2s ease; box-shadow:15px 0 50px rgba(40,32,22,.18); }
@@ -500,4 +498,20 @@
     .topic-list article { grid-template-columns:30px 1fr; }
     .topic-state { display:none; }
   }
+
+  /* R3 editorial reference system. The Wiki stays dense and searchable, but
+     uses the same square institutional furniture as the academy. */
+  .wiki-shell{--ink:#20241f;--paper:#e6e0d2;--card:#f7f3e9;--clay:#b85530;--olive:#315f48;--line:#c8c1b1}
+  .topbar{background:#e6e0d2;border-color:#c8c1b1}
+  .brand-mark{border-radius:0;border:2px solid #20241f;color:#20241f;box-shadow:3px 3px 0 rgba(32,36,31,.14)}
+  .search{border-radius:0;border-color:#9c998d;background:#f7f3e9}.search:focus-within{border-color:#315f48;box-shadow:0 0 0 3px rgba(49,95,72,.12)}
+  .site-shortcuts{justify-self:end;display:flex;gap:18px}.site-shortcuts a{color:#62695f;font-size:13px;font-weight:700;text-decoration:none;border-bottom:2px solid transparent}.site-shortcuts a:hover{color:#20241f;border-color:#315f48}.site-shortcuts a:focus-visible{outline:2px solid #315f48;outline-offset:3px}
+  .sidebar{background:#ded7c9;border-color:#c8c1b1}.sidebar button{border-radius:0}.sidebar button.active{background:#f7f3e9;box-shadow:inset 4px 0 #315f48;color:#315f48}
+  .hero{min-height:500px}.route-card{border:5px solid #20241f;border-radius:0;background:#f7f3e9;box-shadow:10px 10px 0 rgba(32,36,31,.15)}
+  .hero-actions button{border-radius:0;background:#315f48;border-color:#315f48}.hero-actions .secondary{color:#315f48}
+  .phase-grid button,.book-grid a,.results button,.domain-grid article{border-radius:0;background:#f7f3e9}
+  .phase-grid button:hover,.phase-grid button:focus-visible{border-color:#20241f;box-shadow:7px 7px 0 rgba(32,36,31,.12);transform:translate(-2px,-2px)}
+  .current-board,.phase-nav button{border-radius:0}.topic-state{border-radius:0}.method-grid article{background:#20241f}
+  .data-flow{background:#20241f}.source-rule{border-color:#b85530;background:#ded7c9}
+  @media(max-width:940px){.site-shortcuts{display:none}}
 </style>

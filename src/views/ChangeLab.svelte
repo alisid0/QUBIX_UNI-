@@ -5,7 +5,6 @@
   import { boards, declaredBoards } from '../lib/content/course.js';
   import Stage from '../lib/components/Stage.svelte';
   import { progress, xpSummary } from '../lib/stores/progress.js';
-  import { view } from '../lib/stores/view.js';
 
   // Closest first. The slider then reads the natural way round: dragging right
   // drives the two points further apart instead of shrinking the gap.
@@ -338,7 +337,7 @@
 
 <div class="qx-shell lab-view" on:pointerdown={handlePointerDown} on:pointerup={handlePointerUp}>
   <header class="lab-header">
-    <button class="topics-button" aria-label="Back to topic selection" on:click={() => view.set('home')}><span aria-hidden="true">←</span> Topics</button>
+    <a class="topics-button" aria-label="Back to the Qubix academy" href="/"><span aria-hidden="true">←</span> Academy</a>
     <div class="brand-lockup">
       <span class="brand">QUBIX UNIVERSITY</span>
       <span class="lab-name">Mathematics and introductory physics</span>
@@ -931,4 +930,21 @@
     .curve-stage { grid-template-columns: minmax(0, 1fr) 91px; }
     .floor-copy p { font-size: 16px; }
   }
+
+  /* Mathematics keeps its compact lesson controls, but now sits on the same
+     paper and in the same framed work area as the Superstore missions. */
+  :global(html),:global(body),:global(#app){background:#e6e0d2}
+  .lab-view{--qx-bg:#e6e0d2;--qx-surface:#f7f3e9;--qx-surface-2:#efe9dd;--qx-surface-3:#d8d0be;
+            --qx-text:#20241f;--qx-text-2:#4f574e;--qx-text-dim:#62695f;--qx-text-faint:#817b70;
+            --qx-border:#c8c1b1;--qx-border-2:#9c998d;--qx-accent:#b85530;--qx-accent-text:#9d4426;
+            --qx-accent-soft:#f0ddd2;--qx-green:#315f48;--qx-green-text:#284c3b;--qx-green-soft:#e0e8df;
+            width:min(100%,760px);max-width:760px;margin-inline:auto;padding:18px clamp(16px,5vw,56px) 34px;background:#e6e0d2}
+  .lab-header{min-height:58px;border-bottom:1px solid #c8c1b1;padding-bottom:12px}
+  .brand{color:#20241f;font-family:Georgia,serif;font-weight:600;letter-spacing:0;text-transform:none}.lab-name{font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .topics-button{border-radius:0;border-color:#315f48;background:transparent;color:#315f48;text-decoration:none}.icon-btn,.xp-badge{border-radius:0}
+  .topic-selector select,.segments span{border-radius:0}.segments span.active{background:#315f48}
+  .board-card{border:6px solid #20241f;border-radius:0;box-shadow:11px 11px 0 rgba(32,36,31,.16);background:#f7f3e9;padding:24px 22px 20px}
+  .board-heading h1{font:400 34px/1 Georgia,serif}.stage{border-radius:0;background:#efe9dd}
+  .primary,.secondary,.check-visual,.check-options button,.lab-stepper button,.lab-chip,.lab-bin,.lab-order-row,.lab-order-btns button,.feedback,.equation-strip,.flow-card,.role-card,.machine-box{border-radius:0}
+  @media(max-width:600px){.lab-view{padding-inline:16px}.board-card{border-width:5px;box-shadow:8px 8px 0 rgba(32,36,31,.16);padding:18px 14px}.brand-lockup{align-items:flex-start}.lab-name{display:none}.board-heading h1{font-size:29px}}
 </style>

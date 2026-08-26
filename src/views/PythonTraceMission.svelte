@@ -7,6 +7,7 @@
   import { PYTHON_TRACE_MISSION as M, TRACE_STEPS, sourceOf, runProgram,
     answerForTrace, optionsForTrace, whyForTrace } from '../lib/game/python-trace-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
 
   let caseIndex = 0, stepIndex = 0, selected = '', checked = false, correct = false, done = [];
   let at = 0;
@@ -56,22 +57,12 @@
 <meta name="description" content="Predict what a small Python program leaves in each name, then step through it." /></svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header>
-    <div class="identity">
-      <span class="role">PY</span>
-      <div><p>{M.id} · {M.status} · CHAPTER 06</p><h1>{M.title}</h1></div>
-    </div>
-    <nav aria-label="Mission navigation">
-      <a href="?mode=game">Academy</a>
-      <a href="?mode=game&mission=shared-book&chapter=6&session=1">Chapter 06</a>
-      <a href="?mode=game&mission=sql-console">SQL console</a>
-    </nav>
-  </header>
-
-  <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+  <MissionMasthead eyebrow={`${M.id} · DATA OFFICE ASSIGNMENT`} title={M.title}
+    roomId="data-office" roomName="Data Office · Dual-monitor desk" progress={progress}
+    meta={`${missionComplete ? M.cases.length : caseIndex + 1} OF ${M.cases.length} PROGRAMS · CHAPTER 06`} />
 
   <main>
-    <section class="workbench-card">
+    <section class="workbench-card m1-workarea">
       <div class="stage-heading">
         <div><p class="eyebrow">CORPORATE HQ · NOTEBOOK</p>
           <h2>{missionComplete ? 'Six programs read' : c.brief}</h2></div>

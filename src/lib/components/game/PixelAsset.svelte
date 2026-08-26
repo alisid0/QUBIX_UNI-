@@ -59,5 +59,5 @@
 </svg>
 
 <style>
-  svg{display:block;width:100%;height:100%;shape-rendering:crispEdges}.ink{fill:#241f16}.canvas{fill:#f1ede4}.clay{fill:#a85a34}.olive{fill:#3e9e2a}.red{fill:#cf3423}.canvas-line,.olive-line{fill:none;stroke:#f1ede4;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.olive-line{stroke:#3e9e2a}.thick{stroke-width:4}.alert{filter:drop-shadow(0 0 5px rgba(207,52,35,.35))}.resolved{filter:drop-shadow(0 0 5px rgba(62,158,42,.3))}
+  svg{display:block;width:100%;height:100%;shape-rendering:crispEdges}.ink{fill:#20241f}.canvas{fill:#f7f3e9}.clay{fill:#b85530}.olive{fill:#315f48}.red{fill:#b34231}.canvas-line,.olive-line{fill:none;stroke:#f7f3e9;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.olive-line{stroke:#315f48}.thick{stroke-width:4}.alert{filter:drop-shadow(0 0 5px rgba(179,66,49,.32))}.resolved{filter:drop-shadow(0 0 5px rgba(49,95,72,.26))}
 </style>

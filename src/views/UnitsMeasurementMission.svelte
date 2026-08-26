@@ -1,6 +1,7 @@
 <script>
   import {UNIT_DECISIONS,UNITS_MEASUREMENT_MISSION,answerForUnitCase,auditEntry} from '../lib/game/units-measurement-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
   const steps=['dimension','value','decision'];
   let caseIndex=0,step='dimension',selected='',checked=false,correct=false,completed=[];
   $: caseRecord=UNITS_MEASUREMENT_MISSION.cases[caseIndex]; $: missionComplete=completed.length===UNITS_MEASUREMENT_MISSION.cases.length; $: stepIndex=steps.indexOf(step);
@@ -18,8 +19,8 @@
   $: if (missionComplete) recordCompletion('units-measurement');
 </script>
 <svelte:head><title>Units and Measurement | Qubix University</title><meta name="description" content="Local AI draft of a Qubix Superstore measurement-unit data quality mission." /></svelte:head>
-<section class="mission-shell qx-shell"><header><div class="identity"><span class="role">PRE<br/>INTERN</span><div><p>{UNITS_MEASUREMENT_MISSION.id} · {UNITS_MEASUREMENT_MISSION.status}</p><h1>{UNITS_MEASUREMENT_MISSION.title}</h1></div></div><nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=duplicate-records">Mission 005</a><a href="?mode=wiki">Wiki</a></nav></header><div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
-  <main><section class="workbench"><div class="bar"><div><i></i><i></i><i></i></div><b>Qubix Measurement Normaliser</b><em>{missionComplete?'audit saved':caseRecord.table}</em></div>
+<section class="mission-shell qx-shell"><MissionMasthead eyebrow={`${UNITS_MEASUREMENT_MISSION.id} · GOODS-IN ASSIGNMENT`} title={UNITS_MEASUREMENT_MISSION.title} roomId="goods-in" roomName="Goods In · Platform scale" progress={progress} meta={`${missionComplete ? UNITS_MEASUREMENT_MISSION.cases.length : caseIndex + 1} OF ${UNITS_MEASUREMENT_MISSION.cases.length} MEASUREMENTS`} />
+  <main><section class="workbench m1-workarea"><div class="bar"><div><i></i><i></i><i></i></div><b>Qubix Measurement Normaliser</b><em>{missionComplete?'audit saved':caseRecord.table}</em></div>
     {#if missionComplete}<div class="complete-stage"><div class="seal">✓</div><p>BRANCH FEED QUALITY CHECK</p><h2>Measurements normalised</h2><span>Every original value remains traceable. The incompatible field is quarantined instead of being disguised as a conversion.</span></div>
     {:else}<div class="case-head"><div><p>CASE {caseIndex+1} OF {UNITS_MEASUREMENT_MISSION.cases.length} · {caseRecord.source}</p><h2>{caseRecord.item}</h2></div><span class:blocked={caseRecord.normalisedValue===null}>{caseRecord.normalisedValue===null?'SCHEMA CONFLICT':'READY TO CHECK'}</span></div>
       <div class="pipeline" aria-label="Measurement conversion pipeline"><article class:active={step==='dimension'}><small>01 · SOURCE</small><strong>{caseRecord.rawValue} <b>{caseRecord.rawUnit}</b></strong><span>raw_value · retained</span></article><div class="arrow">→</div><article class:active={step==='value'} class:error={caseRecord.normalisedValue===null&&step!=='dimension'}><small>02 · NORMALISE</small><strong>{step==='dimension'?'?':caseRecord.factor}</strong><span>declared conversion</span></article><div class="arrow">→</div><article class:active={step==='decision'} class:error={caseRecord.normalisedValue===null&&step!=='dimension'}><small>03 · TARGET</small><strong>{step==='dimension'?'?':caseRecord.displayValue}</strong><span>{caseRecord.field} · expects {caseRecord.targetUnit}</span></article></div>

@@ -9,6 +9,7 @@
   import { RATE_DESK_MISSION as M, DESK_STEPS, readingsFor, round,
     answerForRate, optionsForRate, whyForRate } from '../lib/game/rate-desk-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
 
   let caseIndex = 0, stepIndex = 0, selected = '', checked = false, correct = false, done = [];
 
@@ -53,22 +54,12 @@
 <meta name="description" content="Name the denominator under a figure, compute the comparison it allows, and state only the claim it supports." /></svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header>
-    <div class="identity">
-      <span class="role">%</span>
-      <div><p>{M.id} · {M.status} · CHAPTER 02</p><h1>{M.title}</h1></div>
-    </div>
-    <nav aria-label="Mission navigation">
-      <a href="?mode=game">Academy</a>
-      <a href="?mode=game&mission=shared-book&chapter=2&session=2">Chapter 02</a>
-      <a href="?mode=game&mission=units-measurement">Units and measurement</a>
-    </nav>
-  </header>
-
-  <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+  <MissionMasthead eyebrow={`${M.id} · REPORTING ASSIGNMENT`} title={M.title}
+    roomId="reporting" roomName="Reporting · Monitor desk" progress={progress}
+    meta={`${missionComplete ? M.cases.length : caseIndex + 1} OF ${M.cases.length} FIGURES · CHAPTER 02`} />
 
   <main>
-    <section class="workbench-card">
+    <section class="workbench-card m1-workarea">
       <div class="stage-heading">
         <div><p class="eyebrow">CORPORATE HQ · REPORTING</p>
           <h2>{missionComplete ? 'Six figures put over their denominators' : c.asked}</h2></div>

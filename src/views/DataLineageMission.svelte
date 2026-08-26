@@ -3,6 +3,7 @@
   import { DATA_LINEAGE_MISSION, completedLineage } from '../lib/game/data-lineage-mission.js';
 
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
   let stepIndex = 0;
   let selected = '';
   let checked = false;
@@ -46,15 +47,13 @@
 
 <svelte:head><title>Trace the Number | Qubix University</title><meta name="description" content="Authoring-only Qubix data-lineage mission prototype." /></svelte:head>
 
-<section class="mission qx-shell">
-  <header class="mission-header">
-    <div class="identity"><span class="role">PRE<br />INTERN</span><div><p>{DATA_LINEAGE_MISSION.id} · {DATA_LINEAGE_MISSION.status}</p><h1>{DATA_LINEAGE_MISSION.title}</h1></div></div>
-    <nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=units-measurement">Mission 006</a><a href="?mode=assets&asset=computer-screen">Operations studio</a></nav>
-  </header>
-  <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+<section class="mission mission-shell qx-shell">
+  <MissionMasthead eyebrow={`${DATA_LINEAGE_MISSION.id} · REPORTING ASSIGNMENT`} title={DATA_LINEAGE_MISSION.title}
+    roomId="reporting" roomName="Reporting · Standing desk" progress={progress}
+    meta={`${missionComplete ? 3 : stepIndex + 1} OF 3 TRACE POINTS`} />
 
   <main>
-    <section class="terminal">
+    <section class="terminal m1-workarea">
       <div class="system-bar"><div><i></i><i></i><i></i><b>QUBIX LINEAGE VIEWER</b></div><em>{missionComplete ? 'TRACE SAVED' : `STEP ${stepIndex + 1} OF 3`}</em></div>
       <div class="case-bar"><span>QUALITY EVENT · BRANCH B-08</span><b>Why does the morning report show −17.8 °C?</b></div>
 

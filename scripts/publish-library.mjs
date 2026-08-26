@@ -19,6 +19,7 @@ import { dirname, join } from 'node:path';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'book', 'dist');
 const OUT = join(ROOT, 'public', 'library');
+const THEME = join(ROOT, 'book', 'library-theme.css');
 
 // What the library holds, and how each piece is named on the site.
 const SHELF = [
@@ -41,6 +42,7 @@ const SHELF = [
 ];
 
 if (!existsSync(OUT)) await mkdir(OUT, { recursive: true });
+await writeFile(join(OUT, 'qubix-library.css'), await readFile(THEME, 'utf8'), 'utf8');
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const attr = s => esc(s).replace(/"/g, '&quot;');
@@ -77,6 +79,11 @@ for (const item of SHELF) {
     path: `/library/${item.slug}.html`
   })}`);
 
+  // Generated books keep their print-first interiors, but every web edition
+  // receives the same small Qubix jacket and a reliable route back to learning.
+  html = html.replace('</head>', '<link rel="stylesheet" href="./qubix-library.css">\n</head>');
+  html = html.replace(/<body([^>]*)>/, `<body$1>\n<nav class="q-lib-nav" aria-label="Qubix sections"><a href="/">Qubix</a><span><a href="/library/index.html">Library</a><a href="/?mode=game">Play</a><a href="/?mode=wiki">Wiki</a></span></nav>`);
+
   await writeFile(join(OUT, `${item.slug}.html`), html, 'utf8');
   stats.push({ ...item, kb: Math.round(html.length / 1024), js: parts.length });
 }
@@ -86,6 +93,7 @@ const index = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Qubix Library</title>
+<link rel="stylesheet" href="./qubix-library.css">
 ${seo({
   title: 'Qubix Library',
   description: 'Source-first Qubix ebooks and reference sheets for data, programming, functions and graphs.',
@@ -93,36 +101,37 @@ ${seo({
   type: 'website'
 })}
 <style>
-  :root { --ink:#16283f; --teal:#12897c; --teal-text:#10796e; --paper:#faf7f0; --rule:#d8d3c7;
-          --mute:#5d6b7d; --edge:#918d85;
+  :root { --ink:#20241f; --teal:#315f48; --teal-text:#315f48; --paper:#f7f3e9; --rule:#d2cbbb;
+          --mute:#62695f; --edge:#8d8b81;
           --serif:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,serif;
           --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
   * { box-sizing:border-box; }
-  body { margin:0; background:#fff; color:var(--ink); font:16px/1.65 var(--serif); }
+  body { margin:0; background:#e6e0d2; color:var(--ink); font:16px/1.65 var(--serif); }
   a.skip { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
   a.skip:focus { position:fixed; left:0; top:0; width:auto; height:auto; clip:auto; z-index:9;
                  background:var(--ink); color:#fff; padding:10px 16px; font-family:var(--sans); }
-  header { background:var(--ink); color:#fff; padding:60px 44px 52px; border-radius:0 0 20px 20px;
-           max-width:1080px; margin:0 auto 44px; }
-  header .kick { color:#7fd3c6; font-family:var(--sans); font-size:11px; letter-spacing:.16em; font-weight:700; }
+  header:not(.q-lib-nav) { background:var(--ink); color:#fff; padding:60px 44px 52px;
+           max-width:1080px; margin:0 auto 44px; box-shadow:11px 11px 0 rgba(32,36,31,.16); }
+  header .kick { color:#e9a07d; font-family:var(--sans); font-size:11px; letter-spacing:.16em; font-weight:700; }
   header h1 { font-size:clamp(32px,5vw,46px); line-height:1.04; margin:14px 0 16px; letter-spacing:-.022em; }
-  header p { color:#c2cedd; max-width:52ch; margin:0; font-size:15px; }
+  header p { color:#d8d1c4; max-width:52ch; margin:0; font-size:15px; }
   main { max-width:56rem; margin:0 auto; padding:0 22px 90px; }
   .shelf { display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
-  .vol { border:1px solid var(--rule); border-radius:12px; padding:22px 24px 20px; background:var(--paper);
+  .vol { border:1px solid var(--edge); padding:22px 24px 20px; background:var(--paper);
          display:flex; flex-direction:column; gap:9px; }
   .vol h2 { font-size:22px; margin:0; letter-spacing:-.015em; text-wrap:balance; }
   .vol .sub { font-family:var(--sans); font-size:12px; letter-spacing:.05em; text-transform:uppercase;
               color:var(--teal-text); }
   .vol p { margin:0; font-size:14.5px; color:#33445c; }
   .vol a { margin-top:6px; align-self:flex-start; font-family:var(--sans); font-size:13px; font-weight:600;
-           text-decoration:none; color:#fff; background:var(--teal-text); padding:9px 16px; border-radius:7px;
+           text-decoration:none; color:#fff; background:var(--teal-text); padding:9px 16px;
            min-height:24px; }
   .vol a:hover { background:var(--ink); }
   .vol a:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
   .note { margin-top:34px; font-size:14px; color:var(--mute); border-top:1px solid var(--rule); padding-top:18px; }
   .note a { color:var(--teal-text); }
 </style></head><body>
+<nav class="q-lib-nav" aria-label="Qubix sections"><a href="/">Qubix</a><span><a href="/library/index.html">Library</a><a href="/?mode=game">Play</a><a href="/?mode=wiki">Wiki</a></span></nav>
 <a class="skip" href="#shelf">Skip to the library</a>
 <header>
   <div class="kick">QUBIX UNIVERSITY</div>

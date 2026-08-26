@@ -1,6 +1,7 @@
 <script>
   import { recordCompletion } from '../lib/game/progress.js';
   import { TABLE_GRAIN_MISSION, answerForGrainCase } from '../lib/game/table-grain-mission.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
 
   let caseIndex = 0, step = 'grain', selected = '', selectedRow = 0;
   let checked = false, correct = false, completed = [];
@@ -40,22 +41,12 @@
 </svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header>
-    <div class="identity">
-      <span class="role">PRE<br />INTERN</span>
-      <div><p>{TABLE_GRAIN_MISSION.id} · {TABLE_GRAIN_MISSION.status}</p><h1>{TABLE_GRAIN_MISSION.title}</h1></div>
-    </div>
-    <nav aria-label="Mission navigation">
-      <a href="?mode=game&mission=foundations">Foundations</a>
-      <a href="?mode=game&mission=duplicate-records">Mission 005</a>
-      <a href="?mode=wiki">Wiki</a>
-    </nav>
-  </header>
-
-  <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
+  <MissionMasthead eyebrow={`${TABLE_GRAIN_MISSION.id} · SHIFT ASSIGNMENT 004`} title={TABLE_GRAIN_MISSION.title}
+    roomId="stock-room" roomName="Stock Room · Right bay" progress={progress}
+    meta={`${missionComplete ? TABLE_GRAIN_MISSION.cases.length : caseIndex + 1} OF ${TABLE_GRAIN_MISSION.cases.length} TABLES`} />
 
   <main>
-    <section class="workbench-card">
+    <section class="workbench-card m1-workarea">
       <div class="stage-heading">
         <div><p class="eyebrow">CORPORATE HQ · RELATIONAL DESK</p><h2>{missionComplete ? 'Table review complete' : caseRecord.table}</h2></div>
         <span>{missionComplete ? '6 / 6' : `${caseIndex + 1} / ${TABLE_GRAIN_MISSION.cases.length}`}</span>

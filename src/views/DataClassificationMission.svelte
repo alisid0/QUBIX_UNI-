@@ -2,6 +2,7 @@
   import { CLASSIFICATION_MISSION, QUESTION_STEPS, answerFor, explanationFor, subtypeStep } from '../lib/game/data-classification-mission.js';
 
   import { recordCompletion } from '../lib/game/progress.js';
+  import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
   const stepOrder = ['primary', 'subtype', 'scale'];
   const requestedVariation = new URLSearchParams(window.location.search).get('variation');
   const requestedIndex = CLASSIFICATION_MISSION.variations.findIndex(item => item.id === requestedVariation);
@@ -81,12 +82,9 @@
 </svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header>
-    <div class="identity"><span class="role">PRE<br />INTERN</span><div><p>{CLASSIFICATION_MISSION.id} · {CLASSIFICATION_MISSION.status}</p><h1>{CLASSIFICATION_MISSION.title}</h1></div></div>
-    <nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=checkout">Mission 001</a><a href="?mode=game&mission=missing-data">Mission 003</a><a href="?mode=wiki">Wiki</a></nav>
-  </header>
-
-  <div class="progress" aria-label={`Four-variation mission ${overallProgress}% complete`}><span style={`width:${overallProgress}%`}></span></div>
+  <MissionMasthead eyebrow={`${CLASSIFICATION_MISSION.id} · SHIFT ASSIGNMENT 002`} title={CLASSIFICATION_MISSION.title}
+    roomId="tills" roomName="Tills · Lane two" progress={overallProgress}
+    meta={`4 VARIATIONS · ${completedVariations.length} COMPLETE`} />
 
   <section class="variation-picker" aria-label="Mission variations">
     {#each CLASSIFICATION_MISSION.variations as item, index}
@@ -112,7 +110,7 @@
       <p class="warning"><b>Classic trap:</b> identifiers can contain digits while remaining categorical. Arithmetic must have meaning before a variable is quantitative.</p>
     </aside>
 
-    <section class="workbench">
+    <section class="workbench m1-workarea">
       {#if variationComplete}
         <div class="completion">
           <span class="seal">✓</span>
