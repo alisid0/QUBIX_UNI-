@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { superstoreTopics, superstoreTopicCount } from '../factory/superstore-topics.js';
 
   const books = [
@@ -41,6 +42,55 @@
   let mobileNavOpen = false;
   let view = 'learn';
 
+  function wikiUrl({ phase = null, section = null, search = '' } = {}) {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.searchParams.set('mode', 'wiki');
+    if (phase !== null) url.searchParams.set('phase', phase);
+    if (section) url.searchParams.set('section', section);
+    if (search.trim()) url.searchParams.set('q', search.trim());
+    return `${url.pathname}${url.search}`;
+  }
+
+  function readUrl({ normalise = false } = {}) {
+    const params = new URLSearchParams(window.location.search);
+    const phaseValue = params.get('phase');
+    const phase = phaseValue !== null && /^\d+$/.test(phaseValue) ? Number(phaseValue) : null;
+    const validPhase = phase !== null && superstoreTopics.some((item) => item.phase === phase);
+    const section = params.get('section');
+    const validSection = ['books', 'world'].includes(section);
+
+    selectedPhase = validPhase ? phase : null;
+    view = validPhase ? 'learn' : validSection ? section : 'learn';
+    query = validPhase || validSection ? '' : (params.get('q') || '');
+    mobileNavOpen = false;
+
+    const hasInvalidRoute = (phaseValue !== null && (!validPhase || phaseValue !== String(phase)))
+      || (section !== null && !validSection)
+      || (phaseValue !== null && section !== null)
+      || (params.has('q') && (validPhase || validSection));
+    if (normalise && hasInvalidRoute) {
+      const normalisedUrl = validPhase
+        ? wikiUrl({ phase })
+        : validSection
+          ? wikiUrl({ section })
+          : wikiUrl({ search: query });
+      window.history.replaceState(null, '', normalisedUrl);
+    }
+  }
+
+  function writeUrl(options, method = 'pushState') {
+    window.history[method](null, '', wikiUrl(options));
+  }
+
+  readUrl({ normalise: true });
+
+  onMount(() => {
+    const handlePopState = () => readUrl();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  });
+
   $: normalisedQuery = query.trim().toLowerCase();
   $: matches = normalisedQuery
     ? superstoreTopics.flatMap((phase) => phase.topics
@@ -48,13 +98,45 @@
         .map((topic) => ({ topic, phase })))
     : [];
   $: activePhase = selectedPhase === null ? null : superstoreTopics.find((phase) => phase.phase === selectedPhase);
+  $: pageTitle = activePhase
+    ? `${activePhase.title} | Qubix Data Science Wiki`
+    : view === 'books'
+      ? 'Books and References | Qubix Data Science Wiki'
+      : view === 'world'
+        ? 'Qubix Superstore Data World | Qubix Data Science Wiki'
+        : normalisedQuery
+          ? `Search: ${query.trim()} | Qubix Data Science Wiki`
+          : 'Qubix Data Science Wiki';
+  $: pageDescription = activePhase
+    ? `${activePhase.role}: ${activePhase.title}. Explore ${activePhase.topics.length} mapped topics and their Qubix Superstore practical.`
+    : view === 'books'
+      ? 'Source-first Qubix ebooks and authoritative references for statistics, data engineering, machine learning and AI.'
+      : view === 'world'
+        ? 'Explore the synthetic Qubix Superstore data world that connects every Wiki concept to a stakeholder and consequence.'
+        : 'A structured path from complete beginner to Lead Data Scientist, taught through the fictional Qubix Superstore.';
 
   function choosePhase(phase) {
     selectedPhase = phase;
     query = '';
     view = 'learn';
     mobileNavOpen = false;
+    writeUrl({ phase });
     document.querySelector('.wiki-main')?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function chooseView(nextView) {
+    selectedPhase = null;
+    query = '';
+    view = nextView;
+    mobileNavOpen = false;
+    writeUrl({ section: nextView });
+    document.querySelector('.wiki-main')?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateSearchUrl() {
+    selectedPhase = null;
+    view = 'learn';
+    writeUrl({ search: query }, 'replaceState');
   }
 
   function goHome() {
@@ -62,13 +144,14 @@
     query = '';
     view = 'learn';
     mobileNavOpen = false;
+    writeUrl();
     document.querySelector('.wiki-main')?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 </script>
 
 <svelte:head>
-  <title>Qubix Data Science Wiki</title>
-  <meta name="description" content="A structured path from complete beginner to Lead Data Scientist, taught through the fictional Qubix Superstore." />
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription} />
 </svelte:head>
 
 <div class="wiki-shell">
@@ -80,8 +163,8 @@
 
     <label class="search" class:searching={normalisedQuery}>
       <span aria-hidden="true">⌕</span>
-      <input bind:value={query} aria-label="Search all 379 topics" placeholder="Search probability, SQL, forecasting…" />
-      {#if query}<button on:click={() => query = ''} aria-label="Clear search">×</button>{/if}
+      <input bind:value={query} on:input={updateSearchUrl} aria-label="Search all 379 topics" placeholder="Search probability, SQL, forecasting…" />
+      {#if query}<button on:click={() => { query = ''; updateSearchUrl(); }} aria-label="Clear search">×</button>{/if}
     </label>
 
     <div class="status"><i></i><span>Draft knowledge base</span></div>
@@ -100,8 +183,8 @@
         </button>
       {/each}
       <p>LIBRARY</p>
-      <button class:active={view === 'books'} on:click={() => { view = 'books'; selectedPhase = null; mobileNavOpen = false; }}><span>Books & references</span><small>{books.length}</small></button>
-      <button class:active={view === 'world'} on:click={() => { view = 'world'; selectedPhase = null; mobileNavOpen = false; }}><span>Superstore data world</span><small>10 tables</small></button>
+      <button class:active={view === 'books'} on:click={() => chooseView('books')}><span>Books & references</span><small>{books.length}</small></button>
+      <button class:active={view === 'world'} on:click={() => chooseView('world')}><span>Superstore data world</span><small>10 tables</small></button>
     </nav>
   </aside>
 
@@ -196,7 +279,7 @@
           <div class="eyebrow">FROM ZERO TO LEAD DATA SCIENTIST</div>
           <h1>Learn the whole data science world in one connected place.</h1>
           <p class="lede">A structured wiki for statistics, probability, programming, data engineering, machine learning and AI—grounded in one persistent Superstore.</p>
-          <div class="hero-actions"><button on:click={() => choosePhase(0)}>Start from zero <span>→</span></button><button class="secondary" on:click={() => view = 'books'}>Browse the library</button></div>
+          <div class="hero-actions"><button on:click={() => choosePhase(0)}>Start from zero <span>→</span></button><button class="secondary" on:click={() => chooseView('books')}>Browse the library</button></div>
         </div>
         <div class="route-card">
           <span>YOUR ROUTE</span>

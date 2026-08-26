@@ -6,6 +6,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
+import { superstoreTopics } from '../src/factory/superstore-topics.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLIC = join(ROOT, 'public');
@@ -19,11 +20,17 @@ const libraryPages = (await readdir(LIBRARY))
 
 const chapterPages = SHARED_FOUNDATIONS.map(({ chapter }) =>
   `/?mode=game&mission=shared-book&chapter=${chapter}&session=1`);
+const wikiPages = [
+  '/?mode=wiki',
+  '/?mode=wiki&section=books',
+  '/?mode=wiki&section=world',
+  ...superstoreTopics.map(({ phase }) => `/?mode=wiki&phase=${phase}`)
+];
 
 const paths = [...new Set([
   '/',
   '/?mode=game',
-  '/?mode=wiki',
+  ...wikiPages,
   '/?mode=game&mission=store',
   '/?prototype=variables-and-rates',
   ...chapterPages,

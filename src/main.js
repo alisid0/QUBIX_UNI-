@@ -14,16 +14,16 @@ const app = new App({
 // JavaScript. Once a route has mounted, reconcile that fallback with the
 // route's Svelte head so the document has one description and one matching set
 // of canonical/Open Graph values rather than two competing descriptions.
-const canonical = new URL(window.location.href);
-canonical.protocol = 'https:';
-canonical.hostname = 'qubix.university';
-canonical.port = '';
-canonical.hash = '';
-if (canonical.searchParams.has('locked')) {
-  canonical.search = '?mode=game';
-}
-
 function reconcileSeo() {
+  const canonical = new URL(window.location.href);
+  canonical.protocol = 'https:';
+  canonical.hostname = 'qubix.university';
+  canonical.port = '';
+  canonical.hash = '';
+  if (canonical.searchParams.has('locked')) {
+    canonical.search = '?mode=game';
+  }
+
   const descriptions = [...document.querySelectorAll('meta[name="description"]')];
   const routeDescription = descriptions.find(meta => !meta.hasAttribute('data-default-seo'));
   if (routeDescription) {
@@ -59,7 +59,7 @@ const seoObserver = new MutationObserver(() => {
     reconcileSeo();
   });
 });
-seoObserver.observe(document.head, { childList: true, subtree: true });
+seoObserver.observe(document.head, { childList: true, characterData: true, subtree: true });
 
 // The static structured data describes the homepage course, not a mission or
 // wiki route. Do not leave that claim in the hydrated DOM on another page.
