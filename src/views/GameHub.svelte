@@ -1,17 +1,21 @@
 <script>
-  // The way in, and the thing that makes six missions a game rather than six
-  // pages. It reads progress on mount and again whenever the tab is returned
-  // to, so finishing a mission and pressing back shows the new state.
   import { onMount } from 'svelte';
   import { MISSIONS, RANKS, TOTAL_XP, load, reset, statusOf, xpOf, rankOf, nextRankOf } from '../lib/game/progress.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
-  import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
 
   let state = { completed: [], started: null };
   let confirming = false;
   const lockedSlug = new URLSearchParams(window.location.search).get('locked');
   const lockedMission = MISSIONS.find(m => m.slug === lockedSlug);
+  const ROOMS = [
+    { id: 'goods-in', name: 'Goods In', missions: '08', note: 'Units + measurement', slug: 'units-measurement' },
+    { id: 'stock-room', name: 'Stock Room', missions: '03–05', note: 'Missing values · grain · duplicates', slug: 'missing-data' },
+    { id: 'data-office', name: 'Data Office', missions: '10–13', note: 'SQL · Python · distributions · rates', slug: 'sql-console' },
+    { id: 'checkout', name: 'Checkout', missions: '01', note: 'Process a Sale', slug: 'checkout' },
+    { id: 'aisles', name: 'Aisles', missions: '02', note: 'Classify Store Data', slug: 'classify-data' },
+    { id: 'board-room', name: 'Board Room', missions: '09', note: 'Analyst Decision Desk', slug: 'analyst-desk' }
+  ];
 
   const refresh = () => { state = load(); };
   onMount(() => {
@@ -24,217 +28,121 @@
       document.removeEventListener('visibilitychange', onShow);
     };
   });
-
   $: xp = xpOf(state);
   $: rank = rankOf(xp);
   $: next = nextRankOf(xp);
   $: rows = statusOf(state);
   $: done = state.completed.length;
   $: nextUp = rows.find(r => !r.done);
+  $: progress = Math.round((100 * xp) / TOTAL_XP);
 
-  function clearProgress() {
-    reset();
-    refresh();
-    confirming = false;
-  }
+  function clearProgress() { reset(); refresh(); confirming = false; }
 </script>
 
-<svelte:head><title>Qubix Superstore | Qubix University</title>
-<meta name="description" content="Learn data by working inside Qubix Superstore through thirteen practical missions with saved progress, XP and ranks." /></svelte:head>
+<svelte:head>
+  <title>My Shift | Qubix University</title>
+  <meta name="description" content="Continue your Qubix Superstore training shift through thirteen practical data missions, paired readings, XP and ranks." />
+</svelte:head>
 
 <section class="hub qx-shell">
-  <SiteNav current="play" />
-  <header>
-    <div class="identity">
-      <span class="badge">QX</span>
-      <div>
-        <p>QUBIX SUPERSTORE · PRE-INTERN ACADEMY · AI_DRAFT</p>
-        <h1>Learn data by working in a shop</h1>
-      </div>
+  <div class="nav-wrap"><SiteNav current="play" subjects={false} /></div>
+
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">{rank.title.toUpperCase()} · SHIFT {String(done + 1).padStart(3, '0')}</p>
+      <h1>{nextUp ? 'Your next decision is waiting in the store.' : 'Your training shift is complete.'}</h1>
+      <p class="lede">Read the briefing, work the evidence, then explain what Qubix Superstore can honestly claim.</p>
     </div>
+    <aside class="standing" aria-label="Your training progress">
+      <p class="eyebrow">YOUR STANDING</p>
+      <div class="rank-line"><strong>{rank.title}</strong><span>{progress}%</span></div>
+      <div class="bar" role="img" aria-label={`${xp} of ${TOTAL_XP} experience earned`}><span style={`width:${progress}%`}></span></div>
+      <div class="meter-row"><span>{xp.toLocaleString()} / {TOTAL_XP.toLocaleString()} XP</span><span>{done} / {MISSIONS.length} missions</span></div>
+      {#if next}<small>{next.at - xp} XP to {next.title}</small>{:else}<small>Volume 0 complete</small>{/if}
+    </aside>
   </header>
 
-  <section class="mode-intro">
-    <div>
-      <p class="eyebrow">CHOOSE YOUR MODE</p>
-      <h2>Learn by doing</h2>
-      <span>Make decisions in the Superstore, then open the short reading behind any mission when you need it.</span>
-    </div>
-    <LearningModeSwitch current="do" readHref="?mode=game&mission=shared-book&chapter=1&session=1" />
-  </section>
-
-  {#if lockedMission}
-    <p class="locked-notice" role="status">
-      <b>{lockedMission.mission.title}</b> is still locked. Continue with the next available mission below.
-    </p>
-  {/if}
-
-  <div class="standing">
-    <div class="rank">
-      <p class="eyebrow">YOUR STANDING</p>
-      <h2>{rank.title}</h2>
-      <p class="note">{rank.note}</p>
-    </div>
-    <div class="meter">
-      <div class="bar" role="img" aria-label={`${xp} of ${TOTAL_XP} experience earned`}>
-        <span style={`width:${Math.round((100 * xp) / TOTAL_XP)}%`}></span>
-      </div>
-      <div class="meter-row">
-        <span><b>{xp}</b> / {TOTAL_XP} XP</span>
-        <span><b>{done}</b> / {MISSIONS.length} missions</span>
-      </div>
-      {#if next}
-        <p class="note">{next.at - xp} XP to {next.title}</p>
-      {:else}
-        <p class="note done">Academy complete. You can predict what a join does before running it.</p>
-      {/if}
-    </div>
-  </div>
+  {#if lockedMission}<p class="locked-notice" role="status"><b>{lockedMission.mission.title}</b> is still locked. Continue with the next available mission below.</p>{/if}
 
   {#if nextUp}
-    <a class="resume" href={`?mode=game&mission=${nextUp.slug}`}>
-      <span class="eyebrow">{done ? 'CONTINUE' : 'START HERE'}</span>
-      <strong>{nextUp.mission.title}</strong>
-      <span class="teaches">{nextUp.teaches}</span>
-    </a>
+    <section class="next-card" aria-labelledby="next-heading">
+      <span class="mission-number">{String(MISSIONS.findIndex(m => m.slug === nextUp.slug) + 1).padStart(2, '0')}</span>
+      <div class="next-copy">
+        <p class="eyebrow">NEXT MISSION · {ROOMS.find(room => room.slug === nextUp.slug)?.name?.toUpperCase() || 'SUPERSTORE'}</p>
+        <h2 id="next-heading">{nextUp.mission.title}</h2>
+        <p>{nextUp.teaches}</p>
+        <div class="pairing"><span><b>READ FIRST</b>{nextUp.reading.label}</span><span><b>THEN PLAY</b>{nextUp.xp} XP · practical investigation</span></div>
+      </div>
+      <div class="next-actions">
+        <a class="primary" href={`?mode=game&mission=${nextUp.slug}`}>{done ? 'Continue mission' : 'Begin mission'} <span aria-hidden="true">→</span></a>
+        <a href={`?mode=game&mission=shared-book&chapter=${nextUp.reading.chapter}&session=${nextUp.reading.session}`}>Open briefing</a>
+      </div>
+    </section>
   {/if}
 
-  <h3>The academy</h3>
-  <ol class="missions">
-    {#each rows as row, i}
-      <li class:done={row.done} class:locked={!row.open}>
-        <span class="num">{String(i + 1).padStart(2, '0')}</span>
-        <div class="body">
-          <b>{row.mission.title}</b>
-          <span>{row.teaches}</span>
-        </div>
-        <span class="xp">{row.xp} XP</span>
-        <div class="actions">
-          {#if row.open}
-            <a class="play" href={`?mode=game&mission=${row.slug}`}>{row.done ? 'Replay' : 'Play'}</a>
-          {:else}
-            <span class="lock" aria-label="Locked until the mission before it is finished">Locked</span>
-          {/if}
-          <a class="read" href={`?mode=game&mission=shared-book&chapter=${row.reading.chapter}&session=${row.reading.session}`}>Read <span class="sr-only">{row.reading.label}</span></a>
-        </div>
-      </li>
-    {/each}
-  </ol>
-
-  <div class="ranks">
-    <h3>Ranks</h3>
-    <ul>
-      {#each RANKS as r}
-        <li class:reached={xp >= r.at}><b>{r.title}</b><span>{r.at} XP</span></li>
+  <section class="floor" aria-labelledby="floor-heading">
+    <div class="section-heading"><div><p class="eyebrow">QUBIX SUPERSTORE · TRAINING FLOOR</p><h2 id="floor-heading">Choose a room. See what the data costs there.</h2></div><span>{done} / {MISSIONS.length} MISSIONS</span></div>
+    <div class="floor-map">
+      {#each ROOMS as room}
+        {@const mission = rows.find(row => row.slug === room.slug)}
+        <a class={`room ${room.id}`} href={mission?.open ? `?mode=game&mission=${room.slug}` : `?mode=game&locked=${room.slug}`}
+          data-image-slot={room.id} class:current={nextUp?.slug === room.slug} class:complete={mission?.done}>
+          <span class="room-top"><b>{room.name}</b><em>{room.missions}</em></span>
+          <span class="image-slot" aria-hidden="true">IMAGE TO COME</span>
+          <small>{room.note}</small><span class="room-state">{mission?.done ? 'Complete' : mission?.open ? 'Enter room' : 'Locked'}</span>
+        </a>
       {/each}
-    </ul>
-  </div>
+      <span class="you-are-here">YOU ARE HERE</span>
+    </div>
+    <p class="image-note">Room photography will be added later. Every panel is already prepared as an image slot with a permanent text overlay.</p>
+  </section>
 
-  <SiteFooter />
+  <section class="route" aria-labelledby="route-heading">
+    <div class="section-heading"><div><p class="eyebrow">YOUR ROUTE</p><h2 id="route-heading">Thirteen missions through the store.</h2></div><span>{rows.filter(row => row.open && !row.done).length} OPEN · {rows.filter(row => !row.open).length} LOCKED</span></div>
+    <ol class="missions">
+      {#each rows as row, i}
+        <li class:done={row.done} class:locked={!row.open}>
+          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          <div class="body"><b>{row.mission.title}</b><span>{row.teaches}</span></div><span class="xp">{row.xp} XP</span>
+          <div class="actions"><a class="read" href={`?mode=game&mission=shared-book&chapter=${row.reading.chapter}&session=${row.reading.session}`}>Read <span class="sr-only">{row.reading.label}</span></a>{#if row.open}<a class="play" href={`?mode=game&mission=${row.slug}`}>{row.done ? 'Replay' : 'Play'}</a>{:else}<span class="lock">Locked</span>{/if}</div>
+        </li>
+      {/each}
+    </ol>
+  </section>
 
-  <footer>
+  <section class="ranks" aria-labelledby="ranks-heading">
+    <p class="eyebrow">PROGRESSION</p><h2 id="ranks-heading">Ranks are earned on the floor.</h2>
+    <ul>{#each RANKS as r}<li class:reached={xp >= r.at}><b>{r.title}</b><span>{r.at.toLocaleString()} XP</span></li>{/each}</ul>
+  </section>
+
+  <div class="foot-wrap"><SiteFooter compact /></div>
+  <footer class="progress-foot">
     <p>Progress is kept in this browser only. There is no account and nothing is sent anywhere.</p>
-    {#if confirming}
-      <span class="confirm">
-        Erase {done} completed mission{done === 1 ? '' : 's'}?
-        <button on:click={clearProgress}>Erase</button>
-        <button class="ghost" on:click={() => (confirming = false)}>Keep</button>
-      </span>
-    {:else}
-      <button class="ghost" on:click={() => (confirming = true)} disabled={!done}>Reset progress</button>
-    {/if}
+    {#if confirming}<span class="confirm">Erase {done} completed mission{done === 1 ? '' : 's'}?<button on:click={clearProgress}>Erase</button><button class="ghost" on:click={() => (confirming = false)}>Keep</button></span>{:else}<button class="ghost" on:click={() => (confirming = true)} disabled={!done}>Reset progress</button>{/if}
   </footer>
 </section>
 
 <style>
-  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}:global(body){position:static}
-  .hub{--nav-ink:#f1ede4;--nav-soft:#a89e8d;--nav-rule:rgba(255,255,255,.14);--nav-accent:#c98c5e;
-       min-height:100vh;max-width:none;padding:20px clamp(12px,3vw,34px) 60px;color:#f1ede4;
-       background:radial-gradient(circle at 42% 0,#3f3428,#171510 58%);overflow:auto}
-  :global(.hub .site),:global(.hub .site-foot){max-width:1080px;margin-inline:auto}
-  header{max-width:1080px;margin:0 auto 26px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
-  .identity{display:flex;align-items:center;gap:13px;min-width:0}
-  .badge{display:grid;place-items:center;width:50px;height:50px;border-radius:14px;background:#a85a34;color:#fff;font:900 15px var(--qx-font);flex:none}
-  .identity p{margin:0 0 5px;color:#bcb19e;font:800 12px var(--qx-font);letter-spacing:.11em}
-  .identity h1{margin:0;color:#fff;font:700 clamp(24px,4vw,34px)/1.1 Georgia,serif;text-wrap:balance}
-  .mode-intro{--mode-rule:rgba(255,255,255,.16);--mode-surface:rgba(255,255,255,.04);--mode-soft:#c1b7a6;
-              --mode-ink:#fff;--mode-active:#a85a34;--mode-focus:#f1ede4;
-              max-width:1080px;margin:0 auto 18px;padding:18px 20px;display:flex;align-items:center;
-              justify-content:space-between;gap:18px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.035)}
-  .mode-intro h2{margin:0;color:#fff;font:700 22px Georgia,serif}
-  .mode-intro>div>span{display:block;margin-top:5px;max-width:62ch;color:#a89e8d;font:600 14px/1.5 var(--qx-font)}
-  .locked-notice{max-width:1080px;margin:0 auto 18px;padding:12px 16px;border:1px solid rgba(201,140,94,.45);
-                 border-radius:11px;background:rgba(168,90,52,.12);color:#d7cfc1;font:600 14px/1.5 var(--qx-font)}
-  .locked-notice b{color:#fff}
-
-  .standing{max-width:1080px;margin:0 auto 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
-            gap:20px;padding:22px 24px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(255,255,255,.04)}
-  .eyebrow{margin:0 0 6px;color:#c98c5e;font:900 12px var(--qx-font);letter-spacing:.12em}
-  .rank h2{margin:0;font:700 26px Georgia,serif;color:#fff;text-wrap:balance}
-  .note{margin:7px 0 0;color:#a89e8d;font:600 14.5px/1.5 var(--qx-font)}
-  .note.done{color:#8fc978}
-  .meter{display:flex;flex-direction:column;justify-content:center}
-  .bar{height:9px;border-radius:6px;background:rgba(255,255,255,.11);overflow:hidden}
-  .bar span{display:block;height:100%;background:linear-gradient(90deg,#a85a34,#d69a4e);transition:width .4s ease}
-  .meter-row{display:flex;justify-content:space-between;gap:14px;margin-top:10px;color:#bcb19e;font:700 13.5px var(--qx-font)}
-  .meter-row b{color:#fff;font:900 15px var(--qx-font);font-variant-numeric:tabular-nums}
-
-  .resume{max-width:1080px;margin:0 auto 30px;display:grid;gap:5px;padding:20px 24px;border-radius:16px;
-          background:#a85a34;color:#fff;text-decoration:none;border:1px solid #c2703f}
-  .resume .eyebrow{color:#f6d9c4;margin:0}
-  .resume strong{font:700 23px Georgia,serif}
-  .resume .teaches{color:#f3ddcd;font:600 14.5px var(--qx-font)}
-  .resume:hover{background:#96502e}
-  .resume:focus-visible{outline:3px solid #f1ede4;outline-offset:3px}
-
-  h3{max-width:1080px;margin:0 auto 12px;font:900 13px var(--qx-font);letter-spacing:.13em;color:#bcb19e}
-  ol.missions{max-width:1080px;margin:0 auto 32px;padding:0;list-style:none;display:grid;gap:9px}
-  ol.missions li{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:15px;
-                 padding:15px 20px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.03)}
-  ol.missions li.done{border-color:rgba(143,201,120,.4);background:rgba(143,201,120,.07)}
-  ol.missions li.locked{opacity:.5}
-  .num{font:900 15px var(--qx-font);color:#8d8474;font-variant-numeric:tabular-nums}
-  li.done .num::after{content:" ✓";color:#8fc978}
-  .body{min-width:0}
-  .body b{display:block;font:700 17px Georgia,serif;color:#fff}
-  .body span{display:block;margin-top:3px;color:#a89e8d;font:600 14.5px/1.45 var(--qx-font)}
-  .xp{font:900 13.5px var(--qx-font);color:#c98c5e;font-variant-numeric:tabular-nums}
-  .actions{display:flex;align-items:center;gap:7px}
-  ol.missions .actions a,.lock{min-height:38px;display:grid;place-items:center;padding:0 14px;border-radius:9px;
-                               font:900 13px var(--qx-font);text-decoration:none}
-  ol.missions a.play{background:#f1ede4;color:#25231f}
-  ol.missions a.play:hover{background:#fff}
-  ol.missions a.read{border:1px solid rgba(255,255,255,.22);color:#d7cfc1;background:transparent}
-  ol.missions a.read:hover{border-color:#d7cfc1;color:#fff}
-  ol.missions a:focus-visible{outline:3px solid #a85a34;outline-offset:2px}
-  .lock{color:#8d8474;border:1px dashed rgba(255,255,255,.2)}
-  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-
-  .ranks{max-width:1080px;margin:0 auto 30px}
-  .ranks ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;
-            grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
-  .ranks li{padding:11px 14px;border:1px solid rgba(255,255,255,.1);border-radius:11px;
-            display:flex;justify-content:space-between;gap:10px;align-items:baseline;opacity:.5}
-  .ranks li.reached{opacity:1;border-color:rgba(143,201,120,.45);background:rgba(143,201,120,.07)}
-  .ranks b{font:700 14.5px var(--qx-font);color:#fff}
-  .ranks span{font:800 13px var(--qx-font);color:#a89e8d;font-variant-numeric:tabular-nums}
-
-  footer{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;
-         gap:16px;flex-wrap:wrap;padding-top:18px;border-top:1px solid rgba(255,255,255,.1)}
-  footer p{margin:0;color:#8d8474;font:600 13.5px var(--qx-font)}
-  .confirm{display:flex;align-items:center;gap:9px;color:#e6b4ab;font:700 13.5px var(--qx-font);flex-wrap:wrap}
-  button{min-height:36px;padding:0 15px;border-radius:9px;border:0;cursor:pointer;font:900 13px var(--qx-font)}
-  button:not(.ghost){background:#b8483f;color:#fff}
-  button.ghost{background:transparent;color:#bcb19e;border:1px solid rgba(255,255,255,.2)}
-  button:disabled{opacity:.4;cursor:default}
-  button:focus-visible{outline:3px solid #a85a34;outline-offset:2px}
-
-  @media(max-width:820px){
-    .mode-intro{align-items:flex-start;flex-direction:column}
-    .standing{grid-template-columns:1fr}
-    ol.missions li{grid-template-columns:auto minmax(0,1fr);row-gap:11px}
-    .xp,.actions{grid-column:2}
-    .actions{justify-self:start;flex-wrap:wrap}
-  }
+  :global(.qubix-university){height:auto!important;overflow:visible!important}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#f1ede4}
+  :global(body){position:static}
+  .hub{--ink:#20241f;--soft:#62695f;--accent:#315f48;--signal:#b85530;--paper:#f7f3e9;--rule:#c8c1b1;min-height:100vh;max-width:none;padding:0 0 54px;background:#e6e0d2;color:var(--ink)}
+  .hub>*{max-width:1120px;margin-inline:auto}.nav-wrap,.hero,.floor,.route,.ranks,.foot-wrap,.progress-foot,.locked-notice{padding-inline:clamp(16px,5vw,56px)}
+  .eyebrow{margin:0 0 10px;color:var(--signal);font:900 11px var(--qx-font);letter-spacing:.15em}
+  .hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.65fr);gap:clamp(30px,7vw,90px);align-items:end;padding-top:60px;padding-bottom:50px}
+  .hero h1{max-width:720px;margin:0;font:500 clamp(42px,7vw,76px)/.98 Georgia,serif;letter-spacing:-.035em;text-wrap:balance}.lede{max-width:590px;margin:20px 0 0;color:var(--soft);font:500 17px/1.6 var(--qx-font)}
+  .standing{padding:24px;border-top:3px solid var(--accent);background:var(--paper)}.rank-line{display:flex;justify-content:space-between;align-items:baseline;gap:14px}.rank-line strong{font:500 23px Georgia,serif}.rank-line span{font:500 34px Georgia,serif}.bar{height:5px;margin-top:22px;background:#cec8ba;overflow:hidden}.bar span{display:block;height:100%;background:var(--accent);transition:width .4s ease}.meter-row{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:var(--soft);font:700 11px var(--qx-font)}.standing small{display:block;margin-top:12px;color:var(--soft);font:600 11px var(--qx-font)}
+  .locked-notice{margin-bottom:20px;color:#7a3524;font:700 14px/1.5 var(--qx-font)}
+  .next-card{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:28px;align-items:center;width:calc(100% - clamp(32px,10vw,112px));max-width:1008px!important;box-sizing:border-box;margin-bottom:72px!important;padding:30px!important;border:6px solid var(--ink);background:var(--paper);box-shadow:12px 12px 0 rgba(32,36,31,.16)}.mission-number{color:var(--signal);font:500 28px Georgia,serif}.next-copy h2{margin:0;font:500 31px Georgia,serif}.next-copy>p:not(.eyebrow){margin:7px 0;color:var(--soft);font:500 14px/1.5 var(--qx-font)}
+  .pairing{display:flex;margin-top:20px}.pairing span{max-width:230px;padding:0 22px;border-left:1px solid var(--rule);color:var(--soft);font:500 11px/1.45 var(--qx-font)}.pairing span:first-child{padding-left:0;border:0}.pairing b{display:block;margin-bottom:6px;color:var(--signal);font:900 9px var(--qx-font);letter-spacing:.12em}.next-actions{display:grid;gap:11px;text-align:center}.next-actions a{color:var(--ink);font:800 12px var(--qx-font);text-decoration:none}.next-actions .primary{padding:16px 20px;background:var(--signal);color:#fff}.next-actions a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  .floor,.route{padding-bottom:76px}.section-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:28px}.section-heading h2,.ranks h2{max-width:720px;margin:0;font:500 clamp(30px,4vw,47px)/1.08 Georgia,serif;letter-spacing:-.02em}.section-heading>span{color:var(--soft);font:800 10px/1.5 var(--qx-font);letter-spacing:.08em;text-align:right}
+  .floor-map{position:relative;display:grid;grid-template-columns:1fr 1.15fr 1.35fr;grid-template-areas:'goods stock office' 'checkout aisles office' 'checkout aisles board';gap:16px;padding:24px;border:6px solid var(--ink);background:#d7dbcf;box-shadow:12px 12px 0 rgba(32,36,31,.16)}
+  .room{position:relative;min-height:170px;display:flex;flex-direction:column;padding:18px;border:1px solid #9c998d;background:#e8e2d5;color:var(--ink);text-decoration:none;overflow:hidden;isolation:isolate}.goods-in{grid-area:goods}.stock-room{grid-area:stock}.data-office{grid-area:office}.checkout{grid-area:checkout}.aisles{grid-area:aisles}.board-room{grid-area:board}.room::before{content:'';position:absolute;inset:0;z-index:-2;background:linear-gradient(145deg,rgba(49,95,72,.08),transparent 58%),repeating-linear-gradient(90deg,transparent 0 36px,rgba(32,36,31,.025) 36px 37px)}.room::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(232,226,213,.98),rgba(232,226,213,.12) 72%)}.room:hover{border-color:var(--signal)}.room:focus-visible{outline:4px solid var(--signal);outline-offset:-4px}.room.current{border:3px solid var(--signal)}.room.complete{border-color:var(--accent)}
+  .room-top{display:flex;justify-content:space-between;gap:12px;text-transform:uppercase}.room-top b{font:800 12px var(--qx-font);letter-spacing:.13em}.room-top em{color:var(--accent);font:800 10px var(--qx-font);font-style:normal}.image-slot{margin:auto;color:#857f72;font:800 9px var(--qx-font);letter-spacing:.13em}.room small{color:var(--soft);font:600 10px/1.35 var(--qx-font)}.room-state{margin-top:8px;color:var(--signal);font:900 9px var(--qx-font);letter-spacing:.09em;text-transform:uppercase}.you-are-here{position:absolute;left:18%;top:56%;padding:10px 13px;background:var(--signal);color:#fff;font:900 9px var(--qx-font);letter-spacing:.08em}.image-note{margin:18px 0 0;color:var(--soft);font:500 12px/1.5 var(--qx-font)}
+  ol.missions{margin:0;padding:0;border-top:3px solid var(--accent);list-style:none}.missions li{display:grid;grid-template-columns:42px minmax(0,1fr) auto auto;align-items:center;gap:18px;padding:19px 20px;border-bottom:1px solid var(--rule);background:rgba(247,243,233,.65)}.missions li:first-child{border-left:4px solid var(--signal)}.missions li.done{background:rgba(49,95,72,.07)}.missions li.locked{opacity:.55}.num{color:var(--accent);font:500 14px Georgia,serif}.body b{display:block;font:500 17px Georgia,serif}.body span{display:block;margin-top:3px;color:var(--soft);font:500 12px/1.4 var(--qx-font)}.xp{color:var(--soft);font:800 10px var(--qx-font)}.actions{display:flex;align-items:center;gap:8px}.actions a,.lock{min-width:58px;padding:9px 10px;color:var(--ink);font:900 9px var(--qx-font);letter-spacing:.08em;text-align:center;text-decoration:none;text-transform:uppercase}.actions .play{background:var(--signal);color:#fff}.actions .read{color:var(--accent)}.lock{color:var(--soft)}.actions a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .ranks{padding-bottom:62px}.ranks ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;margin:26px 0 0;padding:0;border-top:1px solid var(--rule);border-left:1px solid var(--rule);list-style:none}.ranks li{display:flex;justify-content:space-between;gap:10px;padding:15px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);opacity:.48}.ranks li.reached{background:var(--paper);opacity:1}.ranks b{font:600 12px var(--qx-font)}.ranks span{color:var(--soft);font:700 10px var(--qx-font)}
+  .progress-foot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-top:18px;border-top:1px solid var(--rule)}.progress-foot p{margin:0;color:var(--soft);font:500 12px/1.5 var(--qx-font)}.confirm{display:flex;align-items:center;gap:9px;color:#7a3524;font:700 12px var(--qx-font);flex-wrap:wrap}button{min-height:34px;padding:0 14px;border:0;background:#9b382c;color:#fff;cursor:pointer;font:900 11px var(--qx-font)}button.ghost{border:1px solid var(--rule);background:transparent;color:var(--soft)}button:disabled{opacity:.4;cursor:default}button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media(max-width:780px){.hero{grid-template-columns:1fr;padding-top:40px}.next-card{grid-template-columns:42px minmax(0,1fr)}.next-actions{grid-column:2;justify-items:start}.floor-map{grid-template-columns:1fr 1fr;grid-template-areas:'checkout aisles' 'goods stock' 'office office' 'board board';padding:14px}.room{min-height:145px}.data-office,.board-room{min-height:160px}.you-are-here{left:42%;top:23%}.missions li{grid-template-columns:34px minmax(0,1fr);gap:10px}.xp,.actions{grid-column:2}.actions{justify-self:start}.section-heading{align-items:flex-start;flex-direction:column}.section-heading>span{text-align:left}}
+  @media(max-width:460px){.hero h1{font-size:43px}.next-card{margin-inline:16px!important;padding:21px!important;border-width:5px;box-shadow:8px 8px 0 rgba(32,36,31,.16)}.next-card .mission-number{display:none}.next-card,.next-actions{grid-template-columns:1fr;grid-column:1}.pairing{display:grid;gap:12px}.pairing span{padding:0;border:0}.floor-map{grid-template-columns:1fr;grid-template-areas:'checkout' 'aisles' 'goods' 'stock' 'office' 'board';box-shadow:8px 8px 0 rgba(32,36,31,.16)}.you-are-here{top:19%;left:auto;right:4px}.room{min-height:160px}}
   @media(prefers-reduced-motion:reduce){.bar span{transition:none}}
 </style>
