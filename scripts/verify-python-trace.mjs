@@ -1,8 +1,20 @@
 // Play the mission, because reading it has never been enough.
 import { chromium } from 'playwright';
 
+const BASE = process.argv[2] || 'http://127.0.0.1:4319';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1400, height: 950 } });
+
+// Missions unlock in order now, so opening one directly bounces to the hub.
+// Seed the missions before this one as complete, which is the state a learner
+// reaching it would actually be in.
+import { MISSIONS } from '../src/lib/game/progress.js';
+const upTo = MISSIONS.slice(0, MISSIONS.findIndex(m => m.slug === 'python-trace')).map(m => m.slug);
+await page.addInitScript(done => {
+  localStorage.setItem('qx.superstore.progress.v1',
+    JSON.stringify({ completed: done, started: new Date().toISOString() }));
+}, upTo);
+
 const problems = [];
 // Vercel's analytics script and Google's fonts exist only when deployed. Locally
 // they 404, the SPA fallback answers with HTML, and the page fails to parse it as
@@ -18,7 +30,7 @@ page.on('console', m => {
   if (m.type() === 'error' && !notOurs(t) && !t.startsWith('Failed to load resource')) problems.push(`console: ${t}`);
 });
 
-await page.goto('http://127.0.0.1:4319/?mode=game&mission=python-trace', { waitUntil: 'networkidle' });
+await page.goto(`${BASE}/?mode=game&mission=python-trace`, { waitUntil: 'networkidle' });
 
 const say = (ok, label, extra = '') => {
   console.log(`  ${ok ? 'PASS' : '**FAIL**'}  ${label}${extra ? '  ' + extra : ''}`);
@@ -105,7 +117,7 @@ say((await page.locator('.completion li').count()) === 6, 'the summary lists all
 await page.screenshot({ path: 'c:/Users/ali10/QUBIX_UNI-/artifacts/python-trace-complete.png', fullPage: true });
 
 // The chapter must actually route here.
-await page.goto('http://127.0.0.1:4319/?mode=game&mission=shared-book&chapter=6&session=2', { waitUntil: 'networkidle' });
+await page.goto(`${BASE}/?mode=game&mission=shared-book&chapter=6&session=2`, { waitUntil: 'networkidle' });
 const link = page.locator('a[href*="python-trace"]').first();
 say(await link.count() > 0, 'chapter 06 session 02 links to the mission');
 

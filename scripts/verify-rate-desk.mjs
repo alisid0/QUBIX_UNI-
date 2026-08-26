@@ -5,6 +5,17 @@ import { RATE_DESK_MISSION as M, readingsFor, round } from '../src/lib/game/rate
 const BASE = process.argv[2] || 'http://127.0.0.1:4330';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1400, height: 950 } });
+
+// Missions unlock in order now, so opening one directly bounces to the hub.
+// Seed the missions before this one as complete, which is the state a learner
+// reaching it would actually be in.
+import { MISSIONS } from '../src/lib/game/progress.js';
+const upTo = MISSIONS.slice(0, MISSIONS.findIndex(m => m.slug === 'rate-desk')).map(m => m.slug);
+await page.addInitScript(done => {
+  localStorage.setItem('qx.superstore.progress.v1',
+    JSON.stringify({ completed: done, started: new Date().toISOString() }));
+}, upTo);
+
 const problems = [];
 const notOurs = t => /_vercel|insights|fonts\.gstatic|Unexpected token '<'/.test(t);
 page.on('pageerror', e => notOurs(e.message) || problems.push(`page error: ${e.message}`));
