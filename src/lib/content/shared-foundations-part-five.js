@@ -112,6 +112,24 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         Object.freeze(['GROUP BY branch_id', 'one branch', '48']),
         Object.freeze(['GROUP BY branch_id, business_date', 'one branch on one date', '1,392'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'sql-console',
+        lead: 'A task from the console at the end of this session. The console runs your clause against the same twelve sales, so you can settle the answer here first.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'group',
+            facts: Object.freeze([
+              Object.freeze(['The request', 'How many sales did each branch make?']),
+              Object.freeze(['What to watch', 'Watch the row count while you add the grouping clause.']),
+              Object.freeze(['Rows the console returns', '3'])
+            ]),
+            question: 'Twelve rows go in and three come out. Does one row still mean one sale?',
+            answer: 'No. One row now means one branch.',
+            why: 'Grouping by a column makes that column the grain. Counting rows now counts branches. This is the difference from WHERE, which removed rows and left every survivor still meaning a sale.'
+          })
+        ]),
+        closing: 'Three rows is not a smaller answer to the same question, it is an answer to a different one. Ask what one row means after every clause, because the number will look reasonable either way.'
+      }),
       workbook: Object.freeze({ title: 'Twenty-minute grouping plan', prompt: 'Use the same table you described in the previous session.', steps: Object.freeze([
         'Write a question that needs one answer per group.',
         'Name the grouping columns, and write the new grain as a sentence.',
@@ -158,6 +176,25 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         Object.freeze(['sale to sale_line', '11,983', 'key repeats: now one row per line']),
         Object.freeze(['sale to return, inner', '176', 'unmatched sales discarded'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'join-grain',
+        lead: 'The join you will be asked to predict at the end of this session. Predict it here, before the mission shows you the result.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'sale-line',
+            facts: Object.freeze([
+              Object.freeze(['Joining', 'sale · sale_line']),
+              Object.freeze(['On the key', 'sale_id']),
+              Object.freeze(['Rows on each side', '4312 · 11983']),
+              Object.freeze(['Why', 'A basket holds several products, and each one is its own line. sale_id repeats down sale_line.'])
+            ]),
+            question: 'One sale meets how many rows in sale_line, and what does that do to the result?',
+            answer: 'Several, one per product line, so the result grows.',
+            why: 'sale_id is not unique in sale_line, so one sale meets every line in its basket. The result is 11,983 rows, not 4,312. Summing basket_total here counts each basket once per line and inflates revenue.'
+          })
+        ]),
+        closing: 'The join is not wrong. It answers a question about product lines rather than about sales, and the only way to be caught out by it is to have expected the other one.'
+      }),
       workbook: Object.freeze({ title: 'Twenty-minute join prediction', prompt: 'Take any two lists that share an identifier: orders and items, people and addresses.', steps: Object.freeze([
         'Write how many rows each list has.',
         'Decide whether the identifier repeats in the second list.',

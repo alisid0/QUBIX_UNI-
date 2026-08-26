@@ -52,6 +52,24 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       example: Object.freeze({ title: 'Three variables, three meanings', headers: Object.freeze(['Variable','Example','Valid use']), rows: Object.freeze([
         Object.freeze(['branch_id','B-08','identify or group branches']), Object.freeze(['satisfaction','Good','compare ordered response levels']), Object.freeze(['basket_total','£18.70','sum, compare or calculate differences'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'classify-data',
+        lead: 'One field from the mission at the end of this session. Decide what kind of thing it is before the mission asks you, because the answer decides what you are allowed to do with it.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'barcode',
+            facts: Object.freeze([
+              Object.freeze(['The field', 'barcode']),
+              Object.freeze(['What it is called', 'Product barcode']),
+              Object.freeze(['Three real values', '5012345678901 · 5098765432107 · 5011122233344'])
+            ]),
+            question: 'Every value is thirteen digits. Does that make it a number?',
+            answer: 'No. It is an identifier that happens to be written in digits.',
+            why: 'Nothing sensible comes of adding two barcodes together, or averaging them, or asking which is larger. A value is the kind of thing its meaning makes it, not the kind of thing its characters suggest, and treating this as a number would also drop the leading zero on any barcode that has one.'
+          })
+        ]),
+        closing: 'This is the question the whole mission asks, twenty-four times over. What kind of thing is this value, and what does that permit?'
+      }),
       workbook: Object.freeze({ title: 'Fifteen-minute variable audit', prompt: 'Use a receipt, timetable, fitness app or another small record you can see.', steps: Object.freeze(['Name what one observation represents.', 'List five variables recorded about it.', 'Write the meaning of each variable in a full sentence.', 'Classify each as categorical or quantitative.', 'Circle any identifier that contains digits but is not an amount.']) }),
       check: Object.freeze({ prompt: 'Employee number 700184 contains digits. Why is it categorical?', answer: 'label', options: Object.freeze([['large','The number happens to be large'],['label','It identifies a person and arithmetic on it has no meaning'],['whole','It contains no decimal places']]), explanation: 'An employee number is a label. Its numerical appearance does not make it a measured amount.' }),
       practice: Object.freeze({ title: 'Classify Store Data', href: '?mode=game&mission=classify-data', instruction: 'Apply meaning, subtype and measurement scale across Superstore variables.' }),
@@ -78,6 +96,23 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       example: Object.freeze({ title: 'The same sale at two grains', headers: Object.freeze(['Table','Rows','One row represents']), rows: Object.freeze([
         Object.freeze(['sale','1','one completed sale']), Object.freeze(['sale_line','3','one product line within one sale']), Object.freeze(['payment','1','one payment attempt for the sale'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'table-grain',
+        lead: 'The first table in the mission at the end of this session. State what one row is before you meet it, because everything you can count depends on that answer.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'sale',
+            facts: Object.freeze([
+              Object.freeze(['The table', 'sale']),
+              Object.freeze(['How a row gets there', 'A checkout creates one header record when payment succeeds.'])
+            ]),
+            question: 'Three rows come back from this table. Three of what?',
+            answer: 'Three completed sales.',
+            why: 'Each sale_id appears once and describes the whole transaction. COUNT(*) counts sale records: three rows means three completed sales, not three products. Somebody who reports it as products has not misread the number, they have misread the row.'
+          })
+        ]),
+        closing: 'Every table in the mission asks the same two questions, and the second one only has an answer once the first does: what is one row, and therefore what does counting them tell you?'
+      }),
       workbook: Object.freeze({ title: 'Ten-minute grain test', prompt: 'Imagine a table recording attendance at a weekly class.', steps: Object.freeze(['Write a grain sentence for one learner enrolled in one class.', 'Write a different grain sentence for one learner attending one class session.', 'List the columns needed to distinguish each grain.', 'Explain why the second table can contain more rows.']) }),
       check: Object.freeze({ prompt: 'A sale-line table has three rows for sale S-1041. What does COUNT(*) return?', answer: 'lines', options: Object.freeze([['sales','One sale'],['lines','Three sale-line records'],['products','Every product in the catalogue']]), explanation: 'COUNT(*) returns three because it counts rows at the sale-line grain.' }),
       practice: Object.freeze({ title: 'What Does One Row Represent?', href: '?mode=game&mission=table-grain', instruction: 'Declare the grain of six tables before interpreting their row counts.' }),
@@ -104,6 +139,35 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       example: Object.freeze({ title: 'Three cells that look simple', headers: Object.freeze(['Cell','Context','Meaning']), rows: Object.freeze([
         Object.freeze(['0','returned_unit_count','known zero: no returns']), Object.freeze(['NULL','delivery_time','no value held; reason required']), Object.freeze(['28 cm','mass_kg','wrong dimension; not convertible'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'missing-data',
+        lead: 'Two cells from the mission at the end of this session. Both are blank, and they need opposite treatment.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'pickup-distance',
+            facts: Object.freeze([
+              Object.freeze(['Field', 'delivery_distance_km']),
+              Object.freeze(['The cell shows', 'NULL']),
+              Object.freeze(['Operational evidence', 'fulfilment_method = PICKUP · No delivery journey exists'])
+            ]),
+            question: 'Is this a distance nobody measured, or a distance that does not exist?',
+            answer: 'It does not exist.',
+            why: 'Delivery distance does not apply because there was no delivery. Nobody can ever fill this in, so chasing it is wasted effort and averaging it as zero would put a collected order into a delivery statistic.'
+          }),
+          Object.freeze({
+            caseId: 'temperature-unknown',
+            facts: Object.freeze([
+              Object.freeze(['Field', 'temperature_c']),
+              Object.freeze(['The cell shows', 'NULL']),
+              Object.freeze(['Operational evidence', 'Device online · Calibration window: 13:00–13:10'])
+            ]),
+            question: 'The cold room had a temperature during those ten minutes. Why is the cell empty?',
+            answer: 'It was not recorded, though it existed.',
+            why: 'The sensor was busy calibrating and sent a heartbeat without a reading. The value was real and is simply not in the record, which is a different problem from a value that could never exist and needs a different note beside it.'
+          })
+        ]),
+        closing: 'Two blank cells, identical on screen. One can never be filled and one merely was not, and only the operational record separates them. That is what this session means by context.'
+      }),
       workbook: Object.freeze({ title: 'Fifteen-minute quality review', prompt: 'Review five fields from a form, spreadsheet or app you know.', steps: Object.freeze(['Write the intended meaning and unit for each field.', 'Describe what zero would mean in each field.', 'Describe what a blank could mean.', 'Identify one value that could pass a format check but still be conceptually wrong.', 'Write the safest action: keep, correct with evidence, or quarantine.']) }),
       check: Object.freeze({ prompt: 'A delivery-time field is blank because the parcel has not arrived yet. What is the best interpretation?', answer: 'pending', options: Object.freeze([['zero','Delivery took zero minutes'],['pending','The value is expected later'],['not-applicable','Delivery time can never apply to this parcel']]), explanation: 'The value is pending because the event needed to produce it has not happened yet.' }),
       practice: Object.freeze({ title: 'Missing Values Are Not Zero', href: '?mode=game&mission=missing-data', instruction: 'Interpret six values using process evidence, then choose a traceable treatment.' }),

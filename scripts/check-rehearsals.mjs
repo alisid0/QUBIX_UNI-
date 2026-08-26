@@ -24,7 +24,11 @@ const ok = (label, pass, detail = '') => {
 };
 
 const bySlug = new Map(MISSIONS.map(m => [m.slug, m.mission]));
-const casesOf = m => m.cases || m.tasks || m.requests || [];
+// The missions do not share a shape. Most keep their cases in `cases`, Trace the
+// Number keeps them in `steps`, and Classify Store Data keeps a variable list
+// inside each variation. A rehearsal should be able to name any of them.
+const casesOf = m => m.cases || m.tasks || m.requests || m.steps
+  || (m.variations || []).flatMap(v => v.variables || []) || [];
 
 // A fact may compose several mission values ("Checkout · sale_line"), so each
 // part is checked separately rather than the joined string.
@@ -58,7 +62,12 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
         found ? '' : `known: ${casesOf(mission).map(c => c.id).join(', ')}`);
       if (!found) continue;
 
-      const blob = JSON.stringify(found);
+      // A fact may come from the case itself or from a scenario the whole
+      // mission shares: Trace the Number keeps the sensor reading, the rule and
+      // the destination in one `record` that every step interrogates, so a
+      // rehearsal quoting it is quoting the mission, not inventing.
+      const shared = mission.record || mission.scenario || mission.dataset || null;
+      const blob = JSON.stringify(found) + (shared ? JSON.stringify(shared) : '');
       const missing = [];
       for (const [label, value] of rc.facts) {
         for (const part of parts(value)) {

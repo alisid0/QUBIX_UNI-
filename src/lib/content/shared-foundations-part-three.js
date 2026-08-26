@@ -215,6 +215,34 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
         Object.freeze(['Activity', 'normalise_temperature_v3', 'you cannot repeat or audit the change']),
         Object.freeze(['Derivation', 'source + activity + output', 'the output is a number with no history'])
       ]) }),
+      rehearsal: Object.freeze({
+        mission: 'data-lineage',
+        lead: 'The trace you will follow at the end of this session, and the question it ends on. Work out the last one now: it is the reason anybody records lineage at all.',
+        cases: Object.freeze([
+          Object.freeze({
+            caseId: 'source',
+            facts: Object.freeze([
+              Object.freeze(['The reported value', '−17.8 °C · morning_freezer_report']),
+              Object.freeze(['The source key', 'B-08 · FZ-2 · 05:45']),
+              Object.freeze(['The activity', 'normalise_temperature_v3'])
+            ]),
+            question: 'The report cell says −17.8 °C. What is the source of that value?',
+            answer: 'One observation: branch B-08, sensor FZ-2, at 05:45.',
+            why: 'A useful trace begins with an identifiable source record, not only a number. The branch, sensor and observation time distinguish this reading from every other reading, which is what makes it findable again.'
+          }),
+          Object.freeze({
+            caseId: 'impact',
+            facts: Object.freeze([
+              Object.freeze(['The sensor', 'FZ-2']),
+              Object.freeze(['The rule it fed', 'normalise_temperature_v3'])
+            ]),
+            question: 'FZ-2 turns out to have read three degrees low all week, and is recalibrated this morning. Is the problem dealt with?',
+            answer: 'No. Everything already derived from it is still wrong.',
+            why: 'Recalibrating stops it recurring and fixes nothing already published. Every value derived from that sensor this week inherited the fault, and the same links that trace one number back to its source are what find them, read in the other direction.'
+          })
+        ]),
+        closing: 'Lineage is usually read backwards, from a number to where it came from. Its other use is forwards, and that is the one that saves a week: when a source turns out to be wrong, the links say exactly what has to be corrected without anybody guessing.'
+      }),
       workbook: Object.freeze({ title: 'Twenty-minute trace', prompt: 'Choose a number that was reported to you: a bill total, a step count, a delivery estimate.', steps: Object.freeze([
         'Write down what was measured, and by what.',
         'Write down every step you believe happened between the measurement and the number you saw.',
