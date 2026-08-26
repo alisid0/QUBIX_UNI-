@@ -4,8 +4,6 @@
   import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import Figure from '../lib/components/Figure.svelte';
-  import { roomForChapter } from '../lib/game/store-map.js';
-  import { MISSIONS } from '../lib/game/progress.js';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
@@ -13,13 +11,6 @@
   const askedChapter = Number(new URLSearchParams(window.location.search).get('chapter'));
   const chapterNumber = Number.isInteger(askedChapter) && bookForChapter(askedChapter) ? askedChapter : 1;
   const book = bookForChapter(chapterNumber);
-
-  // The room this chapter is set in, worked out from where its missions stand
-  // on the floor plan. No second list to keep in step.
-  const room = roomForChapter(chapterNumber, MISSIONS);
-  const roomSpot = room
-    ? room.spots.find(sp => MISSIONS.some(m => m.slug === sp.slug && m.reading?.chapter === chapterNumber))
-    : null;
 
   // Progress is kept per chapter, so finishing chapter 1 does not mark chapter 2.
   const storageKey = `qubix-shared-foundations-${book.id}-v1`;
@@ -135,33 +126,22 @@
   <div class="subject-rail"><SiteNav links={false} chapter={chapterNumber} /></div>
   </div>
 
-  {#if room}
-    <!-- The chapter opens on the place it is practised, so reading and playing
-         are visibly the same building rather than two products. -->
-    <header class="chapter-hero">
-      <div class="hero-text">
-        <p class="hero-eyebrow">CHAPTER {String(chapterNumber).padStart(2, '0')} · {book.subtitle.toUpperCase()}</p>
-        <h1>{book.title}</h1>
-        <p class="hero-sub">{book.subtitle}</p>
-        {#if roomSpot}
-          <p class="hero-where">You practise this at <b>{roomSpot.at}</b> in the <b>{room.name}</b>.
-            <a href={`?mode=game&mission=store`}>See it on the floor →</a></p>
-        {/if}
-      </div>
-      <div class="hero-art">
-        <img src={`/rooms/${room.id}.webp`} alt="" loading="lazy" />
-      </div>
-    </header>
-  {/if}
+  <header class="chapter-hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow">CHAPTER {String(chapterNumber).padStart(2, '0')} · {formatTime(book.totalMinutes).toUpperCase()} · {book.sessions.length} BRIEFINGS</p>
+      <h1>{book.title}</h1>
+      <p class="hero-sub">Each briefing is one complete packet: the idea, the evidence, your check, then the Superstore mission where you apply it.</p>
+      <a class="floor-link" href="?mode=game">Return to your Superstore shift <span aria-hidden="true">→</span></a>
+    </div>
+  </header>
   <div class="layout">
     <aside class="toc">
-      {#if !room}<p>{book.subtitle.toUpperCase()}</p><h1>{book.title}</h1><span>{book.subtitle}</span>{/if}
-      <div class="time"><small>EXPECTED TIME FOR THIS PART</small><b>{formatTime(book.totalMinutes)}</b><small>Your pace may vary</small></div>
+      <div class="time"><small>CHAPTER ROUTE</small><b>{completedItems} / {book.sessions.length * 2} steps</b><small>Study and practice stay paired</small></div>
       <nav aria-label="Book sessions">
         {#each book.sessions as item, index}
           <button class:active={activeIndex === index} on:click={() => openSession(index)}>
             <span>{item.number}</span>
-            <div><b>{item.title}</b><small>Expected time · {formatTime(item.studyMinutes + item.playMinutes)}</small></div>
+            <div><small>{activeIndex === index ? 'OPEN' : progress.study.includes(item.id) && progress.practice.includes(item.id) ? 'COMPLETE' : 'BRIEFING'} · {formatTime(item.studyMinutes + item.playMinutes)}</small><b>{item.title}</b></div>
             <em class:done={progress.study.includes(item.id) && progress.practice.includes(item.id)}>{progress.study.includes(item.id) && progress.practice.includes(item.id) ? '✓' : '○'}</em>
           </button>
         {/each}
@@ -176,8 +156,9 @@
 
       <article>
         <header class="chapter-head">
+          <span class="packet-number">{session.number}</span>
           <div><p>SESSION {session.number} · EXPECTED TIME {formatTime(session.studyMinutes + session.playMinutes).toUpperCase()}</p><h2>{session.title}</h2></div>
-          <span>{progress.study.includes(session.id) ? 'STUDY COMPLETE ✓' : 'STUDY'}</span>
+          <span class="packet-state">{progress.study.includes(session.id) ? 'STUDY COMPLETE ✓' : 'STUDY'}</span>
         </header>
 
         <section class="objective"><b>BY THE END, YOU CAN</b><p>{session.objective}</p></section>
@@ -280,17 +261,6 @@
   .chapter-hero h1 { margin: 0; font: 400 clamp(30px, 4.6vw, 46px)/1.06 Georgia, serif;
                      letter-spacing: -.02em; color: #241f16; text-wrap: balance; }
   .hero-sub { margin: 0; max-width: 46ch; color: #625a49; font: 400 16px/1.55 var(--qx-font); }
-  .hero-where { margin: 6px 0 0; max-width: 46ch; color: #625a49; font: 400 14.5px/1.6 var(--qx-font); }
-  .hero-where b { color: #241f16; font-weight: 700; }
-  .hero-where a { color: #8c4c2e; text-decoration: none; border-bottom: 1px solid currentColor;
-                  white-space: nowrap; padding-bottom: 1px; }
-  .hero-art { position: relative; }
-  .hero-art img { display: block; width: 100%; height: auto; }
-
-  @media (max-width: 860px) {
-    .chapter-hero { grid-template-columns: 1fr; gap: 4px; padding-bottom: 4px; }
-    .hero-art { order: -1; max-width: 460px; }
-  }
   /* overflow:auto here made body a viewport-height scroll container, so the
      document never scrolled and window.scrollTo was a no-op: clicking Next
      session changed the session and left you at the bottom of the page.
@@ -319,9 +289,6 @@
 
   .layout { width: min(100%, 1240px); margin: 0 auto; padding: 28px clamp(14px, 3vw, 34px) 54px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 22px; align-items: start; }
   .toc { min-width: 0; position: sticky; top: 88px; padding: 21px; border: 1px solid #d8d0be; border-radius: 16px; background: #fff; }
-  .toc > p { margin: 0 0 7px; color: #8c4c2e; font: 900 11.5px var(--qx-font); letter-spacing: .12em; }
-  .toc h1 { margin: 0; font: 700 31px/1.05 Georgia, serif; letter-spacing: -.02em; }
-  .toc > span { display: block; margin-top: 7px; color: #625a49; font: 700 13px var(--qx-font); }
   .time { margin: 17px 0; padding: 13px 14px; display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; border-left: 4px solid #5f7355; background: #eef1e9; }
   .time small { color: #756c5c; font: 800 11px var(--qx-font); letter-spacing: .08em; }
   .time small:last-child { grid-column: 1 / -1; }
@@ -438,7 +405,6 @@
     .overall i { width: 56px; }
     .layout { padding: 12px 8px 30px; gap: 10px; }
     .toc { padding: 16px; border-radius: 12px; }
-    .toc h1 { font-size: 27px; }
     .toc nav { width: 100%; min-width: 0; display: flex; overflow-x: auto; padding-bottom: 4px; }
     .toc nav button { flex: 0 0 215px; }
     article { border-radius: 12px; }
@@ -451,5 +417,106 @@
     .practice a, .practice button { grid-column: 1; min-width: 0; width: 100%; }
     .chapter-nav { align-items: stretch; flex-direction: column; }
     .chapter-nav button, .chapter-nav a { width: 100%; text-align: center; }
+  }
+
+  /* R3 · briefing packet. The reading mechanics above are unchanged; this
+     layer makes every session feel like a piece of work issued on the floor. */
+  .reader { --packet-ink: #20241f; --packet-soft: #62695f; --packet-green: #315f48;
+            --packet-orange: #b85530; --packet-paper: #f7f3e9; --packet-rule: #c8c1b1;
+            background: #e6e0d2; color: var(--packet-ink); }
+  :global(html), :global(body), :global(#app) { background: #e6e0d2; }
+  .topbar, .subject-rail { background: rgba(247, 243, 233, .97); }
+  .topbar { border-color: var(--packet-rule); }
+  .back, .identity b { color: var(--packet-orange); }
+  .mode-centre { --mode-active: var(--packet-green); --mode-focus: var(--packet-orange); }
+  .overall i { border-radius: 0; background: var(--packet-rule); }
+  .overall em { border-radius: 0; background: var(--packet-green); }
+
+  .chapter-hero { display: block; max-width: 1120px; padding: clamp(48px, 7vw, 78px) clamp(18px, 5vw, 56px) 38px; }
+  .hero-text { display: block; }
+  .hero-eyebrow { margin: 0 0 14px; color: var(--packet-orange); font-size: 11px; }
+  .chapter-hero h1 { max-width: 850px; font-size: clamp(42px, 7vw, 72px); line-height: .98; letter-spacing: -.035em; }
+  .hero-sub { max-width: 720px; margin-top: 20px; color: var(--packet-soft); font-size: 16px; }
+  .floor-link { display: inline-block; margin-top: 20px; color: var(--packet-green); border-bottom: 1px solid currentColor;
+                padding-bottom: 2px; font: 800 12px var(--qx-font); text-decoration: none; }
+
+  .layout { display: block; width: min(100%, 1120px); padding: 0 clamp(18px, 5vw, 56px) 72px; }
+  .toc { position: static; padding: 0; border: 0; border-radius: 0; background: transparent; }
+  .time { margin: 0 0 18px; padding: 13px 0; grid-template-columns: 1fr auto; border: 0; border-top: 3px solid var(--packet-green); background: transparent; }
+  .time small, .time b { color: var(--packet-soft); }
+  .time b { font-size: 12px; }
+  .toc nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .toc nav button { position: relative; min-height: 174px; padding: 20px; display: grid; grid-template-columns: 1fr auto;
+                    align-content: start; align-items: start; gap: 22px 10px; border: 1px solid #9c998d; border-radius: 0;
+                    background: rgba(247,243,233,.62); color: var(--packet-ink); }
+  .toc nav button:hover { border-color: var(--packet-orange); }
+  .toc nav button.active { border: 5px solid var(--packet-ink); background: var(--packet-paper);
+                           box-shadow: 8px 8px 0 rgba(32,36,31,.16); }
+  .toc nav button > span { display: block; height: auto; border-radius: 0; background: transparent;
+                           color: var(--packet-orange); font: 400 27px Georgia, serif; }
+  .toc nav button.active > span { background: transparent; color: var(--packet-orange); }
+  .toc nav button div { grid-column: 1 / -1; display: flex; flex-direction: column-reverse; gap: 7px; }
+  .toc nav button b { color: var(--packet-ink); font: 400 19px/1.2 Georgia, serif; }
+  .toc nav button small { color: var(--packet-soft); font: 800 9px var(--qx-font); letter-spacing: .1em; }
+  .toc nav button em { color: var(--packet-rule); }
+  .progress-copy { margin: 22px 0 56px; display: flex; align-items: center; gap: 10px 22px; flex-wrap: wrap; }
+  .progress-copy b { font-size: 11px; }.progress-copy span { color: var(--packet-soft); font-size: 11px; }
+  .progress-copy button { margin: 0 0 0 auto; color: var(--packet-orange); }
+
+  .layout > main { min-width: 0; }
+  .layout > main > article { overflow: hidden; border: 6px solid var(--packet-ink); border-radius: 0;
+                            background: var(--packet-paper); box-shadow: 12px 12px 0 rgba(32,36,31,.16); }
+  .layout > main > article > section, .chapter-head, .chapter-nav { margin-left: clamp(20px, 6vw, 72px); margin-right: clamp(20px, 6vw, 72px); }
+  .chapter-head { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; align-items: start; gap: 24px;
+                  padding: 48px 0 28px; border-color: var(--packet-rule); }
+  .packet-number { color: var(--packet-orange); font: 400 30px Georgia, serif; }
+  .chapter-head p { color: var(--packet-orange); font-size: 10px; }
+  .chapter-head h2 { max-width: 720px; color: var(--packet-ink); font-weight: 400; font-size: clamp(36px, 6vw, 58px); }
+  .chapter-head > .packet-state { padding: 0; border-radius: 0; background: transparent; color: var(--packet-green); font-size: 10px; }
+  .objective { margin-top: 28px; padding: 20px 24px; border-left-color: var(--packet-green); background: #d8dfd3; }
+  .objective b { color: var(--packet-green); font-size: 10px; }
+  .objective p { max-width: 720px; font-weight: 400; font-size: 20px; }
+  .opening { color: var(--packet-ink); font-weight: 400; font-size: 20px; }
+  .reading-section h3 { color: var(--packet-ink); font-weight: 400; font-size: 28px; }
+  .reading-section p { color: var(--packet-soft); font-weight: 500; }
+  .section-label span { color: var(--packet-orange); font-size: 10px; }
+  .section-label b { font-weight: 400; }
+  .example, .workbook, .check, .rehearsal { padding: 24px; border: 1px solid var(--packet-rule); border-radius: 0; background: #f0ebdf; }
+  .example { border: 4px solid var(--packet-ink); background: var(--packet-paper); box-shadow: 8px 8px 0 rgba(32,36,31,.14); }
+  .rehearsal article { border-radius: 0; box-shadow: none; }
+  .rehearsal pre, textarea, .options button, .primary, .done-message, .feedback { border-radius: 0; }
+  textarea { background: var(--packet-paper); }
+  .options button { border-color: var(--packet-rule); background: var(--packet-paper); }
+  .options button.selected { border-color: var(--packet-green); background: #e4e9df; }
+  .primary { background: var(--packet-green); }
+  .practice { margin-top: 36px; border-radius: 0; background: var(--packet-ink); }
+  .practice span { color: #e9a07d; }.practice a { border-radius: 0; background: var(--packet-orange); }
+  .practice button { border-radius: 0; }
+  .chapter-nav button, .chapter-nav a { border-radius: 0; background: var(--packet-paper); }
+  .chapter-nav .next { border-color: var(--packet-green); background: var(--packet-green); }
+  .complete-banner { margin-bottom: 24px; border-radius: 0; }
+
+  @media (max-width: 860px) {
+    .chapter-hero { padding-bottom: 30px; }
+    .toc nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .chapter-head { grid-template-columns: 50px minmax(0, 1fr); }
+    .chapter-head > .packet-state { grid-column: 2; }
+  }
+  @media (max-width: 600px) {
+    .chapter-hero { padding: 38px 18px 26px; }
+    .chapter-hero h1 { font-size: 43px; }
+    .hero-sub { font-size: 14px; }
+    .layout { padding: 0 16px 48px; }
+    .toc nav { width: auto; display: grid; grid-template-columns: 1fr; overflow: visible; padding: 0; }
+    .toc nav button { min-height: 136px; width: 100%; flex: none; }
+    .progress-copy { margin-bottom: 42px; }
+    .progress-copy button { margin-left: 0; }
+    .layout > main > article { border-width: 5px; box-shadow: 8px 8px 0 rgba(32,36,31,.16); }
+    .chapter-head { grid-template-columns: 1fr; gap: 8px; padding-top: 30px; }
+    .packet-number { font-size: 27px; }
+    .chapter-head > .packet-state { grid-column: 1; }
+    .chapter-head h2 { font-size: 36px; }
+    .objective p { font-size: 17px; }
+    .example { border-width: 3px; box-shadow: 6px 6px 0 rgba(32,36,31,.14); }
   }
 </style>
