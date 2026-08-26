@@ -92,16 +92,8 @@
     }
   ];
 
-  const BOOKS = [
-    ['What Data Is and Why People Use It', '/library/what-data-is.html', 'The idea of data, before any tool.'],
-    ['What a Computer Program Does', '/library/what-a-program-does.html', 'What a machine is actually doing when it runs your instructions.'],
-    ['Calculus From The Ground Up', '/library/functions.html', 'Functions and rates of change, built from nothing.'],
-    ['The Big Sheet of Graphs', '/library/big-sheet-of-graphs.html', 'Every curve worth knowing, drawn and explained.']
-  ];
-
   const minutes = m => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`);
   const sessionsFor = i => partsForChapter(i + 1);
-  const totalSessions = CHAPTERS.reduce((n, _, i) => n + sessionsFor(i).length, 0);
   // The two halves, quoted apart. Every session declares reading minutes and
   // doing minutes; only their sum was ever shown, which told a newcomer how
   // long the whole thing takes without saying what kind of time it is.
@@ -119,12 +111,6 @@
       return slug && MISSIONS.some(m => m.slug === slug && m.reading?.chapter === chapter);
     })).length;
   const firstSessionTime = minutes(partsForChapter(1)[0].minutes);
-  const finalRank = RANKS[RANKS.length - 1].title;
-
-  // One shelf may be open at a time. Four expanded at once puts the whole site
-  // back on the page, which is the thing this page is trying to stop doing.
-  let open = '';
-  const toggle = id => (open = open === id ? '' : id);
 </script>
 
 <svelte:head>
@@ -135,53 +121,60 @@
 <section class="landing qx-shell">
   <div class="nav-wrap"><SiteNav subjects={false} /></div>
 
-  <header>
-    <p>WELCOME TO QUBIX UNIVERSITY</p>
-    <h1>Learn data science from zero.</h1>
-    <span>No prior data, maths or programming experience is assumed. Start at chapter one and
-      work forward: by the end you can take a messy question, get a trustworthy number out of it,
-      and say what it does and does not show.</span>
-    <p class="free">No account needed, nothing to pay. Your progress saves on this device.</p>
-  </header>
-
-  <!-- The premise, before anything else. The course is two kinds of material and
-       a newcomer cannot choose between them until somebody says so plainly. -->
-  <section class="premise" aria-labelledby="premise-heading">
-    <p class="eyebrow" id="premise-heading">HOW THE COURSE WORKS</p>
-    <h2>Two kinds of material, and you need both.</h2>
-    <p class="lede">Every session gives you something to understand and something to do with it.
-      Reading on its own leaves you able to recognise an idea but not use it. Doing on its own
-      leaves you able to follow steps without knowing when they stop applying.</p>
-
-    <div class="halves">
-      <article class="half">
-        <p class="tag">INFORMATION</p>
-        <h3>Material you read</h3>
-        <p>Written explanations with worked examples and computed figures. {CHAPTERS.length} chapters,
-          {volumeSessions} sessions, each one ending in a single question you answer without looking back.</p>
-        <dl>
-          <div><dt>Time to read it all</dt><dd>{readingTime}</dd></div>
-          <div><dt>First session</dt><dd>{partsForChapter(1)[0].minutes} min</dd></div>
-        </dl>
-        <a class="primary" href="?mode=game&mission=shared-book&chapter=1&session=1">Start reading <span aria-hidden="true">→</span></a>
-      </article>
-
-      <article class="half">
-        <p class="tag">PRACTICAL</p>
-        <h3>Material you do</h3>
-        <p>{MISSIONS.length} missions inside Qubix Superstore, a working shop with real tables and real
-          mistakes in them. You make the decision, and the mission tells you what it cost.</p>
-        <dl>
-          <div><dt>Time to do them all</dt><dd>{doingTime}</dd></div>
-          <div><dt>Earns</dt><dd>{TOTAL_XP.toLocaleString()} XP · {RANKS.length} ranks</dd></div>
-        </dl>
-        <a class="primary alt" href="?mode=game&mission=checkout">Play the first mission <span aria-hidden="true">→</span></a>
-      </article>
+  <header class="hero">
+    <div class="hero-copy">
+      <p>WELCOME, NEW STARTER</p>
+      <h1>Learn data science on the shop floor.</h1>
+      <span>Read the idea, enter Qubix Superstore, and make the decision yourself. Start from zero
+        and work toward SQL, Python, statistics and clear communication.</span>
+      <div class="hero-actions">
+        <a class="clock-in" href="?mode=game&mission=shared-book&chapter=1&session=1">Begin your first briefing</a>
+        <a class="quiet-action" href="#training-floor">See how it works</a>
+      </div>
+      <p class="free">Free · No account needed · Progress saves on this device</p>
     </div>
 
-    <p class="together"><b>Together: {bothTime}</b>
-      <span>{volumeSessions} sessions of about ten minutes each, and the mission that follows it.
-        One a day is a month; a couple of focused evenings will also do it. Nothing is timed and nothing expires.</span></p>
+    <aside class="briefing" aria-labelledby="briefing-title">
+      <div class="briefing-top"><span>SHIFT BRIEFING · 001</span><b>{firstSessionTime}</b></div>
+      <p>CHAPTER 01 · DATA FOUNDATIONS</p>
+      <h2 id="briefing-title">Data is a record, not reality.</h2>
+      <span>A customer buys a lamp. Which details become evidence—and which disappear?</span>
+      <div class="task"><b>YOUR TASK</b><span>Inspect the checkout record and decide what the store can honestly claim.</span></div>
+      <a href="?mode=game&mission=shared-book&chapter=1&session=1">Open briefing <span aria-hidden="true">→</span></a>
+    </aside>
+  </header>
+
+  <section class="floor" id="training-floor" aria-labelledby="floor-heading">
+    <div class="floor-heading">
+      <div><p class="eyebrow">THE TRAINING FLOOR</p><h2 id="floor-heading">Every concept has a room and a consequence.</h2></div>
+      <span>{MISSIONS.length} MISSIONS · 9 ROOMS · {RANKS.length} RANKS</span>
+    </div>
+    <div class="floor-map" aria-label="Qubix Superstore training route">
+      <div class="room goods"><b>GOODS IN</b><small>Units + measurement</small></div>
+      <div class="room stock"><b>STOCK ROOM</b><small>Missing + duplicate data</small></div>
+      <a class="room tills" href="?mode=game&mission=checkout"><b>CHECKOUT</b><small>Mission 01 · Ready</small></a>
+      <div class="room office"><b>DATA OFFICE</b><small>SQL + Python</small></div>
+      <div class="room board"><b>BOARDROOM</b><small>Decisions + communication</small></div>
+      <span class="you-are-here">YOU START HERE</span>
+    </div>
+  </section>
+
+  <section class="method" aria-label="How Qubix teaches">
+    <article><b>01</b><div><h3>Read the briefing</h3><span>One focused idea in plain language.</span></div></article>
+    <article><b>02</b><div><h3>Work the mission</h3><span>Apply it to realistic Superstore evidence.</span></div></article>
+    <article><b>03</b><div><h3>Explain the cost</h3><span>Show what the result can and cannot support.</span></div></article>
+  </section>
+
+  <section class="premise" aria-labelledby="premise-heading">
+    <p class="eyebrow" id="premise-heading">THE COMPLETE FOUNDATION</p>
+    <h2>Reading and missions stay together.</h2>
+    <p class="lede">Every session gives you something to understand and something to do with it.
+      Nothing is timed and nothing expires.</p>
+    <div class="halves">
+      <article class="half"><p class="tag">BRIEFINGS</p><h3>{volumeSessions} reading sessions</h3><p>Written explanations, worked examples and one focused check.</p><dl><div><dt>Total reading time</dt><dd>{readingTime}</dd></div><div><dt>First briefing</dt><dd>{firstSessionTime}</dd></div></dl></article>
+      <article class="half"><p class="tag">MISSIONS</p><h3>{MISSIONS.length} practical investigations</h3><p>Make decisions inside Qubix Superstore and see what each mistake costs.</p><dl><div><dt>Total mission time</dt><dd>{doingTime}</dd></div><div><dt>Earn</dt><dd>{TOTAL_XP.toLocaleString()} XP · {RANKS.length} ranks</dd></div></dl></article>
+    </div>
+    <p class="together"><b>Complete path: {bothTime}</b><span>One session a day is about a month; focused learners can finish sooner.</span></p>
   </section>
 
   <!-- What you will actually be able to do, chapter by chapter. -->
@@ -260,69 +253,64 @@
   :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#f1ede4}
   :global(body){position:static}
 
-  .landing{--rule:#ddd6c6;--ink:#241f16;--soft:#6d6558;--accent:#5f7355;
-           min-height:100vh;max-width:none;padding:0 clamp(16px,5vw,40px) 72px;
-           background:#f1ede4;color:var(--ink)}
-  .landing>*{max-width:860px;margin-inline:auto}
+  .landing{--rule:#c8c1b1;--ink:#20241f;--soft:#62695f;--accent:#315f48;--signal:#b85530;--panel:#f7f3e9;
+           min-height:100vh;max-width:none;padding:0 0 72px;background:#e6e0d2;color:var(--ink)}
+  .landing>*{max-width:1120px;margin-inline:auto}
+  .nav-wrap{padding-inline:clamp(16px,5vw,56px)}
+  .learn,.stands,.after,.foot-wrap{max-width:860px;padding-inline:clamp(16px,4vw,32px)}
 
-  header{padding:60px 0 30px}
-  header p{margin:0 0 14px;color:var(--accent);font:800 12px var(--qx-font);letter-spacing:.14em}
-  header h1{margin:0;font:400 clamp(34px,5.4vw,52px)/1.08 Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
-  header span{display:block;margin-top:16px;max-width:62ch;color:var(--soft);font:400 16px/1.6 var(--qx-font)}
-  .free{margin:14px 0 0;color:var(--accent);font:600 14.5px var(--qx-font)}
+  .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(310px,.72fr);gap:7%;
+        padding:64px clamp(20px,5vw,64px) 58px;border-top:1px solid var(--rule);
+        background-image:linear-gradient(rgba(93,91,78,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(93,91,78,.08) 1px,transparent 1px);
+        background-size:28px 28px}
+  .hero-copy{align-self:center}
+  .hero-copy>p:first-child{margin:0 0 16px;color:var(--signal);font:800 11px var(--qx-font);letter-spacing:.17em}
+  .hero-copy h1{margin:0;font:400 clamp(42px,5.7vw,68px)/1.01 Georgia,serif;letter-spacing:-.035em;text-wrap:balance}
+  .hero-copy>span{display:block;margin-top:22px;max-width:59ch;color:var(--soft);font:400 15.5px/1.65 var(--qx-font)}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:28px}
+  .hero-actions a{display:inline-flex;padding:13px 18px;color:var(--ink);font:800 14px var(--qx-font);text-decoration:none}
+  .hero-actions .clock-in{background:var(--signal);color:#fff}
+  .hero-actions .quiet-action{border:1px solid var(--rule);background:rgba(247,243,233,.6)}
+  .free{margin:15px 0 0;color:var(--soft);font:500 11px var(--qx-font);letter-spacing:.04em}
+
+  .briefing{align-self:center;padding:23px;border:6px solid var(--ink);background:var(--panel);box-shadow:11px 12px 0 rgba(32,36,31,.14)}
+  .briefing-top{display:flex;justify-content:space-between;gap:12px;color:var(--accent);font:800 10px var(--qx-font);letter-spacing:.12em}
+  .briefing>p{margin:27px 0 0;color:var(--soft);font:600 10px var(--qx-font);letter-spacing:.1em}
+  .briefing h2{margin:9px 0 0;font:400 29px/1.06 Georgia,serif}
+  .briefing>span{display:block;margin-top:13px;color:var(--soft);font:400 12.5px/1.55 var(--qx-font)}
+  .task{margin-top:18px;padding:13px;border-left:3px solid var(--signal);background:#ebe5d8}
+  .task b,.task span{display:block}.task b{color:var(--signal);font:800 9px var(--qx-font);letter-spacing:.12em}
+  .task span{margin-top:5px;font:500 11.5px/1.45 var(--qx-font)}
+  .briefing>a{display:flex;justify-content:space-between;margin-top:18px;padding:12px 14px;background:var(--ink);color:#f7f3e9;
+              font:800 12px var(--qx-font);text-decoration:none}
+
+  .floor{padding:46px clamp(20px,5vw,64px) 56px;background:var(--panel)}
+  .floor-heading{display:flex;align-items:end;justify-content:space-between;gap:24px}
+  .floor-heading h2{margin:0;font:400 clamp(28px,3.5vw,36px)/1.1 Georgia,serif;text-wrap:balance}
+  .floor-heading>span{color:var(--soft);font:700 10px var(--qx-font);letter-spacing:.11em;white-space:nowrap}
+  .floor-map{position:relative;min-height:305px;margin-top:29px;border:5px solid var(--ink);
+             background:linear-gradient(135deg,#e6eadf,#efeadd)}
+  .room{position:absolute;display:grid;place-items:center;border:1px solid #aaa895;background:#e6e0d2;color:var(--ink);
+        font:800 10px var(--qx-font);letter-spacing:.1em;text-align:center;text-decoration:none}
+  .room small{margin-top:6px;color:var(--soft);font:500 9px var(--qx-font);letter-spacing:0}
+  .goods{inset:8% 68% 53% 3%}.stock{inset:8% 37% 53% 34%}.tills{inset:55% 68% 7% 3%;border:2px solid var(--signal)}
+  .office{inset:55% 34% 7% 34%}.board{inset:8% 3% 7% 68%}
+  .you-are-here{position:absolute;left:22%;bottom:21%;padding:6px 8px;background:var(--signal);color:#fff;
+                font:800 8px var(--qx-font);letter-spacing:.06em}
+
+  .method{display:grid;grid-template-columns:repeat(3,1fr);background:var(--ink);color:#f3eee3}
+  .method article{display:flex;gap:14px;padding:22px clamp(18px,3vw,34px);border-right:1px solid rgba(243,238,227,.2)}
+  .method article:last-child{border:0}.method article>b{color:#de7952;font:400 18px Georgia,serif}
+  .method article div{display:grid;gap:5px}.method h3{margin:0;font:400 16px Georgia,serif}
+  .method article span{color:#bcb8ad;font:400 10.5px/1.45 var(--qx-font)}
 
   .eyebrow{margin:0 0 14px;color:var(--accent);font:800 11px var(--qx-font);letter-spacing:.13em}
   .orient{margin:0;max-width:70ch;color:var(--soft);font:400 14.5px/1.6 var(--qx-font)}
 
-  /* The map. Three stops, the first marked as the one you are standing on. */
-  .map{padding:26px 0 4px;border-top:1px solid var(--rule)}
-  .journey{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
-  .journey li{position:relative;padding:26px 16px 0 0}
-  .journey li::before{content:'';position:absolute;top:7px;left:0;width:11px;height:11px;border-radius:50%;
-                      border:2px solid var(--rule);background:#f1ede4}
-  .journey li::after{content:'';position:absolute;top:12px;left:11px;right:0;height:1px;background:var(--rule)}
-  .journey li:last-child::after{display:none}
-  .journey li.here::before{border-color:var(--accent);background:var(--accent)}
-  .journey b{display:block;font:400 19px Georgia,serif}
-  .journey em{display:block;margin-top:5px;color:var(--soft);font:400 14px/1.5 var(--qx-font);font-style:normal}
-  .journey .state{display:inline-block;margin-top:9px;color:var(--soft);font:700 11px var(--qx-font);letter-spacing:.07em;text-transform:uppercase}
-  .journey .state.on{color:var(--accent)}
-
-  /* Four shelves. Only one opens at a time. */
-  .shelf{margin-top:30px;border-top:1px solid var(--rule)}
-  .unit{border-bottom:1px solid var(--rule)}
-  .unit>button{display:grid;grid-template-columns:110px 1fr;align-items:baseline;gap:6px 18px;
-               width:100%;padding:22px 0;border:0;background:none;color:inherit;text-align:left;cursor:pointer}
-  .unit>button:hover b{color:var(--accent)}
-  .unit .label{grid-row:span 2;color:var(--soft);font:800 11px var(--qx-font);letter-spacing:.12em;padding-top:4px}
-  .unit>button b{font:400 23px Georgia,serif}
-  .unit>button em{color:var(--soft);font:400 14px var(--qx-font);font-style:normal}
-  .unit>button::after{content:'+';position:absolute;right:0;color:var(--soft);font:400 20px var(--qx-font)}
-  .unit{position:relative}
-  .unit.open>button::after{content:'\2013'}
-  .unit .body{padding:0 0 26px}
-
-  .rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
-  .rows li{border-bottom:1px solid var(--rule)}
-  .rows a{display:grid;grid-template-columns:34px 1fr auto;align-items:baseline;gap:16px;
-          padding:14px 0;color:var(--ink);text-decoration:none}
-  .rows.compact a{padding:11px 0}
-  .rows a:hover .text b{color:var(--accent)}
   .num{color:var(--soft);font:500 13px var(--qx-font);font-variant-numeric:tabular-nums}
   .text b{display:block;font:400 17px Georgia,serif}
   .text em{display:block;margin-top:4px;color:var(--soft);font:400 13.5px/1.5 var(--qx-font);font-style:normal}
   .meta{color:var(--soft);font:500 13px var(--qx-font);white-space:nowrap}
-
-  .also{display:grid;gap:9px;margin-top:18px;padding-top:16px;border-top:1px solid var(--rule)}
-  .also a{color:var(--soft);font:500 14px var(--qx-font);text-decoration:none;width:max-content;
-          border-bottom:1px solid var(--rule);padding-bottom:2px}
-  .also a:hover{color:var(--ink);border-color:var(--ink)}
-  .plain{margin:0;max-width:66ch;color:var(--soft);font:400 14.5px/1.6 var(--qx-font)}
-
-  a.primary{display:inline-flex;align-items:baseline;gap:.45em;width:max-content;margin-top:20px;
-            padding:12px 20px;border-radius:7px;background:var(--accent);color:#fff;
-            font:600 14.5px var(--qx-font);text-decoration:none}
-  a.primary:hover{background:#4e6046}
 
   /* The role volumes: present, described, and openly unwritten. */
   .after{padding:36px 0 0}
@@ -344,13 +332,11 @@
   .plan>a{display:inline-block;margin-top:14px;color:var(--role);font:600 14px var(--qx-font);
           text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
 
-  .nav-wrap,  .foot-wrap{max-width:860px;margin-inline:auto}
-  .rule{margin:44px auto 0;padding-top:22px;border-top:1px solid var(--rule);
-        color:var(--soft);font:400 13.5px/1.6 var(--qx-font)}
+  .nav-wrap,.foot-wrap{margin-inline:auto}
 
   button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   /* The premise. One idea per block, in the order a newcomer asks them. */
-  .premise{padding:30px 0 34px;border-top:1px solid var(--rule)}
+  .premise{max-width:860px;padding:42px clamp(16px,4vw,32px) 38px;border-top:1px solid var(--rule)}
   .premise h2{margin:0;font:400 clamp(23px,3.4vw,30px)/1.15 Georgia,serif;letter-spacing:-.015em;text-wrap:balance}
   .lede{margin:11px 0 0;max-width:66ch;color:var(--soft);font:400 15.5px/1.6 var(--qx-font)}
   .halves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
@@ -363,9 +349,6 @@
   .half dl div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
   .half dt{color:var(--soft);font:600 13px var(--qx-font)}
   .half dd{margin:0;color:var(--ink);font:800 14px var(--qx-font);font-variant-numeric:tabular-nums}
-  .half .primary{margin-top:12px}
-  .primary.alt{background:#8c4c2e}
-  .primary.alt:hover{background:#743d24}
   .together{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:20px 0 0;padding:14px 16px;
             border-radius:10px;background:var(--accent-soft, #efe8dc)}
   .together b{font:800 16px var(--qx-font);font-variant-numeric:tabular-nums}
@@ -390,6 +373,18 @@
   .also-row a:hover{color:var(--ink);border-color:var(--ink)}
 
   @media(max-width:720px){
+    .hero{grid-template-columns:1fr;gap:34px;padding:43px 20px}
+    .hero-copy h1{font-size:42px}
+    .briefing{box-shadow:7px 8px 0 rgba(32,36,31,.14)}
+    .floor{padding:40px 20px 48px}
+    .floor-heading{align-items:start;flex-direction:column}
+    .floor-heading>span{white-space:normal}
+    .floor-map{min-height:445px}
+    .goods{inset:4% 52% 69% 4%}.stock{inset:4% 4% 69% 52%}
+    .tills{inset:35% 52% 39% 4%}.office{inset:35% 4% 39% 52%}.board{inset:66% 4% 4% 4%}
+    .you-are-here{left:28%;bottom:48%}
+    .method{grid-template-columns:1fr}
+    .method article{border-right:0;border-bottom:1px solid rgba(243,238,227,.2)}
     .halves{grid-template-columns:1fr}
     .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
     .subjects a{grid-template-columns:28px 1fr;row-gap:5px}
@@ -397,14 +392,14 @@
   }
 
   @media (max-width:760px){
-    .journey{grid-template-columns:1fr;gap:4px}
-    .journey li{padding:0 0 0 24px}
-    .journey li::before{top:5px}
-    .journey li::after{top:16px;left:5px;right:auto;bottom:-4px;width:1px;height:auto}
-    .unit>button{grid-template-columns:1fr;gap:4px}
-    .unit .label{grid-row:auto}
-    .rows a,.volumes summary{grid-template-columns:28px 1fr;row-gap:6px}
-    .rows .meta,.volumes .state{grid-column:2}
     .volumes summary{grid-template-columns:1fr}
+    .volumes .state{grid-column:auto}
+  }
+
+  @media(max-width:430px){
+    .hero-copy h1{font-size:36px}
+    .hero-actions{display:grid}
+    .hero-actions a{justify-content:center}
+    .floor-map{min-height:470px}
   }
 </style>
