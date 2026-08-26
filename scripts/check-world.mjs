@@ -16,6 +16,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { BRANCHES, PRODUCTS, branch, product } from '../src/lib/game/superstore.js';
+import { EMPLOYEES, ROLES, LOCATIONS, role, location, currentStaff, fte }
+  from '../src/lib/game/superstore-people.js';
 
 const dir = u => new URL(u, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const GAME = dir('../src/lib/game/');
@@ -67,7 +69,39 @@ for (const file of readdirSync(GAME).filter(f => f.endsWith('-mission.js'))) {
   }
 }
 
+
+// ── the people ──────────────────────────────────────────────────────────────
+// HR data has its own ways of being wrong, and they are the ones the missions
+// teach: a location that joins to nothing, two colleagues sharing an id, a
+// leaving date before a start date, an extract larger than the branch it says
+// it came from.
+console.log('');
+const seenId = new Set(), seenNumber = new Set();
+for (const e of EMPLOYEES) {
+  ok(`${e.id} works somewhere that exists`, Boolean(location(e.location)), e.location);
+  ok(`${e.id} holds a role that exists`, Boolean(role(e.role)), e.role);
+  ok(`${e.id} has an id nobody else has`, !seenId.has(e.id));
+  ok(`${e.id} has a payroll number nobody else has`, !seenNumber.has(e.number), e.number);
+  seenId.add(e.id); seenNumber.add(e.number);
+  if (e.left) ok(`${e.id} did not leave before starting`, e.left > e.started, `${e.started} to ${e.left}`);
+}
+
+for (const b of BRANCHES) {
+  const here = currentStaff().filter(e => e.location === b.id).length;
+  ok(`the ${b.name} extract fits inside its headcount`, here <= b.staff, `${here} of ${b.staff}`);
+}
+
+// Missions already name these two. Removing them would break Table Grain and
+// Keys and Duplicate Records without either file mentioning this one.
+for (const id of ['E-204', 'E-311'])
+  ok(`${id} still exists, because a mission uses it`, EMPLOYEES.some(e => e.id === id));
+
+// The point of carrying hours at all: heads and FTE must be able to disagree.
+const heads = currentStaff().length;
+const fteAll = Math.round(currentStaff().reduce((n, e) => n + fte(e), 0) * 10) / 10;
+ok('headcount and FTE are different numbers', heads !== fteAll, `${heads} heads, ${fteAll} FTE`);
+
 console.log(`\n${bad ? `${bad} problem(s)` : 'all checks pass'}`
   + `, ${refs} world references across ${files} missions`
-  + `, ${BRANCHES.length} branches and ${PRODUCTS.length} products defined`);
+  + `, ${BRANCHES.length} branches, ${PRODUCTS.length} products, ${EMPLOYEES.length} people, ${ROLES.length} roles`);
 process.exit(bad ? 1 : 0);
