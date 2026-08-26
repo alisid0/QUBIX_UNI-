@@ -23,15 +23,15 @@ export const MISSING_DATA_MISSION = Object.freeze({
       explanation: 'Zero is observed information here: the count is known and none occurred.', treatment: 'Keep 0. Replacing it with NULL would discard a known fact.'
     }),
     Object.freeze({
-      id: 'stock-unknown', source: 'Branch 17', table: 'inventory_snapshot', field: 'closing_stock_units', displayValue: 'NULL', valueState: 'missing', colour: 0xc83c2c,
-      preview: preview(['branch_id', 'snapshot_date', 'sku', 'closing_stock_units'], ['BR-017', '2026-08-20', 'QX-DRY-184', 'NULL']),
+      id: 'stock-unknown', source: 'Northgate', table: 'inventory_snapshot', field: 'closing_stock_units', displayValue: 'NULL', valueState: 'missing', colour: 0xc83c2c,
+      preview: preview(['branch_id', 'snapshot_date', 'sku', 'closing_stock_units'], ['B-17', '2026-08-20', 'QX-DRY-184', 'NULL']),
       context: 'The handheld stock scanner lost power before the closing count completed.', evidence: 'Scanner outage: 20:51–21:18 · Closing feed incomplete',
       classification: 'unknown', action: 'keep-null-issue',
       explanation: 'The quantity exists, but the branch does not know it from this feed.', treatment: 'Keep NULL, attach the outage reason, and raise a quality issue. Do not invent zero.'
     }),
     Object.freeze({
       id: 'pickup-distance', source: 'Digital', table: 'customer_order', field: 'delivery_distance_km', displayValue: 'NULL', valueState: 'missing', colour: 0x477c9f,
-      preview: preview(['order_id', 'fulfilment_method', 'branch_id', 'delivery_distance_km'], ['ORD-8821', 'PICKUP', 'BR-004', 'NULL']),
+      preview: preview(['order_id', 'fulfilment_method', 'branch_id', 'delivery_distance_km'], ['ORD-8821', 'PICKUP', 'B-04', 'NULL']),
       context: 'This was a click-and-collect order collected inside the branch.', evidence: 'fulfilment_method = PICKUP · No delivery journey exists',
       classification: 'not-applicable', action: 'keep-null-reason',
       explanation: 'Delivery distance does not apply because there was no delivery.', treatment: 'Keep NULL with a not-applicable reason code so it is not confused with an unknown distance.'

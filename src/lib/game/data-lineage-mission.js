@@ -53,7 +53,7 @@ export const DATA_LINEAGE_MISSION = Object.freeze({
       options: Object.freeze([
         Object.freeze({ value: 'FZ-2', label: 'The freezer sensor FZ-2', note: 'produced the reading, did not transform it' }),
         Object.freeze({ value: 'etl-nightly@qubix', label: 'etl-nightly@qubix', note: 'the scheduled job that ran the rule at 06:10' }),
-        Object.freeze({ value: 'branch manager', label: 'The Branch 08 manager', note: 'reads the report, does not produce it' })
+        Object.freeze({ value: 'branch manager', label: 'The Eastfield manager', note: 'reads the report, does not produce it' })
       ])
     }),
     Object.freeze({

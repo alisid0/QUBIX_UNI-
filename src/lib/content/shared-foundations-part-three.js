@@ -64,7 +64,7 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
           Object.freeze({
             caseId: 'stock-unknown',
             facts: Object.freeze([
-              Object.freeze(['Where it comes from', 'Branch 17 · inventory_snapshot']),
+              Object.freeze(['Where it comes from', 'Northgate · inventory_snapshot']),
               Object.freeze(['Field', 'closing_stock_units']),
               Object.freeze(['The cell shows', 'NULL']),
               Object.freeze(['Operational evidence', 'Scanner outage: 20:51–21:18 · Closing feed incomplete'])

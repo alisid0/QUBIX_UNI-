@@ -1,3 +1,7 @@
+// This mission contradicts the world on purpose. QX-DRK-014 appears twice with
+// conflicting attributes, 'Orchard Juice' at 2.15 beside 'Orchard Juice 1L' at
+// 2.25, because deciding which record survives is the whole exercise. The
+// product master in superstore.js holds the settled version.
 export const DUPLICATE_RECORDS_MISSION=Object.freeze({
   id:'MISSION 005',status:'AI_DRAFT',role:'PRE-INTERN',title:'Keys and Duplicate Records',
   competency:'Choose the fields that identify one row, detect repeated keys with SQL, and preserve evidence during treatment.',
