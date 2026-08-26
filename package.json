@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-assets.mjs && npm run build:library && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
+    "prebuild": "node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-assets.mjs && npm run build:library && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -35,7 +35,8 @@
     "check:scroll": "node scripts/check-scroll.mjs",
     "check:timing": "node scripts/check-timing.mjs",
     "build:seo": "node scripts/build-seo.mjs",
-    "estimate:time": "node scripts/estimate-time.mjs"
+    "estimate:time": "node scripts/estimate-time.mjs",
+    "check:type": "node scripts/check-type.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

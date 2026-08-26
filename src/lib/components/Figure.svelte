@@ -187,12 +187,12 @@
   .mark { stroke-width: 1.5; stroke-dasharray: 4 3; }
   .mark.median { stroke: #5f7355; }
   .mark.mean { stroke: #a85a34; }
-  .mark-label { font: 800 10px var(--qx-font); letter-spacing: .04em; }
+  .mark-label { font: 800 11.5px var(--qx-font); letter-spacing: .04em; }
   .mark-label.median { fill: #4e6548; }
   .mark-label.mean { fill: #8c4c2e; }
 
-  .tick { fill: #8a7f6a; font: 600 10.5px var(--qx-font); }
-  .panel-label { fill: #8c4c2e; font: 900 9.5px var(--qx-font); letter-spacing: .12em; }
+  .tick { fill: #8a7f6a; font: 600 11.5px var(--qx-font); }
+  .panel-label { fill: #8c4c2e; font: 900 11px var(--qx-font); letter-spacing: .12em; }
   .row-label { fill: #241f16; font: 700 11.5px var(--qx-font); }
   .value { fill: #241f16; font: 800 11.5px var(--qx-font); font-variant-numeric: tabular-nums; }
 
@@ -201,15 +201,15 @@
   .row-chip { fill: #cbbfa6; }
   .row-chip.changed { fill: #a85a34; }
   .stage-count { fill: #241f16; font: 800 12.5px var(--qx-font); font-variant-numeric: tabular-nums; }
-  .stage-grain { fill: #625a49; font: 600 10.5px var(--qx-font); }
+  .stage-grain { fill: #625a49; font: 600 11.5px var(--qx-font); }
   .stage-grain.changed { fill: #8c4c2e; font-weight: 800; }
-  .stage-flag { fill: #8c4c2e; font: 900 9px var(--qx-font); letter-spacing: .1em; }
+  .stage-flag { fill: #8c4c2e; font: 900 11px var(--qx-font); letter-spacing: .1em; }
   .arrow { fill: #a99d88; font: 400 17px var(--qx-font); }
 
   .table-wrap { overflow-x: auto; }
   table.absence { width: 100%; border-collapse: collapse; }
   table.absence th { padding: 0 12px 9px 0; text-align: left; color: #8c4c2e;
-                     font: 900 9.5px var(--qx-font); letter-spacing: .12em; text-transform: uppercase; }
+                     font: 900 11px var(--qx-font); letter-spacing: .12em; text-transform: uppercase; }
   table.absence td { padding: 9px 12px 9px 0; vertical-align: top;
                      border-top: 1px solid #ece7dc; color: #625a49;
                      font: 400 13px/1.5 var(--qx-font); }

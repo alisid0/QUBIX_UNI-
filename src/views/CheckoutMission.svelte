@@ -328,14 +328,14 @@
   .nav-wrap,.mission-hero,main{width:min(100%,1120px);margin-inline:auto;padding-inline:clamp(16px,5vw,56px)}
   .mission-hero{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:30px;padding-top:48px}
   .mission-hero h1{margin:0;color:#20241f;font:400 clamp(42px,7vw,70px)/.98 Georgia,serif;letter-spacing:-.035em}
-  .mission-meta{min-width:190px;color:#62695f;font:800 10px var(--qx-font);letter-spacing:.08em;text-align:right}
+  .mission-meta{min-width:190px;color:#62695f;font:800 11.5px var(--qx-font);letter-spacing:.08em;text-align:right}
   .progress{width:100%;max-width:none;height:5px;margin:10px 0 0;border-radius:0;background:#c8c1b1}
   .progress span{background:#315f48}
   main{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(250px,.75fr);gap:24px;align-items:start;box-sizing:border-box}
   .stage-card{border:6px solid #20241f;border-radius:0;background:#f7f3e9;box-shadow:11px 11px 0 rgba(32,36,31,.16)}
   .brief{min-height:94px;padding:19px 23px;border-bottom:1px solid #c8c1b1}
   .brief h2,.card-title h2,.classify-card h2{font-weight:400}.brief>strong{color:#b85530}
-  .eyebrow{color:#b85530;font-size:10px;letter-spacing:.13em}
+  .eyebrow{color:#b85530;font-size:11.5px;letter-spacing:.13em}
   .viewport{min-height:clamp(360px,52vh,570px);border-color:#c8c1b1;background:#e8e2d5}
   .checkout-controls{padding:18px 22px}.quantity span{color:#62695f}.quantity button,button,select{border-radius:0;border-color:#c8c1b1;background:#f7f3e9}
   .scan{background:#b85530;border-color:#b85530}.feedback{border-color:#c8c1b1;background:#f0ebdf;color:#62695f}
@@ -344,7 +344,7 @@
   .decision-card h2{margin:0 0 9px;font:400 25px/1.1 Georgia,serif}.decision-card>p:last-of-type{margin:0;color:#62695f;font:600 12px/1.55 var(--qx-font)}
   .decision-card a{display:inline-block;margin-top:15px;color:#315f48;font:800 11px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
   .basket-card{background:#20241f;color:#f7f3e9}.basket-card .eyebrow{color:#e9a07d}.basket-card .card-title h2{color:#f7f3e9}.basket-card .muted{color:#c8c1b1}.card-title>strong{color:#f7f3e9;font-weight:400}.basket-card li{border-color:#596157}
-  .lineage{grid-template-columns:repeat(3,1fr);gap:1px;margin:10px -19px -19px;background:#c8c1b1}.lineage>div{display:block;padding:15px;border:0;border-radius:0;background:#f7f3e9;opacity:.62}.lineage>div.active{border:0;background:#e4e9df;opacity:1}.lineage span{display:block;width:auto;height:auto;border-radius:0;background:transparent;color:#315f48;text-align:left;font-size:10px}.lineage p{margin-top:9px;font-size:11px}.lineage b{font-size:10px;color:#315f48}.data-card dl{margin-top:19px}.classify-card{border:5px solid #20241f;box-shadow:8px 8px 0 rgba(32,36,31,.14)}
+  .lineage{grid-template-columns:repeat(3,1fr);gap:1px;margin:10px -19px -19px;background:#c8c1b1}.lineage>div{display:block;padding:15px;border:0;border-radius:0;background:#f7f3e9;opacity:.62}.lineage>div.active{border:0;background:#e4e9df;opacity:1}.lineage span{display:block;width:auto;height:auto;border-radius:0;background:transparent;color:#315f48;text-align:left;font-size:11.5px}.lineage p{margin-top:9px;font-size:11px}.lineage b{font-size:11.5px;color:#315f48}.data-card dl{margin-top:19px}.classify-card{border:5px solid #20241f;box-shadow:8px 8px 0 rgba(32,36,31,.14)}
   .check,.next-mission{border-radius:0;background:#20241f}.complete{border-radius:0}
   @media(max-width:920px){main{grid-template-columns:1fr}.mission-hero{padding-top:38px}aside{display:grid;grid-template-columns:1fr 1fr}.decision-card,.classify-card{grid-column:1/-1}.viewport{min-height:450px}}
   @media(max-width:600px){.game-shell{padding:0 0 38px}.nav-wrap,.mission-hero,main{padding-inline:16px}.mission-hero{display:block;margin-bottom:24px}.mission-hero h1{font-size:46px}.mission-meta{margin-top:14px;text-align:left}.stage-card{border-width:5px;box-shadow:8px 8px 0 rgba(32,36,31,.16)}.brief{align-items:flex-start;flex-direction:column}.checkout-controls{padding:17px}.viewport{min-height:0}.feedback{font-size:13px}aside{display:flex}.lineage{grid-template-columns:1fr}.classify-card{box-shadow:6px 6px 0 rgba(32,36,31,.14)}}

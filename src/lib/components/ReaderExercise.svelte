@@ -142,9 +142,9 @@
 <style>
   .reader-exercise{margin-top:32px;padding:24px;border:1px solid #9c998d;background:#e8e1d3;color:#20241f}
   .exercise-head{display:flex;align-items:start;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:2px solid #20241f}
-  .exercise-head span{color:#b85530;font:900 10px var(--qx-font);letter-spacing:.14em}
+  .exercise-head span{color:#b85530;font:900 11.5px var(--qx-font);letter-spacing:.14em}
   .exercise-head h3{margin:5px 0 0;font:400 25px/1.08 Georgia,serif}
-  .exercise-head>b{flex:none;padding:6px 8px;border:1px solid #20241f;font:900 9px var(--qx-font);letter-spacing:.08em}
+  .exercise-head>b{flex:none;padding:6px 8px;border:1px solid #20241f;font:900 11px var(--qx-font);letter-spacing:.08em}
   .exercise-head>b.done{background:#315f48;color:#fff}
   .instruction{margin:16px 0;color:#5f615a;font:650 13.5px/1.55 var(--qx-font)}
   .exercise-items{display:grid;gap:12px}.exercise-items article{padding:15px;border:1px solid #b8b0a0;background:#f7f3e9}

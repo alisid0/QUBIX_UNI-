@@ -416,7 +416,7 @@
   .sources { margin-top: 25px; padding: 15px 0; display: flex; align-items:center; flex-wrap: wrap; gap: 8px 14px; border-top: 1px solid #ded7c8; border-bottom: 1px solid #ded7c8; }
   .sources b { color: #756c5c; font: 850 11.5px var(--qx-font); }
   .sources a { display:inline-flex;align-items:center;gap:5px;color: #8c4c2e; font: 750 11.5px var(--qx-font); }
-  .sources a small { padding:3px 5px;border:1px solid #9c998d;color:#4f6151;font:850 8px var(--qx-font);letter-spacing:.04em;text-decoration:none; }
+  .sources a small { padding:3px 5px;border:1px solid #9c998d;color:#4f6151;font:850 11px var(--qx-font);letter-spacing:.04em;text-decoration:none; }
   .chapter-nav { padding: 24px 0 38px; display: flex; justify-content: space-between; gap: 12px; }
   .chapter-nav button, .chapter-nav a { min-height: 42px; padding: 11px 16px; border: 1px solid #d8d0be; border-radius: 8px; background: #fff; color: #241f16; font: 850 12px var(--qx-font); text-decoration: none; cursor: pointer; }
   .chapter-nav .next { border-color: #5f7355; background: #5f7355; color: #fff; }
@@ -491,7 +491,7 @@
   .toc nav button.active > span { background: transparent; color: var(--packet-orange); }
   .toc nav button div { grid-column: 1 / -1; display: flex; flex-direction: column-reverse; gap: 7px; }
   .toc nav button b { color: var(--packet-ink); font: 400 19px/1.2 Georgia, serif; }
-  .toc nav button small { color: var(--packet-soft); font: 800 9px var(--qx-font); letter-spacing: .1em; }
+  .toc nav button small { color: var(--packet-soft); font: 800 11px var(--qx-font); letter-spacing: .1em; }
   .toc nav button em { color: var(--packet-rule); }
   .progress-copy { margin: 22px 0 56px; display: flex; align-items: center; gap: 10px 22px; flex-wrap: wrap; }
   .progress-copy b { font-size: 11px; }.progress-copy span { color: var(--packet-soft); font-size: 11px; }
@@ -504,16 +504,16 @@
   .chapter-head { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; align-items: start; gap: 24px;
                   padding: 48px 0 28px; border-color: var(--packet-rule); }
   .packet-number { color: var(--packet-orange); font: 400 30px Georgia, serif; }
-  .chapter-head p { color: var(--packet-orange); font-size: 10px; }
+  .chapter-head p { color: var(--packet-orange); font-size: 11.5px; }
   .chapter-head h2 { max-width: 720px; color: var(--packet-ink); font-weight: 400; font-size: clamp(36px, 6vw, 58px); }
-  .chapter-head > .packet-state { padding: 0; border-radius: 0; background: transparent; color: var(--packet-green); font-size: 10px; }
+  .chapter-head > .packet-state { padding: 0; border-radius: 0; background: transparent; color: var(--packet-green); font-size: 11.5px; }
   .objective { margin-top: 28px; padding: 20px 24px; border-left-color: var(--packet-green); background: #d8dfd3; }
-  .objective b { color: var(--packet-green); font-size: 10px; }
+  .objective b { color: var(--packet-green); font-size: 11.5px; }
   .objective p { max-width: 720px; font-weight: 400; font-size: 20px; }
   .opening { color: var(--packet-ink); font-weight: 400; font-size: 20px; }
   .reading-section h3 { color: var(--packet-ink); font-weight: 400; font-size: 28px; }
   .reading-section p { color: var(--packet-soft); font-weight: 500; }
-  .section-label span { color: var(--packet-orange); font-size: 10px; }
+  .section-label span { color: var(--packet-orange); font-size: 11.5px; }
   .section-label b { font-weight: 400; }
   .example, .workbook, .check, .rehearsal, .mission-briefing { padding: 24px; border: 1px solid var(--packet-rule); border-radius: 0; background: #f0ebdf; }
   .mission-briefing { border-left: 6px solid var(--packet-orange); }

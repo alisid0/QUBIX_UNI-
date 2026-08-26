@@ -222,7 +222,7 @@
   .tick{color:var(--dim);font:800 13px var(--qx-font)}
   .missions li.done .tick{color:var(--good)}
   .text b{display:block;font:400 16px Georgia,serif}
-  .text em{display:block;margin-top:3px;color:var(--ink2);font:400 12.8px/1.5 var(--qx-font);font-style:normal}
+  .text em{display:block;margin-top:3px;color:var(--ink2);font:400 12.11px/1.5 var(--qx-font);font-style:normal}
   .meta{color:var(--ink2);font:700 12px var(--qx-font);white-space:nowrap}
   .where{display:block;padding-left:33px;color:var(--dim);font:600 11.5px var(--qx-font)}
   .missions li.locked{opacity:.55}
@@ -253,7 +253,7 @@
   .wrap{width:min(100%,1120px);max-width:none;padding-inline:clamp(16px,5vw,56px);box-sizing:border-box}
   header{padding:48px 0 30px;align-items:end}
   h1{font-size:clamp(42px,7vw,70px);line-height:.98;letter-spacing:-.035em}
-  .eyebrow{color:var(--clay);font-size:10px}.lede{color:var(--ink2)}
+  .eyebrow{color:var(--clay);font-size:11.5px}.lede{color:var(--ink2)}
   .standing{padding:14px 16px;border-left:3px solid #315f48;background:#f7f3e9}
   .standing>span{color:var(--ink2)}.standing i{height:5px;border-radius:0;background:#c8c1b1}.standing em{background:#315f48}
   .rooms{width:max-content;max-width:100%;gap:1px;margin-bottom:22px;padding:0;background:#9c998d;border:1px solid #9c998d}

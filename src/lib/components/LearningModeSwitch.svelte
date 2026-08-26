@@ -41,7 +41,7 @@
     color: var(--mode-active-ink, #fff);
   }
   a:focus-visible { outline: 2px solid var(--mode-focus, #8c4c2e); outline-offset: 2px; }
-  span { font-size: 10px; letter-spacing: .08em; opacity: .72; }
+  span { font-size: 11.5px; letter-spacing: .08em; opacity: .72; }
   .compact a { min-height: 34px; padding: 6px 9px; font-size: 11px; }
 
   @media (max-width: 460px) {
