@@ -50,11 +50,11 @@
 <section class="mission mission-shell qx-shell">
   <MissionMasthead eyebrow={`${DATA_LINEAGE_MISSION.id} · REPORTING ASSIGNMENT`} title={DATA_LINEAGE_MISSION.title}
     roomId="reporting" roomName="Reporting · Standing desk" progress={progress}
-    meta={`${missionComplete ? 3 : stepIndex + 1} OF 3 TRACE POINTS`} />
+    meta={`${missionComplete ? DATA_LINEAGE_MISSION.steps.length : stepIndex + 1} OF ${DATA_LINEAGE_MISSION.steps.length} TRACE POINTS`} />
 
   <main>
     <section class="terminal m1-workarea">
-      <div class="system-bar"><div><i></i><i></i><i></i><b>QUBIX LINEAGE VIEWER</b></div><em>{missionComplete ? 'TRACE SAVED' : `STEP ${stepIndex + 1} OF 3`}</em></div>
+      <div class="system-bar"><div><i></i><i></i><i></i><b>QUBIX LINEAGE VIEWER</b></div><em>{missionComplete ? 'TRACE SAVED' : `STEP ${stepIndex + 1} OF ${DATA_LINEAGE_MISSION.steps.length}`}</em></div>
       <div class="case-bar"><span>QUALITY EVENT · BRANCH B-08</span><b>Why does the morning report show −17.8 °C?</b></div>
 
       <div class="path" aria-label="Value lineage from source record through transformation to report">
@@ -89,7 +89,7 @@
         <div class="step-meta"><span>{step.label} CHECK</span><span>{step.number} / 03</span></div><p class="eyebrow">FOLLOW THE EVIDENCE</p><h2>{step.prompt}</h2><p class="theory">{step.theory}</p>
         <div class="options">{#each step.options as option}<button class:selected={selected === option.value} class:right={correct && selected === option.value} class:wrong={checked && !correct && selected === option.value} on:click={() => choose(option.value)} disabled={correct}><b>{option.label}</b><span>{option.note}</span></button>{/each}</div>
         {#if checked}<div class:success={correct} class:retry={!correct} class="feedback" role="status">{#if correct}<b>{step.explanation}</b>{:else}<b>Try again.</b> Follow the identity of the record, the activity, and then the output.{/if}</div>{/if}
-        {#if correct}<button class="continue" on:click={advance}>{stepIndex === 2 ? 'Save the complete trace' : 'Follow the trace'} →</button>{/if}
+        {#if correct}<button class="continue" on:click={advance}>{stepIndex === DATA_LINEAGE_MISSION.steps.length - 1 ? 'Save the complete trace' : 'Follow the trace'} →</button>{/if}
       {/if}
     </aside>
   </main>

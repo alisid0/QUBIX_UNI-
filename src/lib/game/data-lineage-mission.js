@@ -12,7 +12,8 @@ export const DATA_LINEAGE_MISSION = Object.freeze({
   record: Object.freeze({
     sourceSystem: 'Branch freezer sensor', sourceKey: 'B-08 · FZ-2 · 05:45', sourceValue: '0 °F',
     activity: 'normalise_temperature_v3', rule: '(°F − 32) × 5 ÷ 9', outputValue: '−17.8 °C',
-    destination: 'morning_freezer_report', reportCell: 'B-08 · 05:45'
+    destination: 'morning_freezer_report', reportCell: 'B-08 · 05:45',
+    agent: 'etl-nightly@qubix', ranAt: '06:10', ruleVersion: 'v3'
   }),
   steps: Object.freeze([
     Object.freeze({
@@ -44,10 +45,43 @@ export const DATA_LINEAGE_MISSION = Object.freeze({
         Object.freeze({ value: 'output only', label: 'Output value only', note: 'shows the result but hides its history' }),
         Object.freeze({ value: 'activity only', label: 'Activity name only', note: 'shows a rule but not the record it used' })
       ])
+    }),
+    Object.freeze({
+      id: 'agent', number: '04', label: 'AGENT', prompt: 'Who or what ran the transformation?',
+      theory: 'The model this mission follows has three parts, and the third is the agent: the person or process responsible for an activity. Without it a trace can say what happened and not who to ask when it happened wrongly.',
+      answer: 'etl-nightly@qubix', explanation: 'Correct. A scheduled job ran the rule at 06:10, and that job is who you raise the problem with.',
+      options: Object.freeze([
+        Object.freeze({ value: 'FZ-2', label: 'The freezer sensor FZ-2', note: 'produced the reading, did not transform it' }),
+        Object.freeze({ value: 'etl-nightly@qubix', label: 'etl-nightly@qubix', note: 'the scheduled job that ran the rule at 06:10' }),
+        Object.freeze({ value: 'branch manager', label: 'The Branch 08 manager', note: 'reads the report, does not produce it' })
+      ])
+    }),
+    Object.freeze({
+      id: 'repeat', number: '05', label: 'REPRODUCIBILITY', prompt: 'What do you need to get −17.8 °C again tomorrow?',
+      theory: 'A traced value should be recomputable. The source reading alone is not enough, because the rule can change: this run used version three, and a version four with a different rounding would give a different answer from the same input.',
+      answer: 'value + version', explanation: 'Correct. The reading and the exact rule version together reproduce the output. Either on its own leaves the result unrepeatable.',
+      options: Object.freeze([
+        Object.freeze({ value: 'value only', label: 'The source value, 0 °F', note: 'the rule could change under you' }),
+        Object.freeze({ value: 'output only', label: 'The stored output, −17.8 °C', note: 'copying an answer is not recomputing it' }),
+        Object.freeze({ value: 'value + version', label: '0 °F and normalise_temperature_v3', note: 'the input and the exact rule that ran on it' })
+      ])
+    }),
+    Object.freeze({
+      id: 'impact', number: '06', label: 'IMPACT', prompt: 'FZ-2 is found to have been reading three degrees low all week. What has to be corrected?',
+      theory: 'Lineage is usually read backwards, from a number to its source. Its other use is forwards: when a source turns out to be wrong, the same links say exactly what inherited the error. That list is the reason it is worth recording at all.',
+      answer: 'everything downstream', explanation: 'Correct. Every value derived from that sensor this week inherited the fault, and the lineage is what finds them without guessing.',
+      options: Object.freeze([
+        Object.freeze({ value: 'the sensor only', label: 'Recalibrate the sensor', note: 'stops it recurring, fixes nothing already published' }),
+        Object.freeze({ value: 'the report cell', label: 'The one cell in this morning report', note: 'this week has six more mornings in it' }),
+        Object.freeze({ value: 'everything downstream', label: 'Every value derived from FZ-2 this week', note: 'follow the same links in the other direction' })
+      ])
     })
   ])
 });
 
 export function completedLineage(stepIndex) {
+  // The diagram lights up as the trace is established. The later steps
+  // interrogate the same path rather than extending it, so the output stays
+  // lit rather than the strip growing three more boxes.
   return Object.freeze({ source: stepIndex >= 1, activity: stepIndex >= 2, output: stepIndex >= 3 });
 }
