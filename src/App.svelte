@@ -104,10 +104,16 @@
         return import('./views/PythonTraceMission.svelte');
       } else if (mission === 'distribution-desk') {
         return import('./views/DistributionDeskMission.svelte');
+      } else if (mission === 'sampling-desk') {
+        return import('./views/SamplingDeskMission.svelte');
       } else if (mission === 'sql-console') {
         return import('./views/SqlConsoleMission.svelte');
+      } else if (mission === 'result-checkpoint') {
+        return import('./views/ResultCheckpointMission.svelte');
       } else if (mission === 'analyst-desk') {
         return import('./views/AnalystDeskMission.svelte');
+      } else if (mission === 'handover-pack') {
+        return import('./views/HandoverPackMission.svelte');
       } else if (mission === 'foundations') {
         return import('./views/RoleFoundations.svelte');
       } else if (mission === 'shared-book') {

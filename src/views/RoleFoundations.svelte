@@ -115,7 +115,7 @@
 
 <svelte:head>
   <title>Qubix University</title>
-  <meta name="description" content="Learn data science from zero through seven short chapters and thirteen practical missions inside Qubix Superstore." />
+  <meta name="description" content={`Learn data science from zero through seven short chapters and ${MISSIONS.length} practical missions inside Qubix Superstore.`} />
 </svelte:head>
 
 <section class="landing qx-shell">

@@ -4,6 +4,7 @@
   import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import Figure from '../lib/components/Figure.svelte';
+  import ReaderExercise from '../lib/components/ReaderExercise.svelte';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
@@ -17,19 +18,25 @@
   let activeIndex = 0;
   let selectedAnswers = {};
   let checkedAnswers = {};
-  let progress = { study: [], practice: [], notes: {} };
+  let progress = { study: [], exercises: [], practice: [], notes: {} };
   let hydrated = false;
   let resetting = false;
 
   $: session = book.sessions[activeIndex];
-  $: completedItems = progress.study.length + progress.practice.length;
-  $: progressPercent = Math.round((completedItems / (book.sessions.length * 2)) * 100);
-  $: partComplete = progress.study.length === book.sessions.length && progress.practice.length === book.sessions.length;
+  $: exerciseCount = book.sessions.filter(item => item.exercise).length;
+  $: totalItems = book.sessions.length * 2 + exerciseCount;
+  $: completedItems = progress.study.length + progress.exercises.length + progress.practice.length;
+  $: progressPercent = Math.round((completedItems / totalItems) * 100);
+  $: partComplete = progress.study.length === book.sessions.length
+    && progress.exercises.length === exerciseCount
+    && progress.practice.length === book.sessions.length;
 
   onMount(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey));
-      if (saved && Array.isArray(saved.study) && Array.isArray(saved.practice) && saved.notes) progress = saved;
+      if (saved && Array.isArray(saved.study) && Array.isArray(saved.practice) && saved.notes) {
+        progress = { ...saved, exercises: Array.isArray(saved.exercises) ? saved.exercises : [] };
+      }
     } catch (error) {
       console.warn('Could not restore book progress.', error);
     }
@@ -51,8 +58,14 @@
   }
 
   function completeStudy() {
-    if (selectedAnswers[session.id] !== session.check.answer || progress.study.includes(session.id)) return;
+    const exerciseReady = !session.exercise || progress.exercises.includes(session.id);
+    if (!exerciseReady || selectedAnswers[session.id] !== session.check.answer || progress.study.includes(session.id)) return;
     save({ ...progress, study: [...progress.study, session.id] });
+  }
+
+  function completeExercise() {
+    if (!session.exercise || progress.exercises.includes(session.id)) return;
+    save({ ...progress, exercises: [...progress.exercises, session.id] });
   }
 
   function completePractice() {
@@ -97,12 +110,16 @@
       resetting = true;
       return;
     }
-    progress = { study: [], practice: [], notes: {} };
+    progress = { study: [], exercises: [], practice: [], notes: {} };
     selectedAnswers = {};
     checkedAnswers = {};
     localStorage.removeItem(storageKey);
     resetting = false;
   }
+
+  const sessionComplete = item => progress.study.includes(item.id)
+    && (!item.exercise || progress.exercises.includes(item.id))
+    && progress.practice.includes(item.id);
 </script>
 
 <svelte:head>
@@ -136,17 +153,17 @@
   </header>
   <div class="layout">
     <aside class="toc">
-      <div class="time"><small>CHAPTER ROUTE</small><b>{completedItems} / {book.sessions.length * 2} steps</b><small>Study and practice stay paired</small></div>
+      <div class="time"><small>CHAPTER ROUTE</small><b>{completedItems} / {totalItems} steps</b><small>Read, apply and practise stay paired</small></div>
       <nav aria-label="Book sessions">
         {#each book.sessions as item, index}
           <button class:active={activeIndex === index} on:click={() => openSession(index)}>
             <span>{item.number}</span>
-            <div><small>{activeIndex === index ? 'OPEN' : progress.study.includes(item.id) && progress.practice.includes(item.id) ? 'COMPLETE' : 'BRIEFING'} · {formatTime(item.studyMinutes + item.playMinutes)}</small><b>{item.title}</b></div>
-            <em class:done={progress.study.includes(item.id) && progress.practice.includes(item.id)}>{progress.study.includes(item.id) && progress.practice.includes(item.id) ? '✓' : '○'}</em>
+            <div><small>{activeIndex === index ? 'OPEN' : sessionComplete(item) ? 'COMPLETE' : 'BRIEFING'} · {formatTime(item.studyMinutes + item.playMinutes)}</small><b>{item.title}</b></div>
+            <em class:done={sessionComplete(item)}>{sessionComplete(item) ? '✓' : '○'}</em>
           </button>
         {/each}
       </nav>
-      <div class="progress-copy"><b>{completedItems} of {book.sessions.length * 2} steps complete</b><span>Each session has one study step and one practice step.</span>{#if completedItems || Object.keys(progress.notes).length}<button class:confirm={resetting} on:click={resetProgress}>{resetting ? 'Confirm reset' : 'Reset saved progress'}</button>{/if}</div>
+      <div class="progress-copy"><b>{completedItems} of {totalItems} steps complete</b><span>This chapter includes one additional applied exercise between reading and mission work.</span>{#if completedItems || Object.keys(progress.notes).length}<button class:confirm={resetting} on:click={resetProgress}>{resetting ? 'Confirm reset' : 'Reset saved progress'}</button>{/if}</div>
     </aside>
 
     <main>
@@ -177,6 +194,13 @@
           <div class="section-label"><span>WORKED EXAMPLE</span><b>{session.example.title}</b></div>
           <div class="table-wrap"><table><thead><tr>{#each session.example.headers as header}<th>{header}</th>{/each}</tr></thead><tbody>{#each session.example.rows as row}<tr>{#each row as cell}<td>{cell}</td>{/each}</tr>{/each}</tbody></table></div>
         </section>
+
+        {#if session.missionBriefing}
+          <section class="mission-briefing">
+            <div class="section-label"><span>MISSION PREFLIGHT</span><b>{session.missionBriefing.title}</b></div>
+            {#each session.missionBriefing.paragraphs as paragraph}<p>{paragraph}</p>{/each}
+          </section>
+        {/if}
 
         {#if session.rehearsal}
           <!-- The cases here are lifted out of the mission this session points
@@ -209,6 +233,10 @@
           <textarea id={`notes-${session.id}`} value={progress.notes[session.id] || ''} on:input={(event) => updateNotes(event.currentTarget.value)} placeholder="Write your observations here. They stay on this device."></textarea>
         </section>
 
+        {#if session.exercise}
+          <ReaderExercise exercise={session.exercise} completed={progress.exercises.includes(session.id)} on:complete={completeExercise} />
+        {/if}
+
         <section class="check">
           <div class="section-label"><span>FOCUSED CHECK</span><b>Answer without looking back</b></div>
           <h3>{session.check.prompt}</h3>
@@ -225,8 +253,10 @@
           {/if}
           {#if progress.study.includes(session.id)}
             <div class="done-message">Study step saved ✓</div>
-          {:else if checkedAnswers[session.id] && selectedAnswers[session.id] === session.check.answer}
+          {:else if checkedAnswers[session.id] && selectedAnswers[session.id] === session.check.answer && (!session.exercise || progress.exercises.includes(session.id))}
             <button class="primary" on:click={completeStudy}>Save study step</button>
+          {:else if checkedAnswers[session.id] && selectedAnswers[session.id] === session.check.answer && session.exercise}
+            <div class="done-message waiting">Complete the applied exercise above to save this study step.</div>
           {:else}
             <button class="primary" disabled={!selectedAnswers[session.id]} on:click={checkAnswer}>Check answer</button>
           {/if}
@@ -238,7 +268,7 @@
           <button class:complete={progress.practice.includes(session.id)} on:click={completePractice}>{progress.practice.includes(session.id) ? 'Practice saved ✓' : 'I completed the practice'}</button>
         </section>
 
-        <section class="sources"><b>Sources used for this draft</b>{#each session.sources as source}<a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a>{/each}</section>
+        <section class="sources"><b>Sources and licence notes</b>{#each session.sources as source}<a href={source.url} target="_blank" rel="noreferrer">{source.label}{#if source.licence}<small>{source.licence}</small>{/if}<span>↗</span></a>{/each}</section>
 
         <footer class="chapter-nav">
           {#if activeIndex > 0}<button on:click={() => openSession(activeIndex - 1)}>← Previous session</button>{:else}<span></span>{/if}
@@ -327,7 +357,9 @@
   .section-label { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
   .section-label span { color: #8c4c2e; font: 900 11.5px var(--qx-font); letter-spacing: .1em; }
   .section-label b { font: 700 18px Georgia, serif; }
-  .example, .workbook, .check, .rehearsal { margin-top: 32px; padding: 22px; border: 1px solid #ded7c8; border-radius: 13px; background: #fbf9f4; }
+  .example, .workbook, .check, .rehearsal, .mission-briefing { margin-top: 32px; padding: 22px; border: 1px solid #ded7c8; border-radius: 13px; background: #fbf9f4; }
+  .mission-briefing { border-left: 6px solid #b85530; background: #f4ede0; }
+  .mission-briefing p { margin: 12px 0 0; color: #4f493e; font: 600 13.5px/1.62 var(--qx-font); }
 
   /* The rehearsal reads as the mission it previews rather than as more prose,
      so the facts sit in a panel the way the mission shows them. */
@@ -368,6 +400,7 @@
   .primary { cursor: pointer; }
   .primary:disabled { background: #d1c8b8; cursor: not-allowed; }
   .done-message { background: #eef1e9; color: #4e6548; }
+  .done-message.waiting { background: #f3e4d9; color: #8c4c2e; }
   .feedback { margin-top: 12px; padding: 13px; display: grid; gap: 4px; border-radius: 9px; background: #f5e7df; color: #8c4c2e; }
   .feedback.correct { background: #e9eee6; color: #4e6548; }
   .feedback b { font: 900 13px var(--qx-font); }
@@ -380,9 +413,10 @@
   .practice a { align-self: end; background: #8c4c2e; }
   .practice button { grid-column: 2; border-color: #777064; background: transparent; cursor: pointer; }
   .practice button.complete { border-color: #7f9b76; color: #c0d0b9; }
-  .sources { margin-top: 25px; padding: 15px 0; display: flex; flex-wrap: wrap; gap: 8px 14px; border-top: 1px solid #ded7c8; border-bottom: 1px solid #ded7c8; }
+  .sources { margin-top: 25px; padding: 15px 0; display: flex; align-items:center; flex-wrap: wrap; gap: 8px 14px; border-top: 1px solid #ded7c8; border-bottom: 1px solid #ded7c8; }
   .sources b { color: #756c5c; font: 850 11.5px var(--qx-font); }
-  .sources a { color: #8c4c2e; font: 750 11.5px var(--qx-font); }
+  .sources a { display:inline-flex;align-items:center;gap:5px;color: #8c4c2e; font: 750 11.5px var(--qx-font); }
+  .sources a small { padding:3px 5px;border:1px solid #9c998d;color:#4f6151;font:850 8px var(--qx-font);letter-spacing:.04em;text-decoration:none; }
   .chapter-nav { padding: 24px 0 38px; display: flex; justify-content: space-between; gap: 12px; }
   .chapter-nav button, .chapter-nav a { min-height: 42px; padding: 11px 16px; border: 1px solid #d8d0be; border-radius: 8px; background: #fff; color: #241f16; font: 850 12px var(--qx-font); text-decoration: none; cursor: pointer; }
   .chapter-nav .next { border-color: #5f7355; background: #5f7355; color: #fff; }
@@ -412,7 +446,7 @@
     .chapter-head h2 { font-size: 34px; }
     .opening { font-size: 16px; }
     .reading-section p { font-size: 14px; }
-    .example, .workbook, .check { padding: 15px; }
+    .example, .workbook, .check, .mission-briefing { padding: 15px; }
     .practice { grid-template-columns: 1fr; }
     .practice a, .practice button { grid-column: 1; min-width: 0; width: 100%; }
     .chapter-nav { align-items: stretch; flex-direction: column; }
@@ -481,7 +515,8 @@
   .reading-section p { color: var(--packet-soft); font-weight: 500; }
   .section-label span { color: var(--packet-orange); font-size: 10px; }
   .section-label b { font-weight: 400; }
-  .example, .workbook, .check, .rehearsal { padding: 24px; border: 1px solid var(--packet-rule); border-radius: 0; background: #f0ebdf; }
+  .example, .workbook, .check, .rehearsal, .mission-briefing { padding: 24px; border: 1px solid var(--packet-rule); border-radius: 0; background: #f0ebdf; }
+  .mission-briefing { border-left: 6px solid var(--packet-orange); }
   .example { border: 4px solid var(--packet-ink); background: var(--packet-paper); box-shadow: 8px 8px 0 rgba(32,36,31,.14); }
   .rehearsal article { border-radius: 0; box-shadow: none; }
   .rehearsal pre, textarea, .options button, .primary, .done-message, .feedback { border-radius: 0; }

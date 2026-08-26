@@ -9,12 +9,12 @@
   const lockedSlug = new URLSearchParams(window.location.search).get('locked');
   const lockedMission = MISSIONS.find(m => m.slug === lockedSlug);
   const ROOMS = [
-    { id: 'goods-in', name: 'Goods In', missions: '08', note: 'Units + measurement', slug: 'units-measurement' },
-    { id: 'stock-room', name: 'Stock Room', missions: '03–05', note: 'Missing values · grain · duplicates', slug: 'missing-data' },
-    { id: 'data-office', name: 'Data Office', missions: '10–13', note: 'SQL · Python · distributions · rates', slug: 'sql-console' },
+    { id: 'goods-in', name: 'Goods In', missions: '05', note: 'Units + measurement', slug: 'units-measurement' },
+    { id: 'stock-room', name: 'Stock Room', missions: '03–04 · 07', note: 'Grain · missing values · duplicates', slug: 'table-grain' },
+    { id: 'data-office', name: 'Data Office', missions: '11–14', note: 'SQL · joins · verification · Python', slug: 'sql-console' },
     { id: 'checkout', name: 'Checkout', missions: '01', note: 'Process a Sale', slug: 'checkout' },
     { id: 'aisles', name: 'Aisles', missions: '02', note: 'Classify Store Data', slug: 'classify-data' },
-    { id: 'board-room', name: 'Board Room', missions: '09', note: 'Analyst Decision Desk', slug: 'analyst-desk' }
+    { id: 'board-room', name: 'Board Room', missions: '15–16', note: 'Decision desk · handover review', slug: 'analyst-desk' }
   ];
 
   const refresh = () => { state = load(); };
@@ -41,7 +41,7 @@
 
 <svelte:head>
   <title>My Shift | Qubix University</title>
-  <meta name="description" content="Continue your Qubix Superstore training shift through thirteen practical data missions, paired readings, XP and ranks." />
+  <meta name="description" content={`Continue your Qubix Superstore training shift through ${MISSIONS.length} practical data missions, paired readings, XP and ranks.`} />
 </svelte:head>
 
 <section class="hub qx-shell">
@@ -98,7 +98,7 @@
   </section>
 
   <section class="route" aria-labelledby="route-heading">
-    <div class="section-heading"><div><p class="eyebrow">YOUR ROUTE</p><h2 id="route-heading">Thirteen missions through the store.</h2></div><span>{rows.filter(row => row.open && !row.done).length} OPEN · {rows.filter(row => !row.open).length} LOCKED</span></div>
+    <div class="section-heading"><div><p class="eyebrow">YOUR ROUTE</p><h2 id="route-heading">{MISSIONS.length} missions through the store.</h2></div><span>{rows.filter(row => row.open && !row.done).length} OPEN · {rows.filter(row => !row.open).length} LOCKED</span></div>
     <ol class="missions">
       {#each rows as row, i}
         <li class:done={row.done} class:locked={!row.open}>

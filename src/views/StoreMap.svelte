@@ -1,5 +1,5 @@
 <script>
-  // The Superstore floor. Nine rooms, thirteen missions, each one standing on
+  // The Superstore floor. Nine rooms, every rostered mission standing on
   // the object it belongs to.
   //
   // The art is a backdrop and nothing more: every name, count, XP figure and

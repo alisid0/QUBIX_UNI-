@@ -1,6 +1,6 @@
 // The Qubix Superstore, as a floor plan.
 //
-// The missions had no place. Thirteen of them sat in a list, each one opening
+// The missions had no place. They sat in a list, each one opening
 // cold, none of them anywhere in particular, though every one is set somewhere
 // specific: a till, a stock room, a goods-in bay, a reporting desk.
 //
@@ -88,7 +88,8 @@ export const ROOMS = Object.freeze([
     spots: Object.freeze([
       Object.freeze({ slug: 'sql-console', x: 22, y: 56, at: 'the near desk' }),
       Object.freeze({ slug: 'join-grain', x: 50, y: 38, at: 'the back desk' }),
-      Object.freeze({ slug: 'python-trace', x: 79, y: 50, at: 'the dual-monitor desk' })
+      Object.freeze({ slug: 'python-trace', x: 79, y: 50, at: 'the dual-monitor desk' }),
+      Object.freeze({ slug: 'result-checkpoint', x: 50, y: 76, at: 'the release terminal' })
     ])
   }),
   Object.freeze({
@@ -97,13 +98,17 @@ export const ROOMS = Object.freeze([
     spots: Object.freeze([
       Object.freeze({ slug: 'rate-desk', x: 20, y: 44, at: 'the monitor desk' }),
       Object.freeze({ slug: 'distribution-desk', x: 54, y: 63, at: 'the collation table' }),
-      Object.freeze({ slug: 'data-lineage', x: 77, y: 46, at: 'the standing desk' })
+      Object.freeze({ slug: 'data-lineage', x: 77, y: 42, at: 'the standing desk' }),
+      Object.freeze({ slug: 'sampling-desk', x: 78, y: 76, at: 'the sampling desk' })
     ])
   }),
   Object.freeze({
     id: 'boardroom', name: 'Boardroom', wing: 'offices', x: 7, y: 2, w: 6, h: 2,
     blurb: 'Somebody asks an unclear question and expects a defensible answer.',
-    spots: Object.freeze([Object.freeze({ slug: 'analyst-desk', x: 48, y: 54, at: 'the meeting table' })])
+    spots: Object.freeze([
+      Object.freeze({ slug: 'analyst-desk', x: 35, y: 54, at: 'the meeting table' }),
+      Object.freeze({ slug: 'handover-pack', x: 68, y: 54, at: 'the handover review seat' })
+    ])
   }),
   Object.freeze({
     // Named honestly. The role volumes are advertised on the landing page and

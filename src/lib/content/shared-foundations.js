@@ -18,16 +18,40 @@ import { SHARED_FOUNDATIONS_PART_FOUR } from './shared-foundations-part-four.js'
 import { SHARED_FOUNDATIONS_PART_FIVE } from './shared-foundations-part-five.js';
 import { SHARED_FOUNDATIONS_PART_SIX } from './shared-foundations-part-six.js';
 import { SHARED_FOUNDATIONS_PART_SEVEN } from './shared-foundations-part-seven.js';
+import { expansionFor } from './shared-foundations-expansion.js';
+
+// Keep the chapter manuscripts independent from the interaction layer. An
+// expansion can replace the route/rehearsal for a newly built mission, append
+// open-source attribution, and add a reader exercise without mutating the
+// frozen chapter object.
+const expandBook = (chapter, book) => {
+  const sessions = Object.freeze(book.sessions.map(session => {
+    const expansion = expansionFor(chapter, session.id);
+    if (!expansion) return session;
+    const { sourceAdditions = [], ...fields } = expansion;
+    return Object.freeze({
+      ...session,
+      ...fields,
+      studyMinutes: session.studyMinutes + (fields.exercise?.minutes || 0),
+      sources: Object.freeze([...(session.sources || []), ...sourceAdditions])
+    });
+  }));
+  return Object.freeze({
+    ...book,
+    sessions,
+    totalMinutes: sessions.reduce((total, session) => total + session.studyMinutes + session.playMinutes, 0)
+  });
+};
 
 /** Keyed by the chapter number shown on the contents page, counting from 1. */
 export const SHARED_FOUNDATIONS = Object.freeze([
-  Object.freeze({ chapter: 1, book: SHARED_FOUNDATIONS_PART_ONE }),
-  Object.freeze({ chapter: 2, book: SHARED_FOUNDATIONS_PART_TWO }),
-  Object.freeze({ chapter: 3, book: SHARED_FOUNDATIONS_PART_THREE }),
-  Object.freeze({ chapter: 4, book: SHARED_FOUNDATIONS_PART_FOUR }),
-  Object.freeze({ chapter: 5, book: SHARED_FOUNDATIONS_PART_FIVE }),
-  Object.freeze({ chapter: 6, book: SHARED_FOUNDATIONS_PART_SIX }),
-  Object.freeze({ chapter: 7, book: SHARED_FOUNDATIONS_PART_SEVEN })
+  Object.freeze({ chapter: 1, book: expandBook(1, SHARED_FOUNDATIONS_PART_ONE) }),
+  Object.freeze({ chapter: 2, book: expandBook(2, SHARED_FOUNDATIONS_PART_TWO) }),
+  Object.freeze({ chapter: 3, book: expandBook(3, SHARED_FOUNDATIONS_PART_THREE) }),
+  Object.freeze({ chapter: 4, book: expandBook(4, SHARED_FOUNDATIONS_PART_FOUR) }),
+  Object.freeze({ chapter: 5, book: expandBook(5, SHARED_FOUNDATIONS_PART_FIVE) }),
+  Object.freeze({ chapter: 6, book: expandBook(6, SHARED_FOUNDATIONS_PART_SIX) }),
+  Object.freeze({ chapter: 7, book: expandBook(7, SHARED_FOUNDATIONS_PART_SEVEN) })
 ]);
 
 export const bookForChapter = n => SHARED_FOUNDATIONS.find(c => c.chapter === n)?.book || null;
