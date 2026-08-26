@@ -161,5 +161,22 @@ ok('006 teaches safe joins as well as dangerous ones',
   safe.length >= 2 && safe.length < JOIN_GRAIN_MISSION.cases.length,
   `${safe.length} safe of ${JOIN_GRAIN_MISSION.cases.length}`);
 
+// The hub and the router use this same progression rule. Test new, partial and
+// complete states so a later route cannot quietly become reachable again.
+const { MISSIONS, missionIsOpen, statusOf } = await import(`file://${join(GAME, 'progress.js')}`);
+const blankState = { completed: [], started: null };
+const partialState = { completed: [MISSIONS[0].slug], started: null };
+const completeState = { completed: MISSIONS.map(m => m.slug), started: null };
+ok('a new learner can open only the first mission',
+  statusOf(blankState).filter(m => m.open).map(m => m.slug).join(',') === MISSIONS[0].slug);
+ok('finishing one mission opens the next one',
+  missionIsOpen(partialState, MISSIONS[0].slug)
+    && missionIsOpen(partialState, MISSIONS[1].slug)
+    && !missionIsOpen(partialState, MISSIONS[2].slug));
+ok('a completed academy keeps every mission replayable',
+  MISSIONS.every(m => missionIsOpen(completeState, m.slug)));
+ok('an unknown mission is never treated as an unlocked roster mission',
+  !missionIsOpen(blankState, 'not-a-mission'));
+
 console.log(`\n${bad ? `${bad} check(s) FAILED` : `all checks pass, ${totalQuestions} questions across ${files.length} missions`}`);
 process.exit(bad ? 1 : 0);

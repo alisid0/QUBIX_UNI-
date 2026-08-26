@@ -10,6 +10,8 @@
 
   let state = { completed: [], started: null };
   let confirming = false;
+  const lockedSlug = new URLSearchParams(window.location.search).get('locked');
+  const lockedMission = MISSIONS.find(m => m.slug === lockedSlug);
 
   const refresh = () => { state = load(); };
   onMount(() => {
@@ -60,6 +62,12 @@
     </div>
     <LearningModeSwitch current="do" readHref="?mode=game&mission=shared-book&chapter=1&session=1" />
   </section>
+
+  {#if lockedMission}
+    <p class="locked-notice" role="status">
+      <b>{lockedMission.mission.title}</b> is still locked. Continue with the next available mission below.
+    </p>
+  {/if}
 
   <div class="standing">
     <div class="rank">
@@ -155,6 +163,9 @@
               justify-content:space-between;gap:18px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.035)}
   .mode-intro h2{margin:0;color:#fff;font:700 22px Georgia,serif}
   .mode-intro>div>span{display:block;margin-top:5px;max-width:62ch;color:#a89e8d;font:600 14px/1.5 var(--qx-font)}
+  .locked-notice{max-width:1080px;margin:0 auto 18px;padding:12px 16px;border:1px solid rgba(201,140,94,.45);
+                 border-radius:11px;background:rgba(168,90,52,.12);color:#d7cfc1;font:600 14px/1.5 var(--qx-font)}
+  .locked-notice b{color:#fff}
 
   .standing{max-width:1080px;margin:0 auto 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
             gap:20px;padding:22px 24px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(255,255,255,.04)}

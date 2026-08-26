@@ -76,55 +76,68 @@
     assetPreview.then(m => { AssetShowcase = m.default; });
   }
   if (showGameMission) {
-    const mission = params.get('mission') || (productionFoundationLanding ? 'foundations' : null);
-    let gamePreview;
+    const requestedMission = params.get('mission') || (productionFoundationLanding ? 'foundations' : null);
 
-    // Keep each dynamic import in its own branch. A nested conditional caused
-    // Vite to preload GameHub.css for every mission, leaving the selected
-    // mission's component mounted without its stylesheet in production.
-    if (mission === 'store') {
-      gamePreview = import('./views/StoreMap.svelte');
-    } else if (mission === 'rate-desk') {
-      gamePreview = import('./views/RateDeskMission.svelte');
-    } else if (mission === 'python-trace') {
-      gamePreview = import('./views/PythonTraceMission.svelte');
-    } else if (mission === 'distribution-desk') {
-      gamePreview = import('./views/DistributionDeskMission.svelte');
-    } else if (mission === 'sql-console') {
-      gamePreview = import('./views/SqlConsoleMission.svelte');
-    } else if (mission === 'analyst-desk') {
-      gamePreview = import('./views/AnalystDeskMission.svelte');
-    } else if (mission === 'foundations') {
-      gamePreview = import('./views/RoleFoundations.svelte');
-    } else if (mission === 'shared-book') {
-      gamePreview = import('./views/SharedFoundationsBook.svelte');
-    } else if (mission === 'role-game') {
-      gamePreview = import('./views/RoleGameHub.svelte');
-    } else if (mission === 'campaign') {
-      gamePreview = import('./views/DataQualityCampaign.svelte');
-    } else if (mission === 'units-measurement') {
-      gamePreview = import('./views/UnitsMeasurementMission.svelte');
-    } else if (mission === 'data-lineage') {
-      gamePreview = import('./views/DataLineageMission.svelte');
-    } else if (!mission) {
-      gamePreview = import('./views/GameHub.svelte');
-    } else if (mission === 'join-grain') {
-      gamePreview = import('./views/JoinGrainMission.svelte');
-    } else if (mission === 'classify-data') {
-      gamePreview = import('./views/DataClassificationMission.svelte');
-    } else if (mission === 'missing-data') {
-      gamePreview = import('./views/MissingDataMission.svelte');
-    } else if (mission === 'table-grain') {
-      gamePreview = import('./views/TableGrainMission.svelte');
-    } else if (mission === 'duplicate-records') {
-      gamePreview = import('./views/DuplicateRecordsMission.svelte');
-    } else if (mission === 'checkout') {
-      gamePreview = import('./views/CheckoutMission.svelte');
-    } else {
+    async function loadGamePreview() {
+      let mission = requestedMission;
+      const { MISSIONS, load, missionIsOpen } = await import('./lib/game/progress.js');
+      const rostered = MISSIONS.some(item => item.slug === mission);
+
+      // The academy already labels later missions as locked. Apply the same
+      // rule to direct URLs instead of letting a copied link bypass the path.
+      if (rostered && !missionIsOpen(load(), mission)) {
+        window.history.replaceState(null, '', `?mode=game&locked=${encodeURIComponent(mission)}`);
+        mission = null;
+      }
+
+      // Keep each dynamic import in its own branch. A nested conditional caused
+      // Vite to preload GameHub.css for every mission, leaving the selected
+      // mission's component mounted without its stylesheet in production.
+      if (mission === 'store') {
+        return import('./views/StoreMap.svelte');
+      } else if (mission === 'rate-desk') {
+        return import('./views/RateDeskMission.svelte');
+      } else if (mission === 'python-trace') {
+        return import('./views/PythonTraceMission.svelte');
+      } else if (mission === 'distribution-desk') {
+        return import('./views/DistributionDeskMission.svelte');
+      } else if (mission === 'sql-console') {
+        return import('./views/SqlConsoleMission.svelte');
+      } else if (mission === 'analyst-desk') {
+        return import('./views/AnalystDeskMission.svelte');
+      } else if (mission === 'foundations') {
+        return import('./views/RoleFoundations.svelte');
+      } else if (mission === 'shared-book') {
+        return import('./views/SharedFoundationsBook.svelte');
+      } else if (mission === 'role-game') {
+        return import('./views/RoleGameHub.svelte');
+      } else if (mission === 'campaign') {
+        return import('./views/DataQualityCampaign.svelte');
+      } else if (mission === 'units-measurement') {
+        return import('./views/UnitsMeasurementMission.svelte');
+      } else if (mission === 'data-lineage') {
+        return import('./views/DataLineageMission.svelte');
+      } else if (!mission) {
+        return import('./views/GameHub.svelte');
+      } else if (mission === 'join-grain') {
+        return import('./views/JoinGrainMission.svelte');
+      } else if (mission === 'classify-data') {
+        return import('./views/DataClassificationMission.svelte');
+      } else if (mission === 'missing-data') {
+        return import('./views/MissingDataMission.svelte');
+      } else if (mission === 'table-grain') {
+        return import('./views/TableGrainMission.svelte');
+      } else if (mission === 'duplicate-records') {
+        return import('./views/DuplicateRecordsMission.svelte');
+      } else if (mission === 'checkout') {
+        return import('./views/CheckoutMission.svelte');
+      }
+
       // Anything unrecognised opens the first mission rather than nothing.
-      gamePreview = import('./views/CheckoutMission.svelte');
+      return import('./views/CheckoutMission.svelte');
     }
-    gamePreview.then(m => { GameMission = m.default; });
+
+    loadGamePreview().then(m => { GameMission = m.default; });
   }
   if (showReviewMode) {
     import('./views/ReviewMode.svelte').then(m => { ReviewMode = m.default; });

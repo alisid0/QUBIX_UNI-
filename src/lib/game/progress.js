@@ -134,3 +134,8 @@ export function statusOf(state) {
     return { ...m, done, open };
   });
 }
+
+/** One access rule for the hub, store map and direct mission URLs. */
+export function missionIsOpen(state, slug) {
+  return statusOf(state).find(m => m.slug === slug)?.open ?? false;
+}
