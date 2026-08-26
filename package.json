@@ -37,7 +37,9 @@
     "build:seo": "node scripts/build-seo.mjs",
     "estimate:time": "node scripts/estimate-time.mjs",
     "check:type": "node scripts/check-type.mjs",
-    "check:world": "node scripts/check-world.mjs"
+    "check:world": "node scripts/check-world.mjs",
+    "data": "node scripts/generate-dataset.mjs",
+    "check:dataset": "node scripts/check-dataset.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
