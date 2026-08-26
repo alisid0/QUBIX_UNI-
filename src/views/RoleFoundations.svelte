@@ -14,6 +14,7 @@
   import { SHARED_FOUNDATIONS, partsForChapter, writtenChapters, volumeMinutes, volumeStudyMinutes,
     volumePlayMinutes, volumeSessions } from '../lib/content/shared-foundations.js';
   import { MISSIONS, TOTAL_XP, RANKS } from '../lib/game/progress.js';
+  import { ROOMS } from '../lib/game/store-map.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
 
@@ -92,6 +93,11 @@
     }
   ];
 
+  // The floor was five rooms of hardcoded HTML with hand-tuned insets, beside a
+  // label claiming nine. It reads the real room list now, so the picture and the
+  // count cannot disagree, and every card opens that room on the floor plan.
+  const startRoom = ROOMS.find(r => r.spots.some(sp => sp.slug === MISSIONS[0].slug));
+  const floorRooms = ROOMS.filter(r => r.spots.length || r.planned);
   const minutes = m => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`);
   const sessionsFor = i => partsForChapter(i + 1);
   // The two halves, quoted apart. Every session declares reading minutes and
@@ -147,15 +153,21 @@
   <section class="floor" id="training-floor" aria-labelledby="floor-heading">
     <div class="floor-heading">
       <div><p class="eyebrow">THE TRAINING FLOOR</p><h2 id="floor-heading">Every concept has a room and a consequence.</h2></div>
-      <span>{MISSIONS.length} MISSIONS · 9 ROOMS · {RANKS.length} RANKS</span>
+      <span>{MISSIONS.length} MISSIONS · {floorRooms.length} ROOMS · {RANKS.length} RANKS</span>
     </div>
-    <div class="floor-map" aria-label="Qubix Superstore training route">
-      <div class="room goods"><b>GOODS IN</b><small>Units + measurement</small></div>
-      <div class="room stock"><b>STOCK ROOM</b><small>Missing + duplicate data</small></div>
-      <a class="room tills" href="?mode=game&mission=checkout"><b>CHECKOUT</b><small>Mission 01 · Ready</small></a>
-      <div class="room office"><b>DATA OFFICE</b><small>SQL + Python</small></div>
-      <div class="room board"><b>BOARDROOM</b><small>Decisions + communication</small></div>
-      <span class="you-are-here">YOU START HERE</span>
+    <div class="floor-map">
+      {#each floorRooms as r}
+        <a class="room" class:start={r.id === startRoom?.id} class:planned={r.planned}
+           href={`?mode=game&mission=store&room=${r.id}`}>
+          <img class="shot" src={`/rooms/${r.id}-thumb.webp`} alt="" loading="lazy" decoding="async" />
+          <span class="body">
+            <b>{r.name}</b>
+            <small>{r.planned ? "Planned, not built yet" : r.blurb}</small>
+            {#if r.spots.length}<em>{r.spots.length} mission{r.spots.length > 1 ? "s" : ""}</em>{/if}
+          </span>
+          {#if r.id === startRoom?.id}<span class="you-are-here">YOU START HERE</span>{/if}
+        </a>
+      {/each}
     </div>
   </section>
 
@@ -288,15 +300,20 @@
   .floor-heading{display:flex;align-items:end;justify-content:space-between;gap:24px}
   .floor-heading h2{margin:0;font:400 clamp(26px,3.1vw,34px)/1.1 Georgia,serif;text-wrap:balance}
   .floor-heading>span{color:var(--soft);font:700 11.5px var(--qx-font);letter-spacing:.11em;white-space:nowrap}
-  .floor-map{position:relative;min-height:305px;margin-top:30px;border:5px solid var(--ink);
-             background:linear-gradient(135deg,#e6eadf,#efeadd)}
-  .room{position:absolute;display:grid;place-items:center;border:1px solid #aaa895;background:#e6e0d2;color:var(--ink);
-        font:800 11.5px var(--qx-font);letter-spacing:.1em;text-align:center;text-decoration:none}
-  .room small{margin-top:6px;color:var(--soft);font:500 11px var(--qx-font);letter-spacing:0}
-  .goods{inset:8% 68% 53% 3%}.stock{inset:8% 37% 53% 34%}.tills{inset:55% 68% 7% 3%;border:2px solid var(--signal)}
-  .office{inset:55% 34% 7% 34%}.board{inset:8% 3% 7% 68%}
-  .you-are-here{position:absolute;left:22%;bottom:21%;padding:6px 11px;background:var(--signal);color:#fff;
-                font:800 11px var(--qx-font);letter-spacing:.06em}
+  .floor-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:12px;
+             margin-top:30px;padding:13px;border:5px solid var(--ink);background:#e9e4d6}
+  .room{position:relative;display:flex;flex-direction:column;border:1px solid #aaa895;
+        background:#e6e0d2;color:var(--ink);text-decoration:none;overflow:hidden}
+  .room:hover{border-color:var(--signal)}
+  .room .shot{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#ded8c8}
+  .room .body{display:grid;gap:5px;padding:11px 13px 13px}
+  .room b{font:800 12.5px var(--qx-font);letter-spacing:.09em}
+  .room small{color:var(--soft);font:500 13.5px/1.45 var(--qx-font)}
+  .room em{color:var(--signal);font:700 12px var(--qx-font);font-style:normal}
+  .room.start{border:2px solid var(--signal)}
+  .room.planned .shot{opacity:.5}
+  .you-are-here{position:absolute;top:9px;left:9px;padding:5px 10px;background:var(--signal);color:#fff;
+                font:800 11px var(--qx-font);letter-spacing:.1em}
 
   .method{display:grid;grid-template-columns:repeat(3,1fr);background:var(--ink);color:#f3eee3}
   .method article{display:flex;gap:15px;padding:22px clamp(18px,3vw,34px);border-right:1px solid rgba(243,238,227,.2)}
@@ -379,10 +396,6 @@
     .floor{padding:40px 20px 48px}
     .floor-heading{align-items:start;flex-direction:column}
     .floor-heading>span{white-space:normal}
-    .floor-map{min-height:445px}
-    .goods{inset:4% 52% 69% 4%}.stock{inset:4% 4% 69% 52%}
-    .tills{inset:35% 52% 39% 4%}.office{inset:35% 4% 39% 52%}.board{inset:66% 4% 4% 4%}
-    .you-are-here{left:28%;bottom:48%}
     .method{grid-template-columns:1fr}
     .method article{border-right:0;border-bottom:1px solid rgba(243,238,227,.2)}
     .halves{grid-template-columns:1fr}
@@ -400,6 +413,5 @@
     .hero-copy h1{font-size:34px}
     .hero-actions{display:grid}
     .hero-actions a{justify-content:center}
-    .floor-map{min-height:470px}
   }
 </style>

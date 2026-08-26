@@ -112,9 +112,16 @@ for (const file of readdirSync('public/rooms').filter(f => f.endsWith('.png')).s
     flattened += 1;
   }
 
-  await sharp(data, { raw: { width: W, height: H, channels: 4 } })
-    .webp({ quality: 92, effort: 6, alphaQuality: 100 })
+  const image = sharp(data, { raw: { width: W, height: H, channels: 4 } });
+  await image.clone().webp({ quality: 92, effort: 6, alphaQuality: 100 })
     .toFile(`public/rooms/${id}.webp`);
+
+  // The home page shows every room at card size. Nine full-size rooms is over a
+  // megabyte of images on the first page anybody sees, so it gets a thumbnail
+  // instead: same picture, a fifth of the width, about a tenth of the bytes.
+  await image.clone().resize({ width: 480 })
+    .webp({ quality: 88, effort: 6, alphaQuality: 100 })
+    .toFile(`public/rooms/${id}-thumb.webp`);
 
   const kb = Math.round(statSync(`public/rooms/${id}.webp`).size / 1024);
   totalCut += cut; rooms += 1;
