@@ -235,7 +235,7 @@
 <section class="game-shell qx-shell">
   <header>
     <div class="identity"><span class="role">{CHECKOUT_MISSION.role}</span><div><p>{CHECKOUT_MISSION.id} · {CHECKOUT_MISSION.status}</p><h1>{CHECKOUT_MISSION.title}</h1></div></div>
-    <nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=checkout-station">Assets</a><a href="?mode=wiki">Library</a></nav>
+    <nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=checkout-station">Assets</a><a href="?mode=wiki">Wiki</a></nav>
   </header>
 
   <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>

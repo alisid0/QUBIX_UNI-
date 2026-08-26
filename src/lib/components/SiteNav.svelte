@@ -18,7 +18,7 @@
 
   const LINKS = [
     { id: 'play', label: 'Play', href: '?mode=game' },
-    { id: 'read', label: 'Read', href: '?mode=game&mission=foundations' },
+    { id: 'read', label: 'Read', href: '?mode=game&mission=shared-book&chapter=1&session=1' },
     { id: 'library', label: 'Library', href: '/library/index.html' },
     { id: 'wiki', label: 'Wiki', href: '?mode=wiki' },
     { id: 'maths', label: 'Mathematics', href: '/?prototype=variables-and-rates' }

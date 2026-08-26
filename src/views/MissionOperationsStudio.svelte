@@ -19,7 +19,7 @@
 <section class="studio qx-shell">
   <header>
     <div><p>2D ASSET WORKSHOP · AI_DRAFT</p><h1>Mission Operations Studio</h1><span>Reusable interface layer for the Qubix Superstore learning world</span></div>
-    <nav><a href="?mode=game&mission=foundations">Open role foundations</a><a href="?mode=game&mission=units-measurement">Open active mission</a><a href="?mode=wiki">Learning library</a></nav>
+    <nav><a href="?mode=game&mission=foundations">Open role foundations</a><a href="?mode=game&mission=units-measurement">Open active mission</a><a href="?mode=wiki">Data science wiki</a></nav>
   </header>
 
   <main>

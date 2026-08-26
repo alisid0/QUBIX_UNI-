@@ -193,7 +193,7 @@
 <svelte:head><title>Missing Values Are Not Zero | Qubix University</title><meta name="description" content="Local AI draft of Qubix Superstore missing-data mission." /></svelte:head>
 
 <section class="mission-shell qx-shell">
-  <header><div class="identity"><span class="role">PRE<br />INTERN</span><div><p>{MISSING_DATA_MISSION.id} · {MISSING_DATA_MISSION.status}</p><h1>{MISSING_DATA_MISSION.title}</h1></div></div><nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=data-quality-terminal">New assets</a><a href="?mode=wiki">Library</a></nav></header>
+  <header><div class="identity"><span class="role">PRE<br />INTERN</span><div><p>{MISSING_DATA_MISSION.id} · {MISSING_DATA_MISSION.status}</p><h1>{MISSING_DATA_MISSION.title}</h1></div></div><nav><a href="?mode=game&mission=foundations">Foundations</a><a href="?mode=game&mission=classify-data">Mission 002</a><a href="?mode=assets&asset=data-quality-terminal">New assets</a><a href="?mode=wiki">Wiki</a></nav></header>
   <div class="progress" aria-label={`Mission ${progress}% complete`}><span style={`width:${progress}%`}></span></div>
 
   <main>

@@ -177,7 +177,7 @@
     </div>
     <nav aria-label="Asset previews">
       <a href="?mode=assets&asset=checkout-station">Asset 001</a>
-      <a href="?mode=wiki">Library</a>
+      <a href="?mode=wiki">Wiki</a>
     </nav>
   </header>
 

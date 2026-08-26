@@ -48,7 +48,7 @@
     <nav aria-label="Mission navigation">
       <a href="?mode=game&mission=foundations">Foundations</a>
       <a href="?mode=game&mission=duplicate-records">Mission 005</a>
-      <a href="?mode=wiki">Library</a>
+      <a href="?mode=wiki">Wiki</a>
     </nav>
   </header>
 

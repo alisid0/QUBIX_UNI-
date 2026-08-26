@@ -188,7 +188,7 @@
       <h1>Superstore checkout station</h1>
       <p class="lede">A reusable, low-poly checkout lane for programming, transaction-data and inventory missions.</p>
     </div>
-    <nav aria-label="Asset previews"><a href="?mode=assets&asset=product-package">Asset 002</a><a href="?mode=wiki">Library</a></nav>
+    <nav aria-label="Asset previews"><a href="?mode=assets&asset=product-package">Asset 002</a><a href="?mode=wiki">Wiki</a></nav>
   </header>
 
   <main>
