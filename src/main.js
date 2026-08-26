@@ -10,6 +10,61 @@ const app = new App({
   target: document.getElementById('app')
 });
 
+// index.html supplies correct homepage metadata to crawlers that do not run
+// JavaScript. Once a route has mounted, reconcile that fallback with the
+// route's Svelte head so the document has one description and one matching set
+// of canonical/Open Graph values rather than two competing descriptions.
+const canonical = new URL(window.location.href);
+canonical.protocol = 'https:';
+canonical.hostname = 'qubix.university';
+canonical.port = '';
+canonical.hash = '';
+if (canonical.searchParams.has('locked')) {
+  canonical.search = '?mode=game';
+}
+
+function reconcileSeo() {
+  const descriptions = [...document.querySelectorAll('meta[name="description"]')];
+  const routeDescription = descriptions.find(meta => !meta.hasAttribute('data-default-seo'));
+  if (routeDescription) {
+    descriptions.filter(meta => meta !== routeDescription).forEach(meta => meta.remove());
+  }
+
+  const description = routeDescription?.content
+    || document.querySelector('meta[name="description"]')?.content
+    || '';
+  const canonicalLink = document.querySelector('link[rel="canonical"]');
+  if (canonicalLink && canonicalLink.href !== canonical.href) canonicalLink.href = canonical.href;
+  for (const [property, content] of [
+    ['og:title', document.title],
+    ['og:description', description],
+    ['og:url', canonical.href]
+  ]) {
+    const meta = document.querySelector(`meta[property="${property}"]`);
+    if (meta && meta.content !== content) meta.content = content;
+  }
+}
+
+reconcileSeo();
+
+// Mission views are code-split, so their <svelte:head> nodes can arrive after
+// the root component mounts. Reconcile again whenever Svelte changes the head
+// instead of racing those imports with a fixed timeout.
+let seoQueued = false;
+const seoObserver = new MutationObserver(() => {
+  if (seoQueued) return;
+  seoQueued = true;
+  queueMicrotask(() => {
+    seoQueued = false;
+    reconcileSeo();
+  });
+});
+seoObserver.observe(document.head, { childList: true, subtree: true });
+
+// The static structured data describes the homepage course, not a mission or
+// wiki route. Do not leave that claim in the hydrated DOM on another page.
+if (window.location.search) document.querySelector('script[type="application/ld+json"]')?.remove();
+
 // Remove the static SEO/splash first-paint now that the Svelte app has mounted.
 document.getElementById('seo-splash')?.remove();
 

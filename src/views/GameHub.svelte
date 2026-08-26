@@ -40,7 +40,7 @@
 </script>
 
 <svelte:head><title>Qubix Superstore | Qubix University</title>
-<meta name="description" content="Learn data by working inside a synthetic retailer. Ten missions from the checkout to the SQL console." /></svelte:head>
+<meta name="description" content="Learn data by working inside Qubix Superstore through thirteen practical missions with saved progress, XP and ranks." /></svelte:head>
 
 <section class="hub qx-shell">
   <SiteNav current="play" />

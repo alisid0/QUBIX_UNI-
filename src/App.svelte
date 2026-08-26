@@ -161,7 +161,7 @@
     <svelte:component this={ReviewMode} />
   {:else if showWikiMode}
     <WikiMode />
-  {:else if $view === 'lesson'}
+  {:else if explicitLearnerPreview || $view === 'lesson'}
     <ChangeLab />
   {:else}
     <Home />

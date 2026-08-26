@@ -331,6 +331,11 @@
   }
 </script>
 
+<svelte:head>
+  <title>Variables and Rates of Change | Qubix University</title>
+  <meta name="description" content="An interactive mathematics pilot introducing variables, functions, coordinate geometry and rates of change." />
+</svelte:head>
+
 <div class="qx-shell lab-view" on:pointerdown={handlePointerDown} on:pointerup={handlePointerUp}>
   <header class="lab-header">
     <button class="topics-button" aria-label="Back to topic selection" on:click={() => view.set('home')}><span aria-hidden="true">←</span> Topics</button>

@@ -43,6 +43,17 @@ const SHELF = [
 if (!existsSync(OUT)) await mkdir(OUT, { recursive: true });
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const attr = s => esc(s).replace(/"/g, '&quot;');
+const seo = ({ title, description, path, type = 'article' }) => `
+<meta name="description" content="${attr(description)}">
+<link rel="canonical" href="https://qubix.university${path}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="${type}">
+<meta property="og:site_name" content="Qubix University">
+<meta property="og:title" content="${attr(title)}">
+<meta property="og:description" content="${attr(description)}">
+<meta property="og:url" content="https://qubix.university${path}">
+<meta name="twitter:card" content="summary">`;
 const stats = [];
 
 for (const item of SHELF) {
@@ -60,6 +71,12 @@ for (const item of SHELF) {
     html = html.replace('</body>', `<script src="./${item.slug}.js" defer></script>\n</body>`);
   }
 
+  html = html.replace('</title>', `</title>${seo({
+    title: item.title,
+    description: item.blurb,
+    path: `/library/${item.slug}.html`
+  })}`);
+
   await writeFile(join(OUT, `${item.slug}.html`), html, 'utf8');
   stats.push({ ...item, kb: Math.round(html.length / 1024), js: parts.length });
 }
@@ -69,6 +86,12 @@ const index = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Qubix Library</title>
+${seo({
+  title: 'Qubix Library',
+  description: 'Source-first Qubix ebooks and reference sheets for data, programming, functions and graphs.',
+  path: '/library/index.html',
+  type: 'website'
+})}
 <style>
   :root { --ink:#16283f; --teal:#12897c; --teal-text:#10796e; --paper:#faf7f0; --rule:#d8d3c7;
           --mute:#5d6b7d; --edge:#918d85;
