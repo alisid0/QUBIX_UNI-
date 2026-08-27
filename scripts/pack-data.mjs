@@ -18,7 +18,7 @@
 // make two archives of identical data differ, so mtime, uid, gid and owner
 // names are all pinned and the entries are sorted.
 
-import { existsSync, mkdirSync, readdirSync, statSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { CHAIN } from '../src/lib/game/superstore.js';
 
@@ -28,6 +28,18 @@ const OUT = dir('../dist-data/');
 
 if (!existsSync(DATA + 'sale.csv')) {
   console.error('\n  no data/ to pack. run: npm run data\n');
+  process.exit(1);
+}
+
+// data/ is gitignored, so it can go stale without anybody noticing: a smoke test
+// with --branches 6 or --days 7 leaves a partial estate sitting there under the
+// right filenames. Packing that and publishing it would ship a dataset that does
+// not match its own README, so the estate is counted before anything is packed.
+const branches = readFileSync(DATA + 'branch.csv', 'utf8').trim().split(/\r?\n/).length - 1;
+if (branches !== CHAIN.branches) {
+  console.error(`\n  data/ holds ${branches} branches, not ${CHAIN.branches}.`);
+  console.error('  That is a sample or a stale smoke test, not the quarter.');
+  console.error('  Rebuild it first:  npm run data\n');
   process.exit(1);
 }
 
