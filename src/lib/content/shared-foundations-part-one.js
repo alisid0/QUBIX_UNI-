@@ -8,6 +8,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
     Object.freeze({
       id: 'representation', number: '01', title: 'Data is a record, not reality', studyMinutes: 5, playMinutes: 5,
       objective: 'Distinguish a real thing or event from the record created about it.',
+      audioSummary: 'Data is a record of reality, not reality itself. A checkout sale happens in the world, while the system stores selected details about it. Some values are observed directly, such as a scanned barcode. Some are stored reference values, such as the governed unit price. Others are derived by calculation, such as quantity multiplied by price. Keeping these stages separate helps you find where an error entered and explain how a result was produced.',
       opening: 'A sale happens in a shop. A row about that sale is created in a system. The event and the record are connected, but they are not the same thing.',
       sections: Object.freeze([
         Object.freeze({ heading: 'Start with the world', paragraphs: Object.freeze([
@@ -23,6 +24,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
           'This is the first habit of trustworthy data work: keep the world, the source observation and later transformations conceptually separate.'
         ]) })
       ]),
+      figure: Object.freeze({ kind: 'record-chain', caption: 'From a real event to a usable result', note: 'Each stage can introduce or reveal a different error, so keep the event, reference record and calculation distinguishable.' }),
       example: Object.freeze({ title: 'Checkout example', headers: Object.freeze(['Stage','Value','Meaning']), rows: Object.freeze([
         Object.freeze(['Observe','5012345678900','barcode emitted by the scan event']), Object.freeze(['Look up','£3.40','governed unit price in the product record']), Object.freeze(['Derive','2 × £3.40 = £6.80','calculated transaction-line total'])
       ]) }),
@@ -32,8 +34,9 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sources: Object.freeze([Object.freeze({label:'W3C PROV Overview',url:'https://www.w3.org/TR/prov-overview/'})])
     }),
     Object.freeze({
-      id: 'observations-variables', number: '02', title: 'Observations and variables', studyMinutes: 5, playMinutes: 5,
-      objective: 'Explain what a row observes and what each variable means before choosing an analysis.',
+      id: 'observations-variables', number: '02', title: 'Observations, variables and types of data', studyMinutes: 7, playMinutes: 5,
+      objective: 'Explain what a row observes, what each variable means and whether it is categorical or quantitative.',
+      audioSummary: 'A dataset records observations in rows and variables in columns. Before analysing a variable, ask what its values mean. A categorical variable describes a group or label. Nominal categories have no natural order, while ordinal categories do. A quantitative variable describes an amount. Discrete values are counted, while continuous values are measured. Do not classify a variable by appearance alone. A barcode may contain digits, but it is still a nominal label because adding or averaging barcodes has no useful meaning. In the Superstore mission, you will use this first distinction and then go deeper into measurement scales.',
       opening: 'A table becomes understandable when you can finish two sentences: “one row represents…” and “this column records…”.',
       sections: Object.freeze([
         Object.freeze({ heading: 'Observations stay together', paragraphs: Object.freeze([
@@ -44,11 +47,13 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
           'A variable records the same kind of characteristic for every observation. Product category asks “which group does this product belong to?” Basket total asks “how much money was paid for this sale?” The column name, definition, unit and allowed values should make that question stable.',
           'A column containing digits is not automatically quantitative. Product code 10482 may look numerical, but adding two product codes has no meaning. It is an identifier and should be treated as a categorical label.'
         ]) }),
-        Object.freeze({ heading: 'Type controls valid comparisons', paragraphs: Object.freeze([
-          'Categorical variables place observations into named groups. Some categories have no natural order, while ordinal categories can be ranked. Quantitative variables express counts or measurements, allowing meaningful arithmetic when their units and scales support it.',
+        Object.freeze({ heading: 'Types of data control valid comparisons', paragraphs: Object.freeze([
+          'Categorical variables place observations into named groups. Nominal categories, such as branch ID, have no natural order. Ordinal categories, such as a satisfaction level, can be ranked, but the distance between neighbouring levels is not necessarily equal.',
+          'Quantitative variables express amounts. Discrete variables come from counting, such as the number of items in a basket. Continuous variables come from measurement and can take values between two points, such as basket weight or waiting time.',
           'Classification is not clerical tidying. It determines whether an average, ranking, distance or ratio makes sense. Asking what the values mean is more reliable than guessing from their appearance.'
         ]) })
       ]),
+      figure: Object.freeze({ kind: 'data-types', caption: 'The first data-type decision', note: 'Read from meaning, not appearance: label or group, then count or measurement. The mission adds the deeper measurement-scale decision.' }),
       example: Object.freeze({ title: 'Three variables, three meanings', headers: Object.freeze(['Variable','Example','Valid use']), rows: Object.freeze([
         Object.freeze(['branch_id','B-08','identify or group branches']), Object.freeze(['satisfaction','Good','compare ordered response levels']), Object.freeze(['basket_total','£18.70','sum, compare or calculate differences'])
       ]) }),
@@ -73,11 +78,12 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       workbook: Object.freeze({ title: 'Fifteen-minute variable audit', prompt: 'Use a receipt, timetable, fitness app or another small record you can see.', steps: Object.freeze(['Name what one observation represents.', 'List five variables recorded about it.', 'Write the meaning of each variable in a full sentence.', 'Classify each as categorical or quantitative.', 'Circle any identifier that contains digits but is not an amount.']) }),
       check: Object.freeze({ prompt: 'Employee number 700184 contains digits. Why is it categorical?', answer: 'label', options: Object.freeze([['large','The number happens to be large'],['label','It identifies a person and arithmetic on it has no meaning'],['whole','It contains no decimal places']]), explanation: 'An employee number is a label. Its numerical appearance does not make it a measured amount.' }),
       practice: Object.freeze({ title: 'Classify Store Data', href: '?mode=game&mission=classify-data', instruction: 'Apply meaning, subtype and measurement scale across Superstore variables.' }),
-      sources: Object.freeze([Object.freeze({label:'NIST Engineering Statistics Handbook',url:'https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc135.htm'}),Object.freeze({label:'Penn State STAT 504',url:'https://online.stat.psu.edu/stat504/Lesson01'})])
+      sources: Object.freeze([Object.freeze({label:'OpenStax: Data, Sampling, and Variation',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling',licence:'CC BY 4.0'}),Object.freeze({label:'OpenStax: Levels of Measurement',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-3-frequency-frequency-tables-and-levels-of-measurement',licence:'CC BY 4.0'}),Object.freeze({label:'NIST Engineering Statistics Handbook',url:'https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc135.htm'})])
     }),
     Object.freeze({
       id: 'rows-grain', number: '03', title: 'One row means one thing', studyMinutes: 5, playMinutes: 5,
       objective: 'State a table’s grain precisely and use it to interpret row counts.',
+      audioSummary: 'The grain of a table is the precise meaning of one row. One row might represent one sale, one product within a sale, or one product at one branch at one moment. A row count only counts whatever the current grain represents. Joins can repeat or multiply rows, so declare the intended grain before joining and check it again afterwards. This prevents a correct row count from being reported as the wrong real-world quantity.',
       opening: 'Before counting, joining or removing duplicates, define exactly what makes one legitimate row different from another.',
       sections: Object.freeze([
         Object.freeze({ heading: 'Grain is the meaning of one row', paragraphs: Object.freeze([
@@ -93,6 +99,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
           'Always compare the intended output grain with the result after a join. Row growth is evidence to interpret, not automatically an error.'
         ]) })
       ]),
+      figure: Object.freeze({ kind: 'row-grain', caption: 'One sale represented at three grains', note: 'The same event produces different legitimate row counts because each table records a different kind of thing.' }),
       example: Object.freeze({ title: 'The same sale at two grains', headers: Object.freeze(['Table','Rows','One row represents']), rows: Object.freeze([
         Object.freeze(['sale','1','one completed sale']), Object.freeze(['sale_line','3','one product line within one sale']), Object.freeze(['payment','1','one payment attempt for the sale'])
       ]) }),
@@ -121,6 +128,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
     Object.freeze({
       id: 'context-quality', number: '04', title: 'A value needs context', studyMinutes: 5, playMinutes: 5,
       objective: 'Distinguish zero from missing information and judge whether a value, type and unit fit the field definition.',
+      audioSummary: 'A value is trustworthy only when its meaning, type, unit and missingness agree with the field definition. Zero is a known answer, while a blank or null means no value is held and needs an explanation. A missing value might be unknown, pending or not applicable, and those cases require different treatments. Units also belong to measurements: ten kilograms and ten centimetres cannot be compared simply because both cells contain the number ten.',
       opening: 'A cell is trustworthy only when its value, meaning, type, unit and missingness agree with the variable it claims to record.',
       sections: Object.freeze([
         Object.freeze({ heading: 'Zero is an answer; missing is a lack of answer', paragraphs: Object.freeze([
@@ -172,6 +180,80 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       check: Object.freeze({ prompt: 'A delivery-time field is blank because the parcel has not arrived yet. What is the best interpretation?', answer: 'pending', options: Object.freeze([['zero','Delivery took zero minutes'],['pending','The value is expected later'],['not-applicable','Delivery time can never apply to this parcel']]), explanation: 'The value is pending because the event needed to produce it has not happened yet.' }),
       practice: Object.freeze({ title: 'Missing Values Are Not Zero', href: '?mode=game&mission=missing-data', instruction: 'Interpret six values using process evidence, then choose a traceable treatment.' }),
       sources: Object.freeze([Object.freeze({label:'UK Government Analysis Function: symbols in tables',url:'https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/'}),Object.freeze({label:'PostgreSQL: NULL comparison rules',url:'https://www.postgresql.org/docs/current/functions-comparison.html'})])
+    }),
+    Object.freeze({
+      id: 'question-to-decision', number: '05', title: 'From a question to a decision', studyMinutes: 12, playMinutes: 8,
+      objective: 'Turn a vague request into a decision, a testable analytical question and an agreed success measure.',
+      audioSummary: 'Analysis should begin with a decision, not a dashboard or a preferred answer. First identify who may act, what choice they face and when they need to decide. Then turn the request into a testable question by naming the population, outcome, comparison and time period. Check whether the available evidence can answer that question, choose a method that matches it and agree what result would matter before seeing the numbers. Communicate the finding, uncertainty and limitations separately from the recommendation. After action is taken, monitor what happened and use it to frame the next question.',
+      opening: '“Make a dashboard to prove we need more tills” sounds like work, but it already chooses the answer and never states the decision. Good analysis begins one step earlier.',
+      sections: Object.freeze([
+        Object.freeze({ heading: 'Start with the decision, not the output', paragraphs: Object.freeze([
+          'A chart, query or model is an output. It is useful only when somebody can explain the choice it supports. Name the decision owner, the available actions, the deadline and the consequence of being wrong. “The regional operations manager will decide on Friday whether to run a four-week staffing trial” is a usable beginning.',
+          'Do not accept “prove” as an analytical objective. It asks the evidence to defend a conclusion chosen in advance. Reframe it as a comparison that could produce more than one honest answer, including no meaningful difference.'
+        ]) }),
+        Object.freeze({ heading: 'Make the question testable', paragraphs: Object.freeze([
+          'A testable question names the population, outcome, comparison and period. For example: “Among Saturday checkouts at Northgate, how do transaction times differ between staffed and self-service tills after accounting for basket size?” Each phrase determines which rows and variables belong in the analysis.',
+          'Now inspect the records. Qubix stores scan start, scan end, payment completion, item count and till type. Those fields can compare recorded transaction stages. They cannot measure the time a shopper waited before scanning began, so the analysis must not silently rename transaction time as queue time.'
+        ]) }),
+        Object.freeze({ heading: 'Agree what matters before seeing the result', paragraphs: Object.freeze([
+          'Choose the comparison and success measure before examining the answer. A median number of seconds per item may describe throughput; payment completion time may expose a different delay. The decision owner should agree what improvement is large enough to justify a trial and what adverse outcome would stop it.',
+          'A finding is not a decision. The analyst reports the result, uncertainty, data boundary and plausible alternatives. The decision owner weighs that evidence with cost, staffing and operational constraints. Monitoring then checks whether the chosen action produced the intended outcome.'
+        ]) })
+      ]),
+      figure: Object.freeze({ kind: 'decision-cycle', caption: 'Analysis is a decision cycle, not a one-way dashboard request', note: 'Quality checks belong throughout the cycle. Monitoring turns the result of one action into evidence for the next question.' }),
+      example: Object.freeze({ title: 'Repairing the till request', headers: Object.freeze(['Element','Weak request','Decision-ready version']), rows: Object.freeze([
+        Object.freeze(['Purpose','Prove we need more tills','Decide whether to run a four-week Saturday staffing trial']),
+        Object.freeze(['Question','Why are queues bad?','How do recorded transaction stages differ by till type and basket size at Northgate on Saturdays?']),
+        Object.freeze(['Boundary','All waiting time','From scan start to payment completion; pre-scan queue time is not recorded']),
+        Object.freeze(['Outcome','A dashboard','Finding, uncertainty, recommendation and an agreed monitoring measure'])
+      ]) }),
+      workbook: Object.freeze({ title: 'Twenty-minute question repair', prompt: 'Take a request such as “show sales are down” or “find our best branch.”', steps: Object.freeze([
+        'Name the person who will decide and the actions genuinely available.',
+        'Rewrite the request so more than one answer could be supported.',
+        'State the population, outcome, comparison and time period.',
+        'List the evidence available and one thing it cannot measure.',
+        'Write the success measure before calculating the result.',
+        'Separate the eventual finding from the recommendation.'
+      ]) }),
+      exercise: Object.freeze({
+        id: 'repair-the-request', type: 'decision-path', minutes: 7,
+        title: 'Repair a biased dashboard request',
+        instruction: 'Build an analysis brief for the Northgate till decision. Choose the option that keeps the decision, evidence and conclusion separate.',
+        scenario: Object.freeze({ title: '“Make a dashboard proving Northgate needs more staffed tills.”', brief: 'The regional operations manager must decide on Friday whether to fund a four-week Saturday trial. The sale data records scan and payment timestamps, item count and till type—but not arrival at the queue.' }),
+        items: Object.freeze([
+          Object.freeze({ id: 'decision', stage: 'DECISION', prompt: 'What should the brief commit to first?', answer: 'trial', options: Object.freeze([
+            Object.freeze(['prove','Prove that two more staffed tills are necessary.']),
+            Object.freeze(['trial','Support the Friday decision on whether to run a four-week Saturday staffing trial.']),
+            Object.freeze(['dashboard','Deliver a till-performance dashboard with as many metrics as possible.'])
+          ]), why: 'It names the owner’s real choice and deadline without assuming which option the evidence will favour.', retry: 'Choose the statement that defines an action and deadline without choosing the conclusion.' }),
+          Object.freeze({ id: 'question', stage: 'QUESTION', prompt: 'Which question can the available records answer honestly?', answer: 'transaction', options: Object.freeze([
+            Object.freeze(['queue','How much faster will queues become after two tills are added?']),
+            Object.freeze(['transaction','For Northgate Saturdays, how do scan-to-payment times differ by till type after accounting for basket size?']),
+            Object.freeze(['national','Why are self-service tills slower across the whole Qubix estate?'])
+          ]), why: 'It matches the branch, period and fields actually recorded, and it does not rename transaction time as unobserved queue time.', retry: 'Check the stated data boundary: no timestamp records when a shopper joins the queue.' }),
+          Object.freeze({ id: 'criterion', stage: 'SUCCESS MEASURE', prompt: 'When should the success criterion be agreed?', answer: 'before', options: Object.freeze([
+            Object.freeze(['after','After seeing which metric makes the trial look most favourable.']),
+            Object.freeze(['before','Before analysis, with a minimum useful improvement and an adverse-outcome guardrail.']),
+            Object.freeze(['none','No criterion is needed because the manager will recognise a good result.'])
+          ]), why: 'Pre-agreement prevents the target moving after the result is known and makes the later decision auditable.', retry: 'Choose the option that prevents the result from determining its own definition of success.' }),
+          Object.freeze({ id: 'handover', stage: 'FINDING AND DECISION', prompt: 'What should the final handover contain?', answer: 'separate', options: Object.freeze([
+            Object.freeze(['recommendation','Only the recommendation; operational leaders do not need analytical detail.']),
+            Object.freeze(['separate','The finding, uncertainty and data boundary, followed by a clearly separate recommendation and monitoring plan.']),
+            Object.freeze(['raw','The raw extract so the manager can decide what it means.'])
+          ]), why: 'It preserves what the evidence established, what remains uncertain and where judgement enters the decision.', retry: 'Choose the handover that makes both evidence and judgement visible without confusing them.' })
+        ]),
+        why: 'The repaired brief begins with a real decision, asks only what the data can answer, fixes success before seeing the result and keeps the analytical finding separate from managerial judgement.'
+      }),
+      check: Object.freeze({ prompt: 'A director asks you to “prove the new checkout process worked.” What is the best first move?', answer: 'reframe', options: Object.freeze([
+        Object.freeze(['chart','Choose a chart that shows the improvement clearly.']),
+        Object.freeze(['reframe','Clarify the decision, comparison, outcome, population and success measure.']),
+        Object.freeze(['average','Calculate the average before discussing the question.'])
+      ]), explanation: 'Reframing removes the assumed conclusion and defines what evidence would be relevant before the result is seen.' }),
+      practice: Object.freeze({ title: 'The Analyst’s Desk', href: '?mode=game&mission=analyst-desk', instruction: 'Judge which claims the evidence supports, where the boundary lies and what recommendation can honestly follow.' }),
+      sources: Object.freeze([
+        Object.freeze({label:'UK Government AQuA Book — analytical lifecycle',url:'https://www.gov.uk/guidance/the-aqua-book',licence:'Open Government Licence 3.0'}),
+        Object.freeze({label:'National Academies — Data Science for Undergraduates',url:'https://nap.nationalacademies.org/catalog/25104/data-science-for-undergraduates-opportunities-and-options'})
+      ])
     })
   ])
 });

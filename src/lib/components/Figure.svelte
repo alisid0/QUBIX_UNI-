@@ -67,6 +67,32 @@
   $: cells = spec.kind === 'absence'
     ? spec.cases.map(id => MISSING_DATA_MISSION.cases.find(c => c.id === id)).filter(Boolean)
     : [];
+
+  /* ── frequency table ──────────────────────────────────────────────────── */
+  $: frequencyRows = spec.kind === 'frequency-table'
+    ? [...new Set(spec.values)].sort((a, b) => a - b).map(value => {
+        const frequency = spec.values.filter(item => item === value).length;
+        const through = spec.values.filter(item => item <= value).length;
+        return { value, frequency, relative: frequency / spec.values.length, cumulative: through / spec.values.length };
+      })
+    : [];
+  $: frequencyPeak = frequencyRows.length ? Math.max(...frequencyRows.map(row => row.frequency)) : 1;
+
+  /* ── five-number summary ─────────────────────────────────────────────── */
+  const medianOf = values => {
+    const middle = Math.floor(values.length / 2);
+    return values.length % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2;
+  };
+  const summariseFive = values => {
+    const sorted = [...values].sort((a, b) => a - b);
+    const halfway = Math.floor(sorted.length / 2);
+    const lower = sorted.slice(0, halfway);
+    const upper = sorted.slice(Math.ceil(sorted.length / 2));
+    const q1 = medianOf(lower), median = medianOf(sorted), q3 = medianOf(upper);
+    return { sorted, min: sorted[0], q1, median, q3, max: sorted.at(-1), iqr: q3 - q1 };
+  };
+  $: five = spec.kind === 'five-number-summary' && spec.values?.length >= 4 ? summariseFive(spec.values) : null;
+  $: fivePosition = value => five ? ((value - five.min) / (five.max - five.min || 1)) * 100 : 0;
 </script>
 
 <figure class="qx-figure">
@@ -165,6 +191,80 @@
         </tbody>
       </table>
     </div>
+  {:else if spec.kind === 'data-types'}
+    <div class="type-map" role="img" aria-label="Data types map. A variable can be categorical or quantitative. Categorical variables can be nominal or ordinal. Quantitative variables can be discrete or continuous.">
+      <div class="type-root"><span>START HERE</span><b>A variable</b><small>What does this column mean?</small></div>
+      <div class="type-branches" aria-hidden="true"><i></i><i></i></div>
+      <div class="type-family categorical">
+        <header><span>GROUP OR LABEL</span><b>Categorical</b><p>Arithmetic does not describe the meaning.</p></header>
+        <div class="type-leaves">
+          <div><b>Nominal</b><span>No natural order</span><code>branch_id · B-08</code></div>
+          <div><b>Ordinal</b><span>Ordered categories</span><code>satisfaction · Good</code></div>
+        </div>
+      </div>
+      <div class="type-family quantitative">
+        <header><span>COUNT OR MEASUREMENT</span><b>Quantitative</b><p>Arithmetic can describe the amount.</p></header>
+        <div class="type-leaves">
+          <div><b>Discrete</b><span>Counted values</span><code>items_in_basket · 6</code></div>
+          <div><b>Continuous</b><span>Measured values</span><code>basket_weight_kg · 4.7</code></div>
+        </div>
+      </div>
+    </div>
+  {:else if spec.kind === 'record-chain'}
+    <div class="record-chain" role="img" aria-label="A checkout event becomes an observed barcode, joins to a stored product price, and produces a derived line total.">
+      <div><span>1 · WORLD</span><b>Sale happens</b><small>Two bottles reach checkout</small></div>
+      <i aria-hidden="true">→</i>
+      <div><span>2 · OBSERVE</span><b>Scan barcode</b><code>5012345678900</code></div>
+      <i aria-hidden="true">+</i>
+      <div><span>3 · LOOK UP</span><b>Stored price</b><code>£3.40 each</code></div>
+      <i aria-hidden="true">→</i>
+      <div class="result"><span>4 · DERIVE</span><b>Line total</b><code>2 × £3.40 = £6.80</code></div>
+    </div>
+  {:else if spec.kind === 'row-grain'}
+    <div class="grain-map" role="img" aria-label="One completed sale has one sale row, three sale-line rows and one payment row.">
+      <div class="grain-event"><span>ONE REAL EVENT</span><b>Sale S-1041</b><small>3 products · 1 payment</small></div>
+      <div class="grain-arrow" aria-hidden="true">↓</div>
+      <div class="grain-tables">
+        <div><span>SALE TABLE</span><b>1 row</b><small>one completed sale</small><i></i></div>
+        <div><span>SALE_LINE TABLE</span><b>3 rows</b><small>one product line in the sale</small><i></i><i></i><i></i></div>
+        <div><span>PAYMENT TABLE</span><b>1 row</b><small>one payment attempt</small><i></i></div>
+      </div>
+    </div>
+  {:else if spec.kind === 'decision-cycle'}
+    <div class="decision-cycle" role="img" aria-label="An analytical lifecycle moving from decision and question through evidence, method, finding and communication, then back through monitoring to the next question.">
+      <div><span>1</span><b>Decision</b><small>Who might act—and by when?</small></div><i aria-hidden="true">→</i>
+      <div><span>2</span><b>Question</b><small>Population, outcome, comparison, period</small></div><i aria-hidden="true">→</i>
+      <div><span>3</span><b>Evidence</b><small>What can the records support?</small></div><i aria-hidden="true">→</i>
+      <div><span>4</span><b>Method</b><small>What comparison answers it?</small></div><i aria-hidden="true">→</i>
+      <div><span>5</span><b>Finding</b><small>Result, uncertainty, limitation</small></div><i aria-hidden="true">→</i>
+      <div><span>6</span><b>Communicate</b><small>Recommendation, not hidden judgement</small></div><i aria-hidden="true">→</i>
+      <div class="cycle-end"><span>7</span><b>Monitor</b><small>Did the action work?</small></div>
+    </div>
+  {:else if spec.kind === 'frequency-table' && frequencyRows.length}
+    <div class="frequency-figure" role="img" aria-label={frequencyRows.map(row => `${row.value} items occurs ${row.frequency} times; ${Math.round(row.cumulative * 100)} percent of baskets have ${row.value} items or fewer`).join('. ')}>
+      <div class="frequency-raw"><span>RAW VALUES</span><b>{spec.values.join(' · ')}</b></div>
+      <div class="frequency-head"><span>ITEMS</span><span>HOW OFTEN</span><span>SHARE</span><span>AT MOST</span></div>
+      {#each frequencyRows as row}
+        <div class="frequency-line">
+          <b>{row.value}</b>
+          <div><i style={`width:${(row.frequency / frequencyPeak) * 100}%`}></i><em>{row.frequency}</em></div>
+          <span>{Math.round(row.relative * 100)}%</span>
+          <span>{Math.round(row.cumulative * 100)}%</span>
+        </div>
+      {/each}
+    </div>
+  {:else if spec.kind === 'five-number-summary' && five}
+    <div class="five-summary" role="img" aria-label={`Five-number summary. Minimum ${five.min}, first quartile ${five.q1}, median ${five.median}, third quartile ${five.q3}, maximum ${five.max}. The interquartile range is ${five.iqr}.`}>
+      <div class="five-raw"><span>ORDER THE VALUES FIRST</span><b>{five.sorted.join(' · ')}</b></div>
+      <div class="boxplot" aria-hidden="true">
+        <i class="whisker" style={`left:${fivePosition(five.min)}%;width:${fivePosition(five.max) - fivePosition(five.min)}%`}></i>
+        <i class="box" style={`left:${fivePosition(five.q1)}%;width:${fivePosition(five.q3) - fivePosition(five.q1)}%`}></i>
+        {#each [['MIN', five.min], ['Q1', five.q1], ['MEDIAN', five.median], ['Q3', five.q3], ['MAX', five.max]] as point}
+          <i class="point" style={`left:${fivePosition(point[1])}%`}><b>{point[0]}</b><span>{point[1]}</span></i>
+        {/each}
+      </div>
+      <div class="iqr-line"><span>MIDDLE 50%</span><b>Q3 − Q1 = {five.q3} − {five.q1} = {five.iqr}</b></div>
+    </div>
   {/if}
 
   <figcaption>
@@ -220,8 +320,86 @@
           font: 800 12.5px ui-monospace, Menlo, Consolas, monospace; text-align: center; }
   .chip.present { background: #e7efdc; border-color: #bcd3a8; color: #3c6427; }
 
+  .type-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 14px; }
+  .type-root { grid-column: 1 / -1; justify-self: center; min-width: 210px; padding: 12px 18px;
+               display: grid; justify-items: center; border: 2px solid #241f16; border-radius: 9px;
+               background: #fff; box-shadow: 4px 4px 0 #241f16; }
+  .type-root span, .type-family header span { color: #8c4c2e; font: 900 11px var(--qx-font); letter-spacing: .12em; }
+  .type-root b { font: 700 20px Georgia, serif; }
+  .type-root small { color: #625a49; font: 650 11px var(--qx-font); }
+  .type-branches { grid-column: 1 / -1; height: 30px; position: relative; }
+  .type-branches::before { content: ''; position: absolute; top: 0; left: 50%; height: 15px; border-left: 2px solid #241f16; }
+  .type-branches::after { content: ''; position: absolute; top: 15px; left: 25%; right: 25%; border-top: 2px solid #241f16; }
+  .type-branches i { position: absolute; top: 15px; height: 15px; border-left: 2px solid #241f16; }
+  .type-branches i:first-child { left: 25%; }
+  .type-branches i:last-child { left: 75%; }
+  .type-family { border: 2px solid #241f16; border-radius: 10px; background: #fff; overflow: hidden; box-shadow: 4px 4px 0 #241f16; }
+  .type-family header { padding: 14px 15px; border-bottom: 1px solid #d8d0be; }
+  .type-family header b { display: block; margin: 2px 0 3px; color: #241f16; font: 700 21px Georgia, serif; }
+  .type-family header p { margin: 0; color: #625a49; font: 600 11.5px/1.4 var(--qx-font); }
+  .type-family.quantitative header { background: #eef1e9; }
+  .type-family.categorical header { background: #f4ede0; }
+  .type-leaves { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .type-leaves > div { min-width: 0; padding: 13px 14px; display: grid; gap: 3px; }
+  .type-leaves > div + div { border-left: 1px solid #d8d0be; }
+  .type-leaves b { color: #241f16; font: 850 13px var(--qx-font); }
+  .type-leaves span { color: #625a49; font: 600 11px var(--qx-font); }
+  .type-leaves code { margin-top: 5px; color: #8c4c2e; font: 700 11px/1.35 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+
+  .record-chain { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1.15fr; gap: 9px; align-items: stretch; }
+  .record-chain > div { min-width: 0; padding: 14px 12px; display: grid; align-content: center; gap: 4px;
+                        border: 1px solid #cbbfa6; border-radius: 9px; background: #fff; }
+  .record-chain > div.result { border: 2px solid #241f16; background: #eef1e9; box-shadow: 3px 3px 0 #241f16; }
+  .record-chain span, .grain-map span { color: #8c4c2e; font: 900 11px var(--qx-font); letter-spacing: .1em; }
+  .record-chain b { font: 700 15px Georgia, serif; }
+  .record-chain small { color: #625a49; font: 650 11px/1.35 var(--qx-font); }
+  .record-chain code { color: #4e6548; font: 750 11px/1.35 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+  .record-chain > i { align-self: center; color: #8c4c2e; font: 900 18px var(--qx-font); font-style: normal; }
+
+  .grain-map { display: grid; justify-items: center; }
+  .grain-event { min-width: 220px; padding: 12px 18px; display: grid; justify-items: center; gap: 2px;
+                 border: 2px solid #241f16; border-radius: 9px; background: #f4ede0; box-shadow: 4px 4px 0 #241f16; }
+  .grain-event b { font: 700 19px Georgia, serif; }
+  .grain-event small, .grain-tables small { color: #625a49; font: 650 11.5px/1.35 var(--qx-font); }
+  .grain-arrow { color: #241f16; font: 900 23px var(--qx-font); line-height: 34px; }
+  .grain-tables { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .grain-tables > div { min-width: 0; padding: 13px; display: grid; grid-template-columns: 1fr auto; gap: 4px 8px;
+                       border: 1px solid #cbbfa6; border-radius: 9px; background: #fff; }
+  .grain-tables span, .grain-tables small { grid-column: 1 / -1; }
+  .grain-tables b { font: 800 16px var(--qx-font); }
+  .grain-tables i { display: block; width: 23px; height: 9px; margin: 2px 0; border-radius: 2px; background: #c98c5e; }
+
+  .decision-cycle { display: grid; grid-template-columns: repeat(7, minmax(74px, 1fr) auto); align-items: stretch; gap: 6px; overflow-x: auto; padding: 2px 3px 8px; }
+  .decision-cycle > div { min-width: 96px; padding: 12px 10px; display: grid; align-content: start; gap: 4px; border: 1px solid #cbbfa6; border-radius: 9px; background: #fff; }
+  .decision-cycle > div:first-child, .decision-cycle > div.cycle-end { border: 2px solid #241f16; background: #eef1e9; box-shadow: 3px 3px 0 #241f16; }
+  .decision-cycle span { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: #8c4c2e; color: #fff; font: 900 11px var(--qx-font); }
+  .decision-cycle b { font: 750 14px Georgia, serif; }
+  .decision-cycle small { color: #625a49; font: 650 11px/1.35 var(--qx-font); }
+  .decision-cycle > i { align-self: center; color: #8c4c2e; font: 900 16px var(--qx-font); font-style: normal; }
+
+  .frequency-figure{display:grid;gap:1px;border:2px solid #241f16;background:#241f16}.frequency-raw{padding:13px 15px;background:#f4ede0}.frequency-raw span{display:block;color:#8c4c2e;font:900 11px var(--qx-font);letter-spacing:.12em}.frequency-raw b{display:block;margin-top:5px;font:800 13px ui-monospace,Menlo,Consolas,monospace;word-spacing:4px}.frequency-head,.frequency-line{display:grid;grid-template-columns:70px minmax(150px,1fr) 70px 70px;align-items:center;gap:10px;padding:8px 12px}.frequency-head{background:#241f16;color:#fff;font:900 11px var(--qx-font);letter-spacing:.06em}.frequency-line{background:#fff}.frequency-line>b,.frequency-line>span{font:800 12px var(--qx-font)}.frequency-line>div{height:22px;position:relative;background:#ece7dc;border-radius:3px;overflow:hidden}.frequency-line i{display:block;height:100%;background:#c98c5e}.frequency-line em{position:absolute;inset:0;display:grid;place-items:center;color:#241f16;font:900 11px var(--qx-font);font-style:normal}
+
+  .five-summary{display:grid;gap:16px}.five-raw{padding:12px 14px;border:2px solid #241f16;background:#f4ede0}.five-raw span,.iqr-line span{display:block;color:#8c4c2e;font:900 11px var(--qx-font);letter-spacing:.11em}.five-raw b{display:block;margin-top:5px;font:800 13px ui-monospace,Menlo,Consolas,monospace;word-spacing:4px}.boxplot{height:118px;position:relative;margin:0 34px}.boxplot .whisker{position:absolute;top:52px;height:2px;background:#241f16}.boxplot .whisker::before,.boxplot .whisker::after{content:'';position:absolute;top:-12px;height:26px;border-left:2px solid #241f16}.boxplot .whisker::after{right:0}.boxplot .box{position:absolute;top:34px;height:38px;border:2px solid #241f16;background:#e5d6be;box-shadow:3px 3px 0 #241f16}.boxplot .point{position:absolute;top:22px;height:62px;border-left:2px solid #8c4c2e;font-style:normal}.boxplot .point b,.boxplot .point span{position:absolute;left:0;transform:translateX(-50%);white-space:nowrap;font-family:var(--qx-font)}.boxplot .point b{top:-18px;color:#8c4c2e;font-size:11px;letter-spacing:.07em}.boxplot .point span{top:66px;color:#241f16;font-size:12px;font-weight:850}.iqr-line{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 13px;background:#241f16;color:#fff}.iqr-line span{color:#e4a37c}.iqr-line b{font:800 12px ui-monospace,Menlo,Consolas,monospace}
+
   figcaption { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e4ddce;
                display: flex; flex-direction: column; gap: 4px; }
   figcaption b { color: #241f16; font: 800 12px var(--qx-font); letter-spacing: .05em; text-transform: uppercase; }
   figcaption span { color: #625a49; font: 400 13.5px/1.55 var(--qx-font); }
+
+  @media (max-width: 620px) {
+    .qx-figure { padding: 16px 14px 14px; }
+    .type-map { grid-template-columns: 1fr; gap: 12px; }
+    .type-root { grid-column: auto; width: 100%; min-width: 0; }
+    .type-branches { display: none; }
+    .type-family { box-shadow: 3px 3px 0 #241f16; }
+    .type-leaves { grid-template-columns: 1fr; }
+    .type-leaves > div + div { border-left: 0; border-top: 1px solid #d8d0be; }
+    .record-chain { grid-template-columns: 1fr; }
+    .record-chain > i { justify-self: center; transform: rotate(90deg); }
+    .grain-tables { grid-template-columns: 1fr; }
+    .decision-cycle { grid-template-columns: 1fr; overflow: visible; }
+    .decision-cycle > i { justify-self: center; transform: rotate(90deg); }
+    .frequency-head,.frequency-line{grid-template-columns:42px minmax(90px,1fr) 48px 54px;gap:6px;padding:8px 7px}.frequency-head{font-size:11px;letter-spacing:0}
+    .boxplot{margin:0 18px}.boxplot .point:nth-of-type(4) b{transform:translateX(-82%)}.boxplot .point:nth-of-type(5) b{transform:translateX(-28%)}.iqr-line{align-items:flex-start;flex-direction:column}.five-raw b{font-size:11px}
+  }
 </style>

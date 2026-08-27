@@ -42,6 +42,22 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
 
     ok(`${where} has a caption`, Boolean(f.caption), f.caption || 'none');
 
+    if (['data-types', 'record-chain', 'row-grain', 'decision-cycle', 'frequency-table', 'five-number-summary'].includes(f.kind)) {
+      ok(`${where} has an explanatory note`, Boolean(f.note), f.note || 'none');
+    }
+
+    if (f.kind === 'frequency-table') {
+      ok(`${where} has raw values to count`, Array.isArray(f.values) && f.values.length >= 5,
+        `${f.values?.length || 0} values`);
+      ok(`${where} raw values are finite`, f.values.every(Number.isFinite));
+    }
+
+    if (f.kind === 'five-number-summary') {
+      ok(`${where} has enough values to split into halves`, Array.isArray(f.values) && f.values.length >= 4,
+        `${f.values?.length || 0} values`);
+      ok(`${where} raw values are finite`, f.values.every(Number.isFinite));
+    }
+
     if (f.kind === 'histogram') {
       const c = find(DISTRIBUTION_DESK_MISSION, f.case);
       ok(`${where} names a real case`, Boolean(c), c ? f.case : `no case "${f.case}"`);

@@ -4,6 +4,7 @@
   import LearningModeSwitch from '../lib/components/LearningModeSwitch.svelte';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import Figure from '../lib/components/Figure.svelte';
+  import AudioBriefing from '../lib/components/AudioBriefing.svelte';
   import ReaderExercise from '../lib/components/ReaderExercise.svelte';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
@@ -179,6 +180,7 @@
         </header>
 
         <section class="objective"><b>BY THE END, YOU CAN</b><p>{session.objective}</p></section>
+        {#if session.audioSummary}<AudioBriefing text={session.audioSummary} />{/if}
         <p class="opening">{session.opening}</p>
 
         {#each session.sections as section}

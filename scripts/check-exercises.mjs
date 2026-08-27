@@ -27,7 +27,7 @@ ok('exercise ids are unique', new Set(exercises.map(item => item.exercise.id)).s
 for (const { chapter, session, exercise } of exercises) {
   const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${exercise.id}`;
   ok(`${where} declares a supported type and time`,
-    ['classify', 'numeric', 'sequence'].includes(exercise.type) && exercise.minutes >= 3,
+    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build'].includes(exercise.type) && exercise.minutes >= 3,
     `${exercise.type}, ${exercise.minutes} min`);
   ok(`${where} has at least three pieces of work`, (exercise.items || []).length >= 3,
     `${exercise.items?.length || 0} item(s)`);
@@ -36,6 +36,26 @@ for (const { chapter, session, exercise } of exercises) {
     const values = exercise.options.map(option => option[0]);
     ok(`${where} classification answers are offered`,
       exercise.items.every(item => values.includes(item.answer)) && new Set(values).size === values.length);
+  } else if (exercise.type === 'decision-path') {
+    ok(`${where} decision answers are offered`,
+      exercise.items.every(item => item.options?.some(option => option[0] === item.answer)
+        && item.why && item.retry));
+  } else if (exercise.type === 'distribution-build') {
+    ok(`${where} distribution answers are finite and cumulative`,
+      exercise.items.every(item => Number.isInteger(item.frequency) && item.frequency >= 0
+        && Number.isFinite(item.cumulative) && item.cumulative >= 0 && item.cumulative <= 100)
+      && exercise.items.at(-1)?.cumulative === 100);
+    ok(`${where} frequencies account for every raw value`,
+      exercise.items.reduce((sum, item) => sum + item.frequency, 0) === exercise.values.length,
+      `${exercise.values.length} raw values`);
+  } else if (exercise.type === 'five-number-build') {
+    ok(`${where} five-number answers are finite`,
+      exercise.values.length >= 4 && exercise.values.every(Number.isFinite)
+      && exercise.items.every(item => Number.isFinite(item.answer)));
+    const answers = Object.fromEntries(exercise.items.map(item => [item.id, item.answer]));
+    ok(`${where} derived spread agrees with its landmarks`,
+      answers.iqr === answers.q3 - answers.q1 && answers.range === answers.max - answers.min,
+      `IQR ${answers.iqr}, range ${answers.range}`);
   } else if (exercise.type === 'numeric') {
     ok(`${where} numeric answers are finite`,
       exercise.items.every(item => Number.isFinite(item.answer) && Number.isFinite(item.tolerance ?? 0)));

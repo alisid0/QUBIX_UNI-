@@ -14,7 +14,53 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
   totalMinutes: 43,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'distribution', number: '01', title: 'Look at the shape before the summary', studyMinutes: 8, playMinutes: 5,
+      id: 'frequency-distribution', number: '01', title: 'From raw values to a distribution', studyMinutes: 5, playMinutes: 5,
+      objective: 'Build and interpret frequency, relative-frequency and cumulative-frequency tables from raw values.',
+      audioSummary: 'A raw list tells you what was recorded, but repeated values are difficult to see at a glance. A frequency table counts how often each value or interval occurs. Relative frequency divides each count by the total, so groups of different sizes can be compared. Cumulative relative frequency keeps a running total and answers threshold questions such as what percentage of baskets contain four items or fewer. These columns are different views of the same observations, and their totals provide useful checks: frequencies sum to the number of observations, relative frequencies sum to one or one hundred percent, and the final cumulative percentage is one hundred percent.',
+      opening: 'Twelve basket sizes look like a string of numbers. Count their repetitions and a distribution appears: which values are common, which are rare and how much of the day lies below a threshold.',
+      sections: Object.freeze([
+        Object.freeze({ heading: 'Frequency turns repetition into structure', paragraphs: Object.freeze([
+          'A frequency is the number of times a value occurs. For discrete data such as items in a basket, list the observed values in order and count each one. The frequency column must sum to the number of observations; if it does not, something has been missed or counted twice.',
+          'Continuous measurements usually need intervals rather than one row for every distinct decimal. Interval boundaries are analytical choices, just like histogram bins, and must cover every value exactly once without gaps or overlap.'
+        ]) }),
+        Object.freeze({ heading: 'Relative frequency makes the denominator visible', paragraphs: Object.freeze([
+          'A count alone depends on how many observations were collected. Relative frequency divides a value’s frequency by the total number of observations. Three baskets out of twelve is 0.25, or 25 per cent. This converts the count into a share with a named denominator.',
+          'Relative frequencies should sum to one, or 100 per cent. Small rounding differences are normal; a large difference is a warning that the table is incomplete or the denominator changed between rows.'
+        ]) }),
+        Object.freeze({ heading: 'Cumulative frequency answers “at most”', paragraphs: Object.freeze([
+          'Cumulative frequency is a running total in value order. If one basket has one item and three have two items, then four baskets have two items or fewer. Cumulative relative frequency divides that running count by the total.',
+          'The direction matters. Cumulative frequency through four items answers “four or fewer,” not “four exactly” and not “four or more.” The final cumulative row must contain every observation and therefore end at 100 per cent.'
+        ]) })
+      ]),
+      figure: Object.freeze({ kind: 'frequency-table', values: Object.freeze([1,1,2,2,2,3,4,4]), caption: 'One set of baskets, four equivalent views', note: 'Frequency counts exact values; share divides by all eight baskets; “at most” accumulates every row through the current value.' }),
+      example: Object.freeze({ title: 'Eight baskets become a distribution', headers: Object.freeze(['Items','Frequency','Relative frequency','Cumulative relative frequency']), rows: Object.freeze([
+        Object.freeze(['1','2','2 ÷ 8 = 25%','25%']), Object.freeze(['2','3','3 ÷ 8 = 37.5%','62.5%']), Object.freeze(['3','1','1 ÷ 8 = 12.5%','75%']), Object.freeze(['4','2','2 ÷ 8 = 25%','100%'])
+      ]) }),
+      workbook: Object.freeze({ title: 'Fifteen-minute frequency audit', prompt: 'Collect twenty small whole-number observations, such as messages per hour or items per receipt.', steps: Object.freeze([
+        'List every distinct value in ascending order.', 'Count its frequency and check the column sums to twenty.', 'Divide each frequency by twenty and express it as a percentage.', 'Build a cumulative percentage column.', 'Write one exact-value statement and one “at most” statement.'
+      ]) }),
+      exercise: Object.freeze({ id: 'build-basket-distribution', type: 'distribution-build', minutes: 7,
+        title: 'Build the basket distribution', instruction: 'Count each value in the raw list. Then enter the cumulative percentage of all twelve baskets through that row. Answers allow 0.1 percentage-point rounding.',
+        values: Object.freeze([1,2,2,2,3,3,4,4,4,4,5,5]),
+        items: Object.freeze([
+          Object.freeze({id:'one',label:'1 item',frequency:1,cumulative:8.3,tolerance:0.1,why:'One basket has one item; 1 ÷ 12 is 8.3%.'}),
+          Object.freeze({id:'two',label:'2 items',frequency:3,cumulative:33.3,tolerance:0.1,why:'Four baskets have two items or fewer; 4 ÷ 12 is 33.3%.'}),
+          Object.freeze({id:'three',label:'3 items',frequency:2,cumulative:50,tolerance:0.1,why:'Six of twelve baskets have three items or fewer.'}),
+          Object.freeze({id:'four',label:'4 items',frequency:4,cumulative:83.3,tolerance:0.1,why:'Ten of twelve baskets have four items or fewer; 10 ÷ 12 is 83.3%.'}),
+          Object.freeze({id:'five',label:'5 items',frequency:2,cumulative:100,tolerance:0.1,why:'The final row includes all twelve baskets and must end at 100%.'})
+        ]), why:'The frequencies account for all twelve observations, and the cumulative column grows from the first row to exactly 100 per cent.'
+      }),
+      check: Object.freeze({ prompt: 'The cumulative relative frequency through four items is 83.3%. What does that mean?', answer: 'at-most', options: Object.freeze([
+        Object.freeze(['exactly','83.3% of baskets contain exactly four items']), Object.freeze(['at-most','83.3% contain four items or fewer']), Object.freeze(['at-least','83.3% contain four items or more'])
+      ]), explanation:'Cumulative frequency includes the current value and every smaller value, so it answers “four or fewer.”' }),
+      practice: Object.freeze({ title: 'The Distribution Desk', href: '?mode=game&mission=distribution-desk', instruction: 'Take the counted distribution into a histogram, then test which features survive different bin widths.' }),
+      sources: Object.freeze([
+        Object.freeze({label:'OpenStax — Frequency and Frequency Tables',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-3-frequency-frequency-tables-and-levels-of-measurement',licence:'CC BY 4.0'}),
+        Object.freeze({label:'OpenStax — Histograms and Frequency Graphs',url:'https://openstax.org/books/introductory-statistics-2e/pages/2-2-histograms-frequency-polygons-and-time-series-graphs',licence:'CC BY 4.0'})
+      ])
+    }),
+    Object.freeze({
+      id: 'distribution', number: '02', title: 'Look at the shape before the summary', studyMinutes: 8, playMinutes: 5,
       objective: 'Describe a set of values by its shape, and say what a single summary of it would hide.',
       opening: 'Two branches both average forty baskets an hour. One is steady all day. The other is empty until five and then overwhelmed. The average is identical and the staffing decision is not.',
       sections: Object.freeze([
@@ -84,35 +130,42 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'centre-spread', number: '02', title: 'Centre, spread and the values that break them', studyMinutes: 5, playMinutes: 5,
-      objective: 'Choose a measure of centre and spread that suits the shape, and justify the choice.',
-      opening: 'Nine baskets of about twenty pounds and one of nine hundred. The mean says one hundred and eight. Not one basket was anywhere near it.',
+      id: 'centre-spread', number: '03', title: 'Centre is a choice', studyMinutes: 5, playMinutes: 5,
+      objective: 'Calculate mean, median and mode, then choose the centre that answers the question honestly.',
+      audioSummary: 'A measure of centre is not an automatic answer. The mean uses every value and preserves the total, but extreme values can pull it away from where most observations lie. The median is the middle ordered value and resists extremes, making it useful for skewed quantities such as prices and waiting times. The mode is the most frequent value or category, and may be the only meaningful centre for labels such as payment method. Start with the variable and the distribution, then choose the measure whose meaning matches the decision.',
+      opening: 'Nine baskets are about twenty pounds and one is nine hundred. The mean says one hundred and eight. Not one basket was anywhere near it. The arithmetic is correct; the choice of centre is not.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Three middles, and when each is honest', paragraphs: Object.freeze([
-          'The mean adds everything and divides by the count, so every value pulls on it in proportion to its size. The median is the value in the middle when they are sorted, so it moves only when the middle moves. The mode is whichever value occurs most, which is often the only sensible middle for categories.',
-          'For a roughly symmetric distribution these agree, and the mean is the usual choice because later mathematics is built on it. For a skewed one they disagree, and the disagreement is the information: a mean far above a median says a long tail is pulling it.'
+        Object.freeze({ heading: 'Mean: every value has a vote', paragraphs: Object.freeze([
+          'Add the values and divide by how many there are. Because every observation enters the total, the mean preserves an important identity: number of observations multiplied by the mean equals the total. That makes it useful for budgets, workloads and later methods built around squared deviations.',
+          'The same property makes the mean sensitive to extremes. A single nine-hundred-pound order contributes forty-five times as much pull as a twenty-pound order. Use the mean when amounts combine meaningfully and the distribution is reasonably balanced; do not call it typical merely because software produced it.'
         ]) }),
-        Object.freeze({ heading: 'Spread is not optional', paragraphs: Object.freeze([
-          'A centre without a spread is half a description. The range is the simplest measure and the most fragile, since it is defined entirely by the two most extreme values. Quartiles cut the sorted values into four, so the middle half is described by a figure that ignores the ends. Standard deviation summarises typical distance from the mean, and inherits the mean’s sensitivity.',
-          'Reporting a centre alone invites the reader to imagine a spread, and they will imagine a small one. Two branches averaging forty baskets an hour, one ranging thirty-five to forty-five and one ranging zero to two hundred, are different businesses.'
+        Object.freeze({ heading: 'Median: the ordered middle', paragraphs: Object.freeze([
+          'Sort the values. With an odd count, the median is the middle value. With an even count, it is the mean of the two middle values. Half the observations lie at or below it and half at or above it, so changing an extreme value without crossing the middle may not change the median at all.',
+          'That resistance makes the median a stronger description of a typical skewed quantity such as income, price or waiting time. Its trade-off is that it does not preserve the total: doubling a median does not tell you the combined amount.'
         ]) }),
-        Object.freeze({ heading: 'An outlier is a question, not a verdict', paragraphs: Object.freeze([
-          'A value far from the rest may be an error, or it may be the most important row in the table. A nine-hundred-pound basket could be a mistyped quantity, a genuine trade order, or a fraud. Deleting it because it is inconvenient decides the question without investigating it.',
-          'So flag it, investigate it, and record what you concluded. If it is removed, say so and say why, because a summary computed on a filtered set is a summary of a different population than the one the reader assumes.'
+        Object.freeze({ heading: 'Mode: the most common case', paragraphs: Object.freeze([
+          'The mode is the value or category occurring most often. It can describe nominal categories, where adding and ordering make no sense: the modal payment method can be card, but there is no mean payment method. A dataset can have more than one mode, and a list in which every value occurs once has no useful mode.',
+          'For a roughly symmetric, single-peaked numerical distribution, mean and median will be close. When they separate, the gap is evidence about shape. Do not hide that evidence by selecting whichever figure looks more convenient.'
         ]) })
       ]),
-      example: Object.freeze({ title: 'Ten baskets, one unusual', headers: Object.freeze(['Measure', 'Value', 'What it is telling you']), rows: Object.freeze([
-        Object.freeze(['Mean', '£108', 'dragged upward by a single basket']),
-        Object.freeze(['Median', '£21', 'the typical basket, unmoved']),
-        Object.freeze(['Range', '£9 to £900', 'dominated by the two extremes']),
-        Object.freeze(['Middle half', '£17 to £24', 'where most baskets actually sit'])
+      example: Object.freeze({ title: 'One question does not have one universal middle', headers: Object.freeze(['Question', 'Best starting point', 'Why']), rows: Object.freeze([
+        Object.freeze(['How much revenue per basket?', 'Mean', 'basket values combine to the total revenue']),
+        Object.freeze(['What did a typical shopper spend?', 'Median', 'one trade order should not redefine the middle shopper']),
+        Object.freeze(['Which payment method is most common?', 'Mode', 'payment method is categorical, not an amount'])
       ]) }),
       workbook: Object.freeze({ title: 'Fifteen-minute centre comparison', prompt: 'Use the twenty values from the previous session.', steps: Object.freeze([
-        'Compute the mean and the median.',
-        'Write down which is larger, and what that says about the tail.',
-        'Find the largest value and decide whether it is an error, a rarity or normal.',
-        'Recompute both without it, and write one sentence on what changed.'
+        'Compute the mean, median and mode.', 'Write down which measures disagree, and what the gap says about the shape.', 'Change only the largest value to ten times its size and recompute.', 'Choose one centre for “typical” and one for planning the total; justify both.'
       ]) }),
+      exercise: Object.freeze({ id: 'choose-an-honest-centre', type: 'decision-path', minutes: 6,
+        title: 'Choose the centre the decision needs',
+        instruction: 'The same checkout data supports different summaries. For each request, choose the measure whose mathematical meaning fits it.',
+        scenario: Object.freeze({ title: 'Northgate checkout review', brief: 'Most baskets are modest, one trade customer places a very large order, and payment method is recorded as cash, card or voucher.' }),
+        items: Object.freeze([
+          Object.freeze({ id:'total', stage:'RESOURCE PLAN', prompt:'Finance needs expected total revenue from 1,000 comparable baskets. Which centre preserves the link to the total?', answer:'mean', options:Object.freeze([['mean','Mean basket value'],['median','Median basket value'],['mode','Modal basket value']]), why:'Count × mean reconstructs the total, so the mean matches an additive planning question.', retry:'Ask which measure, multiplied by the number of baskets, reconstructs total revenue.' }),
+          Object.freeze({ id:'typical', stage:'CUSTOMER STORY', prompt:'The manager wants the spend of a typical shopper without letting one trade order dominate.', answer:'median', options:Object.freeze([['mean','Mean basket value'],['median','Median basket value'],['mode','Modal basket value']]), why:'The ordered middle resists the extreme trade order and describes the centre of this skewed distribution.', retry:'Ask which measure can stay stable when an extreme value becomes much larger.' }),
+          Object.freeze({ id:'category', stage:'TILL DESIGN', prompt:'Product needs to preselect the payment method used most often.', answer:'mode', options:Object.freeze([['mean','Mean payment method'],['median','Median payment method'],['mode','Modal payment method']]), why:'Payment method is nominal. The most frequent category is meaningful; arithmetic on its labels is not.', retry:'This variable contains categories with no numerical order. Choose the measure that counts the most common label.' })
+        ]), why:'A centre is chosen from the meaning of the variable and the decision—not from a fixed hierarchy of “best” statistics.'
+      }),
       check: Object.freeze({
         prompt: 'For house prices in a town, the mean is £480,000 and the median is £265,000. What does the gap indicate?',
         answer: 'tail',
@@ -125,13 +178,62 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
       }),
       practice: Object.freeze({ title: 'The Distribution Desk', href: '?mode=game&mission=distribution-desk', instruction: 'Choose a centre and a spread the shape can actually support.' }),
       sources: Object.freeze([
-        Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' }),
-        Object.freeze({ label: 'NIST — SI units', url: 'https://www.nist.gov/pml/owm/metric-si/si-units' })
+        Object.freeze({ label: 'OpenStax — Measures of the Center of the Data', url: 'https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data', licence: 'CC BY 4.0' }),
+        Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' })
       ])
     }),
 
     Object.freeze({
-      id: 'sampling', number: '03', title: 'Who is in the data, and who is not', studyMinutes: 5, playMinutes: 5,
+      id: 'spread', number: '04', title: 'Measuring spread', studyMinutes: 5, playMinutes: 5,
+      objective: 'Construct a five-number summary and choose between range, IQR and standard deviation.',
+      audioSummary: 'A centre without spread hides how different the observations are. The range is maximum minus minimum and depends entirely on two values. A five-number summary records the minimum, first quartile, median, third quartile and maximum. The interquartile range is Q3 minus Q1 and describes the width of the middle half, so it resists extreme values. Variance averages squared deviations from the mean; sample variance uses n minus one when estimating a population. Standard deviation is the square root of variance and returns the result to the original units. Pair median with IQR for skewed data, and usually pair mean with standard deviation for a roughly symmetric distribution.',
+      opening: 'Two branches can share a mean of forty baskets an hour. One stays between thirty-five and forty-five; the other swings between zero and two hundred. Centre says they are the same. Spread says they are different businesses.',
+      sections: Object.freeze([
+        Object.freeze({ heading: 'Range sees only the ends', paragraphs: Object.freeze([
+          'The range is maximum minus minimum. It is quick, keeps the original unit and tells you the full observed span. It is also determined by exactly two values, so one error or unusual case can transform it while every other observation stays unchanged.',
+          'A value far from the rest is therefore a question, not a deletion instruction. Check whether it is an error, a genuine rare event or evidence of another population. If it is excluded, record the rule and report that the analysed population changed.'
+        ]) }),
+        Object.freeze({ heading: 'The middle half: quartiles and IQR', paragraphs: Object.freeze([
+          'Order the values. The five-number summary is the minimum, first quartile, median, third quartile and maximum. Here we use the median-of-halves convention: after finding the overall median, Q1 is the median of the lower half and Q3 the median of the upper half.',
+          'The interquartile range, IQR, is Q3 minus Q1. It contains the middle fifty per cent of ordered observations and is resistant to extreme ends. Pairing median and IQR gives a coherent description of a skewed distribution because both are based on position rather than distance from the mean.'
+        ]) }),
+        Object.freeze({ heading: 'Variance and standard deviation use every distance', paragraphs: Object.freeze([
+          'Subtract the mean from every value to get deviations. Positive and negative deviations cancel, so variance squares them before averaging. Population variance divides by the population size; sample variance commonly divides by n minus one when the sample is being used to estimate population variability.',
+          'Variance is expressed in squared units, which makes it hard to interpret directly. Standard deviation takes the square root and returns to the original unit. It is useful with the mean for roughly symmetric data, but like the mean it reacts strongly to extremes. There is no universally best spread: match it to the shape and the centre you report.'
+        ]) })
+      ]),
+      figure: Object.freeze({ kind:'five-number-summary', values:Object.freeze([3,4,5,5,6,7,8,10]), caption:'Eight values become five landmarks', note:'Using the median-of-halves convention: Q1 is 4.5, the median is 5.5, Q3 is 7.5, and the IQR—the width of the middle half—is 3.' }),
+      example: Object.freeze({ title:'Three measures answer different spread questions', headers:Object.freeze(['Measure','Calculation','What it describes','Sensitive to extremes?']), rows:Object.freeze([
+        Object.freeze(['Range','maximum − minimum','the full observed span','very']), Object.freeze(['IQR','Q3 − Q1','the middle 50%','less']), Object.freeze(['Standard deviation','square root of average squared deviation','distance around the mean','yes'])
+      ]) }),
+      workbook: Object.freeze({ title:'Twenty-minute spread comparison', prompt:'Use the same ordered observations twice: first as recorded, then with the maximum multiplied by ten.', steps:Object.freeze([
+        'Find the five-number summary using the median-of-halves convention.', 'Calculate the range and IQR.', 'Change only the maximum and calculate them again.', 'Explain which measure moved and choose the one you would pair with the median.'
+      ]) }),
+      exercise: Object.freeze({ id:'construct-five-number-summary', type:'five-number-build', minutes:8,
+        title:'Construct the five-number summary', instruction:'Use the median-of-halves convention. Enter the five landmarks, then derive the IQR and range. Decimals are allowed.',
+        values:Object.freeze([2,4,5,7,8,10,12,14]),
+        items:Object.freeze([
+          Object.freeze({id:'min',label:'Minimum',answer:2,why:'The ordered list begins at 2.',retry:'Read the first value in the ordered list.'}),
+          Object.freeze({id:'q1',label:'First quartile · Q1',answer:4.5,why:'The lower half is 2, 4, 5, 7; its middle is (4 + 5) ÷ 2 = 4.5.',retry:'Take the median of the lower four values: 2, 4, 5 and 7.'}),
+          Object.freeze({id:'median',label:'Median',answer:7.5,why:'The two central values are 7 and 8; their mean is 7.5.',retry:'With eight observations, average the fourth and fifth values.'}),
+          Object.freeze({id:'q3',label:'Third quartile · Q3',answer:11,why:'The upper half is 8, 10, 12, 14; its middle is (10 + 12) ÷ 2 = 11.',retry:'Take the median of the upper four values: 8, 10, 12 and 14.'}),
+          Object.freeze({id:'max',label:'Maximum',answer:14,why:'The ordered list ends at 14.',retry:'Read the last value in the ordered list.'}),
+          Object.freeze({id:'iqr',label:'Interquartile range',answer:6.5,why:'IQR = Q3 − Q1 = 11 − 4.5 = 6.5.',retry:'Subtract Q1 from Q3.'}),
+          Object.freeze({id:'range',label:'Range',answer:12,why:'Range = maximum − minimum = 14 − 2 = 12.',retry:'Subtract the minimum from the maximum.'})
+        ]), why:'The five landmarks are consistent with the ordered list, and the two derived spreads use the correct endpoints.'
+      }),
+      check: Object.freeze({ prompt:'A highly skewed distribution is reported with its median. Which spread forms the most coherent pair?', answer:'iqr', options:Object.freeze([
+        Object.freeze(['range','Range, because it includes both extremes']), Object.freeze(['iqr','IQR, because both measures depend on ordered position and resist extremes']), Object.freeze(['variance','Variance, because squared units are easier to interpret'])
+      ]), explanation:'Median and IQR are both resistant summaries based on position. Mean and standard deviation are the usual corresponding pair when the distribution is reasonably symmetric.' }),
+      practice: Object.freeze({ title:'The Distribution Desk', href:'?mode=game&mission=distribution-desk', instruction:'Compare centre and spread while changing the histogram width; neither statistic replaces seeing the shape.' }),
+      sources: Object.freeze([
+        Object.freeze({label:'OpenStax — Measures of the Location of the Data',url:'https://openstax.org/books/introductory-statistics-2e/pages/2-3-measures-of-the-location-of-the-data',licence:'CC BY 4.0'}),
+        Object.freeze({label:'OpenStax — Measures of the Spread of the Data',url:'https://openstax.org/books/introductory-statistics/pages/2-7-measures-of-the-spread-of-the-data',licence:'CC BY 4.0'})
+      ])
+    }),
+
+    Object.freeze({
+      id: 'sampling', number: '05', title: 'Who is in the data, and who is not', studyMinutes: 5, playMinutes: 5,
       objective: 'Name the population a dataset can speak for, and the ways it may fail to.',
       opening: 'A satisfaction survey on the website gives ninety-two per cent positive. Everybody who could not use the website is not in it, and that is the group the question was really about.',
       sections: Object.freeze([
@@ -177,7 +279,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'probability', number: '04', title: 'The language of chance', studyMinutes: 5, playMinutes: 5,
+      id: 'probability', number: '06', title: 'The language of chance', studyMinutes: 5, playMinutes: 5,
       objective: 'State what a probability is attached to, and read a conditional claim in the right direction.',
       opening: 'A test that is ninety-nine per cent accurate returns a positive result. Whether that means you are probably affected depends on something the sentence does not mention: how common the thing is.',
       sections: Object.freeze([

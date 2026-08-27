@@ -5,6 +5,7 @@ Founder direction: 2026-08-21
 Current drafting gate: `STAT-DATA-001` only
 
 Detailed reference coverage: `curriculum/06-WIKIPEDIA-CONCEPT-ATLAS.md`
+Recognised-book crosswalk and gap audit: `curriculum/09-DATA-SCIENCE-REFERENCE-ALIGNMENT.md`
 Persistent learning world: `curriculum/07-SUPERSTORE-LEARNING-WORLD.md`
 Ordered learner catalogue: `curriculum/08-SUPERSTORE-TOPIC-CATALOG.md`
 
