@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/build-sample-db.mjs && node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-overlays.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-workshops.mjs && node scripts/check-assistant.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-region-grain.mjs && node scripts/check-zone-price.mjs && node scripts/check-uom.mjs && node scripts/check-chance-figures.mjs && node scripts/check-reachable.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
+    "prebuild": "node scripts/build-sample-db.mjs && node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-overlays.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-motion.mjs && node scripts/check-workshops.mjs && node scripts/check-assistant.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-region-grain.mjs && node scripts/check-zone-price.mjs && node scripts/check-uom.mjs && node scripts/check-chance-figures.mjs && node scripts/check-reachable.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -52,7 +52,8 @@
     "check:uom": "node scripts/check-uom.mjs",
     "check:chance": "node scripts/check-chance-figures.mjs",
     "map": "node scripts/build-site-map.mjs",
-    "check:overlays": "node scripts/check-overlays.mjs"
+    "check:overlays": "node scripts/check-overlays.mjs",
+    "check:motion": "node scripts/check-motion.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

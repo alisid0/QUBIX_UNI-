@@ -19,6 +19,7 @@
   import { runQuery } from '../game/sql-console-mission.js';
   import { runProgram, PYTHON_TRACE_MISSION } from '../game/python-trace-mission.js';
   import { MISSING_DATA_MISSION } from '../game/missing-data-mission.js';
+  import JoinFanOut from './JoinFanOut.svelte';
 
   export let spec;
 
@@ -96,7 +97,11 @@
 </script>
 
 <figure class="qx-figure">
-  {#if spec.kind === 'histogram' && bins.length}
+  {#if spec.kind === 'join-fanout'}
+    <!-- The only animated figure. Motion is the subject rather than decoration:
+         a value being copied onto more rows than it started on. -->
+    <JoinFanOut caseId={spec.case ?? 'sale-line'} />
+  {:else if spec.kind === 'histogram' && bins.length}
     <svg viewBox={`0 0 ${W} ${H}`} role="img"
          aria-label={`Histogram of ${source.values.length} values from ${tick(stats.min)} to ${tick(stats.max)}. The mean is ${tick(round(stats.mean, 1))} and the median ${tick(stats.median)}.`}>
       <line class="axis" x1={L} y1={H - B} x2={W - R} y2={H - B} />

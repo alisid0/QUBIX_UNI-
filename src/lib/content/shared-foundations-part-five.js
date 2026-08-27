@@ -212,6 +212,13 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         ]),
         limit:'Real joins are not physical lookups between cabinets and can be one-to-one, one-to-many or many-to-many. INNER, LEFT, RIGHT and FULL joins also make different promises about unmatched rows. A foreign-key constraint can protect references, but it does not by itself guarantee every analytical join preserves grain.'
       }),
+      // The one animated figure in the volume. That the count goes up is easy
+      // to state in a sentence; that a value gets copied is not, so the motion
+      // shows the basket total being written onto two rows rather than showing
+      // the total arriving.
+      figure: Object.freeze({ kind: 'join-fanout', case: 'sale-line',
+        caption: 'One sale, two lines, one basket total written twice',
+        note: 'Every row here is the join-grain mission’s own, so the reading and the mission cannot disagree.' }),
       example: Object.freeze({ title: 'Three joins from the same 4,312 sales', headers: Object.freeze(['Join', 'Rows out', 'What happened']), rows: Object.freeze([
         Object.freeze(['sale to branch', '4,312', 'unique key: columns added, grain held']),
         Object.freeze(['sale to sale_line', '11,983', 'key repeats: now one row per line']),
