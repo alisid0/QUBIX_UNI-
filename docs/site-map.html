@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qubix site map</title>
+<style>
+  :root {
+    --canvas:#F1EDE4; --card:#fff; --ink:#171510; --muted:#6B6152;
+    --clay:#A85A34; --clay-text:#8C4C2E; --clay-soft:#F2E4DA;
+    --olive-soft:#E7EFDC; --olive-text:#3C6427; --red-soft:#F6E3DF; --red:#B3402E;
+    --line:#D8D0BE; --line-soft:#E6DFD0; --line-strong:#A89E8D;
+    --sans:"Mulish",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --canvas:#141310; --card:#1C1A15; --ink:#ECE7DC; --muted:#9A9084;
+      --clay:#D28A5E; --clay-text:#DDA079; --clay-soft:rgba(210,138,94,.15);
+      --olive-soft:rgba(127,184,106,.15); --olive-text:#96C982;
+      --red-soft:rgba(224,136,119,.15); --red:#E08877;
+      --line:rgba(255,255,255,.14); --line-soft:rgba(255,255,255,.08); --line-strong:#766D5B; }
+  }
+  *{box-sizing:border-box} body{margin:0;padding:0 1.2rem 4rem;background:var(--canvas);color:var(--ink);
+    font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:64rem;margin:0 auto}
+  header{padding:3rem 0 1.6rem;border-bottom:2px solid var(--ink)}
+  h1{margin:0 0 .4rem;font-size:2.2rem;font-weight:900;letter-spacing:-.025em}
+  h2{margin:0 0 .3rem;font-size:1.35rem;font-weight:800;letter-spacing:-.012em}
+  p{margin:0}
+  .eyebrow{font:900 .7rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--clay-text);margin-bottom:.5rem}
+  .lede{color:var(--muted);max-width:40rem}
+  section{padding:2.6rem 0 0}
+  .head{display:flex;flex-direction:column;gap:.4rem;padding-bottom:1.1rem}
+  .scroll{overflow-x:auto;border:1px solid var(--line);background:var(--card)}
+  table{border-collapse:collapse;width:100%;min-width:38rem;font-size:.88rem}
+  th,td{text-align:left;padding:.6rem .8rem;vertical-align:top}
+  thead th{font:900 .68rem/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+    border-bottom:1.5px solid var(--ink);white-space:nowrap}
+  tbody tr+tr td{border-top:1px solid var(--line-soft)}
+  code,.mono{font-family:var(--mono);font-size:.85em}
+  td code{background:var(--canvas);padding:.1em .35em;border-radius:4px;color:var(--clay-text)}
+  .who{display:inline-block;padding:.13rem .45rem;border-radius:3px;font:900 .62rem/1.5 var(--sans);
+    letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .learner{background:var(--olive-soft);color:var(--olive-text)}
+  .founder{background:var(--clay-soft);color:var(--clay-text)}
+  .authoring{background:var(--red-soft);color:var(--red)}
+  .figure{overflow-x:auto;border:1px solid var(--line);background:var(--card);padding:1rem}
+  svg{display:block;min-width:1180px;width:100%;height:auto}
+  .col{fill:var(--canvas);stroke:var(--line-soft)}
+  .ch{font:900 9px var(--sans);letter-spacing:.1em;fill:var(--clay-text)}
+  .cht{font:700 9.5px var(--sans);fill:var(--muted)}
+  .node rect{fill:var(--card);stroke:var(--line);stroke-width:1.2}
+  .nt{font:800 11px var(--sans);fill:var(--ink)}
+  .nm{font:600 8.5px var(--mono);fill:var(--muted)}
+  .arrow{stroke:var(--line-strong);stroke-width:1.3;fill:none}
+  ol.walk{margin:0;padding-left:1.3rem;display:flex;flex-direction:column;gap:.5rem;font-size:.93rem}
+  .note{margin-top:.8rem;font-size:.86rem;color:var(--muted)}
+  footer{margin-top:3rem;padding-top:1.2rem;border-top:2px solid var(--ink);font-size:.83rem;color:var(--muted)}
+</style></head><body><div class="wrap">
+
+<header>
+  <p class="eyebrow">Generated from the code · npm run map</p>
+  <h1>Qubix site map</h1>
+  <p class="lede">Every route the app serves, the order the course unlocks in, and
+  what to click when walking it. Read out of App.svelte, progress.js and the eight
+  chapter files, so it cannot describe an app that no longer exists.</p>
+</header>
+
+<section>
+  <div class="head"><p class="eyebrow">Routes</p><h2>Everything the app serves</h2></div>
+  <div class="scroll"><table>
+    <thead><tr><th>URL</th><th>Who it is for</th><th>What it is</th><th>View</th></tr></thead>
+    <tbody>
+      <tr><td><code>/</code></td><td><span class="who learner">learner</span></td><td>The landing page a visitor meets</td><td class="mono">RoleFoundations</td></tr>
+      <tr><td><code>?mode=game</code></td><td><span class="who learner">learner</span></td><td>The academy: every mission, locked and unlocked</td><td class="mono">GameHub</td></tr>
+      <tr><td><code>?mode=game&amp;mission=shared-book&amp;chapter=N&amp;session=N</code></td><td><span class="who learner">learner</span></td><td>The reader: one session of Volume 0</td><td class="mono">SharedFoundationsBook</td></tr>
+      <tr><td><code>?lab=sql</code></td><td><span class="who learner">learner</span></td><td>The data console: real SQL over 54 tables</td><td class="mono">DataConsole</td></tr>
+      <tr><td><code>?mode=game&amp;mission=store</code></td><td><span class="who learner">learner</span></td><td>The floor plan: missions placed in rooms</td><td class="mono">StoreMap</td></tr>
+      <tr><td><code>?mode=game&amp;mission=campaign</code></td><td><span class="who learner">learner</span></td><td>The data-quality rotation, as a story</td><td class="mono">DataQualityCampaign</td></tr>
+      <tr><td><code>?mode=game&amp;mission=role-game</code></td><td><span class="who learner">learner</span></td><td>Role tracks. Advertised as planned, not built</td><td class="mono">RoleGameHub</td></tr>
+      <tr><td><code>?mode=wiki</code></td><td><span class="who learner">learner</span></td><td>The wiki</td><td class="mono">WikiMode</td></tr>
+      <tr><td><code>?mode=learner</code></td><td><span class="who learner">learner</span></td><td>Learner preview of the change lab</td><td class="mono">ChangeLab</td></tr>
+      <tr><td><code>?mode=review</code></td><td><span class="who founder">founder</span></td><td>The approver. Where curriculum is marked</td><td class="mono">ReviewMode</td></tr>
+      <tr><td><code>?mode=factory</code></td><td><span class="who authoring">authoring</span></td><td>Authoring factory. Dev builds only</td><td class="mono">FactoryMode</td></tr>
+      <tr><td><code>?mode=parts</code></td><td><span class="who authoring">authoring</span></td><td>Cross-board interaction listing</td><td class="mono">PartsSheet</td></tr>
+      <tr><td><code>?mode=exercises</code></td><td><span class="who authoring">authoring</span></td><td>Exercise factory</td><td class="mono">ExerciseFactory</td></tr>
+      <tr><td><code>?mode=assets</code></td><td><span class="who authoring">authoring</span></td><td>Three.js asset workshop</td><td class="mono">AssetShowcase</td></tr>
+      <tr><td><code>?mode=strata-factory</code></td><td><span class="who authoring">authoring</span></td><td>Migration surface for inherited material</td><td class="mono">StrataMigrationFactory</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Authoring routes are gated to development builds and are deliberately
+  unreachable in production. The approver is reached only by asking for it.</p>
+</section>
+
+<section>
+  <div class="head"><p class="eyebrow">The learner path</p><h2>19 missions, in unlock order</h2></div>
+  <div class="figure"><svg viewBox="0 0 1512 350" role="img" aria-label="Mission unlock order by chapter" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="var(--line-strong)"/></marker></defs>
+<rect x="20" y="52" width="198" height="278" rx="8" class="col"/>
+<text x="28" y="30" class="ch">CHAPTER 01</text>
+<text x="28" y="45" class="cht">How Data Represents the…</text>
+<rect x="228" y="52" width="198" height="278" rx="8" class="col"/>
+<text x="236" y="30" class="ch">CHAPTER 02</text>
+<text x="236" y="45" class="cht">Numbers, Ratios and Change</text>
+<rect x="436" y="52" width="198" height="278" rx="8" class="col"/>
+<text x="444" y="30" class="ch">CHAPTER 03</text>
+<text x="444" y="45" class="cht">Quality and Evidence</text>
+<rect x="644" y="52" width="198" height="278" rx="8" class="col"/>
+<text x="652" y="30" class="ch">CHAPTER 04</text>
+<text x="652" y="45" class="cht">Statistics Before Models</text>
+<rect x="852" y="52" width="198" height="278" rx="8" class="col"/>
+<text x="860" y="30" class="ch">CHAPTER 05</text>
+<text x="860" y="45" class="cht">SQL Foundations</text>
+<rect x="1060" y="52" width="198" height="278" rx="8" class="col"/>
+<text x="1068" y="30" class="ch">CHAPTER 06</text>
+<text x="1068" y="45" class="cht">Python Foundations</text>
+<rect x="1268" y="52" width="198" height="278" rx="8" class="col"/>
+<text x="1276" y="30" class="ch">CHAPTER 07</text>
+<text x="1276" y="45" class="cht">Explain What You Found</text>
+<line x1="119" y1="118" x2="119" y2="133" class="arrow" marker-end="url(#a)"/>
+<line x1="119" y1="180" x2="119" y2="195" class="arrow" marker-end="url(#a)"/>
+<line x1="119" y1="242" x2="119" y2="257" class="arrow" marker-end="url(#a)"/>
+<path d="M 210 282 H 226 V 93" class="arrow" marker-end="url(#a)" fill="none"/>
+<line x1="327" y1="118" x2="327" y2="133" class="arrow" marker-end="url(#a)"/>
+<line x1="327" y1="180" x2="327" y2="195" class="arrow" marker-end="url(#a)"/>
+<path d="M 418 220 H 434 V 93" class="arrow" marker-end="url(#a)" fill="none"/>
+<line x1="535" y1="118" x2="535" y2="133" class="arrow" marker-end="url(#a)"/>
+<path d="M 626 158 H 642 V 93" class="arrow" marker-end="url(#a)" fill="none"/>
+<line x1="743" y1="118" x2="743" y2="133" class="arrow" marker-end="url(#a)"/>
+<line x1="743" y1="180" x2="743" y2="195" class="arrow" marker-end="url(#a)"/>
+<path d="M 834 220 H 850 V 93" class="arrow" marker-end="url(#a)" fill="none"/>
+<line x1="951" y1="118" x2="951" y2="133" class="arrow" marker-end="url(#a)"/>
+<line x1="951" y1="180" x2="951" y2="195" class="arrow" marker-end="url(#a)"/>
+<line x1="951" y1="242" x2="951" y2="257" class="arrow" marker-end="url(#a)"/>
+<path d="M 1042 282 H 1058 V 93" class="arrow" marker-end="url(#a)" fill="none"/>
+<path d="M 1250 96 H 1266 V 93" class="arrow" marker-end="url(#a)" fill="none"/>
+<line x1="1367" y1="118" x2="1367" y2="133" class="arrow" marker-end="url(#a)"/>
+<g class="node"><rect x="28" y="74" width="182" height="44" rx="7"/><text x="37" y="92" class="nt">Process a Sale</text><text x="37" y="107" class="nm">1. checkout · 40 XP</text></g>
+<g class="node"><rect x="28" y="136" width="182" height="44" rx="7"/><text x="37" y="154" class="nt">Classify Store Data</text><text x="37" y="169" class="nm">2. classify-data · 50 XP</text></g>
+<g class="node"><rect x="28" y="198" width="182" height="44" rx="7"/><text x="37" y="216" class="nt">What Does One Row Represent?</text><text x="37" y="231" class="nm">3. table-grain · 70 XP</text></g>
+<g class="node"><rect x="28" y="260" width="182" height="44" rx="7"/><text x="37" y="278" class="nt">Missing Values Are Not Zero</text><text x="37" y="293" class="nm">4. missing-data · 60 XP</text></g>
+<g class="node"><rect x="236" y="74" width="182" height="44" rx="7"/><text x="245" y="92" class="nt">Units and Measurement</text><text x="245" y="107" class="nm">5. units-measurement · 70 XP</text></g>
+<g class="node"><rect x="236" y="136" width="182" height="44" rx="7"/><text x="245" y="154" class="nt">SUM(quantity)</text><text x="245" y="169" class="nm">6. uom · 100 XP</text></g>
+<g class="node"><rect x="236" y="198" width="182" height="44" rx="7"/><text x="245" y="216" class="nt">The Rate Desk</text><text x="245" y="231" class="nm">7. rate-desk · 150 XP</text></g>
+<g class="node"><rect x="444" y="74" width="182" height="44" rx="7"/><text x="453" y="92" class="nt">Keys and Duplicate Records</text><text x="453" y="107" class="nm">8. duplicate-records · 70 XP</text></g>
+<g class="node"><rect x="444" y="136" width="182" height="44" rx="7"/><text x="453" y="154" class="nt">Trace the Number</text><text x="453" y="169" class="nm">9. data-lineage · 60 XP</text></g>
+<g class="node"><rect x="652" y="74" width="182" height="44" rx="7"/><text x="661" y="92" class="nt">The Distribution Desk</text><text x="661" y="107" class="nm">10. distribution-desk · 150 XP</text></g>
+<g class="node"><rect x="652" y="136" width="182" height="44" rx="7"/><text x="661" y="154" class="nt">What Does It Cost?</text><text x="661" y="169" class="nm">11. zone-price · 110 XP</text></g>
+<g class="node"><rect x="652" y="198" width="182" height="44" rx="7"/><text x="661" y="216" class="nt">The Sampling Desk</text><text x="661" y="231" class="nm">12. sampling-desk · 170 XP</text></g>
+<g class="node"><rect x="860" y="74" width="182" height="44" rx="7"/><text x="869" y="92" class="nt">The SQL Console</text><text x="869" y="107" class="nm">13. sql-console · 160 XP</text></g>
+<g class="node"><rect x="860" y="136" width="182" height="44" rx="7"/><text x="869" y="154" class="nt">The Region That Wasn’t</text><text x="869" y="169" class="nm">14. region-grain · 120 XP</text></g>
+<g class="node"><rect x="860" y="198" width="182" height="44" rx="7"/><text x="869" y="216" class="nt">Join Without Changing the…</text><text x="869" y="231" class="nm">15. join-grain · 90 XP</text></g>
+<g class="node"><rect x="860" y="260" width="182" height="44" rx="7"/><text x="869" y="278" class="nt">The Result Checkpoint</text><text x="869" y="293" class="nm">16. result-checkpoint · 180 XP</text></g>
+<g class="node"><rect x="1068" y="74" width="182" height="44" rx="7"/><text x="1077" y="92" class="nt">Read the Program</text><text x="1077" y="107" class="nm">17. python-trace · 170 XP</text></g>
+<g class="node"><rect x="1276" y="74" width="182" height="44" rx="7"/><text x="1285" y="92" class="nt">Analyst Decision Desk</text><text x="1285" y="107" class="nm">18. analyst-desk · 200 XP</text></g>
+<g class="node"><rect x="1276" y="136" width="182" height="44" rx="7"/><text x="1285" y="154" class="nt">The Handover Pack</text><text x="1285" y="169" class="nm">19. handover-pack · 190 XP</text></g>
+</svg></div>
+  <p class="note">Columns are chapters, arrows are the unlock sequence. Positions are
+  computed from the roster: move a mission and the diagram moves with it.</p>
+</section>
+
+<section>
+  <div class="head"><p class="eyebrow">Reading to mission</p><h2>What hands you to what</h2></div>
+  <div class="scroll"><table>
+    <thead><tr><th>Session</th><th>Title</th><th>Sends you to</th><th>Rehearses</th><th>Min</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">ch01.01</td><td>Data is a record, not reality</td><td class="mono">checkout</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch01.02</td><td>Observations, variables and types of data</td><td class="mono">classify-data</td><td class="mono">classify-data</td><td>12</td></tr>
+      <tr><td class="mono">ch01.03</td><td>One row means one thing</td><td class="mono">table-grain</td><td class="mono">table-grain</td><td>15</td></tr>
+      <tr><td class="mono">ch01.04</td><td>A value needs context</td><td class="mono">missing-data</td><td class="mono">missing-data</td><td>10</td></tr>
+      <tr><td class="mono">ch01.05</td><td>From a question to a decision</td><td class="mono">analyst-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>20</td></tr>
+      <tr><td class="mono">ch02.01</td><td>A number needs a unit</td><td class="mono">units-measurement</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>11</td></tr>
+      <tr><td class="mono">ch02.02</td><td>Ratios, rates and percentages</td><td class="mono">rate-desk</td><td class="mono">rate-desk</td><td>13</td></tr>
+      <tr><td class="mono">ch02.03</td><td>Absolute change, relative change and rate of change</td><td class="mono">rate-desk</td><td class="mono">rate-desk</td><td>18</td></tr>
+      <tr><td class="mono">ch02.04</td><td>From table to rule to graph</td><td class="mono"><span style="color:var(--muted)">library</span></td><td class="mono"><span style="color:var(--muted)">—</span></td><td>15</td></tr>
+      <tr><td class="mono">ch03.01</td><td>An empty cell does not explain itself</td><td class="mono">missing-data</td><td class="mono">missing-data</td><td>20</td></tr>
+      <tr><td class="mono">ch03.02</td><td>What kind of thing is this value?</td><td class="mono">classify-data</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch03.03</td><td>One row, one thing</td><td class="mono">duplicate-records</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch03.04</td><td>Where did this number come from?</td><td class="mono">data-lineage</td><td class="mono">data-lineage</td><td>10</td></tr>
+      <tr><td class="mono">ch04.01</td><td>From raw values to a distribution</td><td class="mono">distribution-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch04.02</td><td>Look at the shape before the summary</td><td class="mono">distribution-desk</td><td class="mono">distribution-desk</td><td>13</td></tr>
+      <tr><td class="mono">ch04.03</td><td>Centre is a choice</td><td class="mono">zone-price</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch04.04</td><td>Measuring spread</td><td class="mono">distribution-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch04.05</td><td>Who is in the data, and who is not</td><td class="mono">sampling-desk</td><td class="mono">sampling-desk</td><td>16</td></tr>
+      <tr><td class="mono">ch04.06</td><td>The language of chance</td><td class="mono">distribution-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch05.01</td><td>Asking a table a question</td><td class="mono">sql-console</td><td class="mono">sql-console</td><td>13</td></tr>
+      <tr><td class="mono">ch05.02</td><td>Grouping changes the grain on purpose</td><td class="mono">region-grain</td><td class="mono">region-grain</td><td>10</td></tr>
+      <tr><td class="mono">ch05.03</td><td>Joining without changing what a row is</td><td class="mono">join-grain</td><td class="mono">join-grain</td><td>10</td></tr>
+      <tr><td class="mono">ch05.04</td><td>Checking a result before believing it</td><td class="mono">result-checkpoint</td><td class="mono">result-checkpoint</td><td>16</td></tr>
+      <tr><td class="mono">ch06.01</td><td>Values, names and types</td><td class="mono">classify-data</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch06.02</td><td>Decisions and repetition</td><td class="mono">python-trace</td><td class="mono">python-trace</td><td>18</td></tr>
+      <tr><td class="mono">ch06.03</td><td>Giving a piece of work a name</td><td class="mono">units-measurement</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch06.04</td><td>Collections, and a table in code</td><td class="mono">python-trace</td><td class="mono">python-trace</td><td>12</td></tr>
+      <tr><td class="mono">ch07.01</td><td>A table someone can actually read</td><td class="mono">missing-data</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>10</td></tr>
+      <tr><td class="mono">ch07.02</td><td>A chart that does not flatter</td><td class="mono"><span style="color:var(--muted)">library</span></td><td class="mono"><span style="color:var(--muted)">—</span></td><td>15</td></tr>
+      <tr><td class="mono">ch07.03</td><td>Separating what you found from what you think</td><td class="mono">analyst-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>14</td></tr>
+      <tr><td class="mono">ch07.04</td><td>Work somebody else can run</td><td class="mono">handover-pack</td><td class="mono">handover-pack</td><td>16</td></tr>
+      <tr><td class="mono">ch08.01</td><td>A probability is a proportion of something named</td><td class="mono">rate-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>13</td></tr>
+      <tr><td class="mono">ch08.02</td><td>What you already know changes the number</td><td class="mono">sampling-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>13</td></tr>
+      <tr><td class="mono">ch08.03</td><td>What a sample can and cannot say</td><td class="mono">distribution-desk</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>13</td></tr>
+      <tr><td class="mono">ch08.04</td><td>Different, or different this week?</td><td class="mono">result-checkpoint</td><td class="mono"><span style="color:var(--muted)">—</span></td><td>16</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><strong>No reading hands you to:</strong> <code>uom</code>. Reachable from the academy and the floor plan only.</p>
+</section>
+
+<section>
+  <div class="head"><p class="eyebrow">Walking it</p><h2>The order to click, to see everything once</h2></div>
+  <ol class="walk">
+    <li>Open <code>/</code>. That is the landing production serves. Open <strong>Ask Qubix</strong> bottom right and ask it where to start, how long it takes, and whether it is finished.</li>
+    <li>Go to <code>?mode=game</code>. Note which missions are locked: the sequence is enforced, so a fresh browser can only open the first.</li>
+    <li>Open <code>?mode=game&amp;mission=store</code> for the floor plan, and find the rooms the new missions sit in.</li>
+    <li>Read <code>?mode=game&amp;mission=shared-book&amp;chapter=1&amp;session=1</code> and walk forward. Every session has an Ask Qubix of its own.</li>
+    <li>Play the missions in roster order. To reach a later one without playing everything, run this in the browser console first:<br>
+      <code>localStorage.setItem('qx.superstore.progress.v1', JSON.stringify({completed:['checkout','classify-data','table-grain','missing-data','units-measurement','uom','rate-desk','duplicate-records','data-lineage','distribution-desk','zone-price','sampling-desk','sql-console','region-grain','join-grain'],xp:0}))</code></li>
+    <li>Finish <strong>sql-console</strong> and take the link it offers at the end. That is the only in-course route to the data console.</li>
+    <li>In <code>?lab=sql</code>, run the five starter queries, then break one deliberately and check the error is readable.</li>
+    <li>Come back through each of the three links in the console header and confirm they land where they say.</li>
+  </ol>
+  <p class="note">Watch for the things guards cannot see: prose that reads badly, a
+  step that is obvious in the code and confusing on screen, and any moment where you
+  do not know what to do next.</p>
+</section>
+
+<footer>
+  <p>Generated 2026-08-27 by <code>scripts/build-site-map.mjs</code> from
+  15 routes, 19 missions and 35 reading sessions.
+  Regenerate with <code>npm run map</code>. Nothing here is approved curriculum.</p>
+</footer>
+
+</div></body></html>

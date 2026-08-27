@@ -30,7 +30,7 @@
     "check:rehearsals": "node scripts/check-rehearsals.mjs",
     "check:rates": "node scripts/check-rates.mjs",
     "check:palette": "node scripts/check-palette.mjs",
-    "check:map": "node scripts/check-store-map.mjs",
+    "check:map": "node scripts/check-site-map.mjs",
     "check:figures": "node scripts/check-figures.mjs",
     "check:workshops": "node scripts/check-workshops.mjs",
     "check:assistant": "node scripts/check-assistant.mjs",
@@ -50,7 +50,8 @@
     "check:region": "node scripts/check-region-grain.mjs",
     "check:zone": "node scripts/check-zone-price.mjs",
     "check:uom": "node scripts/check-uom.mjs",
-    "check:chance": "node scripts/check-chance-figures.mjs"
+    "check:chance": "node scripts/check-chance-figures.mjs",
+    "map": "node scripts/build-site-map.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
