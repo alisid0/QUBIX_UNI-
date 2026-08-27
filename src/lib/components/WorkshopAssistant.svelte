@@ -65,7 +65,7 @@
       else if (spec.search) {
         const sources = spec.search(value, 3);
         if (sources.length) response = {
-          text: `I searched ${spec.knowledgeCount} passages in SQL Foundations. These are the closest pieces of Qubix material; open one to continue in its original lesson context.`,
+          text: `I searched ${spec.knowledgeCount} passages in ${spec.indexName || 'Qubix Foundations'}. These are the closest pieces of Qubix material; open one to continue in its original lesson context.`,
           sources
         };
       }

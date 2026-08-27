@@ -1,6 +1,8 @@
 import { SQL_READING_ASSISTANTS, sqlConsoleAssistant } from '../src/lib/content/sql-assistant.js';
 import { SQL_CONSOLE_MISSION } from '../src/lib/game/sql-console-mission.js';
 import { SQL_KNOWLEDGE_COUNT, searchSqlKnowledge } from '../src/lib/content/sql-knowledge-index.js';
+import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
+import { FOUNDATIONS_KNOWLEDGE_COUNT, readingAssistantFor, searchFoundationsKnowledge } from '../src/lib/content/foundations-assistant.js';
 import fs from 'node:fs';
 
 let failed = false;
@@ -44,8 +46,18 @@ for (const [query, expectedSession] of retrievalCases) {
   check(results.every(result => result.href && result.excerpt), 'retrieval returns a deep link and evidence excerpt');
 }
 
+const readingSessions = SHARED_FOUNDATIONS.flatMap(({ chapter, book }) => book.sessions.map(session => ({ chapter, session })));
+check(readingSessions.length === 31, 'course assistant covers every foundations reading', `${readingSessions.length} sessions`);
+for (const { chapter, session } of readingSessions) {
+  const spec = readingAssistantFor(chapter, session);
+  check(Boolean(spec?.key && spec?.welcome && spec?.fallback), `ch${String(chapter).padStart(2, '0')}.${session.number} has an assistant contract`);
+}
+check(FOUNDATIONS_KNOWLEDGE_COUNT >= 150, 'course-wide local index covers all seven chapters', `${FOUNDATIONS_KNOWLEDGE_COUNT} passages`);
+const courseResults = searchFoundationsKnowledge('difference between mean median and outliers', 5);
+check(courseResults.some(result => result.chapter === 4), 'course retrieval finds the statistics chapter');
+
 const assistantSource = fs.readFileSync(new URL('../src/lib/components/WorkshopAssistant.svelte', import.meta.url), 'utf8');
-const indexSource = fs.readFileSync(new URL('../src/lib/content/sql-knowledge-index.js', import.meta.url), 'utf8');
+const indexSource = `${fs.readFileSync(new URL('../src/lib/content/sql-knowledge-index.js', import.meta.url), 'utf8')}\n${fs.readFileSync(new URL('../src/lib/content/foundations-assistant.js', import.meta.url), 'utf8')}`;
 check(!/\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource/.test(`${assistantSource}\n${indexSource}`), 'local assistant makes no network request');
 
 if (failed) process.exit(1);
