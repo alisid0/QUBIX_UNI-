@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/build-sample-db.mjs && node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-workshops.mjs && node scripts/check-assistant.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
+    "prebuild": "node scripts/build-sample-db.mjs && node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-workshops.mjs && node scripts/check-assistant.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-reachable.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -45,7 +45,8 @@
     "data:sample": "node scripts/generate-dataset.mjs --start-day 30 --days 7 --branches 6 --out data-sample",
     "data:pack": "node scripts/pack-data.mjs",
     "data:db": "node scripts/build-sample-db.mjs",
-    "smoke:db": "node scripts/smoke-superstore-db.mjs"
+    "smoke:db": "node scripts/smoke-superstore-db.mjs",
+    "check:reachable": "node scripts/check-reachable.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

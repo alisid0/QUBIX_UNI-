@@ -63,6 +63,13 @@
           <span>✓</span><h2>{M.cases.length} queries assembled</h2>
           <p>{M.competency}</p>
           <ol>{#each M.cases as item}<li><b>{item.brief}</b><em>{item.expectRows} row{item.expectRows === 1 ? '' : 's'} · {runQuery(item.target).grain}</em></li>{/each}</ol>
+
+          <!-- The mission works on twelve rows you can read. The console works on
+               the quarter those twelve came out of, where a mistake is answered
+               by SQLite rather than marked by us. -->
+          <p class="open-real">Those twelve sales are a real extract. The quarter they came from is 54 tables and 147,166 rows, and you can query it yourself.</p>
+          <a class="real-console" href="?lab=sql">Open the data console →</a>
+
           <button on:click={restart}>Run the console again</button>
         </div>
       {:else}
@@ -208,6 +215,10 @@
   .done-panel li:last-child{border-bottom:0}
   .done-panel li b{font:800 13px var(--qx-font)}
   .done-panel li em{color:#706856;font:650 12.5px var(--qx-font);font-style:normal}
+  .open-real{margin:18px auto 9px;max-width:34em;color:#5c5648;font:650 13px/1.6 var(--qx-font)}
+  .real-console{display:block;min-height:46px;padding:13px 18px;border:2px solid #25231f;border-radius:11px;background:#25231f;color:#f1ede4;font:900 13.5px/1.4 var(--qx-font);text-decoration:none}
+  .real-console:hover{background:#3a352c}
+  .real-console:focus-visible{outline:3px solid #2f7d6a;outline-offset:2px}
   footer{max-width:1320px;margin:14px auto 0;display:flex;justify-content:space-between;gap:14px;color:#6f8794;font:650 12px/1.5 var(--qx-font);flex-wrap:wrap}
   @media(max-width:940px){main{grid-template-columns:1fr}}
   @media(max-width:600px){.console{padding:13px 10px 25px}.identity h1{font-size:20px}aside{padding:16px}}

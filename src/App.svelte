@@ -46,7 +46,7 @@
   // The academy ships. The showcases and factory tools above do not: they are
   // internal workbenches, and this is a learner-facing route carrying its own
   // AI_DRAFT labelling.
-  const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype');
+  const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');
   const showGameMission = params.get('mode') === 'game' || productionFoundationLanding;
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be

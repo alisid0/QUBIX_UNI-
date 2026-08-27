@@ -94,6 +94,11 @@
         browser. Nothing you type leaves this page.
       </p>
     </div>
+    <nav aria-label="Back to the course">
+      <a href="?mode=game&amp;mission=sql-console">SQL console mission</a>
+      <a href="?mode=game&amp;mission=shared-book&amp;chapter=5&amp;session=1">Chapter 5 reading</a>
+      <a href="?mode=game">All missions</a>
+    </nav>
   </header>
 
   {#if loadError}
@@ -186,7 +191,19 @@
     padding: 2rem 1.25rem 4rem;
     font-family: var(--qx-font);
   }
-  header { max-width: 76rem; margin: 0 auto 1.75rem; }
+  header {
+    max-width: 76rem; margin: 0 auto 1.75rem;
+    display: flex; flex-wrap: wrap; gap: 1rem 2rem;
+    align-items: flex-end; justify-content: space-between;
+  }
+  header nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  header nav a {
+    color: var(--qx-ink-text-2); text-decoration: none;
+    border: 1px solid var(--qx-ink-line); border-radius: var(--qx-radius-pill);
+    padding: 0.3rem 0.8rem; font-size: 13px;
+  }
+  header nav a:hover { color: var(--qx-ink-text); border-color: var(--qx-ink-line-2); }
+  header nav a:focus-visible { outline: 2px solid var(--qx-ink-accent); outline-offset: 2px; }
   .eyebrow {
     font-size: 12px; font-weight: 800; letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--qx-ink-accent); margin: 0 0 0.4rem;
