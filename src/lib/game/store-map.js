@@ -88,6 +88,9 @@ export const ROOMS = Object.freeze([
     spots: Object.freeze([
       Object.freeze({ slug: 'sql-console', x: 22, y: 56, at: 'the near desk' }),
       Object.freeze({ slug: 'join-grain', x: 50, y: 38, at: 'the back desk' }),
+      // Beside join-grain on purpose: one is what a join does to the row count,
+      // the other is which hierarchy you joined through to arrive there.
+      Object.freeze({ slug: 'region-grain', x: 36, y: 70, at: 'the regional reporting desk' }),
       Object.freeze({ slug: 'python-trace', x: 79, y: 50, at: 'the dual-monitor desk' }),
       Object.freeze({ slug: 'result-checkpoint', x: 50, y: 76, at: 'the release terminal' })
     ])

@@ -138,6 +138,8 @@
         return import('./views/GameHub.svelte');
       } else if (mission === 'join-grain') {
         return import('./views/JoinGrainMission.svelte');
+      } else if (mission === 'region-grain') {
+        return import('./views/RegionGrainMission.svelte');
       } else if (mission === 'classify-data') {
         return import('./views/DataClassificationMission.svelte');
       } else if (mission === 'missing-data') {

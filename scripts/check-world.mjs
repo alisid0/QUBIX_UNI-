@@ -13,7 +13,7 @@
 // and is skipped.
 //
 //   npm run check:world
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { BRANCHES, PRODUCTS, branch, product } from '../src/lib/game/superstore.js';
 import { EMPLOYEES, ROLES, LOCATIONS, role, location, currentStaff, fte }
@@ -28,7 +28,31 @@ const ok = (label, pass, detail = '') => {
   console.log(`   ${pass ? 'PASS' : '**FAIL**'}  ${label}${detail ? '  ' + detail : ''}`);
 };
 
+// The six hand-named branches, plus any branch actually in the sample database.
+//
+// BRANCHES names six of forty-eight. The rest are generated and no less real: a
+// learner can query them in the data console. A mission naming one is not
+// inventing a branch, which is what this guard exists to catch, so the database
+// is admitted as evidence alongside the hand-authored world.
+//
+// Adding such a branch to BRANCHES instead would be the wrong fix. The generator
+// seeds its estate from BRANCHES, so a seventh entry shifts every downstream
+// figure in the dataset, including the ones the mission quotes.
 const knownBranch = new Set(BRANCHES.map(b => b.id));
+const generatedBranches = await (async () => {
+  const dbPath = dir('../public/data/qubix-sample.db');
+  if (!existsSync(dbPath)) return 0;
+  try {
+    const initSqlJs = (await import('sql.js')).default;
+    const SQL = await initSqlJs();
+    const db = new SQL.Database(readFileSync(dbPath));
+    const ids = db.exec('SELECT branch_id FROM branch')[0]?.values ?? [];
+    for (const [id] of ids) knownBranch.add(id);
+    db.close();
+    return ids.length;
+  } catch { return 0; }
+})();
+
 const knownSku = new Set(PRODUCTS.map(p => p.sku));
 const nameToId = new Map(BRANCHES.map(b => [b.name, b.id]));
 

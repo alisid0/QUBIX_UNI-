@@ -1,43 +1,43 @@
 supplier_id,name,country_id,currency_code,incoterm,lead_days,payment_terms,risk_rating
-SUP-100,"Harvest Supply Co",BR,GBP,DDP,5,"45 days",low
-SUP-101,"Coastal Foods",BR,GBP,DDP,4,"30 days",medium
-SUP-102,"Pinnacle Wholesale",BR,GBP,DDP,6,"30 days",low
-SUP-103,"Harvest Supply Co",BR,GBP,DDP,4,"30 days",medium
-SUP-104,"Coastal Provisions",BR,GBP,DDP,2,"30 days",low
-SUP-105,"Crossfield Produce",BR,GBP,DDP,6,"30 days",low
-SUP-106,"Anchor Wholesale",BR,GBP,DDP,2,"30 days",low
-SUP-107,"Meridian Distribution",BR,GBP,DDP,6,"30 days",low
-SUP-108,"Pinnacle Produce",BR,GBP,DDP,4,"45 days",medium
-SUP-109,"Valley Produce",BR,GBP,DDP,4,"30 days",low
-SUP-110,"Harvest Distribution",BR,GBP,DDP,3,"45 days",low
-SUP-111,"Meridian Wholesale",BR,GBP,DDP,2,"30 days",low
-SUP-112,"Anchor Wholesale",BR,GBP,DDP,6,"30 days",low
-SUP-113,"Coastal Produce",BR,GBP,DDP,2,"45 days",medium
-SUP-114,"Northern Provisions",BR,GBP,DDP,6,"30 days",high
-SUP-115,"Crossfield Supply Co",BR,GBP,DDP,3,"60 days",medium
-SUP-116,"Valley Produce",BR,GBP,DDP,6,"60 days",medium
-SUP-117,"Crossfield Foods",BR,GBP,DDP,3,"30 days",low
-SUP-118,"Northern Wholesale",DK,DKK,CIF,2,"60 days",medium
-SUP-119,"Coastal Supply Co",VN,VND,CIF,2,"60 days",high
-SUP-120,"Coastal Produce",VN,VND,FOB,5,"45 days",low
-SUP-121,"Pinnacle Foods",PL,PLN,EXW,9,"30 days",high
-SUP-122,"Anchor Provisions",TR,TRY,CIF,6,"60 days",low
-SUP-123,"Northern Provisions",KE,KES,FOB,9,"45 days",low
-SUP-124,"Crossfield Provisions",ES,EUR,EXW,3,"30 days",high
-SUP-125,"Harvest Wholesale",GH,GHS,EXW,2,"30 days",high
-SUP-126,"Pinnacle Distribution",TR,TRY,DDP,8,"45 days",low
-SUP-127,"Anchor Distribution",TR,TRY,DDP,7,"30 days",low
-SUP-128,"Meridian Supply Co",KE,KES,FOB,8,"30 days",low
-SUP-129,"Northern Supply Co",KE,KES,FOB,3,"30 days",medium
-SUP-130,"Meridian Produce",MA,MAD,EXW,8,"45 days",low
-SUP-131,"Coastal Distribution",VN,VND,FOB,2,"60 days",high
-SUP-132,"Coastal Supply Co",TR,TRY,EXW,4,"30 days",medium
-SUP-133,"Coastal Distribution",NL,EUR,EXW,7,"45 days",low
-SUP-134,"Coastal Provisions",ES,EUR,CIF,4,"60 days",high
-SUP-135,"Valley Wholesale",ES,EUR,FOB,7,"30 days",medium
-SUP-136,"Pinnacle Wholesale",ES,EUR,FOB,3,"45 days",medium
-SUP-137,"Coastal Produce",NL,EUR,FOB,6,"45 days",low
-SUP-138,"Harvest Provisions",VN,VND,CIF,1,"30 days",medium
-SUP-139,"Harvest Wholesale",TR,TRY,FOB,5,"60 days",low
-SUP-140,"Pinnacle Distribution",CR,USD,FOB,9,"60 days",high
-SUP-141,"Crossfield Foods",GH,GHS,EXW,3,"45 days",medium
+SUP-100,"Meridian Produce",BR,GBP,DDP,7,"30 days",low
+SUP-101,"Harvest Foods",BR,GBP,DDP,3,"30 days",medium
+SUP-102,"Harvest Supply Co",BR,GBP,DDP,2,"30 days",low
+SUP-103,"Coastal Foods",BR,GBP,DDP,6,"45 days",low
+SUP-104,"Crossfield Wholesale",BR,GBP,DDP,4,"60 days",high
+SUP-105,"Anchor Produce",BR,GBP,DDP,7,"45 days",low
+SUP-106,"Coastal Supply Co",BR,GBP,DDP,9,"60 days",high
+SUP-107,"Valley Produce",BR,GBP,DDP,4,"30 days",low
+SUP-108,"Northern Wholesale",BR,GBP,DDP,2,"60 days",medium
+SUP-109,"Harvest Supply Co",BR,GBP,DDP,4,"45 days",low
+SUP-110,"Pinnacle Wholesale",BR,GBP,DDP,8,"45 days",low
+SUP-111,"Valley Supply Co",BR,GBP,DDP,6,"30 days",low
+SUP-112,"Northern Wholesale",BR,GBP,DDP,2,"60 days",low
+SUP-113,"Northern Provisions",BR,GBP,DDP,8,"45 days",high
+SUP-114,"Anchor Provisions",BR,GBP,DDP,5,"30 days",low
+SUP-115,"Northern Provisions",BR,GBP,DDP,9,"45 days",low
+SUP-116,"Coastal Foods",BR,GBP,DDP,8,"60 days",low
+SUP-117,"Valley Foods",BR,GBP,DDP,8,"45 days",medium
+SUP-118,"Northern Distribution",TR,TRY,DDP,1,"60 days",medium
+SUP-119,"Pinnacle Wholesale",KE,KES,DDP,8,"30 days",medium
+SUP-120,"Harvest Foods",KE,KES,FOB,8,"30 days",low
+SUP-121,"Pinnacle Distribution",VN,VND,FOB,3,"30 days",low
+SUP-122,"Coastal Foods",BZ,BRL,FOB,3,"45 days",low
+SUP-123,"Pinnacle Supply Co",DK,DKK,CIF,1,"30 days",low
+SUP-124,"Valley Provisions",MA,MAD,DDP,5,"60 days",low
+SUP-125,"Coastal Distribution",BZ,BRL,DDP,1,"45 days",low
+SUP-126,"Pinnacle Supply Co",KE,KES,EXW,1,"30 days",low
+SUP-127,"Coastal Provisions",TR,TRY,EXW,7,"60 days",low
+SUP-128,"Harvest Distribution",GH,GHS,EXW,4,"45 days",high
+SUP-129,"Valley Supply Co",CR,USD,DDP,4,"45 days",low
+SUP-130,"Anchor Wholesale",DK,DKK,CIF,3,"30 days",medium
+SUP-131,"Northern Distribution",TR,TRY,DDP,5,"45 days",medium
+SUP-132,"Meridian Provisions",GH,GHS,CIF,5,"30 days",medium
+SUP-133,"Crossfield Wholesale",KE,KES,CIF,4,"60 days",high
+SUP-134,"Coastal Supply Co",ES,EUR,EXW,3,"45 days",low
+SUP-135,"Crossfield Distribution",CR,USD,FOB,7,"30 days",high
+SUP-136,"Meridian Distribution",DK,DKK,EXW,6,"60 days",low
+SUP-137,"Meridian Supply Co",NL,EUR,EXW,8,"30 days",high
+SUP-138,"Valley Provisions",GH,GHS,EXW,2,"30 days",high
+SUP-139,"Pinnacle Distribution",ES,EUR,FOB,6,"45 days",high
+SUP-140,"Coastal Produce",KE,KES,CIF,8,"60 days",medium
+SUP-141,"Coastal Provisions",TR,TRY,DDP,8,"45 days",medium
