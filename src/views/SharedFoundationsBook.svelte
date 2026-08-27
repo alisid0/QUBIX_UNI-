@@ -6,6 +6,9 @@
   import Figure from '../lib/components/Figure.svelte';
   import AudioBriefing from '../lib/components/AudioBriefing.svelte';
   import ReaderExercise from '../lib/components/ReaderExercise.svelte';
+  import SqlWorkshop from '../lib/components/SqlWorkshop.svelte';
+  import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
+  import { SQL_READING_ASSISTANTS } from '../lib/content/sql-assistant.js';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
@@ -190,6 +193,8 @@
           </section>
         {/each}
 
+        {#if session.workshopLab}<SqlWorkshop spec={session.workshopLab} />{/if}
+
         {#if session.figure}<Figure spec={session.figure} />{/if}
 
         <section class="example">
@@ -280,6 +285,10 @@
     </main>
   </div>
 </div>
+
+{#if chapterNumber === 5 && SQL_READING_ASSISTANTS[session.id]}
+  <WorkshopAssistant spec={SQL_READING_ASSISTANTS[session.id]} />
+{/if}
 
 <style>
   :global(.qubix-university) { height: auto !important; overflow: visible !important; }

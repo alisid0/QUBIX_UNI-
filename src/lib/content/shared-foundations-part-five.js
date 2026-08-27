@@ -16,6 +16,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     Object.freeze({
       id: 'select', number: '01', title: 'Asking a table a question', studyMinutes: 8, playMinutes: 5,
       objective: 'Read a simple query as choosing rows first and columns second.',
+      audioSummary: 'Picture a data workshop. The building infrastructure is the server host; a room can represent a database or schema; a labelled cabinet is a table; each drawer is a row; and the labelled partitions in every drawer are columns. A customer or bank-account cabinet keeps one master row per identifier, while a transaction cabinet legitimately repeats the account identifier because every payment is a separate event. In SQL, FROM names the cabinet, WHERE chooses drawers, SELECT chooses visible partitions, and ORDER BY arranges the result. The database still works with logical sets rather than walking physical drawers in this order.',
       opening: 'A query is not a program that walks through the table. It is a description of the result you want, and the database decides how to get it.',
       sections: Object.freeze([
         Object.freeze({ heading: 'Rows, then columns', paragraphs: Object.freeze([
@@ -31,6 +32,18 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
           'Sorting and limiting are also a common source of quiet error: taking the first ten rows without saying what they are first by returns ten arbitrary rows, which looks exactly like a top ten.'
         ]) })
       ]),
+      workshopLab: Object.freeze({
+        kind:'select', title:'Open the cabinet, keep drawers, reveal partitions',
+        mapping:Object.freeze([
+          Object.freeze(['Workshop building','server host']), Object.freeze(['Workshop room','database or schema']), Object.freeze(['Labelled cabinet','table']),
+          Object.freeze(['Drawer or slip','row']), Object.freeze(['Labelled partition','column']), Object.freeze(['Unique serial label','primary key'])
+        ]),
+        paragraphs:Object.freeze([
+          'Keep stable things in a master cabinet: one bank account, customer or branch per unique identifier. Keep events in a separate ledger: every payment or sale is another row. The account identifier repeats in transactions because many legitimate events belong to the same account; repetition is not automatically duplication.',
+          'Try the controls below. FROM opens the sale container. WHERE removes rows that do not satisfy the condition. SELECT changes which columns are visible. This is the logical result you request—not necessarily the physical order in which the database engine performs the work.'
+        ]),
+        limit:'A server is not literally one room or even always one machine: a server process or managed service can host several databases, and one database can be replicated across machines. Tables and columns are logical structures, while the query optimiser chooses the physical access plan.'
+      }),
       example: Object.freeze({ title: 'One query, read backwards', headers: Object.freeze(['Clause', 'What it does', 'Effect on the result']), rows: Object.freeze([
         Object.freeze(['FROM sale', 'names the table', 'grain: one completed sale']),
         Object.freeze(['WHERE basket_total > 20', 'discards rows', 'fewer rows, same columns']),
@@ -92,6 +105,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     Object.freeze({
       id: 'group', number: '02', title: 'Grouping changes the grain on purpose', studyMinutes: 5, playMinutes: 5,
       objective: 'Say what one row of a grouped result represents, and why filtering happens twice.',
+      audioSummary: 'Imagine sorting individual sale slips into work trays labelled by branch. Before sorting, each slip is one sale. After grouping, each tray produces one summary row, so the grain changes to one branch. WHERE decides which original slips enter the sorting process. An aggregate such as COUNT or SUM writes one measurement on each completed tray. HAVING then decides which completed trays remain. SQL does not physically move the stored records; the trays describe the logical grouped result.',
       opening: 'Grouping is the first thing in SQL that changes what a row means. Before it, one row was one sale. After it, one row is one branch, and everything you can ask has changed with it.',
       sections: Object.freeze([
         Object.freeze({ heading: 'The group is the new grain', paragraphs: Object.freeze([
@@ -107,6 +121,18 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
           'Aggregates also ignore absent values, so an average is over the rows that had one. That is usually right and occasionally very wrong, and it is invisible unless you also count how many rows contributed.'
         ]) })
       ]),
+      workshopLab: Object.freeze({
+        kind:'group', title:'Sort event slips into summary trays',
+        mapping:Object.freeze([
+          Object.freeze(['Individual sale slip','source row']), Object.freeze(['Tray label','GROUP BY key']), Object.freeze(['Tray tally','aggregate']),
+          Object.freeze(['Reject slip first','WHERE']), Object.freeze(['Reject tray later','HAVING']), Object.freeze(['One completed tray','one result row'])
+        ]),
+        paragraphs:Object.freeze([
+          'Grouping is a deliberate repacking of meaning. Four sale slips can become two branch trays. The output is not a shorter list of sales: it is a new table whose rows represent branches and whose measurements summarise the slips inside each group.',
+          'Move through the stages. Notice that HAVING cannot judge a tray count before the slips have been grouped and counted. That is why a condition on an aggregate belongs after GROUP BY rather than in WHERE.'
+        ]),
+        limit:'GROUP BY does not physically rearrange the stored table, and a database may use hashing, sorting or another execution strategy. The tray is a model of the logical grouping. Aggregates can also treat NULL differently, so COUNT(*) and COUNT(column) are not interchangeable.'
+      }),
       example: Object.freeze({ title: 'The same table, three grains', headers: Object.freeze(['Query', 'One row is', 'Row count']), rows: Object.freeze([
         Object.freeze(['no grouping', 'one completed sale', '4,312']),
         Object.freeze(['GROUP BY branch_id', 'one branch', '48']),
@@ -156,6 +182,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     Object.freeze({
       id: 'join', number: '03', title: 'Joining without changing what a row is', studyMinutes: 5, playMinutes: 5,
       objective: 'Predict a join’s effect on the row count before running it.',
+      audioSummary: 'A join is like using a label on an event slip to look up a master record in another cabinet. A primary key is unique in the master cabinet. The same value may repeat as a foreign key in the event ledger because one branch or account can have many events. When each event finds exactly one master record, the join adds descriptive columns and preserves the event grain. If the supposed master key repeats, one event finds several matches and the result multiplies. That is join cardinality, and predicting it protects totals from inflation.',
       opening: 'Two tables, one key, and a query that succeeds. The row count went from four thousand to twelve thousand, nothing raised an error, and the revenue figure computed afterwards is now three times too large.',
       sections: Object.freeze([
         Object.freeze({ heading: 'A join is a matching rule', paragraphs: Object.freeze([
@@ -171,6 +198,18 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
           'Each of those three is fine when it is what you intended. The failure is not knowing which happened, because every one of them returns a result that looks perfectly reasonable.'
         ]) })
       ]),
+      workshopLab: Object.freeze({
+        kind:'join', title:'Match event labels to the master cabinet',
+        mapping:Object.freeze([
+          Object.freeze(['Master serial label','primary key']), Object.freeze(['Label copied onto event','foreign key']), Object.freeze(['Look up matching label','JOIN condition']),
+          Object.freeze(['One matching master card','many-to-one join']), Object.freeze(['Several matching cards','row multiplication']), Object.freeze(['No matching card','unmatched row'])
+        ]),
+        paragraphs:Object.freeze([
+          'Uniqueness belongs on the “one” side. A branch identifier should occur once in the branch master and may occur thousands of times in sales. Those repeated foreign keys express a real one-to-many relationship; deleting them would delete legitimate events.',
+          'Switch the master cabinet below from unique to duplicated. The SQL remains valid, but each Northgate sale now finds two matching master cards. The result grows and any repeated sale amount would inflate a later total.'
+        ]),
+        limit:'Real joins are not physical lookups between cabinets and can be one-to-one, one-to-many or many-to-many. INNER, LEFT, RIGHT and FULL joins also make different promises about unmatched rows. A foreign-key constraint can protect references, but it does not by itself guarantee every analytical join preserves grain.'
+      }),
       example: Object.freeze({ title: 'Three joins from the same 4,312 sales', headers: Object.freeze(['Join', 'Rows out', 'What happened']), rows: Object.freeze([
         Object.freeze(['sale to branch', '4,312', 'unique key: columns added, grain held']),
         Object.freeze(['sale to sale_line', '11,983', 'key repeats: now one row per line']),
@@ -221,6 +260,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     Object.freeze({
       id: 'verify', number: '04', title: 'Checking a result before believing it', studyMinutes: 5, playMinutes: 5,
       objective: 'Run a short set of checks on any query result before it leaves your screen.',
+      audioSummary: 'A completed query is like a packed dispatch from the workshop. The fact that the machinery ran proves only that the instruction was valid. Before dispatch, write what one output row represents, compare the expected and actual row counts, inspect key uniqueness and unmatched records, and reconcile a known count or total. These checks are assertions about meaning, not formatting. A result should leave the workshop only when its grain, population and important totals agree with what the analytical question required.',
       opening: 'The query ran. That is evidence about the syntax and nothing else. Whether the answer is right is a separate question, and it has to be asked deliberately.',
       sections: Object.freeze([
         Object.freeze({ heading: 'The result is a table with a grain', paragraphs: Object.freeze([
@@ -236,6 +276,18 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
           'Saving the query alongside the result, with the date it was run, costs nothing and is what makes a number an answer rather than an assertion.'
         ]) })
       ]),
+      workshopLab: Object.freeze({
+        kind:'verify', title:'Complete the dispatch manifest',
+        mapping:Object.freeze([
+          Object.freeze(['Packed dispatch','query result']), Object.freeze(['Contents description','grain statement']), Object.freeze(['Parcel count','row-count check']),
+          Object.freeze(['Serial-number audit','key check']), Object.freeze(['Missing component','NULL or unmatched row']), Object.freeze(['Dispatch record','saved query and run date'])
+        ]),
+        paragraphs:Object.freeze([
+          'A workshop does not dispatch a crate merely because the packing machine completed. It checks that the crate contains the expected kind and number of items. A SQL result deserves the same separation between execution and verification.',
+          'Complete the manifest below. Each check answers a different failure mode: unexpected grain, row multiplication or loss, broken relationships, and totals that no longer reconcile.'
+        ]),
+        limit:'A checklist cannot prove an analysis is true. It tests explicit expectations and catches common contradictions. Stronger systems automate these assertions, preserve query versions and test results against independently defined controls.'
+      }),
       example: Object.freeze({ title: 'Four checks on any result', headers: Object.freeze(['Check', 'What it catches']), rows: Object.freeze([
         Object.freeze(['row count against expectation', 'a join that changed the grain']),
         Object.freeze(['distinct keys against row count', 'duplicates introduced by the query']),

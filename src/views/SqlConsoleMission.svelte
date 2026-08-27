@@ -6,6 +6,8 @@
   import { SQL_CONSOLE_MISSION as M, SALES, runQuery, queryText, answerForSql, optionsForSql, whyForSql } from '../lib/game/sql-console-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
   import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
+  import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
+  import { sqlConsoleAssistant } from '../lib/content/sql-assistant.js';
 
   const STEPS = [
     { key: 'clause', label: 'WRITE', question: 'Which clause does this need?',
@@ -132,6 +134,8 @@
     <span>{#each M.sources as s, i}<a href={s.url} target="_blank" rel="noreferrer">{s.label}</a>{i < M.sources.length - 1 ? ' · ' : ''}{/each}</span>
   </footer>
 </section>
+
+<WorkshopAssistant spec={sqlConsoleAssistant(c, step)} />
 
 <style>
   :global(.qubix-university){height:auto!important;overflow:visible!important}:global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}:global(body){position:static}

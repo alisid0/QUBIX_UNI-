@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
+    "prebuild": "node scripts/check-chapters.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-workshops.mjs && node scripts/check-assistant.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -32,6 +32,8 @@
     "check:palette": "node scripts/check-palette.mjs",
     "check:map": "node scripts/check-store-map.mjs",
     "check:figures": "node scripts/check-figures.mjs",
+    "check:workshops": "node scripts/check-workshops.mjs",
+    "check:assistant": "node scripts/check-assistant.mjs",
     "check:scroll": "node scripts/check-scroll.mjs",
     "check:timing": "node scripts/check-timing.mjs",
     "build:seo": "node scripts/build-seo.mjs",

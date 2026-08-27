@@ -1,0 +1,159 @@
+<script>
+  import { tick } from 'svelte';
+
+  export let spec;
+
+  let open = false;
+  let input = '';
+  let messages = [];
+  let lastKey = '';
+  let hintIndex = 0;
+  let awaiting = '';
+  let log;
+
+  $: if (spec?.key && spec.key !== lastKey) {
+    lastKey = spec.key;
+    messages = [{ from: 'assistant', text: spec.welcome }];
+    hintIndex = 0;
+    awaiting = '';
+    input = '';
+  }
+
+  async function add(user, assistant) {
+    const reply = typeof assistant === 'string' ? { text: assistant } : assistant;
+    messages = [...messages, { from: 'user', text: user }, { from: 'assistant', ...reply }];
+    await tick();
+    if (log) log.scrollTop = log.scrollHeight;
+  }
+
+  function useAction(action) {
+    awaiting = '';
+    if (action === 'explain') add('Explain this simply.', spec.explain);
+    if (action === 'terms') add('Show me the real terminology.', spec.terminology);
+    if (action === 'hint') {
+      const index = Math.min(hintIndex, spec.hints.length - 1);
+      add(hintIndex ? 'One more hint.' : 'Give me a hint.', `Hint ${index + 1} of ${spec.hints.length}: ${spec.hints[index]}`);
+      hintIndex = Math.min(hintIndex + 1, spec.hints.length - 1);
+    }
+    if (action === 'quiz') {
+      add('Question me.', spec.quiz.question);
+      awaiting = 'quiz';
+    }
+    if (action === 'reason') {
+      add('Check my reasoning.', spec.reasoning.prompt);
+      awaiting = 'reason';
+    }
+  }
+
+  function submit() {
+    const value = input.trim();
+    if (!value) return;
+    const lower = value.toLowerCase();
+    let response = spec.fallback;
+
+    if (awaiting === 'quiz') {
+      const correct = spec.quiz.answers.some(term => lower.includes(term));
+      response = correct ? spec.quiz.success : spec.quiz.retry;
+      if (correct) awaiting = '';
+    } else if (awaiting === 'reason') {
+      const complete = spec.reasoning.terms.every(term => lower.includes(term));
+      response = complete ? spec.reasoning.success : spec.reasoning.retry;
+      if (complete) awaiting = '';
+    } else {
+      const rule = spec.rules.find(item => item.terms.some(term => lower.includes(term)));
+      if (rule) response = rule.response;
+      else if (spec.search) {
+        const sources = spec.search(value, 3);
+        if (sources.length) response = {
+          text: `I searched ${spec.knowledgeCount} passages in SQL Foundations. These are the closest pieces of Qubix material; open one to continue in its original lesson context.`,
+          sources
+        };
+      }
+    }
+
+    add(value, response);
+    input = '';
+  }
+
+  function openSource(event, href) {
+    event.preventDefault();
+    window.location.assign(href);
+  }
+</script>
+
+<div class="assistant-shell" class:open>
+  {#if open}
+    <section class="assistant-panel" aria-label="Ask Qubix workshop assistant">
+      <header>
+        <span class="bot" aria-hidden="true"><i></i><b>QX</b></span>
+        <div><small>{spec.eyebrow}</small><strong>{spec.title}</strong></div>
+        <button class="close" aria-label="Close Ask Qubix" on:click={() => open = false}>×</button>
+      </header>
+
+      <div class="prototype-note"><span></span>{spec.search ? `LOCAL QUBIX INDEX · ${spec.knowledgeCount} PASSAGES · NO EXTERNAL AI` : 'PREPARED PROTOTYPE · NO LIVE AI'}</div>
+
+      <div class="messages" bind:this={log} role="log" aria-live="polite" aria-label="Conversation">
+        {#each messages as message}
+          <div class:learner={message.from === 'user'} class="message">
+            <small>{message.from === 'user' ? 'YOU' : 'QUBIX'}</small>
+            <p>{message.text}</p>
+            {#if message.sources}
+              <div class="sources" aria-label="Retrieved Qubix material">
+                {#each message.sources as source}
+                  <article>
+                    <span>{source.kind.toUpperCase()} · {source.section}</span>
+                    <p>{source.excerpt}</p>
+                    <a href={source.href} on:click={(event) => openSource(event, source.href)}>{source.session} <i aria-hidden="true">→</i></a>
+                  </article>
+                {/each}
+              </div>
+            {/if}
+          </div>
+        {/each}
+      </div>
+
+      <div class="actions" aria-label="Tutor actions">
+        <button on:click={() => useAction('explain')}>Explain simply</button>
+        <button on:click={() => useAction('hint')}>Give me a hint</button>
+        <button on:click={() => useAction('quiz')}>Question me</button>
+        <button on:click={() => useAction('reason')}>Check my reasoning</button>
+        <button on:click={() => useAction('terms')}>Real terminology</button>
+      </div>
+
+      <form on:submit|preventDefault={submit}>
+        <label for={`assistant-${spec.key}`}>Ask about this lesson</label>
+        <div><input id={`assistant-${spec.key}`} bind:value={input} placeholder="Type your question or reasoning…" autocomplete="off" /><button aria-label="Send message" disabled={!input.trim()}>↑</button></div>
+      </form>
+    </section>
+  {/if}
+
+  <button class="launcher" aria-expanded={open} aria-label={open ? 'Close Ask Qubix' : 'Open Ask Qubix'} on:click={() => open = !open}>
+    <span aria-hidden="true"><i></i><b>QX</b></span>
+    <em>{open ? 'CLOSE' : 'ASK QUBIX'}</em>
+  </button>
+</div>
+
+<style>
+  .assistant-shell{position:fixed;right:26px;bottom:24px;z-index:80;font-family:var(--qx-font);color:var(--qx-text)}
+  .launcher{display:flex;align-items:center;gap:9px;min-height:52px;padding:7px 15px 7px 8px;border:3px solid #20241f;border-radius:4px;background:var(--qx-surface);color:var(--qx-text);box-shadow:5px 5px 0 #20241f;cursor:pointer}
+  .launcher span,.bot{position:relative;display:grid;place-items:center;width:34px;height:34px;background:var(--qx-accent);color:#fff;border:2px solid #20241f}
+  .launcher span i,.bot i{position:absolute;top:7px;width:13px;height:5px;border-left:3px solid #fff;border-right:3px solid #fff}
+  .launcher b,.bot b{margin-top:11px;font:900 11px ui-monospace,monospace}
+  .launcher em{font:900 12px/1 var(--qx-font);font-style:normal;letter-spacing:.08em}
+  .launcher:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 #20241f}.launcher:active{transform:translate(3px,3px);box-shadow:2px 2px 0 #20241f}
+  .assistant-panel{position:absolute;right:0;bottom:68px;display:grid;grid-template-rows:auto auto minmax(150px,1fr) auto auto;width:min(410px,calc(100vw - 28px));height:min(650px,calc(100vh - 112px));overflow:hidden;border:3px solid #20241f;border-radius:5px;background:var(--qx-surface);box-shadow:8px 8px 0 #20241f}
+  header{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:13px 14px;border-bottom:2px solid #20241f;background:var(--qx-surface-2)}
+  header small,header strong{display:block}header small{margin-bottom:3px;color:var(--qx-accent-text);font:900 11px/1 var(--qx-font);letter-spacing:.09em}header strong{font:750 16px/1.2 Georgia,serif}
+  .bot{width:38px;height:38px}.close{align-self:start;width:34px;height:34px;padding:0;border:2px solid #20241f;background:var(--qx-surface);color:var(--qx-text);font:800 24px/1 var(--qx-font);cursor:pointer}
+  .prototype-note{display:flex;align-items:center;gap:7px;padding:8px 14px;border-bottom:1px solid var(--qx-border-2);color:var(--qx-text-dim);font:850 11px/1 var(--qx-font);letter-spacing:.08em}.prototype-note span{width:7px;height:7px;background:var(--qx-green);border-radius:50%}
+  .messages{min-height:0;padding:13px 14px;overflow-y:auto;background:var(--qx-bg)}
+  .message{max-width:88%;margin-bottom:12px}.message small{display:block;margin:0 0 4px;color:var(--qx-accent-text);font:900 11px/1 var(--qx-font);letter-spacing:.08em}.message p{margin:0;padding:10px 12px;border:1px solid var(--qx-border-2);border-radius:2px 10px 10px;background:var(--qx-surface);color:var(--qx-text);font:650 13px/1.48 var(--qx-font)}
+  .message.learner{margin-left:auto}.message.learner small{text-align:right;color:var(--qx-green-text)}.message.learner p{border-color:var(--qx-green);border-radius:10px 2px 10px;background:var(--qx-green-soft)}
+  .sources{display:grid;gap:7px;margin-top:8px}.sources article{padding:10px;border:1px solid var(--qx-border-2);border-left:4px solid var(--qx-accent);background:var(--qx-surface)}.sources span{display:block;color:var(--qx-accent-text);font:900 11px/1.25 var(--qx-font);letter-spacing:.05em}.sources p{padding:0;margin:6px 0;border:0;border-radius:0;background:transparent;color:var(--qx-text-2);font:650 12px/1.45 var(--qx-font)}.sources a{display:flex;align-items:flex-end;justify-content:space-between;gap:7px;color:var(--qx-text);font:850 11.5px/1.35 var(--qx-font);text-decoration-thickness:1px;text-underline-offset:3px}.sources i{flex:0 0 auto;font-style:normal}
+  .actions{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;border-top:1px solid var(--qx-border-2);background:var(--qx-surface)}
+  .actions button{flex:0 0 auto;min-height:34px;padding:7px 9px;border:1px solid var(--qx-border-2);border-radius:2px;background:var(--qx-surface-2);color:var(--qx-text);font:800 11px/1.2 var(--qx-font);cursor:pointer}.actions button:hover{border-color:var(--qx-accent);color:var(--qx-accent-text)}
+  form{padding:10px 12px 12px;border-top:1px solid var(--qx-border-2);background:var(--qx-surface)}form label{display:block;margin-bottom:6px;color:var(--qx-text-dim);font:800 11px/1 var(--qx-font);letter-spacing:.05em}form>div{display:grid;grid-template-columns:1fr 42px;gap:7px}input{min-width:0;height:42px;padding:0 11px;border:2px solid #20241f;border-radius:2px;background:var(--qx-bg);color:var(--qx-text);font:650 13px var(--qx-font)}form button{border:2px solid #20241f;background:var(--qx-accent);color:#fff;font:900 19px var(--qx-font);cursor:pointer}form button:disabled{opacity:.4;cursor:default}
+  button:focus-visible,input:focus-visible{outline:3px solid var(--qx-accent);outline-offset:2px}
+  @media(max-width:600px){.assistant-shell{right:10px;bottom:12px}.launcher{min-height:48px}.assistant-panel{position:fixed;left:0;right:0;bottom:0;width:100%;height:min(76vh,650px);border-width:3px 0 0;border-radius:0;box-shadow:0 -7px 0 #20241f}.assistant-shell.open .launcher{display:none}.messages{padding:12px}.message{max-width:93%}.actions{padding:9px 10px}form{padding:9px 10px calc(11px + env(safe-area-inset-bottom))}}
+  @media(prefers-reduced-motion:reduce){.launcher{transition:none}}
+</style>
