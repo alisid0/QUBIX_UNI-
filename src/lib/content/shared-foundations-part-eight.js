@@ -176,6 +176,12 @@ export const SHARED_FOUNDATIONS_PART_EIGHT = Object.freeze({
           'This distinction matters when a decision hangs on it. The interval you have either contains the truth or does not, and you cannot know which. What you can say is that the recipe is reliable at a stated rate, which is enough to act on and is not the same as a ninety-five per cent chance that this particular range is right.'
         ]) })
       ]),
+      // Chapter 8's first figure, and the one place in the volume where motion
+      // is doing something a still picture cannot: an estimate moving because
+      // a different sample was drawn.
+      figure: Object.freeze({ kind: 'sampling-spread', case: 'baskets',
+        caption: 'Twenty-four samples from the same forty baskets',
+        note: 'Every dot is a mean the shop could honestly have reported that week.' }),
       example: Object.freeze({
         title: 'The same estimate from four sample sizes',
         headers: Object.freeze(['Observations', 'Estimated mean', 'Rough interval', 'Width']),

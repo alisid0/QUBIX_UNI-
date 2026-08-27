@@ -14,6 +14,7 @@
 import { readFileSync } from 'node:fs';
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { JOIN_GRAIN_MISSION } from '../src/lib/game/join-grain-mission.js';
+import { DISTRIBUTION_DESK_MISSION } from '../src/lib/game/distribution-desk-mission.js';
 
 const dir = u => new URL(u, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 
@@ -24,6 +25,11 @@ const check = (condition, label, detail = '') => {
 };
 
 const component = readFileSync(dir('../src/lib/components/JoinFanOut.svelte'), 'utf8');
+const sampler = readFileSync(dir('../src/lib/components/SamplingSpread.svelte'), 'utf8');
+const ANIMATED = [
+  { kind: 'join-fanout', file: 'JoinFanOut.svelte', source: component },
+  { kind: 'sampling-spread', file: 'SamplingSpread.svelte', source: sampler }
+];
 
 /* ── every animated figure in the volume is one we know about ────────────── */
 const animated = SHARED_FOUNDATIONS
@@ -61,14 +67,70 @@ for (const { chapter, s } of animated) {
     `${source.leftRows.toLocaleString()} becomes ${source.resultRows.toLocaleString()}`);
 }
 
-/* ── it works with motion turned off ─────────────────────────────────────── */
-check(/prefers-reduced-motion/.test(component),
-  'the component honours prefers-reduced-motion');
-check(/matchMedia/.test(component) && /still\s*=/.test(component),
-  'and jumps to the finished state rather than simply not animating',
-  'a figure that only removes the transition shows step one forever');
-check(/transition:\s*none\s*!important/.test(component),
-  'with transitions actually disabled, not merely shortened');
+/* ── the sampling figure draws what it claims ────────────────────────────────
+   Recomputed here with the same seed and the same arithmetic the component
+   uses. If the spread ever stopped narrowing with n, the figure would render
+   beautifully and teach the opposite of the session it sits in.              */
+const spreadSessions = SHARED_FOUNDATIONS
+  .flatMap(({ chapter, book }) => book.sessions.map(s => ({ chapter, s })))
+  .filter(({ s }) => s.figure?.kind === 'sampling-spread');
+check(spreadSessions.length > 0, 'the sampling figure is used by a session',
+  spreadSessions.map(({ chapter, s }) => `ch${chapter}.${s.number}`).join(', '));
+
+const seeded = seed => () => {
+  seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+for (const { chapter, s } of spreadSessions) {
+  const population = DISTRIBUTION_DESK_MISSION.cases
+    .find(c => c.id === (s.figure.case ?? 'baskets'))?.values;
+  check(Array.isArray(population) && population.length > 20,
+    `ch${chapter}.${s.number} samples a population big enough to sample from`,
+    `${population?.length} values`);
+  if (!population) continue;
+
+  const spreads = [4, 10, 25].map((n, r) => {
+    const rnd = seeded(0x9e3779b9 + r * 7919);
+    const means = [];
+    for (let d = 0; d < 24; d++) {
+      let total = 0;
+      for (let i = 0; i < n; i++) total += population[Math.floor(rnd() * population.length)];
+      means.push(total / n);
+    }
+    return { n, spread: Math.max(...means) - Math.min(...means) };
+  });
+
+  const narrowing = spreads.every((row, i) => i === 0 || row.spread < spreads[i - 1].spread);
+  check(narrowing, 'and the spread narrows every time the sample grows',
+    spreads.map(r => `n=${r.n}: £${r.spread.toFixed(2)}`).join('  '));
+
+  const ratio = spreads[0].spread / spreads.at(-1).spread;
+  check(ratio > 1.5 && ratio < 4,
+    'by an amount the square-root law would predict, rather than by luck',
+    `${ratio.toFixed(1)}x narrower on ${(25 / 4).toFixed(1)}x the data`);
+}
+
+/* ── the contract, for every animated figure ─────────────────────────────── */
+for (const { file, source } of ANIMATED) {
+  check(/prefers-reduced-motion/.test(source), `${file} honours prefers-reduced-motion`);
+  check(/matchMedia/.test(source) && /still\s*=/.test(source),
+    `${file} jumps to the finished state rather than simply not animating`,
+    'a figure that only removes the transition shows step one forever');
+  check(/transition:\s*none\s*!important/.test(source),
+    `${file} disables transitions rather than shortening them`);
+  check(/on:click=\{play\}/.test(source), `${file} can be replayed`);
+  check(!/<img|url\(|\.gif|\.png|\.jpg/i.test(source),
+    `${file} keeps raster out, per the media rule`);
+  check(/<svg/.test(source), `${file} is SVG`);
+}
+
+/* ── the sampler is seeded, or it cannot be checked or quoted ────────────── */
+check(/Math\.imul/.test(sampler) && !/Math\.random/.test(sampler),
+  'the sampling figure draws from a seeded generator, not Math.random',
+  'an unseeded figure renders a different picture every time and no guard can hold it');
 
 /* ── it can be replayed and it can be read ───────────────────────────────── */
 check(/aria-label=\{description\}/.test(component) || /aria-label=/.test(component),

@@ -20,6 +20,7 @@
   import { runProgram, PYTHON_TRACE_MISSION } from '../game/python-trace-mission.js';
   import { MISSING_DATA_MISSION } from '../game/missing-data-mission.js';
   import JoinFanOut from './JoinFanOut.svelte';
+  import SamplingSpread from './SamplingSpread.svelte';
 
   export let spec;
 
@@ -97,7 +98,11 @@
 </script>
 
 <figure class="qx-figure">
-  {#if spec.kind === 'join-fanout'}
+  {#if spec.kind === 'sampling-spread'}
+    <!-- Repetition is the subject: one sample says little, and how little is
+         only visible once you have watched several land. -->
+    <SamplingSpread caseId={spec.case ?? 'baskets'} />
+  {:else if spec.kind === 'join-fanout'}
     <!-- The only animated figure. Motion is the subject rather than decoration:
          a value being copied onto more rows than it started on. -->
     <JoinFanOut caseId={spec.case ?? 'sale-line'} />
