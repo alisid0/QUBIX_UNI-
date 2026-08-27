@@ -5,6 +5,8 @@
   import { boards, TOTAL_SECTIONS } from '../lib/content/course.js';
   import AuthButton from '../lib/components/AuthButton.svelte';
   import QubixMascot from '../lib/components/QubixMascot.svelte';
+  import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
+  import { HOME_ASSISTANT } from '../lib/content/home-assistant.js';
 
   // Counted, not written down. The line here used to say "five boards, twenty
   // sections" in the markup, which stopped being true the moment the pilot
@@ -202,6 +204,10 @@
       </section>
     </div>
   {/if}
+
+  <!-- Wayfinding, not coaching: nobody on the front page is stuck on a lesson
+       yet, so this spec offers no hints, no quiz and no reasoning check. -->
+  <WorkshopAssistant spec={HOME_ASSISTANT} />
 </div>
 
 <style>

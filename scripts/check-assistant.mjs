@@ -3,7 +3,8 @@ import { SQL_CONSOLE_MISSION } from '../src/lib/game/sql-console-mission.js';
 import { SQL_KNOWLEDGE_COUNT, searchSqlKnowledge } from '../src/lib/content/sql-knowledge-index.js';
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { FOUNDATIONS_KNOWLEDGE_COUNT, readingAssistantFor, searchFoundationsKnowledge } from '../src/lib/content/foundations-assistant.js';
-import { answersQuiz, explains, mentions } from '../src/lib/content/assistant-match.js';
+import { answersQuiz, explains, mentions, routeFor } from '../src/lib/content/assistant-match.js';
+import { HOME_ASSISTANT } from '../src/lib/content/home-assistant.js';
 import fs from 'node:fs';
 
 let failed = false;
@@ -86,7 +87,47 @@ check(mentions('the join fans out', 'join'), 'a plain mention still matches');
 check(!explains('what is the grain here?', ['grain']), 'asking about a term is not explaining it');
 check(explains('the grain is one sale line', ['grain', 'sale']), 'a real explanation is accepted');
 
+/* ── the front door ─────────────────────────────────────────────────────────
+   A home assistant that overstates the course is the worst place to be wrong,
+   so its numbers are derived and checked, and it is required to say out loud
+   that Volume 0 is an unapproved draft.                                      */
+const homeSessions = SHARED_FOUNDATIONS.reduce((n, part) => n + part.book.sessions.length, 0);
+check(HOME_ASSISTANT.facts.chapters === SHARED_FOUNDATIONS.length
+  && HOME_ASSISTANT.facts.sessions === homeSessions,
+  'the home assistant counts the course it actually has',
+  `${HOME_ASSISTANT.facts.chapters} chapters, ${HOME_ASSISTANT.facts.sessions} sessions`);
+check(HOME_ASSISTANT.welcome.includes(String(homeSessions)),
+  'and says so in its opening line');
+
+check(!HOME_ASSISTANT.hints && !HOME_ASSISTANT.quiz && !HOME_ASSISTANT.reasoning,
+  'it does not offer hints or a quiz, because nobody there is stuck yet');
+
+const wayfinding = [
+  ['where should I start', 'start'],
+  ['how long does this take', 'how long'],
+  ['what will I learn', 'learn'],
+  ['do I need to know maths first', 'prerequisite'],
+  ['is it free', 'free'],
+  ['is this finished', 'finished'],
+  ['do you use ChatGPT', 'ai']
+];
+for (const [asked] of wayfinding)
+  check(Boolean(routeFor(asked, HOME_ASSISTANT.rules)),
+    `the front door answers “${asked}”`);
+
+const statusAnswers = HOME_ASSISTANT.rules
+  .filter(rule => rule.terms.includes('finished') || rule.terms.includes('free'))
+  .map(rule => rule.response).join(' ');
+check(/draft/i.test(statusAnswers) && /not.*approved|nothing.*approved/i.test(statusAnswers),
+  'and admits Volume 0 is an unapproved draft rather than selling it');
+
+check(typeof HOME_ASSISTANT.search === 'function' && HOME_ASSISTANT.knowledgeCount > 0,
+  'anything else falls through to the local course index',
+  `${HOME_ASSISTANT.knowledgeCount} passages`);
+
 const assistantSource = fs.readFileSync(new URL('../src/lib/components/WorkshopAssistant.svelte', import.meta.url), 'utf8');
+check(/\{#if spec\.hints\?\.length\}/.test(assistantSource),
+  'the component hides actions a spec cannot perform');
 check(!/lower\.includes\(/.test(assistantSource),
   'the component matches through assistant-match, not bare substring');
 const indexSource = `${fs.readFileSync(new URL('../src/lib/content/sql-knowledge-index.js', import.meta.url), 'utf8')}\n${fs.readFileSync(new URL('../src/lib/content/foundations-assistant.js', import.meta.url), 'utf8')}`;

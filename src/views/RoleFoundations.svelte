@@ -17,6 +17,8 @@
   import { ROOMS } from '../lib/game/store-map.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
+  import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
+  import { HOME_ASSISTANT } from '../lib/content/home-assistant.js';
 
   const CHAPTERS = [
     ['What data represents', 'Observations, variables, records, tables and how data describes part of the world.'],
@@ -255,6 +257,10 @@
 
 
   <div class="foot-wrap"><SiteFooter compact /></div>
+
+  <!-- The front door. Production serves this view at /, not Home.svelte, so
+       this is the screen a newcomer actually meets. Wayfinding only. -->
+  <WorkshopAssistant spec={HOME_ASSISTANT} />
 </section>
 
 <style>

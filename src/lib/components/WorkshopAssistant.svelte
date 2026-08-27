@@ -113,11 +113,15 @@
       </div>
 
       <div class="actions" aria-label="Tutor actions">
-        <button on:click={() => useAction('explain')}>Explain simply</button>
-        <button on:click={() => useAction('hint')}>Give me a hint</button>
-        <button on:click={() => useAction('quiz')}>Question me</button>
-        <button on:click={() => useAction('reason')}>Check my reasoning</button>
-        <button on:click={() => useAction('terms')}>Real terminology</button>
+        <!-- Only the actions this spec can actually perform. A lesson coach
+             offers hints and a quiz; a wayfinding assistant on the home page
+             has neither, and a button that answers nothing is worse than an
+             absent one. -->
+        {#if spec.explain}<button on:click={() => useAction('explain')}>{spec.labels?.explain ?? 'Explain simply'}</button>{/if}
+        {#if spec.hints?.length}<button on:click={() => useAction('hint')}>{spec.labels?.hint ?? 'Give me a hint'}</button>{/if}
+        {#if spec.quiz}<button on:click={() => useAction('quiz')}>{spec.labels?.quiz ?? 'Question me'}</button>{/if}
+        {#if spec.reasoning}<button on:click={() => useAction('reason')}>{spec.labels?.reason ?? 'Check my reasoning'}</button>{/if}
+        {#if spec.terminology}<button on:click={() => useAction('terms')}>{spec.labels?.terms ?? 'Real terminology'}</button>{/if}
       </div>
 
       <form on:submit|preventDefault={submit}>
