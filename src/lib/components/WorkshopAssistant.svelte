@@ -1,5 +1,6 @@
 <script>
   import { tick } from 'svelte';
+  import { answersQuiz, explains, routeFor } from '../content/assistant-match.js';
 
   export let spec;
 
@@ -48,19 +49,18 @@
   function submit() {
     const value = input.trim();
     if (!value) return;
-    const lower = value.toLowerCase();
     let response = spec.fallback;
 
     if (awaiting === 'quiz') {
-      const correct = spec.quiz.answers.some(term => lower.includes(term));
+      const correct = answersQuiz(value, spec.quiz.answers);
       response = correct ? spec.quiz.success : spec.quiz.retry;
       if (correct) awaiting = '';
     } else if (awaiting === 'reason') {
-      const complete = spec.reasoning.terms.every(term => lower.includes(term));
+      const complete = explains(value, spec.reasoning.terms);
       response = complete ? spec.reasoning.success : spec.reasoning.retry;
       if (complete) awaiting = '';
     } else {
-      const rule = spec.rules.find(item => item.terms.some(term => lower.includes(term)));
+      const rule = routeFor(value, spec.rules);
       if (rule) response = rule.response;
       else if (spec.search) {
         const sources = spec.search(value, 3);

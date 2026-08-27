@@ -3,6 +3,7 @@ import { SQL_CONSOLE_MISSION } from '../src/lib/game/sql-console-mission.js';
 import { SQL_KNOWLEDGE_COUNT, searchSqlKnowledge } from '../src/lib/content/sql-knowledge-index.js';
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { FOUNDATIONS_KNOWLEDGE_COUNT, readingAssistantFor, searchFoundationsKnowledge } from '../src/lib/content/foundations-assistant.js';
+import { answersQuiz, explains, mentions } from '../src/lib/content/assistant-match.js';
 import fs from 'node:fs';
 
 let failed = false;
@@ -56,7 +57,38 @@ check(FOUNDATIONS_KNOWLEDGE_COUNT >= 150, 'course-wide local index covers all se
 const courseResults = searchFoundationsKnowledge('difference between mean median and outliers', 5);
 check(courseResults.some(result => result.chapter === 4), 'course retrieval finds the statistics chapter');
 
+/* ── a lost learner must not be told they are right ──────────────────────────
+   Matching used to be `lower.includes(term)`. The select quiz accepts "where",
+   so "where do I even start?" marked itself correct. These cases are the ones
+   that were wrong, plus the plain answers that must keep working, because a
+   stricter matcher that rejects "where" would be a worse bug than the one it
+   replaced.                                                                   */
+const selectQuiz = SQL_READING_ASSISTANTS.select.quiz.answers;
+
+const mustReject = [
+  'where do I even start?',
+  'where do I start',
+  "I don't know where to look",
+  'no idea, is it where?',
+  'what does where do?',
+  'should I use where or having?'
+];
+for (const attempt of mustReject)
+  check(!answersQuiz(attempt, selectQuiz), `a lost learner is not marked correct: “${attempt}”`);
+
+const mustAccept = ['where', 'the WHERE clause', 'you filter with where', 'a filter'];
+for (const attempt of mustAccept)
+  check(answersQuiz(attempt, selectQuiz), `a real answer still counts: “${attempt}”`);
+
+check(!mentions('it is not a join', 'join'), 'a negated term does not route to its explanation');
+check(!mentions('conjoined rows', 'join'), 'a term inside a longer word does not match');
+check(mentions('the join fans out', 'join'), 'a plain mention still matches');
+check(!explains('what is the grain here?', ['grain']), 'asking about a term is not explaining it');
+check(explains('the grain is one sale line', ['grain', 'sale']), 'a real explanation is accepted');
+
 const assistantSource = fs.readFileSync(new URL('../src/lib/components/WorkshopAssistant.svelte', import.meta.url), 'utf8');
+check(!/lower\.includes\(/.test(assistantSource),
+  'the component matches through assistant-match, not bare substring');
 const indexSource = `${fs.readFileSync(new URL('../src/lib/content/sql-knowledge-index.js', import.meta.url), 'utf8')}\n${fs.readFileSync(new URL('../src/lib/content/foundations-assistant.js', import.meta.url), 'utf8')}`;
 check(!/\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource/.test(`${assistantSource}\n${indexSource}`), 'local assistant makes no network request');
 
