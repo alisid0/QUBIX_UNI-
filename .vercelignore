@@ -18,8 +18,12 @@ ios/
 
 # Authoring and governance material. The Factory is dev-only and the curriculum
 # records are not part of the site.
-curriculum/
 supabase/
+
+# Same shape as docs/: the curriculum records are not served, but
+# check-motion reads the approval register during prebuild.
+curriculum/*
+!curriculum/APPROVED-FIGURES.json
 
 # docs/ is not served, but check-motion reads docs/MEDIA-RULE.md during
 # prebuild and the deploy failed on ENOENT without it. The contents are
