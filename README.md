@@ -20,6 +20,7 @@ The fixed public identity is **Qubix**, published by **Arcave Technologies** at
 8. [Current Status](./curriculum/STATUS.md)
 9. [Founder Review Protocol](./docs/REVIEW-PROTOCOL.md)
 10. [Product and Launch Plan](./docs/PRODUCT-AND-LAUNCH-PLAN.md)
+11. [Current Working To-Do List](./TODO.md)
 
 The active curriculum item is [A Letter for a Number](./curriculum/bb/CME-CHANGE-001-A-LETTER-FOR-A-NUMBER.md). The four boards after it remain locked.
 
