@@ -19,8 +19,14 @@ ios/
 # Authoring and governance material. The Factory is dev-only and the curriculum
 # records are not part of the site.
 curriculum/
-docs/
 supabase/
+
+# docs/ is not served, but check-motion reads docs/MEDIA-RULE.md during
+# prebuild and the deploy failed on ENOENT without it. The contents are
+# excluded rather than the directory, because gitignore semantics cannot
+# re-include a file whose parent directory is already excluded.
+docs/*
+!docs/MEDIA-RULE.md
 
 # Local only.
 .playwright-session/
