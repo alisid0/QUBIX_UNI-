@@ -108,7 +108,7 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'reasoning', number: '03', title: 'Separating what you found from what you think', studyMinutes: 5, playMinutes: 18,
+      id: 'reasoning', number: '03', title: 'Separating what you found from what you think', studyMinutes: 5, playMinutes: 9,
       objective: 'Write a finding, an interpretation and a recommendation as three distinct statements.',
       opening: 'Returns rose four per cent. Returns rose because the new packaging is weak. We should change supplier. Only the first of those is in the data.',
       sections: Object.freeze([
