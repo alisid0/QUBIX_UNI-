@@ -25,11 +25,16 @@
   // a lesson is allowed to depend on them.
   let AssetShowcase = null;
   let GameMission = null;
+  // The data console: the first surface where a learner's SQL actually runs,
+  // against the real 54-table Superstore. Lazy, and opt-in by URL, because it
+  // pulls sql.js and an 11 MB database that no reader should ever download.
+  let DataConsole = null;
 
   const params = new URLSearchParams(window.location.search);
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
   const explicitReviewMode = params.get('mode') === 'review';
   const showWikiMode = params.get('mode') === 'wiki';
+  const showDataConsole = params.get('lab') === 'sql';
   // Authoring surface. Never reached in production: options are drafts, not curriculum.
   // Dev always, plus any build that asks for the workshop explicitly.
   const workshop = !import.meta.env.PROD || import.meta.env.VITE_WORKSHOP === '1';
@@ -51,6 +56,9 @@
 
   if (showFactoryMode) {
     import('./views/FactoryMode.svelte').then(m => { FactoryMode = m.default; });
+  }
+  if (showDataConsole) {
+    import('./views/DataConsole.svelte').then(m => { DataConsole = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -164,6 +172,8 @@
     <svelte:component this={ExerciseFactory} />
   {:else if showAssetShowcase}
     <svelte:component this={AssetShowcase} />
+  {:else if showDataConsole}
+    <svelte:component this={DataConsole} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}
