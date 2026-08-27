@@ -53,7 +53,11 @@ export const ROOMS = Object.freeze([
   Object.freeze({
     id: 'goods-in', name: 'Goods In', wing: 'shop', x: 0, y: 0, w: 3, h: 2,
     blurb: 'Where a delivery becomes a number, in whatever unit the supplier chose.',
-    spots: Object.freeze([Object.freeze({ slug: 'units-measurement', x: 58, y: 77, at: 'the platform scale' })])
+    spots: Object.freeze([
+      Object.freeze({ slug: 'units-measurement', x: 58, y: 77, at: 'the platform scale' }),
+      // Goods In is where a unit is decided; the till only inherits it.
+      Object.freeze({ slug: 'uom', x: 26, y: 48, at: 'the weighing bench' })
+    ])
   }),
   Object.freeze({
     id: 'stock-room', name: 'Stock Room', wing: 'shop', x: 3, y: 0, w: 3, h: 2,

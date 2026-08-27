@@ -142,6 +142,8 @@
         return import('./views/RegionGrainMission.svelte');
       } else if (mission === 'zone-price') {
         return import('./views/ZonePriceMission.svelte');
+      } else if (mission === 'uom') {
+        return import('./views/UomMission.svelte');
       } else if (mission === 'classify-data') {
         return import('./views/DataClassificationMission.svelte');
       } else if (mission === 'missing-data') {

@@ -39,21 +39,25 @@ const ok = (label, pass, detail = '') => {
 // seeds its estate from BRANCHES, so a seventh entry shifts every downstream
 // figure in the dataset, including the ones the mission quotes.
 const knownBranch = new Set(BRANCHES.map(b => b.id));
-const generatedBranches = await (async () => {
+const knownSku = new Set(PRODUCTS.map(p => p.sku));
+
+// The same argument applies to products. PRODUCTS names nine of 2,140, and a
+// mission quoting a real basket will name the generated ones that were in it.
+const fromDatabase = await (async () => {
   const dbPath = dir('../public/data/qubix-sample.db');
-  if (!existsSync(dbPath)) return 0;
+  if (!existsSync(dbPath)) return { branches: 0, skus: 0 };
   try {
     const initSqlJs = (await import('sql.js')).default;
     const SQL = await initSqlJs();
     const db = new SQL.Database(readFileSync(dbPath));
-    const ids = db.exec('SELECT branch_id FROM branch')[0]?.values ?? [];
-    for (const [id] of ids) knownBranch.add(id);
+    const branches = db.exec('SELECT branch_id FROM branch')[0]?.values ?? [];
+    const skus = db.exec('SELECT sku FROM product')[0]?.values ?? [];
+    for (const [id] of branches) knownBranch.add(id);
+    for (const [sku] of skus) knownSku.add(sku);
     db.close();
-    return ids.length;
-  } catch { return 0; }
+    return { branches: branches.length, skus: skus.length };
+  } catch { return { branches: 0, skus: 0 }; }
 })();
-
-const knownSku = new Set(PRODUCTS.map(p => p.sku));
 const nameToId = new Map(BRANCHES.map(b => [b.name, b.id]));
 
 let files = 0, refs = 0;

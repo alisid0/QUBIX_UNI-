@@ -27,6 +27,7 @@ import { RESULT_CHECKPOINT_MISSION } from './result-checkpoint-mission.js';
 import { HANDOVER_PACK_MISSION } from './handover-pack-mission.js';
 import { REGION_GRAIN_MISSION } from './region-grain-mission.js';
 import { ZONE_PRICE_MISSION } from './zone-price-mission.js';
+import { UOM_MISSION } from './uom-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -47,6 +48,9 @@ export const MISSIONS = Object.freeze([
     reading: { chapter: 1, session: 4, label: 'A value needs context' } },
   { slug: 'units-measurement', mission: UNITS_MEASUREMENT_MISSION, xp: 70,
     teaches: 'What a value measures, and converting it without losing the original.',
+    reading: { chapter: 2, session: 1, label: 'A number needs a unit' } },
+  { slug: 'uom', mission: UOM_MISSION, xp: 100,
+    teaches: 'Checking a column means one thing before aggregating it, and confirming by a second route.',
     reading: { chapter: 2, session: 1, label: 'A number needs a unit' } },
   { slug: 'rate-desk', mission: RATE_DESK_MISSION, xp: 150,
     teaches: 'Naming the denominator under a figure before comparing anything with it.',

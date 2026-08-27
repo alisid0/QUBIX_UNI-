@@ -70,6 +70,22 @@ const unrouted = MISSIONS.map(m => m.slug).filter(slug => !routed.has(slug));
 check(unrouted.length === 0, 'every rostered mission has a route',
   unrouted.length ? `no route for ${unrouted.join(', ')}` : `${MISSIONS.length} missions`);
 
+/* ── the unlock order must not walk backwards through the course ─────────────
+   Missions unlock in roster order, and each declares the reading it belongs to.
+   A mission placed after a later chapter's mission is unreachable until long
+   after the lesson that explains it, which is how uom ended up at position 15
+   teaching chapter 2. Nothing failed: it simply could not be opened when it
+   made sense to open it.                                                      */
+let deepest = 0;
+const backwards = [];
+for (const m of MISSIONS) {
+  const chapter = m.reading?.chapter ?? 0;
+  if (chapter < deepest) backwards.push(`${m.slug} (ch${chapter} after ch${deepest})`);
+  deepest = Math.max(deepest, chapter);
+}
+check(backwards.length === 0, 'the unlock order follows the course rather than doubling back',
+  backwards.length ? backwards.join(', ') : `${MISSIONS.length} missions in reading order`);
+
 /* ── links must point at routes that exist ───────────────────────────────── */
 const linked = [...new Set([...everything.matchAll(/mission=([a-z-]+)/g)].map(m => m[1]))];
 const dead = linked.filter(slug => !routed.has(slug));
