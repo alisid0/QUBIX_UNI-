@@ -16,6 +16,14 @@
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
       "sha256": "75b0a46d5cab559a9d5a7c46ad1a32613c4a896547d760af055a9ec833340987"
+    },
+    {
+      "id": "grain-collapse",
+      "session": "ch05.02",
+      "component": "src/lib/components/GrainCollapse.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "9c88dc69c481553e295fa555bf1b680f54d86eb1a254eb0d6c72ec5fbc3df3d0"
     }
   ]
 }

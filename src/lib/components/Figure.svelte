@@ -22,6 +22,7 @@
   import JoinFanOut from './JoinFanOut.svelte';
   import SamplingSpread from './SamplingSpread.svelte';
   import GrainCollapse from './GrainCollapse.svelte';
+  import BaseRateAlarm from './BaseRateAlarm.svelte';
 
   export let spec;
 
@@ -99,7 +100,12 @@
 </script>
 
 <figure class="qx-figure">
-  {#if spec.kind === 'grain-collapse'}
+  {#if spec.kind === 'base-rate'}
+    <!-- Drawn as a population because the two-by-two table is precisely where
+         the intuition fails: the false-alarm rate applies to a far larger group. -->
+    <BaseRateAlarm days={spec.days ?? 200} failureIn={spec.failureIn ?? 200}
+      catchRate={spec.catchRate ?? 0.95} falseRate={spec.falseRate ?? 0.05} />
+  {:else if spec.kind === 'grain-collapse'}
     <!-- The mirror of join-fanout on the facing session: same grammar,
          opposite direction. Nothing is removed, twelve rows fold into three. -->
     <GrainCollapse />

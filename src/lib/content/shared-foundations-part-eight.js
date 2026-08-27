@@ -112,6 +112,12 @@ export const SHARED_FOUNDATIONS_PART_EIGHT = Object.freeze({
           'The practical response is not to distrust the alarm. It is to quote precision alongside accuracy: of the cases it flags, what share turn out to be real. That number falls out of the same two by two table, and it is the one an operations manager actually needs.'
         ]) })
       ]),
+      // The two-by-two below is where the intuition fails, so the figure draws
+      // the population instead and lets a reader count the false alarms.
+      figure: Object.freeze({ kind: 'base-rate', days: 200, failureIn: 200,
+        catchRate: 0.95, falseRate: 0.05,
+        caption: 'Two hundred freezer-days, and the eleven that alarmed',
+        note: 'The grid is computed from the same rates the table below is, so the two cannot disagree.' }),
       example: Object.freeze({
         title: 'Two hundred freezer-days, one real failure',
         headers: Object.freeze(['', 'Freezer failing', 'Freezer fine', 'Total']),

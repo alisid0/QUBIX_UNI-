@@ -29,10 +29,12 @@ const check = (condition, label, detail = '') => {
 const component = readFileSync(dir('../src/lib/components/JoinFanOut.svelte'), 'utf8');
 const sampler = readFileSync(dir('../src/lib/components/SamplingSpread.svelte'), 'utf8');
 const collapse = readFileSync(dir('../src/lib/components/GrainCollapse.svelte'), 'utf8');
+const alarm = readFileSync(dir('../src/lib/components/BaseRateAlarm.svelte'), 'utf8');
 const ANIMATED = [
   { kind: 'join-fanout', file: 'JoinFanOut.svelte', source: component },
   { kind: 'sampling-spread', file: 'SamplingSpread.svelte', source: sampler },
-  { kind: 'grain-collapse', file: 'GrainCollapse.svelte', source: collapse }
+  { kind: 'grain-collapse', file: 'GrainCollapse.svelte', source: collapse },
+  { kind: 'base-rate', file: 'BaseRateAlarm.svelte', source: alarm }
 ];
 
 /* ── every animated figure in the volume is one we know about ────────────── */
@@ -144,6 +146,53 @@ if (collapseSessions.length) {
   const raw = flat.rows.reduce((n, r) => n + r.basket_total, 0);
   check(Math.abs(totalled - raw) < 0.005, 'and the money reconciles across the fold',
     `£${totalled.toFixed(2)}`);
+}
+
+/* ── the alarm grid must reproduce the chapter's own table ───────────────────
+   The figure derives its counts from the rates. The example table beside it was
+   written by hand. If those two ever disagree, a learner sees a grid saying one
+   thing and a table saying another, on the same page, and neither is marked as
+   the authority.                                                             */
+const alarmSessions = SHARED_FOUNDATIONS
+  .flatMap(({ chapter, book }) => book.sessions.map(s => ({ chapter, s })))
+  .filter(({ s }) => s.figure?.kind === 'base-rate');
+check(alarmSessions.length > 0, 'the base-rate figure is used by a session',
+  alarmSessions.map(({ chapter, s }) => `ch${chapter}.${s.number}`).join(', '));
+
+for (const { chapter, s } of alarmSessions) {
+  const { days, failureIn, catchRate, falseRate } = s.figure;
+  const failing = Math.round(days / failureIn);
+  const fine = days - failing;
+  const trueAlarms = Math.round(failing * catchRate);
+  const falseAlarms = Math.round(fine * falseRate);
+  const alarms = trueAlarms + falseAlarms;
+
+  // The table prints [label, failing, fine, total] per row.
+  const table = new Map(s.example.rows.map(r => [r[0], r]));
+  const sounds = table.get('Alarm sounds');
+  const silent = table.get('Alarm silent');
+  const totals = table.get('Total');
+  check(Boolean(sounds && silent && totals),
+    `ch${chapter}.${s.number} has the two-by-two the figure must match`);
+  if (!sounds) continue;
+
+  const num = v => Number(String(v).replace(/,/g, ''));
+  check(num(sounds[1]) === trueAlarms && num(sounds[2]) === falseAlarms && num(sounds[3]) === alarms,
+    'the alarms the figure draws are the alarms the table prints',
+    `figure ${trueAlarms}/${falseAlarms}/${alarms}, table ${sounds[1]}/${sounds[2]}/${sounds[3]}`);
+  check(num(silent[1]) === failing - trueAlarms && num(silent[2]) === fine - falseAlarms,
+    'and so are the quiet days',
+    `figure ${failing - trueAlarms}/${fine - falseAlarms}, table ${silent[1]}/${silent[2]}`);
+  check(num(totals[1]) === failing && num(totals[2]) === fine && num(totals[3]) === days,
+    'and the population adds up', `${failing} + ${fine} = ${days}`);
+
+  check(falseAlarms > trueAlarms,
+    'false alarms still outnumber real ones, which is the entire lesson',
+    `${falseAlarms} false against ${trueAlarms} real`);
+  const precision = trueAlarms / alarms;
+  check(precision < 0.2 && catchRate > 0.9,
+    'the alarm is still accurate and still usually wrong',
+    `${Math.round(catchRate * 100)}% accurate, ${Math.round(precision * 100)}% precise`);
 }
 
 /* ── the contract, for every animated figure ─────────────────────────────── */
