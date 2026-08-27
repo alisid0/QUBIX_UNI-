@@ -96,9 +96,12 @@ console.log(`  bundle clean, ${(js.length / 1024).toFixed(0)} kB of JavaScript c
 console.log('  publishing to Vercel…');
 const execPath = JSON.stringify(process.execPath);
 const packagePath = process.env.npm_execpath && JSON.stringify(process.env.npm_execpath);
+// Single quotes here meant ${VERCEL} was never interpolated, so the npm branch
+// ran `npx --yes` with no package name and the pin was silently lost. Only the
+// pnpm branch was ever exercised, which is why it survived.
 const vercel = packagePath && /pnpm/i.test(process.env.npm_execpath)
   ? `${execPath} ${packagePath} dlx ${VERCEL}`
-  : 'npx --yes ${VERCEL}';
+  : `npx --yes ${VERCEL}`;
 sh(`${vercel} deploy --prod --yes`, { stdio: 'inherit' });
 
 console.log(`  deployed ${sourceCommit} from ${sourceBranch}.`);
