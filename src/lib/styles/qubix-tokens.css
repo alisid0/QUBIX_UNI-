@@ -35,6 +35,14 @@
   --qx-surface-2: #F4F0E7;
   --qx-surface-3: #ECE7DC;
   --qx-surface-elevated: #241F16;
+  /* Overlay ground. The --qx-surface family is translucent on dark so a card
+     in the flow picks up the radial behind it. Anything that has to COVER
+     the page needs an opaque ground instead: Ask Qubix became a see-through
+     sheet on mobile, where the panel is fixed and full width, and the page
+     headline read straight through its own header. Not a sixth hue: the same
+     Canvas and Ink, without the alpha. */
+  --qx-overlay: #FFFFFF;
+  --qx-overlay-2: #F4F0E7;
   --qx-border: #E4DDCE;
   --qx-border-2: #D8D0BE;
 
@@ -115,6 +123,8 @@
   --qx-surface-2: rgba(255,255,255,0.06);
   --qx-surface-3: rgba(255,255,255,0.07);
   --qx-surface-elevated: #211B12;
+  --qx-overlay: #1D1A15;
+  --qx-overlay-2: #241F19;
   --qx-border: rgba(255,255,255,0.09);
   --qx-border-2: rgba(255,255,255,0.14);
 
