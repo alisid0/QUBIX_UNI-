@@ -223,6 +223,33 @@ export const SESSION_EXPANSIONS = Object.freeze({
       Object.freeze({ label: 'Government Analysis Function — RAP strategy', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/reproducible-analytical-pipelines-strategy/', licence: 'Open Government Licence 3.0' }),
       Object.freeze({ label: 'Government Analysis Function — RAP learning pathway', url: 'https://analysisfunction.civilservice.gov.uk/learning-development/learning-pathways/reproducible-analytical-pipelines-rap-learning-pathway/', licence: 'Open Government Licence 3.0' })
     ])
+  }),
+  // Chapter 8's exercise is a reading test rather than a calculation. Every
+  // mistake the chapter exists to prevent is a sentence somebody says out loud
+  // and nobody queries: inverting a conditional, forgetting the base rate,
+  // reading a p-value as a probability of being wrong, and treating
+  // distinguishable from zero as worth doing something about. None of them are
+  // arithmetic errors, so an arithmetic exercise would not catch any of them.
+  '8:testing-a-difference': Object.freeze({
+    exercise: Object.freeze({
+      id: 'claims-about-chance', type: 'classify', minutes: 5,
+      title: 'Name what is wrong with the sentence',
+      instruction: 'Each sentence was said in a real meeting about the Superstore. One thing is wrong with each. Say which.',
+      options: freezeOptions([
+        ['no-denominator', 'no denominator named'],
+        ['inverted', 'the conditional is the wrong way round'],
+        ['base-rate', 'the base rate is missing'],
+        ['p-misread', 'the p-value is being misread'],
+        ['size-ignored', 'significant is being read as important']
+      ]),
+      items: freezeItems([
+        { id: 'large-baskets', prompt: '"Thirty-five per cent of baskets are over twenty pounds, so Canalside should stock more premium lines."', answer: 'no-denominator', why: 'The 35% is the chain figure. Canalside is a small Express branch and its own share is far lower, so the sentence uses one population to make a decision about another.' },
+        { id: 'loyalty', prompt: '"Sixty per cent of our large baskets use a loyalty card, so loyalty members mostly buy large baskets."', answer: 'inverted', why: 'The share of large baskets that are loyalty is not the share of loyalty baskets that are large. The two condition on opposite things and are usually far apart.' },
+        { id: 'freezer', prompt: '"The cold-chain alarm is ninety-five per cent accurate, so when it sounds we should assume the freezer is failing."', answer: 'base-rate', why: 'Failures are rare, so most alarms are false even at high accuracy. Precision, not accuracy, is what tells an engineer whether to drive out.' },
+        { id: 'pvalue', prompt: '"The p-value is 0.03, so there is a three per cent chance the two tills are really the same."', answer: 'p-misread', why: 'A p-value is the probability of data this extreme assuming they are the same, not the probability that they are. It is the same inversion as the loyalty sentence, wearing statistical clothes.' },
+        { id: 'two-pence', prompt: '"Mean basket is up two pence on the quarter and it is statistically significant, so the new layout is working."', answer: 'size-ignored', why: 'On 850,000 sales almost any difference is distinguishable from zero. Two pence is real and too small to justify a layout decision, and the test was never asked whether it mattered.' }
+      ])
+    })
   })
 });
 

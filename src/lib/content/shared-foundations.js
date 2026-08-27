@@ -18,6 +18,7 @@ import { SHARED_FOUNDATIONS_PART_FOUR } from './shared-foundations-part-four.js'
 import { SHARED_FOUNDATIONS_PART_FIVE } from './shared-foundations-part-five.js';
 import { SHARED_FOUNDATIONS_PART_SIX } from './shared-foundations-part-six.js';
 import { SHARED_FOUNDATIONS_PART_SEVEN } from './shared-foundations-part-seven.js';
+import { SHARED_FOUNDATIONS_PART_EIGHT } from './shared-foundations-part-eight.js';
 import { expansionFor } from './shared-foundations-expansion.js';
 
 // Keep the chapter manuscripts independent from the interaction layer. An
@@ -51,7 +52,8 @@ export const SHARED_FOUNDATIONS = Object.freeze([
   Object.freeze({ chapter: 4, book: expandBook(4, SHARED_FOUNDATIONS_PART_FOUR) }),
   Object.freeze({ chapter: 5, book: expandBook(5, SHARED_FOUNDATIONS_PART_FIVE) }),
   Object.freeze({ chapter: 6, book: expandBook(6, SHARED_FOUNDATIONS_PART_SIX) }),
-  Object.freeze({ chapter: 7, book: expandBook(7, SHARED_FOUNDATIONS_PART_SEVEN) })
+  Object.freeze({ chapter: 7, book: expandBook(7, SHARED_FOUNDATIONS_PART_SEVEN) }),
+  Object.freeze({ chapter: 8, book: expandBook(8, SHARED_FOUNDATIONS_PART_EIGHT) })
 ]);
 
 export const bookForChapter = n => SHARED_FOUNDATIONS.find(c => c.chapter === n)?.book || null;
