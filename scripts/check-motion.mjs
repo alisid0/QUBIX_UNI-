@@ -12,9 +12,11 @@
 //   node scripts/check-motion.mjs
 
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { JOIN_GRAIN_MISSION } from '../src/lib/game/join-grain-mission.js';
 import { DISTRIBUTION_DESK_MISSION } from '../src/lib/game/distribution-desk-mission.js';
+import { runQuery } from '../src/lib/game/sql-console-mission.js';
 
 const dir = u => new URL(u, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 
@@ -26,9 +28,11 @@ const check = (condition, label, detail = '') => {
 
 const component = readFileSync(dir('../src/lib/components/JoinFanOut.svelte'), 'utf8');
 const sampler = readFileSync(dir('../src/lib/components/SamplingSpread.svelte'), 'utf8');
+const collapse = readFileSync(dir('../src/lib/components/GrainCollapse.svelte'), 'utf8');
 const ANIMATED = [
   { kind: 'join-fanout', file: 'JoinFanOut.svelte', source: component },
-  { kind: 'sampling-spread', file: 'SamplingSpread.svelte', source: sampler }
+  { kind: 'sampling-spread', file: 'SamplingSpread.svelte', source: sampler },
+  { kind: 'grain-collapse', file: 'GrainCollapse.svelte', source: collapse }
 ];
 
 /* ── every animated figure in the volume is one we know about ────────────── */
@@ -113,6 +117,35 @@ for (const { chapter, s } of spreadSessions) {
     `${ratio.toFixed(1)}x narrower on ${(25 / 4).toFixed(1)}x the data`);
 }
 
+/* ── grouping folds rows rather than removing them ───────────────────────────
+   The figure's whole claim. If GROUP BY ever stopped accounting for every row,
+   the picture would be showing a filter and calling it a grouping.           */
+const collapseSessions = SHARED_FOUNDATIONS
+  .flatMap(({ chapter, book }) => book.sessions.map(s => ({ chapter, s })))
+  .filter(({ s }) => s.figure?.kind === 'grain-collapse');
+check(collapseSessions.length > 0, 'the grouping figure is used by a session',
+  collapseSessions.map(({ chapter, s }) => `ch${chapter}.${s.number}`).join(', '));
+
+if (collapseSessions.length) {
+  const flat = runQuery({ where: null, groupBy: null, having: null });
+  const grouped = runQuery({ where: null, groupBy: 'branch_id', having: null });
+
+  check(grouped.rows.length < flat.rows.length, 'grouping returns fewer rows',
+    `${flat.rows.length} becomes ${grouped.rows.length}`);
+  check(flat.grain !== grouped.grain, 'and one row stops meaning what it meant',
+    `${flat.grain} to ${grouped.grain}`);
+
+  const accounted = grouped.rows.reduce((n, g) => n + g.sales, 0);
+  check(accounted === flat.rows.length,
+    'every sale is still accounted for, which is the difference from a filter',
+    `${accounted} sales across ${grouped.rows.length} branches`);
+
+  const totalled = grouped.rows.reduce((n, g) => n + g.total, 0);
+  const raw = flat.rows.reduce((n, r) => n + r.basket_total, 0);
+  check(Math.abs(totalled - raw) < 0.005, 'and the money reconciles across the fold',
+    `£${totalled.toFixed(2)}`);
+}
+
 /* ── the contract, for every animated figure ─────────────────────────────── */
 for (const { file, source } of ANIMATED) {
   check(/prefers-reduced-motion/.test(source), `${file} honours prefers-reduced-motion`);
@@ -147,6 +180,23 @@ check(/on:click=\{play\}/.test(component), 'a learner can replay it');
 check(!/<img|url\(|\.gif|\.png|\.jpg/i.test(component),
   'nothing raster reaches the figure, per the media rule');
 check(/<svg/.test(component), 'it is SVG');
+
+/* ── approved figures may not change silently ────────────────────────────────
+   The review protocol's last line: AI must not silently alter already approved
+   learner-facing text, and any proposed change returns that item to
+   AMENDMENTS_REQUIRED until the founder reviews it again. A digest is the only
+   way that rule can be enforced rather than remembered.                       */
+const approvals = JSON.parse(readFileSync(dir('../curriculum/APPROVED-FIGURES.json'), 'utf8'));
+for (const figure of approvals.figures) {
+  const path = dir('../' + figure.component);
+  const actual = createHash('sha256').update(readFileSync(path)).digest('hex');
+  check(actual === figure.sha256,
+    `${figure.id} is unchanged since the founder approved it on ${figure.approvedOn}`,
+    actual === figure.sha256
+      ? `${figure.session} · ${actual.slice(0, 16)}`
+      : `digest moved to ${actual.slice(0, 16)}. Mark it AMENDMENTS_REQUIRED and have it reviewed again, `
+        + 'or update the record deliberately if the founder approved the change.');
+}
 
 /* ── the rule it cites exists in this repository ─────────────────────────── */
 const rule = readFileSync(dir('../docs/MEDIA-RULE.md'), 'utf8');

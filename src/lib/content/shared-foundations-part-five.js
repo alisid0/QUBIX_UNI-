@@ -133,6 +133,11 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         ]),
         limit:'GROUP BY does not physically rearrange the stored table, and a database may use hashing, sorting or another execution strategy. The tray is a model of the logical grouping. Aggregates can also treat NULL differently, so COUNT(*) and COUNT(column) are not interchangeable.'
       }),
+      // The counterpart to the join figure one session later. Grouping is the
+      // clause people read as a filter, so the motion insists nothing leaves.
+      figure: Object.freeze({ kind: 'grain-collapse',
+        caption: 'Twelve sales, folded into three branches',
+        note: 'Both states come from the SQL Console, so the reading and the mission cannot disagree.' }),
       example: Object.freeze({ title: 'The same table, three grains', headers: Object.freeze(['Query', 'One row is', 'Row count']), rows: Object.freeze([
         Object.freeze(['no grouping', 'one completed sale', '4,312']),
         Object.freeze(['GROUP BY branch_id', 'one branch', '48']),

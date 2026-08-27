@@ -1,0 +1,21 @@
+{
+  "note": "Figures the founder has reviewed and approved. Scope is the figure only: the sessions that contain them remain AI_DRAFT until reviewed whole, per docs/REVIEW-PROTOCOL.md. The digest exists so that AI cannot silently alter approved learner-facing material; changing a listed file returns it to AMENDMENTS_REQUIRED and the founder reviews it again.",
+  "figures": [
+    {
+      "id": "join-fanout",
+      "session": "ch05.03",
+      "component": "src/lib/components/JoinFanOut.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "1ef2eec00fcadf9f153d4142502efe60e97b0615810d0e96e6a6c630968aa9cb"
+    },
+    {
+      "id": "sampling-spread",
+      "session": "ch08.03",
+      "component": "src/lib/components/SamplingSpread.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "75b0a46d5cab559a9d5a7c46ad1a32613c4a896547d760af055a9ec833340987"
+    }
+  ]
+}

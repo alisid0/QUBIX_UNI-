@@ -15,6 +15,9 @@ Last updated: 2026-08-21
 | Qubix Superstore learning world | Persistent company, relational model, 8 career routes and 14 mission phases | World implemented in `STAT-DATA-001`; later missions locked |
 | Superstore topic catalogue | 379 topics across 17 ordered phases | Pre-Intern phase 3 capstone current; later topic boards locked |
 | Data Science Wiki preview | Static local route implemented at `?mode=wiki`; catalogue, career path, Superstore world and reference shelf are browsable | Founder review before making it the public home page |
+| Animated figure: join fan-out (ch05.03) | **APPROVED** by founder, 2026-08-28. Scope is the figure only | Digest locked in `curriculum/APPROVED-FIGURES.json`; the containing session stays `AI_DRAFT` |
+| Animated figure: sampling spread (ch08.03) | **APPROVED** by founder, 2026-08-28. Scope is the figure only | Digest locked; the containing session stays `AI_DRAFT` |
+| Animated figure: grain collapse (ch05.02) | `AI_DRAFT`, awaiting review | Founder |
 | Pre-Intern ebook 001 | *What Data Is and Why People Use It* generated from reviewable source; 1 chapter, 20 answered practice items | Founder reading and amendments; remains `AI_DRAFT` |
 | Pre-Intern ebook 002 | *What a Computer Program Does* generated from reviewable source; 1 chapter, 20 answered practice items | Founder reading and amendments; remains `AI_DRAFT` |
 

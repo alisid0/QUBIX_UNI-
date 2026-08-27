@@ -21,6 +21,7 @@
   import { MISSING_DATA_MISSION } from '../game/missing-data-mission.js';
   import JoinFanOut from './JoinFanOut.svelte';
   import SamplingSpread from './SamplingSpread.svelte';
+  import GrainCollapse from './GrainCollapse.svelte';
 
   export let spec;
 
@@ -98,7 +99,11 @@
 </script>
 
 <figure class="qx-figure">
-  {#if spec.kind === 'sampling-spread'}
+  {#if spec.kind === 'grain-collapse'}
+    <!-- The mirror of join-fanout on the facing session: same grammar,
+         opposite direction. Nothing is removed, twelve rows fold into three. -->
+    <GrainCollapse />
+  {:else if spec.kind === 'sampling-spread'}
     <!-- Repetition is the subject: one sample says little, and how little is
          only visible once you have watched several land. -->
     <SamplingSpread caseId={spec.case ?? 'baskets'} />
