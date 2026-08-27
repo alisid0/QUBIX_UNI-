@@ -373,7 +373,9 @@ export function buildCommercial(ctx) {
       if (!bidders) continue;
       const s = pick(bidders);
       const lead = Math.round(between(3, 40));
-      const open = chance(0.31) || d + lead > DAYS;
+      // Against the end of the window, not its length. A sample that starts on
+      // day 30 was comparing day 33 against 7 and calling every order open.
+      const open = chance(0.31) || d + lead > (ctx.END ?? DAYS);
       f.po.row([`PO-${pad(poNo++, 6)}`, s.id, pick(DEPOTS).id, p.sku, date,
         Math.round(between(120, 9600)),
         dec(p.price * between(0.42, 0.68) * rateOn(s.currency, date), 4), s.currency, s.incoterm,

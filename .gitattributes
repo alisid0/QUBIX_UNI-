@@ -1,0 +1,4 @@
+# Generated data is reproduced byte for byte by a seeded generator, so git
+# must not rewrite its line endings on checkout. A CSV that differs between
+# Windows and Linux is not the same dataset.
+data-sample/*.csv -text

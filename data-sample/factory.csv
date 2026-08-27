@@ -1,0 +1,4 @@
+factory_id,name,country_id,county_id,makes,capacity_units_per_week,fixed_cost_per_week_gbp,acquired,lines
+FAC-01,"Wrenfold Bakery",BR,CTY-HAL,Bakery,1450000,214000,2017-05-02,4
+FAC-02,"Saltney Fresh",BR,CTY-KEN,Chilled,620000,341000,2021-11-15,6
+FAC-03,"Averlund Bottling",AV,,Drinks,2900000,178000,2024-03-01,3

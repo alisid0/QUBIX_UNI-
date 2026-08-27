@@ -1,0 +1,5 @@
+tier_id,name,target_margin,own_label,sales_share
+branded,"Branded",0.21,false,0.54
+value,"Qubix Value",0.18,true,0.11
+core,"Qubix",0.34,true,0.27
+finest,"Qubix Finest",0.41,true,0.08

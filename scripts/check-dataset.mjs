@@ -27,7 +27,11 @@ import { BRANCHES, CHAIN } from '../src/lib/game/superstore.js';
 import { SALES } from '../src/lib/game/sql-console-mission.js';
 
 const dir = u => new URL(u, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
-const DATA = dir('../data/');
+// --from lets the committed sample be checked with the same assertions as the
+// full quarter, which is the only reason to trust a sample that ships in git.
+const fromArg = process.argv.indexOf('--from');
+const FROM = fromArg > -1 ? process.argv[fromArg + 1] : 'data';
+const DATA = dir(`../${FROM}/`);
 
 let bad = 0;
 const ok = (label, pass, detail = '') => {
@@ -38,7 +42,8 @@ const head = t => console.log(`\n  ${t}`);
 
 if (!existsSync(DATA + 'sale.csv')) {
   console.log('   no data/ yet, generating a week to check against\n');
-  execFileSync(process.execPath, [dir('./generate-dataset.mjs'), '--days', '7'], { stdio: 'ignore' });
+  execFileSync(process.execPath, [dir('./generate-dataset.mjs'),
+    '--start-day', '30', '--days', '7'], { stdio: 'ignore' });
 }
 
 /* ── readers ─────────────────────────────────────────────────────────────── */
@@ -79,7 +84,19 @@ const price = load('price_history.csv');
 const supplier = load('supplier.csv');
 const shipment = load('shipment.csv');
 
-ok('the estate is the chain the missions describe', branch.n === CHAIN.branches,
+// A sample is a smaller world built the same way, not a slice of the big one.
+// Some assertions are about the size of the estate or the length of the window
+// and cannot hold in miniature: six branches cannot drift across regions in the
+// proportion 48 do, and nothing ordered inside a seven day window with a forty
+// day lead time arrives inside it. Everything about how the data behaves still
+// applies, which is the whole point of checking a sample at all.
+const sample = branch.n < CHAIN.branches;
+const scale = (label, pass, detail) => sample
+  ? console.log(`   ----  ${label}  (needs the full estate)`)
+  : ok(label, pass, detail);
+
+if (sample) console.log(`   a ${branch.n}-branch sample: scale-dependent checks are skipped\n`);
+scale('the estate is the chain the missions describe', branch.n === CHAIN.branches,
   `${branch.n} branches against ${CHAIN.branches} declared`);
 ok('the product master is the one Join Without Changing the Grain counts',
   product.n === CHAIN.products, `${product.n.toLocaleString()} products`);
@@ -407,7 +424,7 @@ ok('every branch has a district, a county and a price zone',
 // join and there is nothing to notice.
 const drifted = branch.rows.filter(r =>
   districtRegion.get(r[branch.at('district_id')]) !== countyRegion.get(r[branch.at('county_id')]));
-ok('the two hierarchies disagree for a minority, not for most',
+scale('the two hierarchies disagree for a minority, not for most',
   drifted.length >= 3 && drifted.length <= 15,
   `${drifted.length} of ${branch.n} branches sit in a county whose region is not their district's`);
 
@@ -427,7 +444,7 @@ for (const r of branch.rows) {
   if (!zonesPerRegion.has(reg)) zonesPerRegion.set(reg, new Set());
   zonesPerRegion.get(reg).add(r[branch.at('zone_id')]);
 }
-ok('price zones cut across regions rather than nesting inside them',
+scale('price zones cut across regions rather than nesting inside them',
   [...zonesPerRegion.values()].filter(s => s.size > 1).length >= 4,
   `${[...zonesPerRegion.values()].filter(s => s.size > 1).length} regions contain more than one zone`);
 
@@ -542,7 +559,7 @@ const openPo = po.rows.filter(r => r[po.at('received_on')] === '');
 ok('every purchase order names a supplier, a depot and a product',
   po.rows.every(r => supplierIds2.has(r[po.at('supplier_id')])
     && depotIds.has(r[po.at('depot_id')]) && skus.has(r[po.at('sku')])), `${po.n.toLocaleString()} orders`);
-ok('some orders have not arrived, and that blank is a not-yet',
+scale('some orders have not arrived, and that blank is a not-yet',
   openPo.length > 0 && openPo.length < po.n,
   `${openPo.length.toLocaleString()} of ${po.n.toLocaleString()} still open`);
 

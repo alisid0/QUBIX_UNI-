@@ -1,0 +1,15 @@
+county_id,name,country_id,region_id,population
+CTY-ARD,"Ardwick",BR,RGN-N,1240000
+CTY-BRA,"Bramlow",BR,RGN-N,610000
+CTY-CAL,"Calderness",BR,RGN-W,890000
+CTY-DUR,"Durnholt",BR,RGN-W,445000
+CTY-EAV,"Eavesmere",BR,RGN-C,1510000
+CTY-FEN,"Fenwold",BR,RGN-E,720000
+CTY-GAR,"Garrowby",BR,RGN-E,388000
+CTY-HAL,"Halstead",BR,RGN-C,963000
+CTY-ILM,"Ilmarsh",BR,RGN-S,555000
+CTY-KEN,"Kenwater",BR,RGN-S,1070000
+CTY-LOW,"Lowbourne",BR,RGN-K,2840000
+CTY-MER,"Merrowfield",BR,RGN-K,1930000
+CTY-NOR,"Norstrand",BR,RGN-N,402000
+CTY-OAK,"Oakmere",BR,RGN-W,336000

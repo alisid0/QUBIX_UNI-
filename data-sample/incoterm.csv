@@ -1,0 +1,5 @@
+incoterm,name,freight_included,duty_included
+EXW,"Ex works",false,false
+FOB,"Free on board",false,false
+CIF,"Cost, insurance and freight",true,false
+DDP,"Delivered duty paid",true,true

@@ -1,0 +1,12 @@
+currency_code,name,units_per_gbp_at_quarter_start
+GBP,"Brannoch pound",1
+EUR,"Euro",1.17
+USD,"Dollar",1.27
+PLN,"Polvenian zloty",5.04
+DKK,"Nord krone",8.72
+MAD,"Maghreb dirham",12.6
+KES,"Kirinyaga shilling",164
+VND,"Viet dong",31200
+BRL,"Verde real",6.41
+GHS,"Ashanti cedi",15.8
+TRY,"Anatolian lira",41.2

@@ -28,3 +28,5 @@ public/props/*.png
 # The README is documentation and stays tracked; the CSVs do not.
 data/*
 !data/README.md
+
+dist-data/

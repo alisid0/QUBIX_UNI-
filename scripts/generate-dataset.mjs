@@ -30,10 +30,19 @@ const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`);
   return i > -1 ? Number(process.argv[i + 1]) : fallback;
 };
+const argStr = (name, fallback) => {
+  const i = process.argv.indexOf(`--${name}`);
+  return i > -1 ? process.argv[i + 1] : fallback;
+};
 const DAYS = arg('days', CHAIN.quarterDays);
+// A short sample starting at day 0 misses the twelve sales the SQL Console
+// teaches from, which fall on 4 to 6 May. --start-day puts the window over them.
+const SKIP = arg('start-day', 0);
 const WANT_BRANCHES = arg('branches', CHAIN.branches);
 const START = new Date(CHAIN.quarterStart + 'T00:00:00Z');
-const OUT = new URL('../data/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+// --out lets the committed sample be built without flattening the full quarter.
+const OUT = new URL(`../${argStr('out', 'data')}/`, import.meta.url).pathname
+  .replace(/^\/([A-Za-z]:)/, '$1');
 
 /* ── determinism ─────────────────────────────────────────────────────────── */
 let seed = 0x9e3779b9;
@@ -191,7 +200,7 @@ const f = {
    with brand tier, origin, and the five prices every product has. The product
    master is written after that and not before. */
 const ctx = {
-  open, estate, catalogue, suppliers, DAYS, START,
+  open, estate, catalogue, suppliers, DAYS, START, END: SKIP + DAYS,
   rnd, pick, between, chance, pad, money, day, stamp, clock
 };
 assignGeography(ctx);
@@ -451,7 +460,7 @@ const writeSale = (id, b, date, total, tillList, staff, exact = false) => {
   return items;
 };
 
-for (let d = 0; d < DAYS; d++) {
+for (let d = SKIP; d < SKIP + DAYS; d++) {
   const date = day(d);
   const weekend = [0, 6].includes(new Date(date + 'T00:00:00Z').getUTCDay());
 
@@ -584,4 +593,6 @@ for (const x of files.sort((a, b) => b.rows - a.rows)) {
   console.log(`   ${x.name.padEnd(24)}${x.rows.toLocaleString().padStart(11)} rows   ${(size / 1048576).toFixed(1)} MB`);
 }
 console.log(`\n   ${'total'.padEnd(24)}${total.toLocaleString().padStart(11)} rows   ${(bytes / 1048576).toFixed(1)} MB`);
-console.log(`\n  ${readdirSync(OUT).filter(n => n.endsWith('.csv')).length} tables in data/ — gitignored, rebuild with npm run data\n`);
+const where = argStr('out', 'data');
+console.log(`\n  ${readdirSync(OUT).filter(n => n.endsWith('.csv')).length} tables in ${where}/`
+  + `${where === 'data' ? ' — gitignored, rebuild with npm run data' : ''}\n`);

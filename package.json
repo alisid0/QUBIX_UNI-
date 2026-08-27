@@ -39,7 +39,9 @@
     "check:type": "node scripts/check-type.mjs",
     "check:world": "node scripts/check-world.mjs",
     "data": "node scripts/generate-dataset.mjs",
-    "check:dataset": "node scripts/check-dataset.mjs"
+    "check:dataset": "node scripts/check-dataset.mjs",
+    "data:sample": "node scripts/generate-dataset.mjs --start-day 30 --days 7 --branches 6 --out data-sample",
+    "data:pack": "node scripts/pack-data.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

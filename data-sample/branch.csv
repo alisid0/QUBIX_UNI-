@@ -1,0 +1,7 @@
+branch_id,name,format,district_id,county_id,zone_id,staff,tills,floor_sqm,car_park_spaces,catchment_population,quarterly_transactions,opened,last_refit
+B-17,"Northgate",Superstore,DIS-05,CTY-EAV,PZ-CORE,84,12,4321,241,146724,60000,2011-03-14,2023-03-16
+B-08,"Eastfield",Superstore,DIS-07,CTY-FEN,PZ-CORE,61,12,6291,438,148891,41000,2014-09-02,
+B-09,"Millgate",Supermarket,DIS-03,CTY-CAL,PZ-URBAN,33,7,1876,534,121721,22500,2017-06-19,
+B-04,"Harbour Point",Supermarket,DIS-10,CTY-ILM,PZ-REMOTE,24,7,3082,253,112650,14200,2019-04-08,2023-01-12
+B-02,"Canalside",Express,DIS-11,CTY-LOW,PZ-METRO,12,3,396,0,130871,8600,2021-11-23,2023-07-14
+B-01,"Riverside",Express,DIS-12,CTY-MER,PZ-VALUE,9,3,190,0,17603,5000,2022-02-01,

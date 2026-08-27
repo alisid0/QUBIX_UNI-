@@ -1,0 +1,6 @@
+zone_id,name,multiplier,note
+PZ-METRO,"Metro",1.14,"City centre, short opening, high rent, low basket."
+PZ-URBAN,"Urban",1.04,"Town centre and inner suburb."
+PZ-CORE,"Core",1,"The national list price. Most superstores sit here."
+PZ-VALUE,"Value",0.94,"Within two miles of a discounter. Priced to hold footfall."
+PZ-REMOTE,"Remote",1.09,"Coastal and upland. Costs more to serve, so it costs more to shop."

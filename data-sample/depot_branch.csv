@@ -1,0 +1,17 @@
+depot_id,branch_id,regime,road_km,drops_per_week
+DC-01,B-17,ambient,62,3
+DC-03,B-17,chilled,46,12
+DC-04,B-17,frozen,170,12
+DC-01,B-08,ambient,38,12
+DC-03,B-08,chilled,204,6
+DC-04,B-08,frozen,156,5
+DC-02,B-09,ambient,14,7
+DC-03,B-09,chilled,84,4
+DC-04,B-09,frozen,49,13
+DC-01,B-04,ambient,136,5
+DC-03,B-04,chilled,192,10
+DC-04,B-04,frozen,63,13
+DC-01,B-02,ambient,83,11
+DC-03,B-02,chilled,70,11
+DC-01,B-01,ambient,173,2
+DC-03,B-01,chilled,122,12
