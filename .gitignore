@@ -30,3 +30,4 @@ data/*
 !data/README.md
 
 dist-data/
+.env*
