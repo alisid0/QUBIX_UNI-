@@ -1,101 +1,137 @@
-# The Qubix Superstore quarter
+# The Qubix Group quarter
 
-One quarter of trading, 1 April to 30 June 2026, across the whole chain: 48
-branches, 2,140 products, 850,000 transactions. Twenty CSV files, 7.45 million
-rows, about 345 MB.
+One quarter, 1 April to 30 June 2026, for a supermarket group: 48 branches
+across six regions, 2,140 products, 850,000 transactions, 42 suppliers in twelve
+countries, five depots, three factories, and an acquired estate that is still on
+its own systems. Fifty-four CSV files, 7.7 million rows, about 360 MB, built in
+eight seconds.
 
 ```bash
-npm run data            # rebuild it, about six seconds
-npm run check:dataset   # check it is a dataset and not a pile of plausible rows
+npm run data            # rebuild the group
+npm run check:dataset   # 86 assertions, all streaming
 ```
 
-Not in git. It is generated, so committing it would version 345 MB of something
+Not in git. It is generated, so committing it would version 360 MB of something
 a command reproduces exactly.
 
 ```bash
-node scripts/generate-dataset.mjs --days 7       # a week, about 27 MB
+node scripts/generate-dataset.mjs --days 7       # a week
 node scripts/generate-dataset.mjs --branches 6   # the named six only
 ```
 
-## Why it exists
+## Why it goes up as well as across
 
-`superstore.js` claimed Northgate takes 60,000 transactions a quarter. Join
-Without Changing the Grain claimed 48 branches and 2,140 products. The largest
-table anywhere in the product was twelve rows, so the fiction promised a
-supermarket group and delivered a spreadsheet fragment. You cannot practise SQL
-on twelve rows, sample from a population that does not exist, or open anything
-in Excel.
+A supermarket's decisions are stratified, and data that is only one layer deep
+cannot model any of them:
 
-The small tables in the missions stay as they are. *What does one row represent*
-needs a table you can see all of, and twelve rows you can read is the point of
-that mission rather than a limitation of it. What was missing is the population
-underneath, and everything the missions already named without having: returns,
-promotions, price history, suppliers, loyalty, footfall, and the till timings
-that make a checkout something you can measure.
+| Who | Decides | Needs |
+|---|---|---|
+| a branch | what to mark down tonight | `markdown`, `waste`, `inventory_snapshot` |
+| a district | where to move staff this week | `labour_plan`, `footfall`, `employee_shift` |
+| a region | which stores get the seasonal range | `branch`, `price_zone`, `depot_branch` |
+| the centre | what a product costs and what it sells for | `zone_price`, `price_elasticity`, `competitor_price_check` |
+| the group | which country to buy from, and what to stop buying | `supplier_quote`, `fx_rate`, `tariff`, `freight_lane` |
+| the board | what to stop buying and start making | `make_or_buy`, `bill_of_materials`, `production_run` |
+
+The structure is hand-authored in `src/lib/game/superstore-world.js` and the
+volume is generated from it, so a figure there is the reason a figure here is
+what it is.
 
 ## The tables
 
-| File | Rows | What one row is |
-|---|---:|---|
-| `branch.csv` | 48 | one branch |
-| `till.csv` | 284 | one till, staffed, self-service or kiosk |
-| `supplier.csv` | 42 | one supplier, with lead time and payment terms |
-| `product.csv` | 2,140 | one product in the master |
-| `promotion.csv` | 63 | one promotion that ran in the quarter |
-| `promotion_product.csv` | 1,874 | one product included in one promotion |
-| `price_history.csv` | 9,605 | one price, from a date until it changed |
-| `employee.csv` | 1,304 | one colleague, current or departed |
-| `customer.csv` | 120,000 | one loyalty member |
-| `sale.csv` | 854,892 | one completed sale, timed at the till |
-| `sale_line.csv` | 4,774,443 | one product line within one sale |
-| `return.csv` | 11,070 | one return, against the sale it came from |
-| `return_line.csv` | 35,807 | one item coming back |
-| `shipment.csv` | 2,522 | one delivery in from a supplier |
-| `shipment_line.csv` | 58,753 | one product on that delivery |
-| `customer_order.csv` | 16,822 | one order placed for delivery or collection |
-| `employee_shift.csv` | 60,076 | one shift worked |
-| `inventory_snapshot.csv` | 1,335,360 | one product at one branch at one week's close |
-| `sensor_reading.csv` | 103,781 | one cold-chain reading |
-| `footfall.csv` | 65,520 | one branch, one hour, one visitor count |
+**The shop floor** — `branch` 48, `till` 284, `sale` 854,892, `sale_line`
+4,736,504, `return` 11,070, `return_line` 35,510, `customer` 120,000,
+`customer_order` 16,822, `employee` 1,304, `employee_shift` 60,918,
+`inventory_snapshot` 1,335,360, `sensor_reading` 103,799, `footfall` 65,520,
+`markdown` 32,237, `waste` 21,883, `labour_plan` 624.
 
-`sale_line` is the one that hurts Excel. It is also the join that turns 854,892
-sales into 4,774,443 rows, which is the fan-out chapter 05 is about, at a size
-where you can feel it.
+**Where things are, and who runs them** — `country` 13, `currency` 11, `region`
+6, `district` 14, `county` 14, `price_zone` 5, `depot` 5, `depot_branch` 121.
 
-## The till is now something you can measure
+**What things cost, and what we charge** — `product` 2,140, `price_history`
+9,605, `zone_price` 10,700, `promotion` 63, `promotion_product` 1,874,
+`price_elasticity` 3,290, `competitor` 6, `competitor_price_check` 183,305,
+`brand_tier` 4.
 
-`sale` carries three timestamps and an item count: when scanning started, when
-it finished, and when payment completed. That makes items per minute, queue
-time, and the wait after the last item while somebody finds a card all things
-you can compute rather than assert.
+**Buying** — `supplier` 42, `supplier_quote` 1,818, `purchase_order` 1,021,
+`supplier_performance` 126, `shipment` 2,541, `shipment_line` 58,417, `fx_rate`
+970, `tariff` 65, `freight_lane` 22, `incoterm` 4, `commodity` 10,
+`commodity_index` 170, `depot_stock` 39,211.
 
-Self-service is slower per item than a trained colleague, by about a factor of
-two, which is a finding a learner can arrive at rather than be told.
+**Making** — `factory` 3, `production_line` 13, `bill_of_materials` 394,
+`production_run` 855, `make_or_buy` 76.
+
+**The acquisition** — `meridian_store` 11, `meridian_daily_sales` 1,001,
+`product_crosswalk` 1,720.
+
+## Three hierarchies over the same 48 branches
+
+Regions and districts are how the company is run. Counties are where places
+are. Price zones are who else is on that high street. **None of the three nests
+inside another**, and for seven of the 48 branches the management path and the
+geographic path do not even end in the same region, because a district was moved
+between regions and nobody redrew the county map.
+
+So "sales by region" is two different numbers depending on which join you take,
+and neither one is wrong. The six branches the missions name by hand are clean
+down both paths, because a worked example is not the place to meet an ambiguity.
+
+## The same product, five prices
+
+`product.list_price` is the national list price. What a branch actually charges
+is `zone_price`, and every one of the 2,140 products has five of them:
+
+```
+QX-CER-001   PZ-VALUE  £2.68   PZ-CORE  £2.85   PZ-URBAN  £2.96
+             PZ-REMOTE £3.11   PZ-METRO £3.25
+```
+
+Every one of the 4.7 million sale lines rang through at its branch's zone price,
+which the checker verifies line by line. "What does QX-CER-001 cost" is not a
+question with one answer, and nothing in the schema warns you.
 
 ## The faults are deliberate
 
-Real data is not clean, and several chapters teach about exactly these:
+Each one is documented in `superstore-world.js` and asserted by
+`check:dataset`, so it cannot quietly disappear:
 
-- **about 2.5% of stock counts never happened.** `closing_stock_units` is blank,
-  not zero. Which of the four kinds of absence it is depends on the branch and
-  the day, and is not written in the cell.
-- **140 of 1,304 colleagues have left.** Their rows stay, because the quarter's
-  shifts still point at them. Headcount is a count with a condition.
-- **heads and hours are different numbers.** 847 colleagues work less than a
-  full week, so headcount and FTE disagree at every branch.
-- **`quantity` means two things.** A tin is a count, loose produce is a weight in
-  kilograms, and `uom` is the only thing telling you which. `SUM(quantity)` over
-  a basket is meaningless and nothing stops you running it. About 10% of lines
-  are weighed.
-- **collection orders have no delivery distance, and it is blank rather than
-  zero.** A collected order did not travel nought kilometres; it did not travel.
-- **cold-chain readings have gaps.** A sensor that sends nothing for an hour has
-  not recorded a zero.
-- **deliveries arrive short.** `ordered_units` and `received_units` are separate
-  columns because about 7% of the time they differ.
-- **baskets are right-skewed.** Mean £58.53 against a median of £35.34, so the
-  mean sits above most actual baskets, which is what the Distribution Desk is
-  about, arrived at from the population rather than asserted.
+- **two hierarchies that disagree**, for seven branches out of 48. A minority, so
+  it is something to notice rather than a broken join.
+- **quotes in ten currencies.** The cheapest supplier cannot be found by sorting
+  a column, and the incoterm decides whether freight and duty are already inside
+  the number.
+- **no exchange rate at the weekend.** A Saturday purchase order has to carry
+  Friday forward. A naive join drops the row; it does not come back as a zero.
+- **three tariffs changed mid-quarter.** Duty depends on when the goods moved,
+  not on when you ran the query.
+- **480 elasticity estimates fitted on fewer than 50 observations**, published in
+  the same table and the same number of decimal places as ones fitted on nine
+  thousand. The `observations` column is the only thing that tells you, and the
+  thin ones carry standard errors twelve times wider.
+- **competitor prices are a weekly hand-collected sample of a KVI list**, not a
+  census. Two thirds of branch-competitor-weeks were never walked, and a missing
+  visit is not a matched price.
+- **an acquired estate that is not in `branch` at all**, on four digit shop
+  numbers, in euro, joined to the rest only through a hand-maintained crosswalk
+  that is 80% complete and matches 101 articles to more than one SKU.
+- **`quantity` means two things.** A tin is a count, loose produce is a weight,
+  and `uom` is the only thing that says which. `SUM(quantity)` over a basket is
+  meaningless and nothing stops you running it.
+- **a third of waste is filed as "other"**, because the reason code is chosen at
+  the end of a shift by somebody who wants to go home.
+- **210 of 855 production runs do not reconcile**: good plus scrap is not what
+  was planned. Most runs do reconcile, which is what makes the others findable.
+- **28 of 76 make-or-buy cases have no decision yet**, and the `recommendation`
+  column is a model output rather than a fact. Reading the first as the second
+  is the mistake that table exists to teach.
+- **2.5% of stock counts never happened**, blank rather than zero.
+- **140 of 1,304 colleagues have left**, and their rows stay, because the
+  quarter's shifts still point at them.
+- **collection orders have no delivery distance**, and it is blank rather than
+  zero. A collected order did not travel nought kilometres. It did not travel.
+- **deliveries arrive short**, which is why `ordered_units` and `received_units`
+  are separate columns.
+- **baskets are right-skewed**, so the mean sits above most actual baskets.
 
 ## It is deterministic
 
@@ -106,46 +142,27 @@ figure quoted in a lesson stays true, and a guard can check it. Never
 ## The taught rows are really in here
 
 The SQL Console's twelve sales are written into the quarter verbatim, at their
-own dates and totals. `S-1041` is in `sale.csv`, at Northgate, on 2026-05-04,
-for £18.70, and its lines in `sale_line.csv` add up to exactly that. The
-teaching table is a genuine extract rather than a parallel invention, and
-`check:dataset` fails if the two ever disagree.
+own dates and totals, and their lines add up to exactly those totals. `S-1041`
+is in `sale.csv`, at Northgate, on 2026-05-04, for £18.70. The teaching table is
+a genuine extract rather than a parallel invention, and `check:dataset` fails if
+the two ever disagree.
 
-The counts the missions quote are built to, not approximated: 48 branches,
-2,140 products, 9,605 price rows, 63 promotions over 1,874 products.
-
-## What check:dataset actually checks
-
-Forty-eight assertions, all streaming, because `readFileSync` on a 189 MB
-`sale_line` wants a gigabyte to say "no orphans". Among them:
-
-- no orphan rows anywhere, in either direction
-- no till rang up a sale for another branch
-- nothing was paid for before it was scanned
-- quantity times unit price is the line total, on all 4.8 million lines
-- every basket reconciles against its own lines
-- no return cites a sale that did not happen, at a branch that did not sell it,
-  for more than was paid, on a date before it was bought
-- every branch takes the trade `superstore.js` declares, within 3%
-- the faults above are all still present
-
-Three of these failed on the first run and were real: line totals that did not
-multiply out, baskets that did not reconcile, and 5,628 refunds larger than the
-sale they came from. A fourth was subtler and would have passed any eyeball
-test: every basket in the chain ended with a weighed item, because closing on
-the scales was how the total had been made to balance.
+The counts the missions quote are built to, not approximated: 48 branches, 2,140
+products, 9,605 price rows, 63 promotions over 1,874 products.
 
 ## Loading it
 
 ```sql
--- SQLite. --csv reads the header row as column names and creates the table.
+-- --csv reads the header row as column names and creates the table.
 .import --csv data/sale.csv sale
 .import --csv data/sale_line.csv sale_line
 .import --csv data/till.csv till
+.import --csv data/branch.csv branch
+.import --csv data/zone_price.csv zone_price
 
 -- the fan-out, at a size you can feel
 SELECT COUNT(*) FROM sale;                                    -- 854892
-SELECT COUNT(*) FROM sale JOIN sale_line USING (sale_id);     -- 4774443
+SELECT COUNT(*) FROM sale JOIN sale_line USING (sale_id);     -- 4736504
 
 -- items per minute, by till kind
 SELECT t.kind,
@@ -153,4 +170,11 @@ SELECT t.kind,
          (strftime('%s', s.scan_ended_at) - strftime('%s', s.scan_started_at))), 1)
 FROM sale s JOIN till t USING (till_id)
 GROUP BY t.kind;
+
+-- the same cereal, five prices, and which shops pay which
+SELECT z.zone_id, z.price, COUNT(b.branch_id) AS branches
+FROM zone_price z LEFT JOIN branch b USING (zone_id)
+WHERE z.sku = 'QX-CER-001'
+GROUP BY z.zone_id, z.price
+ORDER BY z.price;
 ```

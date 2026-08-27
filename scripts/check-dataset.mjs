@@ -221,8 +221,19 @@ head('the join that multiplies rows');
 
 const kgSkus = new Set(product.rows.filter(r => r[product.at('sold_by')] === 'kg')
   .map(r => r[product.at('sku')]));
+
+// The price a line rang through at should be the price of that product in that
+// branch's zone, not the national list price. Checking it needs the zone map
+// here rather than later, because sale_line is streamed once and only once.
+const zonePriceTable = load('zone_price.csv');
+const zpAt = zonePriceTable.at;
+const zonePriceMap = new Map(zonePriceTable.rows.map(r =>
+  [`${r[zpAt('sku')]}|${r[zpAt('zone_id')]}`, Number(r[zpAt('price')])]));
+const zoneOfBranch = new Map(branch.rows.map(r => [r[branch.at('branch_id')], r[branch.at('zone_id')]]));
+const zoneByIndex = branchList.map(id => zoneOfBranch.get(id));
+
 let lines = 0, orphanLines = 0, badSku = 0, badPromo = 0, badMaths = 0,
-  weighedLines = 0, badUom = 0;
+  weighedLines = 0, badUom = 0, offZonePrice = 0, zoneChecked = 0;
 let curSale = null, curSum = 0, mismatched = 0, checkedSums = 0;
 const closeSale = () => {
   if (curSale === null) return;
@@ -245,6 +256,11 @@ await stream('sale_line.csv', (r, at) => {
   const uom = r[at('uom')];
   if (uom === 'kg') { weighedLines += 1; if (!kgSkus.has(r[at('sku')])) badUom += 1; }
   else if (!Number.isInteger(q)) badUom += 1;
+  const zone = n < MAXID && branchOf[n] >= 0 ? zoneByIndex[branchOf[n]] : null;
+  if (zone) {
+    const want = zonePriceMap.get(`${r[at('sku')]}|${zone}`);
+    if (want !== undefined) { zoneChecked += 1; if (Math.abs(want - u) > 0.005) offZonePrice += 1; }
+  }
   if (id !== curSale) { closeSale(); curSale = id; curSum = 0; }
   curSum += t;
 });
@@ -361,6 +377,259 @@ const parttime = staff.rows.filter(r => Number(r[staff.at('weekly_hours')]) < 37
 ok('heads and hours are different numbers', parttime > 0,
   `${parttime.toLocaleString()} work less than a full week`);
 
+/* ══ the world above the shop floor ═══════════════════════════════════════ */
+
+head('three hierarchies over the same 48 branches');
+
+const region = load('region.csv');
+const districtT = load('district.csv');
+const countyT = load('county.csv');
+const zoneT = load('price_zone.csv');
+const depotT = load('depot.csv');
+const depotBranch = load('depot_branch.csv');
+
+const regionIds = new Set(region.rows.map(r => r[region.at('region_id')]));
+const districtRegion = new Map(districtT.rows.map(r => [r[districtT.at('district_id')], r[districtT.at('region_id')]]));
+const countyRegion = new Map(countyT.rows.map(r => [r[countyT.at('county_id')], r[countyT.at('region_id')]]));
+const zoneIds = new Set(zoneT.rows.map(r => r[zoneT.at('zone_id')]));
+
+ok('every district reports into a region that exists',
+  districtT.rows.every(r => regionIds.has(r[districtT.at('region_id')])), `${districtT.n} districts`);
+ok('every county sits in a region that exists',
+  countyT.rows.every(r => regionIds.has(r[countyT.at('region_id')])), `${countyT.n} counties`);
+ok('every branch has a district, a county and a price zone',
+  branch.rows.every(r => districtRegion.has(r[branch.at('district_id')])
+    && countyRegion.has(r[branch.at('county_id')])
+    && zoneIds.has(r[branch.at('zone_id')])));
+
+// The trap: the management path and the geographic path do not always end in
+// the same region. It has to be a minority, or it is not a trap, it is a broken
+// join and there is nothing to notice.
+const drifted = branch.rows.filter(r =>
+  districtRegion.get(r[branch.at('district_id')]) !== countyRegion.get(r[branch.at('county_id')]));
+ok('the two hierarchies disagree for a minority, not for most',
+  drifted.length >= 3 && drifted.length <= 15,
+  `${drifted.length} of ${branch.n} branches sit in a county whose region is not their district's`);
+
+// And the branches the missions actually name must be clean down both paths,
+// because a worked example is not the place to meet an ambiguity.
+const NAMED = new Set(BRANCHES.map(b => b.id));
+const namedDrift = drifted.filter(r => NAMED.has(r[branch.at('branch_id')]));
+ok('the named branches agree down both paths, so examples stay true',
+  namedDrift.length === 0,
+  namedDrift.length ? namedDrift.map(r => r[branch.at('branch_id')]).join(', ')
+    : `${NAMED.size} named branches clean`);
+
+// Price zones are a third hierarchy and nest in neither of the other two.
+const zonesPerRegion = new Map();
+for (const r of branch.rows) {
+  const reg = districtRegion.get(r[branch.at('district_id')]);
+  if (!zonesPerRegion.has(reg)) zonesPerRegion.set(reg, new Set());
+  zonesPerRegion.get(reg).add(r[branch.at('zone_id')]);
+}
+ok('price zones cut across regions rather than nesting inside them',
+  [...zonesPerRegion.values()].filter(s => s.size > 1).length >= 4,
+  `${[...zonesPerRegion.values()].filter(s => s.size > 1).length} regions contain more than one zone`);
+
+const depotIds = new Set(depotT.rows.map(r => r[depotT.at('depot_id')]));
+const perBranchDepots = new Map();
+for (const r of depotBranch.rows) {
+  const b = r[depotBranch.at('branch_id')];
+  perBranchDepots.set(b, (perBranchDepots.get(b) || 0) + 1);
+}
+ok('every depot link joins a real depot to a real branch',
+  depotBranch.rows.every(r => depotIds.has(r[depotBranch.at('depot_id')])
+    && branchIds.has(r[depotBranch.at('branch_id')])), `${depotBranch.n} links`);
+ok('a branch is served by more than one depot, so the join fans out',
+  [...perBranchDepots.values()].every(v => v >= 2),
+  `${Math.min(...perBranchDepots.values())} to ${Math.max(...perBranchDepots.values())} depots per branch`);
+
+head('the same product, more than one price');
+
+ok('every product is priced in every zone',
+  zonePriceTable.n === product.n * zoneT.n,
+  `${zonePriceTable.n.toLocaleString()} rows for ${product.n.toLocaleString()} products across ${zoneT.n} zones`);
+
+const spread = new Map();
+for (const r of zonePriceTable.rows) {
+  const sku = r[zpAt('sku')];
+  if (!spread.has(sku)) spread.set(sku, new Set());
+  spread.get(sku).add(r[zpAt('price')]);
+}
+const varying = [...spread.values()].filter(s => s.size > 1).length;
+ok('most products really do cost different money in different branches',
+  varying > product.n * 0.8, `${varying.toLocaleString()} of ${product.n.toLocaleString()} vary by zone`);
+
+ok('a sale rang through at its branch zone price, not the list price',
+  offZonePrice === 0,
+  offZonePrice ? `${offZonePrice.toLocaleString()} lines priced off-zone`
+    : `${zoneChecked.toLocaleString()} lines checked against their zone`);
+
+head('what the competition charges, and what we think it does to demand');
+
+const check = load('competitor_price_check.csv');
+const competitor = load('competitor.csv');
+const competitorIds = new Set(competitor.rows.map(r => r[competitor.at('competitor_id')]));
+const kviSkus = new Set(product.rows.filter(r => r[product.at('kvi')] === 'true')
+  .map(r => r[product.at('sku')]));
+
+ok('every price check is a real branch looking at a real competitor',
+  check.rows.every(r => branchIds.has(r[check.at('branch_id')])
+    && competitorIds.has(r[check.at('competitor_id')])), `${check.n.toLocaleString()} checks`);
+ok('only the lines customers remember the price of get checked',
+  check.rows.every(r => kviSkus.has(r[check.at('sku')])),
+  `${kviSkus.size} known value items`);
+// Over a whole quarter every branch gets visited eventually, so counting
+// branches proves nothing. The gap is at the grain a pricing decision is made
+// on: a branch, a competitor, this week. Plenty of those never happened, and a
+// query that assumes they did will read a missing visit as a matched price.
+const weekOf = d => Math.floor((Date.parse(d) - Date.parse(CHAIN.quarterStart)) / 604800000);
+const visits = new Set(check.rows.map(r =>
+  `${r[check.at('branch_id')]}|${r[check.at('competitor_id')]}|${weekOf(r[check.at('checked_on')])}`));
+const possible = branch.n * competitor.n * (Math.floor(sales > 100000 ? CHAIN.quarterDays / 7 : 1) || 1);
+ok('it is a sample and not a census: most branch-weeks were never walked',
+  visits.size < possible * 0.5,
+  `${visits.size.toLocaleString()} branch-competitor-weeks checked of ${possible.toLocaleString()} possible`);
+
+const elast = load('price_elasticity.csv');
+const thin = elast.rows.filter(r => Number(r[elast.at('observations')]) < 50);
+const fat = elast.rows.filter(r => Number(r[elast.at('observations')]) >= 340);
+const meanErr = rows => rows.reduce((n, r) => n + Number(r[elast.at('std_error')]), 0) / rows.length;
+ok('some elasticities are fitted on almost nothing, in the same table as the good ones',
+  thin.length > 0 && fat.length > 0,
+  `${thin.length.toLocaleString()} of ${elast.n.toLocaleString()} use fewer than 50 observations`);
+ok('and the thin ones carry the wide error bars that say so',
+  meanErr(thin) > meanErr(fat) * 3,
+  `mean standard error ${meanErr(thin).toFixed(2)} against ${meanErr(fat).toFixed(2)}`);
+
+head('buying, in eleven currencies');
+
+const quote = load('supplier_quote.csv');
+const fx = load('fx_rate.csv');
+const po = load('purchase_order.csv');
+const currencyT = load('currency.csv');
+const supplierT = load('supplier.csv');
+const currencyIds = new Set(currencyT.rows.map(r => r[currencyT.at('currency_code')]));
+const supplierIds2 = new Set(supplierT.rows.map(r => r[supplierT.at('supplier_id')]));
+
+ok('every quote comes from a supplier, for a product, in a real currency',
+  quote.rows.every(r => supplierIds2.has(r[quote.at('supplier_id')])
+    && skus.has(r[quote.at('sku')])
+    && currencyIds.has(r[quote.at('currency_code')])), `${quote.n.toLocaleString()} quotes`);
+
+const quoteCurrencies = new Set(quote.rows.map(r => r[quote.at('currency_code')]));
+ok('the cheapest supplier cannot be found by sorting a column',
+  quoteCurrencies.size >= 5, `quoted in ${quoteCurrencies.size} currencies`);
+
+const bySku = new Map();
+for (const r of quote.rows) {
+  const s = r[quote.at('sku')];
+  bySku.set(s, (bySku.get(s) || 0) + 1);
+}
+ok('products are tendered, so there is a choice to get wrong',
+  [...bySku.values()].filter(v => v > 1).length > bySku.size * 0.8,
+  `${bySku.size.toLocaleString()} products with ${[...bySku.values()].filter(v => v > 1).length.toLocaleString()} multi-supplier tenders`);
+
+const fxDays = new Set(fx.rows.map(r => r[fx.at('rate_date')]));
+const weekendRates = [...fxDays].filter(d => [0, 6].includes(new Date(d + 'T00:00:00Z').getUTCDay()));
+ok('there is no exchange rate at the weekend, so Friday has to be carried forward',
+  weekendRates.length === 0, `${fxDays.size} trading days, none of them a weekend`);
+ok('every currency the group buys in is quoted',
+  new Set(fx.rows.map(r => r[fx.at('currency_code')])).size === currencyT.n - 1,
+  `${new Set(fx.rows.map(r => r[fx.at('currency_code')])).size} of ${currencyT.n - 1} non-sterling currencies`);
+
+const openPo = po.rows.filter(r => r[po.at('received_on')] === '');
+ok('every purchase order names a supplier, a depot and a product',
+  po.rows.every(r => supplierIds2.has(r[po.at('supplier_id')])
+    && depotIds.has(r[po.at('depot_id')]) && skus.has(r[po.at('sku')])), `${po.n.toLocaleString()} orders`);
+ok('some orders have not arrived, and that blank is a not-yet',
+  openPo.length > 0 && openPo.length < po.n,
+  `${openPo.length.toLocaleString()} of ${po.n.toLocaleString()} still open`);
+
+const tariff = load('tariff.csv');
+const closed = tariff.rows.filter(r => r[tariff.at('valid_to')] !== '');
+ok('duty depends on when the goods moved, not on when you ran the query',
+  closed.length >= 3,
+  `${closed.length} rates were superseded part way through the quarter`);
+
+head('making it ourselves');
+
+const factoryT = load('factory.csv');
+const lineT = load('production_line.csv');
+const bom = load('bill_of_materials.csv');
+const run = load('production_run.csv');
+const makeBuy = load('make_or_buy.csv');
+const commodityT = load('commodity.csv');
+const factoryIds = new Set(factoryT.rows.map(r => r[factoryT.at('factory_id')]));
+const lineIds = new Set(lineT.rows.map(r => r[lineT.at('line_id')]));
+const commodityIds = new Set(commodityT.rows.map(r => r[commodityT.at('commodity_id')]));
+const madeSkus = new Set(product.rows.filter(r => r[product.at('made_in_house')] === 'true')
+  .map(r => r[product.at('sku')]));
+
+ok('every production line belongs to a factory',
+  lineT.rows.every(r => factoryIds.has(r[lineT.at('factory_id')])), `${lineT.n} lines`);
+ok('only products we make have a recipe',
+  bom.rows.every(r => madeSkus.has(r[bom.at('sku')])), `${madeSkus.size} products made in house`);
+ok('every ingredient is a commodity we track the price of',
+  bom.rows.every(r => commodityIds.has(r[bom.at('input_commodity_id')])), `${bom.n} lines of recipe`);
+ok('every production run happened on a real line at a real factory',
+  run.rows.every(r => factoryIds.has(r[run.at('factory_id')]) && lineIds.has(r[run.at('line_id')])),
+  `${run.n.toLocaleString()} runs`);
+
+const shortRuns = run.rows.filter(r =>
+  Number(r[run.at('good_units')]) + Number(r[run.at('scrap_units')]) !== Number(r[run.at('planned_units')]));
+ok('most runs reconcile, and the ones that do not are worth finding',
+  shortRuns.length > run.n * 0.1 && shortRuns.length < run.n * 0.45,
+  `${shortRuns.length.toLocaleString()} of ${run.n.toLocaleString()} runs do not add up`);
+
+const undecided = makeBuy.rows.filter(r => r[makeBuy.at('decision')] === '');
+ok('every make-or-buy case is about a product we actually sell',
+  makeBuy.rows.every(r => skus.has(r[makeBuy.at('sku')])), `${makeBuy.n} cases`);
+ok('a recommendation is a model output and some of them are still undecided',
+  undecided.length > 0 && undecided.length < makeBuy.n,
+  `${undecided.length} of ${makeBuy.n} have no decision yet`);
+
+head('the estate that is still on its own systems');
+
+const meridian = load('meridian_store.csv');
+const crosswalk = load('product_crosswalk.csv');
+const shopNos = new Set(meridian.rows.map(r => r[meridian.at('shop_no')]));
+ok('the acquired stores are not in the branch table, and their keys do not collide',
+  [...shopNos].every(n => !branchIds.has(n)), `${meridian.n} shops on a four digit number`);
+
+const covered = new Set(crosswalk.rows.map(r => r[crosswalk.at('qubix_sku')]));
+const coverage = covered.size / product.n;
+ok('the crosswalk is incomplete, the way a hand-maintained one is',
+  coverage > 0.7 && coverage < 0.9, `${(coverage * 100).toFixed(0)}% of products have a match`);
+
+const articles = new Map();
+for (const r of crosswalk.rows) {
+  const a = r[crosswalk.at('meridian_article')];
+  articles.set(a, (articles.get(a) || 0) + 1);
+}
+ok('and it is not one to one, because they never split the pack sizes',
+  [...articles.values()].some(v => v > 1),
+  `${[...articles.values()].filter(v => v > 1).length} articles match more than one SKU`);
+
+head('the shop floor nobody sees');
+
+const markdown = load('markdown.csv');
+const waste = load('waste.csv');
+ok('every markdown is a real product at a real branch',
+  markdown.rows.every(r => branchIds.has(r[markdown.at('branch_id')]) && skus.has(r[markdown.at('sku')])),
+  `${markdown.n.toLocaleString()} reductions`);
+ok('a markdown is cheaper than what it was',
+  markdown.rows.every(r => Number(r[markdown.at('marked_price')]) < Number(r[markdown.at('original_price')])));
+ok('marked units either sold or were wasted, and the two add up',
+  markdown.rows.every(r => Number(r[markdown.at('units_sold')]) + Number(r[markdown.at('units_wasted')])
+    === Number(r[markdown.at('units_marked')])));
+
+const other = waste.rows.filter(r => r[waste.at('reason_code')] === 'other').length;
+ok('a third of waste is filed as "other", because the shift was ending',
+  other / waste.n > 0.25 && other / waste.n < 0.55,
+  `${(other / waste.n * 100).toFixed(0)}% of ${waste.n.toLocaleString()} write-offs have no real reason`);
+
 console.log(`\n  ${bad ? `${bad} problem(s)` : 'all checks pass'}`
-  + `, ${(sales + lines + stockRows + staff.n + ret.n + order.n).toLocaleString()} rows inspected\n`);
+  + `, ${(sales + lines + stockRows + staff.n + ret.n + order.n + check.n + quote.n
+    + zonePriceTable.n + markdown.n + waste.n).toLocaleString()} rows inspected\n`);
 process.exit(bad ? 1 : 0);

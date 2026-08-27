@@ -23,6 +23,8 @@
 import { createWriteStream, mkdirSync, statSync, readdirSync } from 'node:fs';
 import { BRANCHES, PRODUCTS, CHAIN, FORMATS } from '../src/lib/game/superstore.js';
 import { EMPLOYEES, ROLES } from '../src/lib/game/superstore-people.js';
+import { COUNTRIES, INCOTERMS } from '../src/lib/game/superstore-world.js';
+import { assignGeography, buildCommercial } from './data/commercial.mjs';
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -136,20 +138,33 @@ while (catalogue.length < CHAIN.products) {
 const weighed = catalogue.filter(p => p.soldBy === 'kg');
 const unitPriced = catalogue.filter(p => p.soldBy === 'each');
 
-/* ── suppliers ───────────────────────────────────────────────────────────── */
+/* ── suppliers ─────────────────────────────────────────────────────────────
+   A supplier has a country, and its country has a currency, so a quote is not
+   comparable with the quote next to it until you have converted one of them.
+   The incoterm decides whether freight and duty are already inside the number,
+   which is the second reason two quotes that look the same are not. */
 const suppliers = [];
-for (let i = 0; i < 42; i++)
+for (let i = 0; i < 42; i++) {
+  const home = i < 18 ? COUNTRIES[0] : pick(COUNTRIES.filter(c => c.role === 'sourcing'));
   suppliers.push({
     id: `SUP-${pad(100 + i, 3)}`,
     name: `${pick(['Northern', 'Valley', 'Coastal', 'Meridian', 'Anchor', 'Harvest', 'Pinnacle', 'Crossfield'])} ${pick(['Foods', 'Produce', 'Distribution', 'Supply Co', 'Wholesale', 'Provisions'])}`,
-    leadDays: Math.round(between(1, 9)), terms: pick(['30 days', '30 days', '45 days', '60 days'])
+    leadDays: Math.round(between(1, 9)), terms: pick(['30 days', '30 days', '45 days', '60 days']),
+    country: home.id, currency: home.currency,
+    incoterm: home.id === 'BR' ? 'DDP' : pick(INCOTERMS).id,
+    risk: pick(['low', 'low', 'low', 'medium', 'medium', 'high'])
   });
+}
 
 /* ── files ───────────────────────────────────────────────────────────────── */
 const f = {
-  branch: open('branch.csv', ['branch_id', 'name', 'format', 'staff', 'tills', 'quarterly_transactions', 'opened']),
-  product: open('product.csv', ['sku', 'name', 'category', 'unit', 'price', 'sold_by', 'chilled']),
-  supplier: open('supplier.csv', ['supplier_id', 'name', 'lead_days', 'payment_terms']),
+  branch: open('branch.csv', ['branch_id', 'name', 'format', 'district_id', 'county_id', 'zone_id',
+    'staff', 'tills', 'floor_sqm', 'car_park_spaces', 'catchment_population',
+    'quarterly_transactions', 'opened', 'last_refit']),
+  product: open('product.csv', ['sku', 'name', 'category', 'unit', 'list_price', 'sold_by',
+    'brand_tier', 'own_label', 'kvi', 'commodity_id', 'origin_country_id', 'made_in_house', 'chilled']),
+  supplier: open('supplier.csv', ['supplier_id', 'name', 'country_id', 'currency_code', 'incoterm',
+    'lead_days', 'payment_terms', 'risk_rating']),
   till: open('till.csv', ['till_id', 'branch_id', 'till_number', 'kind']),
   employee: open('employee.csv', ['employee_id', 'employee_number', 'name', 'location_id', 'role', 'contract', 'weekly_hours', 'started', 'left']),
   customer: open('customer.csv', ['customer_id', 'loyalty_card', 'joined', 'home_branch_id', 'marketing_opt_in']),
@@ -170,9 +185,28 @@ const f = {
   footfall: open('footfall.csv', ['branch_id', 'business_date', 'hour', 'visitors'])
 };
 
-for (const b of estate) f.branch.row([b.id, `"${b.name}"`, b.format, b.staff, b.tills, b.transactions, b.opened]);
-for (const p of catalogue) f.product.row([p.sku, `"${p.name}"`, `"${p.category}"`, `"${p.unit}"`, money(p.price), p.soldBy, p.chilled]);
-for (const s of suppliers) f.supplier.row([s.id, `"${s.name}"`, s.leadDays, `"${s.terms}"`]);
+/* ── the world above the shop floor ────────────────────────────────────────
+   Geography first, because a branch has to know its price zone before it can
+   ring anything up, then the commercial estate, which enriches the catalogue
+   with brand tier, origin, and the five prices every product has. The product
+   master is written after that and not before. */
+const ctx = {
+  open, estate, catalogue, suppliers, DAYS, START,
+  rnd, pick, between, chance, pad, money, day, stamp, clock
+};
+assignGeography(ctx);
+const commercial = buildCommercial(ctx);
+
+for (const b of estate)
+  f.branch.row([b.id, `"${b.name}"`, b.format, b.district, b.county, b.zone, b.staff, b.tills,
+    b.floorSqm, b.carPark, b.catchment, b.transactions, b.opened,
+    b.refit === null ? '' : day(-b.refit)]);
+for (const p of catalogue)
+  f.product.row([p.sku, `"${p.name}"`, `"${p.category}"`, `"${p.unit}"`, money(p.price), p.soldBy,
+    p.tier, p.ownLabel, p.kvi, p.commodity, p.origin, p.madeInHouse, p.chilled]);
+for (const s of suppliers)
+  f.supplier.row([s.id, `"${s.name}"`, s.country, s.currency, s.incoterm, s.leadDays,
+    `"${s.terms}"`, s.risk]);
 
 /* ── tills ───────────────────────────────────────────────────────────────── */
 const tillsAt = new Map();
@@ -223,6 +257,8 @@ for (let i = 0; i < memberTarget; i++) {
   members.push({ id, home });
   f.customer.row([id, `9${pad(770000000 + i, 9)}`, day(-Math.floor(between(1, 2500))), home, chance(0.42)]);
 }
+ctx.staffAt = staffAt;   // the price checkers, once there are any
+
 const membersAt = new Map();
 for (const m of members) {
   if (!membersAt.has(m.home)) membersAt.set(m.home, []);
@@ -322,17 +358,23 @@ const writeSale = (id, b, date, total, tillList, staff, exact = false) => {
   // where a weight in the quantity column comes from.
   const built = [];
   let sum = 0, items = 0;
+  // The price is the zone's price, not the national list price, so the same SKU
+  // rings through at different money in a Metro Express and a Value superstore.
+  // "What does QX-CER-001 cost" is not a question with one answer.
+  const shelf = p => commercial.zonePriceOf(p, b.zone);
+
   const add = p => {
+    const unit = shelf(p);
     if (p.soldBy === 'kg') {
       const kg = Math.round(between(0.15, 2.2) * 1000) / 1000;
-      const value = Math.round(p.price * kg * 100) / 100;
-      built.push({ sku: p.sku, qty: kg, uom: 'kg', price: p.price, value });
+      const value = Math.round(unit * kg * 100) / 100;
+      built.push({ sku: p.sku, qty: kg, uom: 'kg', price: unit, value });
       items += 1;
       return value;
     }
     const qty = Math.max(1, Math.round(between(1, 3)));
-    const value = Math.round(p.price * qty * 100) / 100;
-    built.push({ sku: p.sku, qty, uom: 'unit', price: p.price, value });
+    const value = Math.round(unit * qty * 100) / 100;
+    built.push({ sku: p.sku, qty, uom: 'unit', price: unit, value });
     items += qty;
     return value;
   };
@@ -347,9 +389,9 @@ const writeSale = (id, b, date, total, tillList, staff, exact = false) => {
       for (let tries = 0; tries < 6 && !placed; tries++) {
         const p = pick(unitPriced);
         const qty = Math.max(1, Math.round(between(1, 3)));
-        const value = Math.round(p.price * qty * 100) / 100;
+        const value = Math.round(shelf(p) * qty * 100) / 100;
         if (value > remaining - 0.4) continue;      // leave room to weigh
-        built.push({ sku: p.sku, qty, uom: 'unit', price: p.price, value });
+        built.push({ sku: p.sku, qty, uom: 'unit', price: shelf(p), value });
         remaining = Math.round((remaining - value) * 100) / 100;
         items += qty;
         placed = true;
@@ -357,9 +399,9 @@ const writeSale = (id, b, date, total, tillList, staff, exact = false) => {
       if (!placed) break;
     }
     if (remaining >= 0.05) {
-      const usable = weighed.filter(p => p.price * 6 >= remaining && p.price * 0.04 <= remaining);
-      const p = usable.length ? pick(usable) : weighed.reduce((a, c) => (c.price > a.price ? c : a));
-      built.push({ sku: p.sku, qty: Math.round((remaining / p.price) * 1000) / 1000, uom: 'kg', price: p.price, value: remaining });
+      const usable = weighed.filter(p => shelf(p) * 6 >= remaining && shelf(p) * 0.04 <= remaining);
+      const p = usable.length ? pick(usable) : weighed.reduce((a, c) => (shelf(c) > shelf(a) ? c : a));
+      built.push({ sku: p.sku, qty: Math.round((remaining / shelf(p)) * 1000) / 1000, uom: 'kg', price: shelf(p), value: remaining });
       items += 1;
     }
     sum = total;
@@ -509,7 +551,16 @@ for (let d = 0; d < DAYS; d++) {
       if (chance(0.01)) continue;
       f.sensor.row([b.id, `FZ-${1 + Math.floor(rnd() * 3)}`, `${date}T${clock(h, 0)}:00Z`, money(between(-21, -15))]);
     }
+
+    // Markdowns, waste, and whatever the price checker found at Bergstrom.
+    commercial.perBranchDay(b, date, n);
+    if (d % 7 === 0) commercial.perWeekBranch(b, date, b.transactions / 13, n * 7);
   }
+
+  // Central buying, the factories, and the estate that is still on its own
+  // systems. None of these happen at a branch, which is the point of them.
+  commercial.perDay(d, date);
+  if (d % 7 === 0) commercial.perWeek(d, date);
 
   // Stock is counted weekly across the whole range, not daily: 48 branches by
   // 2,140 products by 91 days would be nine million rows of very little.
@@ -522,7 +573,7 @@ for (let d = 0; d < DAYS; d++) {
   }
 }
 
-const files = Object.values(f);
+const files = [...Object.values(f), ...commercial.files];
 await Promise.all(files.map(x => x.done()));
 
 console.log(`\n  ${estate.length} branches · ${catalogue.length} products · ${DAYS} days from ${day(0)}\n`);
