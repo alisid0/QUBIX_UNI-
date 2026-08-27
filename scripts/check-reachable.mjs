@@ -78,10 +78,12 @@ check(unrouted.length === 0, 'every rostered mission has a route',
    made sense to open it.                                                      */
 let deepest = 0;
 const backwards = [];
+const place = m => (m.reading?.chapter ?? 0) * 100 + (m.reading?.session ?? 0);
+const label = m => `ch${m.reading?.chapter}.${m.reading?.session}`;
+let deepestMission = null;
 for (const m of MISSIONS) {
-  const chapter = m.reading?.chapter ?? 0;
-  if (chapter < deepest) backwards.push(`${m.slug} (ch${chapter} after ch${deepest})`);
-  deepest = Math.max(deepest, chapter);
+  if (place(m) < deepest) backwards.push(`${m.slug} (${label(m)} after ${label(deepestMission)})`);
+  if (place(m) >= deepest) { deepest = place(m); deepestMission = m; }
 }
 check(backwards.length === 0, 'the unlock order follows the course rather than doubling back',
   backwards.length ? backwards.join(', ') : `${MISSIONS.length} missions in reading order`);

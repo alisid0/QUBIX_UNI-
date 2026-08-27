@@ -139,22 +139,24 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         Object.freeze(['GROUP BY branch_id, business_date', 'one branch on one date', '1,392'])
       ]) }),
       rehearsal: Object.freeze({
-        mission: 'sql-console',
-        lead: 'A task from the console at the end of this session. The console runs your clause against the same twelve sales, so you can settle the answer here first.',
+        mission: 'region-grain',
+        lead: 'Grouping makes the grouped column the grain, so the column you choose decides what the answer is about. The mission at the end of this session is two analysts who chose differently and both grouped correctly.',
         cases: Object.freeze([
           Object.freeze({
-            caseId: 'group',
+            caseId: 'reconciles',
             facts: Object.freeze([
-              Object.freeze(['The request', 'How many sales did each branch make?']),
-              Object.freeze(['What to watch', 'Watch the row count while you add the grouping clause.']),
-              Object.freeze(['Rows the console returns', '3'])
+              Object.freeze(['The request', 'Sales by region for the window.']),
+              Object.freeze(['Priya', 'joined sale to branch to district to region']),
+              Object.freeze(['Marcus', 'joined sale to branch to county to region']),
+              Object.freeze(['Both totals', '15,315']),
+              Object.freeze(['Largest single move', '1,686'])
             ]),
-            question: 'Twelve rows go in and three come out. Does one row still mean one sale?',
-            answer: 'No. One row now means one branch.',
-            why: 'Grouping by a column makes that column the grain. Counting rows now counts branches. This is the difference from WHERE, which removed rows and left every survivor still meaning a sale.'
+            question: 'Both reports account for every sale and both disagree about the regions. What does the matching total tell you about where the difference came from?',
+            answer: 'Nothing was gained or lost, so the same sales are being filed under different regions. The disagreement is about which column the grouping reached, not about which rows were counted.',
+            why: 'A reconciling total is the reason this survives review. Somebody checking the bottom line sees two documents that agree, and the split underneath is where the whole disagreement lives.'
           })
         ]),
-        closing: 'Three rows is not a smaller answer to the same question, it is an answer to a different one. Ask what one row means after every clause, because the number will look reasonable either way.'
+        closing: 'Grouping by a column you have not defined is the same mistake as counting rows without knowing what a row is. In the mission you will find the branches that move, and decide which report to send.'
       }),
       workbook: Object.freeze({ title: 'Twenty-minute grouping plan', prompt: 'Use the same table you described in the previous session.', steps: Object.freeze([
         'Write a question that needs one answer per group.',
@@ -172,7 +174,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         ]),
         explanation: 'Rows are filtered before grouping, so no count exists at that point. A condition on an aggregate has to wait until the groups have been formed, which is what the HAVING clause is for.'
       }),
-      practice: Object.freeze({ title: 'The SQL Console', href: '?mode=game&mission=sql-console', instruction: 'Group twelve sales into three branches, and watch the grain move while you do it.' }),
+      practice: Object.freeze({ title: 'The Region That Was’nt', href: '?mode=game&mission=region-grain', instruction: 'Two analysts group by region and get different totals. Find the column they disagreed about.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'PostgreSQL — SELECT', url: 'https://www.postgresql.org/docs/current/sql-select.html' }),
         Object.freeze({ label: 'Statistics Canada — statistical units', url: 'https://www150.statcan.gc.ca/n1/pub/11-634-x/2016001/section1/chap3-eng.htm' })

@@ -70,6 +70,15 @@ export const REGION_GRAIN_MISSION = Object.freeze({
 
   queries: Object.freeze({ management: QUERY_MANAGEMENT, geographic: QUERY_GEOGRAPHIC }),
 
+  /** The setup, in one place, so a rehearsal can quote it rather than invent it. */
+  scenario: Object.freeze({
+    request: 'Sales by region for the window.',
+    priya: 'joined sale to branch to district to region',
+    marcus: 'joined sale to branch to county to region',
+    bothTotals: '15,315',
+    largestMove: '1,686'
+  }),
+
   cases: Object.freeze([
     Object.freeze({
       id: 'reconciles',

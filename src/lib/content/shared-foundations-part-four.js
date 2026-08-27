@@ -176,7 +176,7 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
         ]),
         explanation: 'The mean is sensitive to large values and the median is not, so a mean far above a median is the signature of a long upper tail. For a typical price, the median is the honest figure to quote.'
       }),
-      practice: Object.freeze({ title: 'The Distribution Desk', href: '?mode=game&mission=distribution-desk', instruction: 'Choose a centre and a spread the shape can actually support.' }),
+      practice: Object.freeze({ title: 'What Does It Cost?', href: '?mode=game&mission=zone-price', instruction: 'One product, three defensible averages, none of them equal. Choose the one that answers the question asked.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'OpenStax — Measures of the Center of the Data', url: 'https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data', licence: 'CC BY 4.0' }),
         Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' })
