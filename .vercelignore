@@ -41,5 +41,8 @@ book/dist/
 # Nothing in the build reads them. public/data/qubix-sample.db is rebuilt from
 # the committed data-sample/ by scripts/build-sample-db.mjs during prebuild,
 # which is also what the four figure guards read.
-data/
-dist-data/
+# Anchored to the root. Unanchored, `data/` matches a directory of that name at
+# any depth, which quietly excluded src/lib/data/ and failed the Vercel build
+# on "Could not resolve ../lib/data/superstore.js".
+/data/
+/dist-data/
