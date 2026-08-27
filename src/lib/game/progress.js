@@ -26,6 +26,7 @@ import { SAMPLING_DESK_MISSION } from './sampling-desk-mission.js';
 import { RESULT_CHECKPOINT_MISSION } from './result-checkpoint-mission.js';
 import { HANDOVER_PACK_MISSION } from './handover-pack-mission.js';
 import { REGION_GRAIN_MISSION } from './region-grain-mission.js';
+import { ZONE_PRICE_MISSION } from './zone-price-mission.js';
 
 const KEY = 'qx.superstore.progress.v1';
 
@@ -71,6 +72,9 @@ export const MISSIONS = Object.freeze([
   { slug: 'region-grain', mission: REGION_GRAIN_MISSION, xp: 120,
     teaches: 'Establishing which hierarchy a grouping column belongs to before reporting by it.',
     reading: { chapter: 5, session: 3, label: 'Joining without changing what a row is' } },
+  { slug: 'zone-price', mission: ZONE_PRICE_MISSION, xp: 110,
+    teaches: 'Giving a price the grain it needs, and weighting an average to match the question.',
+    reading: { chapter: 5, session: 4, label: 'Checking a result before believing it' } },
   { slug: 'result-checkpoint', mission: RESULT_CHECKPOINT_MISSION, xp: 180,
     teaches: 'Testing grain, boundaries, NULL behaviour and control totals before releasing a query result.',
     reading: { chapter: 5, session: 4, label: 'Checking a result before believing it' } },
