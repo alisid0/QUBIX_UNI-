@@ -31,3 +31,15 @@ supabase/
 # scripts/publish-library.mjs during prebuild. Shipping both would double
 # roughly 7 MB for no reason.
 book/dist/
+
+# The generated quarter and its release archive. Both are large, both are
+# gitignored, and a .vercelignore replaces .gitignore rather than adding to it,
+# so without these lines 442 MB of local-only data went up on every deploy and
+# the first attempt was rejected: sale_line.csv alone is 187 MB against a
+# 100 MB per-file limit.
+#
+# Nothing in the build reads them. public/data/qubix-sample.db is rebuilt from
+# the committed data-sample/ by scripts/build-sample-db.mjs during prebuild,
+# which is also what the four figure guards read.
+data/
+dist-data/
