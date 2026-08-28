@@ -12,7 +12,7 @@
 // Locally every one of them passed, because locally every file is present. The
 // only difference is the upload, so the upload is what has to be checked.
 //
-// This reads the paths the prebuild scripts actually open, applies the
+// This reads the paths the prebuild scripts open or import, applies the
 // .vercelignore rules to each, and refuses any that would not arrive.
 //
 //   node scripts/check-deployable.mjs
@@ -71,9 +71,12 @@ for (const name of scripts) {
   // dir('../something') and new URL('../something', import.meta.url)
   for (const [, target] of source.matchAll(/dir\('\.\.\/([^']+)'\)/g)) needed.add(target);
   for (const [, target] of source.matchAll(/new URL\('\.\.\/([^']+)', import\.meta\.url\)/g)) needed.add(target);
+  // Static relative imports can be build inputs too, especially imported JSON
+  // approval registers that Vercel must receive before the guard can run.
+  for (const [, target] of source.matchAll(/from\s+['"]\.\.\/([^'"]+)['"]/g)) needed.add(target);
 }
 
-check(needed.size > 0, 'prebuild scripts open files this guard can see', `${needed.size} paths`);
+check(needed.size > 0, 'prebuild scripts reference files this guard can see', `${needed.size} paths`);
 
 const missing = [];
 for (const target of [...needed].sort()) {
@@ -84,7 +87,7 @@ for (const target of [...needed].sort()) {
 }
 
 check(missing.length === 0,
-  'every file a prebuild guard reads will reach the deploy',
+  'every file a prebuild guard reads or imports will reach the deploy',
   missing.length
     ? `${missing.join(', ')} — excluded by .vercelignore, so the build fails on ENOENT`
     : `${needed.size} paths checked`);

@@ -31,8 +31,9 @@ check(/opendatastructures\.org/.test(view) && /opendsa-server\.cs\.vt\.edu/.test
 const approval = approvals[lesson.id];
 check(approval?.approvedBy === 'founder' && approval?.approvedOn === '2026-08-28', 'founder approval is recorded with its date');
 for (const [file, expected] of Object.entries(approval?.files || {})) {
-  const source = fs.readFileSync(new URL(`../${file}`, import.meta.url));
-  const actual = crypto.createHash('sha256').update(source).digest('hex');
+  const source = fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+    .replace(/\r\n/g, '\n');
+  const actual = crypto.createHash('sha256').update(source, 'utf8').digest('hex');
   check(actual === expected, `${file} is unchanged since founder approval`);
 }
 
