@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import { DSA_SEQUENCE_PREVIEW as lesson, inspectionsToFind } from '../src/lib/content/dsa-sequence-preview.js';
 import { DSA_ARRAY_INSERTION_PREVIEW as insertion, occupiedCount, itemsMovedForInsert } from '../src/lib/content/dsa-array-insertion-preview.js';
 import { DSA_INTRODUCTION_PREVIEW as introduction } from '../src/lib/content/dsa-introduction-preview.js';
+import { DSA_ARRAY_GROWTH_PREVIEW as growth, nextCapacity, growthTrace, growthSummary } from '../src/lib/content/dsa-array-growth-preview.js';
 import approvals from '../curriculum/APPROVED-DSA.json' with { type: 'json' };
 
 let failed = false;
@@ -116,5 +117,68 @@ for (const [file, expected] of Object.entries(introductionApproval?.files || {})
   check(actual === expected, `${file} is unchanged since founder approval`);
 }
 
+/* ── DSA-ARR-003, an unreviewed draft ─────────────────────────────────────
+   The approved samples above are checked for being approved. This one is
+   checked for the opposite: that it does not claim an approval it has not
+   been given, and that it stays off the production site until it has. The
+   numeric checks matter just as much, because the whole lesson rests on two
+   totals being wildly different for a reason the learner can reconstruct. */
+
+const growthOne = growthSummary('one', growth.appendTarget, growth.startCapacity);
+const growthDouble = growthSummary('double', growth.appendTarget, growth.startCapacity);
+
+check(growth.id === 'DSA-ARR-003', 'growth sample has a stable curriculum identifier');
+check(/AI_DRAFT/.test(growth.status) && /AUTHORING ONLY/.test(growth.status), 'growth sample declares itself an unapproved draft');
+check(!/APPROVED/.test(growth.status), 'growth sample does not describe itself as approved');
+check(approvals[growth.id] === undefined, 'growth sample is absent from the founder approval register');
+check(growth.objective.split(/[.!?]/).filter(Boolean).length === 1, 'growth sample has one objective');
+check(growth.prerequisites.some(item => item.includes('DSA-ARR-002')), 'growth sample names the approved insertion lesson as its prerequisite');
+
+check(nextCapacity('double', 4) === 8 && nextCapacity('one', 4) === 5, 'each strategy grows the capacity as described');
+check(nextCapacity('halve', 4) === null && nextCapacity('double', 0) === null, 'an unknown strategy or empty array is refused rather than guessed');
+check(growthTrace('double', 0, 4) === null && growthTrace('nope', 8, 4) === null, 'an impossible run is refused rather than drawn');
+
+check(growthOne.finalCapacity === growthDouble.finalCapacity, 'both strategies finish in the same capacity, so the comparison is fair');
+check(growthOne.wastedSlots === 0 && growthDouble.wastedSlots === 0, 'neither strategy wastes a slot at the end, so the difference is work and not memory');
+check(growthDouble.totalCopies < growthOne.totalCopies, 'doubling copies less than growing one slot at a time');
+check(growthOne.totalCopies / growthDouble.totalCopies > 10, 'the difference is an order of magnitude, not a rounding detail');
+check(growthDouble.growEvents < growthOne.growEvents, 'doubling grows fewer times');
+check(growthDouble.copiesPerAppend < 1, 'averaged over the run, doubling pays under one copy per append');
+check(growthOne.copiesPerAppend > 10, 'averaged over the run, growing by one pays many copies per append');
+check(growthDouble.worstAppend * 2 === growthDouble.finalCapacity, 'the worst single append under doubling copies half the final capacity');
+
+check(growth.full.choices.filter(c => c.id === growth.full.correct).length === 1, 'the full-array moment has exactly one correct answer');
+check(growth.full.correct === 'copy', 'the correct answer is to claim a larger array and copy');
+check(growth.full.choices.every(c => c.cost && c.cost.length >= 45), 'every wrong answer states what it actually costs');
+check(growth.prediction.answers.some(a => a.id === growth.prediction.correct), 'growth prediction has a valid correct answer');
+
+const atSize = growthSummary('double', growth.transferAppends, growth.startCapacity);
+check(growth.transfer.answers.some(a => a.id === growth.transfer.correct), 'transfer question has a valid correct answer');
+check(atSize.growEvents === 8 && growth.transfer.correct === 'few', 'the transfer answer matches the computed number of growths at that size');
+check(atSize.totalCopies < growth.transferAppends * 2, 'at a thousand items doubling still pays about one copy per item, which is the point of the lesson');
+
+check(/showDsaArrayGrowthPreview\s*=.*dsa-array-growth-preview/.test(app), 'growth draft has a route');
+check(/showDsaArrayGrowthPreview\s*=.*workshop/.test(app), 'growth draft is workshop-gated, so an unreviewed draft cannot reach the production site');
+check(!/mission === ['"]dsa-array-growth-preview/.test(app), 'growth draft does not enter the learner mission roster');
+
+const growthView = fs.readFileSync(new URL('../src/views/DsaArrayGrowthPreview.svelte', import.meta.url), 'utf8');
+const growthFigure = fs.readFileSync(new URL('../src/lib/components/ArrayGrowthFigure.svelte', import.meta.url), 'utf8');
+const growthLab = fs.readFileSync(new URL('../src/lib/components/ArrayGrowthLab.svelte', import.meta.url), 'utf8');
+
+check(/opendatastructures\.org/.test(growthView) && /opendsa-server\.cs\.vt\.edu/.test(growthView) && /docs\.python\.org/.test(growthView), 'growth draft carries source links');
+check(/AI_DRAFT/.test(growthView) && /not been reviewed or approved/.test(growthView), 'growth draft tells its reader it is unreviewed');
+check(/<svg[\s>]/.test(growthFigure) && !/<img|\.png|\.jpe?g|\.webp/.test(growthFigure + growthLab), 'growth visuals are deterministic SVG, not raster');
+check(/dsa-array-growth-preview/.test(growthFigure) && /growthTrace/.test(growthFigure), 'the figure is computed from the lesson, not a second set of numbers');
+check(/prefers-reduced-motion/.test(growthFigure) && /reducedMotion/.test(growthFigure), 'growth animation honours reduced-motion preference');
+check(/Replay the appends/.test(growthFigure) && /on:click=\{play\}/.test(growthFigure), 'growth animation can be replayed');
+check(/max-width: 700px/.test(growthFigure) && /font-size: 22px/.test(growthFigure),
+  'the figure raises its own type on narrow screens, because a 640-wide viewBox scales an 11px label to about 6px on a phone and check-type reads declared sizes only');
+check(/OF 3/.test(growthLab), 'growth bench has a read-do-compare third step');
+check(/destroyed/.test(growthLab) && /refused/.test(growthLab), 'wrong answers at the full array are shown on the array, not only described');
+check(/allInspected/.test(growthLab), 'learner must inspect both strategies before the transfer question');
+check(/growthSummary/.test(growthLab) && !/490|15\.31/.test(growthLab), 'the bench derives its totals rather than hardcoding them');
+check(!/490|15\.31/.test(growthView), 'the reading derives its totals rather than hardcoding them');
+
 if (failed) process.exit(1);
 console.log('\nall checks pass, the DSA sample remains authoring-only and mechanically coherent');
+

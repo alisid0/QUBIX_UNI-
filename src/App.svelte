@@ -34,6 +34,7 @@
   let DsaSequencePreview = null;
   let DsaArrayInsertionPreview = null;
   let DsaIntroductionPreview = null;
+  let DsaArrayGrowthPreview = null;
 
   const params = new URLSearchParams(window.location.search);
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
@@ -53,6 +54,10 @@
   const showDsaSequencePreview = params.get('mode') === 'dsa-sequence-preview';
   const showDsaArrayInsertionPreview = params.get('mode') === 'dsa-array-insertion-preview';
   const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview';
+  // DSA-ARR-003 is an unreviewed AI_DRAFT. It is workshop-gated so the founder
+  // can read it on the preview mirror without it standing on the production
+  // site beside material they have actually approved.
+  const showDsaArrayGrowthPreview = params.get('mode') === 'dsa-array-growth-preview' && workshop;
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');
@@ -77,6 +82,9 @@
   }
   if (showDsaIntroductionPreview) {
     import('./views/DsaIntroductionPreview.svelte').then(m => { DsaIntroductionPreview = m.default; });
+  }
+  if (showDsaArrayGrowthPreview) {
+    import('./views/DsaArrayGrowthPreview.svelte').then(m => { DsaArrayGrowthPreview = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -204,6 +212,8 @@
     <svelte:component this={DsaArrayInsertionPreview} />
   {:else if showDsaIntroductionPreview}
     <svelte:component this={DsaIntroductionPreview} />
+  {:else if showDsaArrayGrowthPreview}
+    <svelte:component this={DsaArrayGrowthPreview} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}
