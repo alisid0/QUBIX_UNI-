@@ -34,9 +34,9 @@ Move existing items safely to create a requested array position, then predict ho
 The reading earns the operation through a late delivery job that must preserve time order. The interaction then requires the learner to:
 
 1. move occupied items from right to left;
-2. experience why the opposite direction overwrites needed data;
+2. see, not only read, why the opposite direction overwrites a value still needed;
 3. place the new item only after the requested slot is empty;
-4. compare insertion at the start, middle and empty end;
+4. inspect insertion at the start, middle and empty end, and count the moves at each;
 5. explain why access and insertion have different costs in the same array.
 
 ## Placement decision still required
@@ -47,3 +47,4 @@ This sample is unrostered. It follows DSA-SEQ-001 conceptually, but the wider DS
 
 - 2026-08-28 — Initial second-BB authoring sample created after founder approved DSA-SEQ-001 and asked to progress.
 - 2026-08-28 — Founder requested animation and illustration to simplify DSA. Added a deterministic SVG three-state insertion model with replay and reduced-motion behaviour. The interaction remains the place where the learner performs each safe move.
+- 2026-08-28 — Raised the sample to the approved index-lesson review contract without changing status: wrong-direction clicks now show the overwrite, the bench compares three insertion positions before the recall check, and the figure is computed from the same lesson data. Still `AI_DRAFT · AUTHORING ONLY`. Placement and release remain undecided.

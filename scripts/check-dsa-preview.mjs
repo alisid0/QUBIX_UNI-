@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { DSA_SEQUENCE_PREVIEW as lesson, inspectionsToFind } from '../src/lib/content/dsa-sequence-preview.js';
-import { DSA_ARRAY_INSERTION_PREVIEW as insertion, itemsMovedForInsert } from '../src/lib/content/dsa-array-insertion-preview.js';
+import { DSA_ARRAY_INSERTION_PREVIEW as insertion, occupiedCount, itemsMovedForInsert } from '../src/lib/content/dsa-array-insertion-preview.js';
 import { DSA_INTRODUCTION_PREVIEW as introduction } from '../src/lib/content/dsa-introduction-preview.js';
 import approvals from '../curriculum/APPROVED-DSA.json' with { type: 'json' };
 
@@ -42,18 +42,33 @@ check(/AI_DRAFT.*AUTHORING ONLY/.test(insertion.status), 'second sample states i
 check(insertion.objective.split(/[.!?]/).filter(Boolean).length === 1, 'second sample has one objective');
 check(insertion.prerequisites.some(item => item.includes('DSA-SEQ-001')), 'second sample names the approved prerequisite');
 check(insertion.initialItems.at(-1) === null, 'insertion model declares one spare slot');
+check(occupiedCount === 6 && insertion.initialItems.length === occupiedCount + 1, 'spare-capacity model is six occupied slots plus one empty');
 check(insertion.insertion.moveOrder.join(',') === '5,4,3,2', 'safe move order runs from occupied end to insertion index');
-check(itemsMovedForInsert(6, 0) === 6 && itemsMovedForInsert(6, 3) === 3 && itemsMovedForInsert(6, 6) === 0, 'insertion cost follows the requested position');
-check(itemsMovedForInsert(6, 7) === null, 'invalid insertion position is rejected');
+check(insertion.insertion.moveOrder.length === itemsMovedForInsert(occupiedCount, insertion.insertion.index), 'required moves match insertion cost at the requested index');
+check(itemsMovedForInsert(occupiedCount, 0) === occupiedCount && itemsMovedForInsert(occupiedCount, 3) === 3 && itemsMovedForInsert(occupiedCount, occupiedCount) === 0, 'insertion cost follows the requested position');
+check(itemsMovedForInsert(occupiedCount, occupiedCount + 1) === null, 'invalid insertion position is rejected');
+check(insertion.comparisons.map(choice => choice.id).join(',') === 'start,middle,end', 'cost comparison covers beginning, middle and empty end');
+check(insertion.comparisons.every(choice => insertion.comparisons.filter(other => other.index === choice.index).length === 1), 'each comparison position is unique');
+check(insertion.comparisons.some(choice => choice.id === insertion.prediction.correct), 'growth prediction names a compared position');
+check(itemsMovedForInsert(occupiedCount, insertion.comparisons[0].index) > itemsMovedForInsert(occupiedCount, insertion.comparisons[1].index), 'beginning costs more than the middle');
+check(itemsMovedForInsert(occupiedCount, insertion.comparisons[1].index) > itemsMovedForInsert(occupiedCount, insertion.comparisons[2].index), 'middle costs more than the empty end');
 check(/showDsaArrayInsertionPreview\s*=.*workshop/.test(app), 'second route is gated behind the authoring workshop');
 check(!/mission === ['"]dsa-array-insertion-preview/.test(app), 'second preview does not enter the learner mission roster');
 const insertionView = fs.readFileSync(new URL('../src/views/DsaArrayInsertionPreview.svelte', import.meta.url), 'utf8');
+const insertionLab = fs.readFileSync(new URL('../src/lib/components/ArrayInsertionLab.svelte', import.meta.url), 'utf8');
 check(/opendatastructures\.org/.test(insertionView) && /opendsa-server\.cs\.vt\.edu/.test(insertionView) && /docs\.python\.org/.test(insertionView), 'second preview carries source links');
+check(/AI_DRAFT/.test(insertion.status) && !/APPROVED/.test(insertion.status), 'second sample is not marked approved');
+check(/OF 3/.test(insertionLab), 'insertion bench has a read-do-compare third step');
+check(/would overwrite/.test(insertionLab) && /would lose/.test(insertionLab), 'wrong-direction moves show the overwrite instead of only describing it');
+check(/inspectCost/.test(insertionLab) && /allCompared/.test(insertionLab), 'learner must inspect every comparison position before the recall check');
+check(/repeat\(7/.test(insertionLab) && !/repeat\(4/.test(insertionLab), 'the array stays one row of seven slots');
 const insertionFigure = fs.readFileSync(new URL('../src/lib/components/ArrayInsertionFigure.svelte', import.meta.url), 'utf8');
+check(/dsa-array-insertion-preview/.test(insertionFigure), 'array illustration is computed from the lesson, not a second set of labels');
 check(/<svg[\s>]/.test(insertionFigure) && !/<img|\.png|\.jpe?g|\.webp/.test(insertionFigure), 'array illustration is deterministic SVG, not raster');
 check(/prefers-reduced-motion/.test(insertionFigure) && /reducedMotion/.test(insertionFigure), 'array animation honours reduced-motion preference');
 check(/Replay movement/.test(insertionFigure) && /on:click=\{play\}/.test(insertionFigure), 'array animation can be replayed');
 check(/ArrayInsertionFigure/.test(insertionView), 'second reading includes the animated model');
+check(/beginning, the middle and the empty end/.test(insertionView), 'reading prepares the three-position comparison');
 
 check(introduction.id === 'DSA-INTRO-000', 'orientation has a stable curriculum identifier');
 check(/APPROVED.*AUTHORING ONLY/.test(introduction.status), 'orientation states its approval and authoring boundary');

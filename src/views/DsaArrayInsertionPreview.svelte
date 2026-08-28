@@ -37,6 +37,8 @@
         <section><span>INSERT AT POSITION 2</span><strong>Make room first</strong><p>Every later item may need a new position.</p></section>
       </div>
 
+      <p>The cost is not the same for every insertion. After you make room once, the bench asks you to count the moves at the beginning, the middle and the empty end.</p>
+
       <section class="uses" aria-labelledby="uses-heading">
         <p class="section-label">WHY SOFTWARE DOES THIS</p>
         <h2 id="uses-heading">Insertion preserves an order people depend on</h2>
@@ -60,7 +62,7 @@
     </section>
 
     <footer>
-      <p><strong>Review boundary:</strong> this is the second DSA sample only. It is not approved, rostered or deployed. The approved first lesson is unchanged.</p>
+      <p><strong>Review boundary:</strong> this is the second DSA sample only. It is not approved, rostered or deployed. The approved index lesson is unchanged.</p>
       <p>Concept references: <a href="https://opendatastructures.org/versions/edition-0.1g/ods-python.pdf">Open Data Structures: Array-Based Lists</a>, <a href="https://opendsa-server.cs.vt.edu/ODSA/StandaloneModules/20250903221625/html/ListIntro.html">OpenDSA List Introduction</a>, and the <a href="https://docs.python.org/3.14/tutorial/datastructures.html">Python data structures tutorial</a>. Qubix wording, cases and interaction are original.</p>
     </footer>
   </article>
@@ -68,7 +70,9 @@
 
 <style>
   :global(body) { margin:0; background:var(--qx-bg); color:var(--qx-text); }
-  .page { height:100vh; overflow-y:auto; overscroll-behavior-y:contain; background:radial-gradient(circle at 80% 0%,var(--qx-bg-radial),var(--qx-bg) 42%); font-family:var(--qx-font); }
+  :global(.qubix-university) { height:auto!important; overflow:visible!important; }
+  :global(html),:global(body),:global(#app) { height:auto!important; min-height:100%; overflow:visible!important; }
+  .page { min-height:100vh; background:radial-gradient(circle at 80% 0%,var(--qx-bg-radial),var(--qx-bg) 42%); font-family:var(--qx-font); }
   .topbar { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; gap:16px; padding:12px clamp(16px,4vw,42px); border-bottom:2px solid #000; background:var(--qx-bg); font-size:12px; font-weight:900; letter-spacing:.08em; }
   .topbar a { color:var(--qx-text); }
   article { width:min(920px,calc(100% - 32px)); margin:0 auto; padding:clamp(38px,7vw,78px) 0 80px; }
