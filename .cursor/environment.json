@@ -1,0 +1,11 @@
+{
+  "name": "Qubix University",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "dev server",
+      "command": "npm run dev -- --host"
+    }
+  ],
+  "ports": [8000]
+}
