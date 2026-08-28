@@ -19,6 +19,9 @@ import { DISTRIBUTION_DESK_MISSION, summarise } from '../src/lib/game/distributi
 import { runQuery } from '../src/lib/game/sql-console-mission.js';
 
 const dir = u => new URL(u, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+// Git records source as LF, but a Windows checkout may present the same file
+// with CRLF. Approval digests protect content, not the host's newline format.
+const readText = path => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 
 let failed = false;
 const check = (condition, label, detail = '') => {
@@ -26,11 +29,11 @@ const check = (condition, label, detail = '') => {
   if (!condition) failed = true;
 };
 
-const component = readFileSync(dir('../src/lib/components/JoinFanOut.svelte'), 'utf8');
-const sampler = readFileSync(dir('../src/lib/components/SamplingSpread.svelte'), 'utf8');
-const collapse = readFileSync(dir('../src/lib/components/GrainCollapse.svelte'), 'utf8');
-const alarm = readFileSync(dir('../src/lib/components/BaseRateAlarm.svelte'), 'utf8');
-const pull = readFileSync(dir('../src/lib/components/OutlierPull.svelte'), 'utf8');
+const component = readText(dir('../src/lib/components/JoinFanOut.svelte'));
+const sampler = readText(dir('../src/lib/components/SamplingSpread.svelte'));
+const collapse = readText(dir('../src/lib/components/GrainCollapse.svelte'));
+const alarm = readText(dir('../src/lib/components/BaseRateAlarm.svelte'));
+const pull = readText(dir('../src/lib/components/OutlierPull.svelte'));
 const ANIMATED = [
   { kind: 'join-fanout', file: 'JoinFanOut.svelte', source: component },
   { kind: 'sampling-spread', file: 'SamplingSpread.svelte', source: sampler },
@@ -277,10 +280,10 @@ check(/<svg/.test(component), 'it is SVG');
    learner-facing text, and any proposed change returns that item to
    AMENDMENTS_REQUIRED until the founder reviews it again. A digest is the only
    way that rule can be enforced rather than remembered.                       */
-const approvals = JSON.parse(readFileSync(dir('../curriculum/APPROVED-FIGURES.json'), 'utf8'));
+const approvals = JSON.parse(readText(dir('../curriculum/APPROVED-FIGURES.json')));
 for (const figure of approvals.figures) {
   const path = dir('../' + figure.component);
-  const actual = createHash('sha256').update(readFileSync(path)).digest('hex');
+  const actual = createHash('sha256').update(readText(path), 'utf8').digest('hex');
   check(actual === figure.sha256,
     `${figure.id} is unchanged since the founder approved it on ${figure.approvedOn}`,
     actual === figure.sha256
@@ -290,7 +293,7 @@ for (const figure of approvals.figures) {
 }
 
 /* ── the rule it cites exists in this repository ─────────────────────────── */
-const rule = readFileSync(dir('../docs/MEDIA-RULE.md'), 'utf8');
+const rule = readText(dir('../docs/MEDIA-RULE.md'));
 check(/Raster images and GIFs/.test(rule) && /deterministic/.test(rule),
   'docs/MEDIA-RULE.md states the rule the code cites',
   `${rule.split('\n').length} lines`);

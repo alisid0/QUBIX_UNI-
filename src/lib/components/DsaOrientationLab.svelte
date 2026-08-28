@@ -80,7 +80,7 @@
   .case-card { margin:0 0 16px; padding:19px; border:2px solid #000; background:var(--qx-slip); color:var(--qx-slip-ink); box-shadow:4px 4px 0 #000; }
   .case-card > div { display:flex; justify-content:space-between; gap:12px; }
   .case-card span { color:var(--qx-accent-text); font-size:11px; font-weight:900; letter-spacing:.13em; }
-  .case-card em { color:var(--qx-slip-dim); font-size:10px; font-weight:900; letter-spacing:.12em; font-style:normal; }
+  .case-card em { color:var(--qx-slip-dim); font-size:11px; font-weight:900; letter-spacing:.12em; font-style:normal; }
   .case-card p { margin:9px 0; font-size:19px; line-height:1.45; }
   .case-card > strong { display:block; padding-top:10px; border-top:1px solid var(--qx-slip-line); }
   .choices { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
@@ -91,10 +91,10 @@
   .choices strong,.choices small { display:block; }
   .choices small { margin-top:4px; color:var(--qx-ink-text-2); }
   .choice-top { display:flex; justify-content:space-between; align-items:flex-start; min-height:53px; margin-bottom:10px; }
-  .choice-top > b { color:var(--qx-ink-text-dim); font-size:10px; }
+  .choice-top > b { color:var(--qx-ink-text-dim); font-size:11px; }
   .glyph { display:flex; align-items:center; justify-content:flex-end; width:104px; min-height:42px; color:var(--qx-ink-accent); }
   .glyph i { display:block; font-style:normal; }
-  .glyph.row i { display:grid; place-items:center; width:22px; height:22px; border:1px solid var(--qx-ink-text-2); font:900 8px var(--qx-font); }
+  .glyph.row i { display:grid; place-items:center; width:22px; height:22px; border:1px solid var(--qx-ink-text-2); font:900 11px var(--qx-font); }
   .glyph.row i:nth-child(3) { border-color:var(--qx-ink-accent); background:var(--qx-ink-accent-soft); }
   .glyph.pile { flex-direction:column-reverse; gap:2px; }
   .glyph.pile i { width:68px; height:8px; border:1px solid var(--qx-ink-text-2); }
