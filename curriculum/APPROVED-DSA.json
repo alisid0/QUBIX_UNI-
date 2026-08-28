@@ -1,0 +1,12 @@
+{
+  "DSA-SEQ-001": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-28",
+    "scope": "Single read-and-do authoring sample: idea, learner-facing wording, interaction and visual direction. Placement and release excluded.",
+    "files": {
+      "src/lib/content/dsa-sequence-preview.js": "4a51c6c56c53340d9b28538ceebb44f1932979190f5bf73278e99f1899f05e84",
+      "src/lib/components/SequenceAccessLab.svelte": "0aa49cbe58f5a1a80bce740bef1e2fd8292790c3e328273a609259ddcfd004fc",
+      "src/views/DsaSequencePreview.svelte": "7295c6cae54ebea6a97a7aec00b17adc21c6bd21a1573d148e7c8e58a25f5bfc"
+    }
+  }
+}

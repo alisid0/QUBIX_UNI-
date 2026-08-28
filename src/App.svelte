@@ -29,6 +29,11 @@
   // against the real 54-table Superstore. Lazy, and opt-in by URL, because it
   // pulls sql.js and an 11 MB database that no reader should ever download.
   let DataConsole = null;
+  // One DSA read + do BB for founder review. It is deliberately isolated from
+  // the learner mission roster until its teaching pattern and placement pass review.
+  let DsaSequencePreview = null;
+  let DsaArrayInsertionPreview = null;
+  let DsaIntroductionPreview = null;
 
   const params = new URLSearchParams(window.location.search);
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
@@ -43,6 +48,9 @@
   const showPartsSheet = params.get('mode') === 'parts' && workshop;
   const showExerciseFactory = params.get('mode') === 'exercises' && workshop;
   const showAssetShowcase = params.get('mode') === 'assets' && workshop;
+  const showDsaSequencePreview = params.get('mode') === 'dsa-sequence-preview' && workshop;
+  const showDsaArrayInsertionPreview = params.get('mode') === 'dsa-array-insertion-preview' && workshop;
+  const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview' && workshop;
   // The academy ships. The showcases and factory tools above do not: they are
   // internal workbenches, and this is a learner-facing route carrying its own
   // AI_DRAFT labelling.
@@ -59,6 +67,15 @@
   }
   if (showDataConsole) {
     import('./views/DataConsole.svelte').then(m => { DataConsole = m.default; });
+  }
+  if (showDsaSequencePreview) {
+    import('./views/DsaSequencePreview.svelte').then(m => { DsaSequencePreview = m.default; });
+  }
+  if (showDsaArrayInsertionPreview) {
+    import('./views/DsaArrayInsertionPreview.svelte').then(m => { DsaArrayInsertionPreview = m.default; });
+  }
+  if (showDsaIntroductionPreview) {
+    import('./views/DsaIntroductionPreview.svelte').then(m => { DsaIntroductionPreview = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -180,6 +197,12 @@
     <svelte:component this={AssetShowcase} />
   {:else if showDataConsole}
     <svelte:component this={DataConsole} />
+  {:else if showDsaSequencePreview}
+    <svelte:component this={DsaSequencePreview} />
+  {:else if showDsaArrayInsertionPreview}
+    <svelte:component this={DsaArrayInsertionPreview} />
+  {:else if showDsaIntroductionPreview}
+    <svelte:component this={DsaIntroductionPreview} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}
