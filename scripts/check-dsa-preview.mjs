@@ -38,7 +38,7 @@ for (const [file, expected] of Object.entries(approval?.files || {})) {
 }
 
 check(insertion.id === 'DSA-ARR-002', 'second sample has a stable curriculum identifier');
-check(/AI_DRAFT.*AUTHORING ONLY/.test(insertion.status), 'second sample states its review boundary');
+check(/APPROVED.*AUTHORING ONLY/.test(insertion.status), 'second sample states its approval and authoring boundary');
 check(insertion.objective.split(/[.!?]/).filter(Boolean).length === 1, 'second sample has one objective');
 check(insertion.prerequisites.some(item => item.includes('DSA-SEQ-001')), 'second sample names the approved prerequisite');
 check(insertion.initialItems.at(-1) === null, 'insertion model declares one spare slot');
@@ -57,7 +57,6 @@ check(!/mission === ['"]dsa-array-insertion-preview/.test(app), 'second preview 
 const insertionView = fs.readFileSync(new URL('../src/views/DsaArrayInsertionPreview.svelte', import.meta.url), 'utf8');
 const insertionLab = fs.readFileSync(new URL('../src/lib/components/ArrayInsertionLab.svelte', import.meta.url), 'utf8');
 check(/opendatastructures\.org/.test(insertionView) && /opendsa-server\.cs\.vt\.edu/.test(insertionView) && /docs\.python\.org/.test(insertionView), 'second preview carries source links');
-check(/AI_DRAFT/.test(insertion.status) && !/APPROVED/.test(insertion.status), 'second sample is not marked approved');
 check(/OF 3/.test(insertionLab), 'insertion bench has a read-do-compare third step');
 check(/would overwrite/.test(insertionLab) && /would be overwritten/.test(insertionLab), 'wrong-direction moves show the overwrite instead of only describing it');
 check(/inspectCost/.test(insertionLab) && /allCompared/.test(insertionLab), 'learner must inspect every comparison position before the recall check');
@@ -69,6 +68,15 @@ check(/prefers-reduced-motion/.test(insertionFigure) && /reducedMotion/.test(ins
 check(/Replay movement/.test(insertionFigure) && /on:click=\{play\}/.test(insertionFigure), 'array animation can be replayed');
 check(/ArrayInsertionFigure/.test(insertionView), 'second reading includes the animated model');
 check(/beginning, the middle and the empty end/.test(insertionView), 'reading prepares the three-position comparison');
+
+const insertionApproval = approvals[insertion.id];
+check(insertionApproval?.approvedBy === 'founder' && insertionApproval?.approvedOn === '2026-08-28', 'insertion founder approval is recorded with its date');
+for (const [file, expected] of Object.entries(insertionApproval?.files || {})) {
+  const source = fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+    .replace(/\r\n/g, '\n');
+  const actual = crypto.createHash('sha256').update(source, 'utf8').digest('hex');
+  check(actual === expected, `${file} is unchanged since founder approval`);
+}
 
 check(introduction.id === 'DSA-INTRO-000', 'orientation has a stable curriculum identifier');
 check(/APPROVED.*AUTHORING ONLY/.test(introduction.status), 'orientation states its approval and authoring boundary');

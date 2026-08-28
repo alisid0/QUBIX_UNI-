@@ -9,6 +9,17 @@
       "src/views/DsaSequencePreview.svelte": "7295c6cae54ebea6a97a7aec00b17adc21c6bd21a1573d148e7c8e58a25f5bfc"
     }
   },
+  "DSA-ARR-002": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-28",
+    "scope": "Single read-and-do authoring sample: idea, learner-facing wording, interaction and visual direction. Placement and release excluded.",
+    "files": {
+      "src/lib/content/dsa-array-insertion-preview.js": "852fc190e780d521a6bb999df9db2554e94a02957b8ba0ad731a36d0a2545906",
+      "src/lib/components/ArrayInsertionLab.svelte": "4e3d4d24eb00639c95ae3cb2f65b79439325cff6a733400f62169c1c90d4f464",
+      "src/lib/components/ArrayInsertionFigure.svelte": "72fecde061fa3a06f1df99bc553326b34b6fd6af7ec601ade3cacab297cb03fc",
+      "src/views/DsaArrayInsertionPreview.svelte": "a998a4e8a006193da56986edee67e570a8c920888c7ed1877c03675bba08e27b"
+    }
+  },
   "DSA-INTRO-000": {
     "approvedBy": "founder",
     "approvedOn": "2026-08-28",

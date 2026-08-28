@@ -62,7 +62,7 @@
     </section>
 
     <footer>
-      <p><strong>Review boundary:</strong> this is the second DSA sample only. It is not approved, rostered or deployed. The approved index lesson is unchanged.</p>
+      <p><strong>Review boundary:</strong> founder approved this sample’s idea, wording, interaction and visual direction. It is not rostered or released. Placement remains undecided. The approved index lesson is unchanged.</p>
       <p>Concept references: <a href="https://opendatastructures.org/versions/edition-0.1g/ods-python.pdf">Open Data Structures: Array-Based Lists</a>, <a href="https://opendsa-server.cs.vt.edu/ODSA/StandaloneModules/20250903221625/html/ListIntro.html">OpenDSA List Introduction</a>, and the <a href="https://docs.python.org/3.14/tutorial/datastructures.html">Python data structures tutorial</a>. Qubix wording, cases and interaction are original.</p>
     </footer>
   </article>

@@ -1,6 +1,6 @@
 export const DSA_ARRAY_INSERTION_PREVIEW = Object.freeze({
   id: 'DSA-ARR-002',
-  status: 'AI_DRAFT · AUTHORING ONLY',
+  status: 'APPROVED · AUTHORING ONLY',
   title: 'Making room in an array',
   promise: 'Insert one item without losing the order—or overwriting what is already there.',
   objective: 'Move existing items safely to create a requested array position, then predict how insertion work changes with position and sequence size.',

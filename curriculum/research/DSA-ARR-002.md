@@ -1,8 +1,9 @@
 # DSA-ARR-002 — Making room in an array
 
-**Status:** `AI_DRAFT · AUTHORING ONLY`  
+**Status:** `APPROVED · AUTHORING ONLY`  
 **Founder direction:** 2026-08-28 — progress from the approved sequence-index lesson.  
-**Approval boundary:** Direction authorises the next single reviewable sample. It does not approve this sample, its placement, a wider DSA pathway, or release. `DSA-SEQ-001` remains digest locked and unchanged.
+**Founder approval:** 2026-08-28 — the founder approved the amended idea, wording, interaction and visual direction after reviewing the authoring preview.  
+**Approval boundary:** Approval covers `DSA-ARR-002` only. It does not approve a wider DSA sequence, curriculum placement, roster entry, public release or deployment of the authoring route. `DSA-SEQ-001` remains digest locked and unchanged.
 
 ## Single objective
 
@@ -48,3 +49,4 @@ This sample is unrostered. It follows DSA-SEQ-001 conceptually, but the wider DS
 - 2026-08-28 — Initial second-BB authoring sample created after founder approved DSA-SEQ-001 and asked to progress.
 - 2026-08-28 — Founder requested animation and illustration to simplify DSA. Added a deterministic SVG three-state insertion model with replay and reduced-motion behaviour. The interaction remains the place where the learner performs each safe move.
 - 2026-08-28 — Raised the sample to the approved index-lesson review contract without changing status: wrong-direction clicks now show the overwrite, the bench compares three insertion positions before the recall check, and the figure is computed from the same lesson data. Still `AI_DRAFT · AUTHORING ONLY`. Placement and release remain undecided.
+- 2026-08-28 — Founder approved the amended sample. Scope: single idea, learner-facing wording, interaction and visual direction. Placement and release remain undecided.
