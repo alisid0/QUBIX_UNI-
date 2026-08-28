@@ -1,8 +1,9 @@
 # DSA-INTRO-000 — How should the information live?
 
-**Status:** `AI_DRAFT · AUTHORING ONLY`  
-**Founder direction:** 2026-08-28 — add a read-and-play introduction for the whole DSA pathway, with more animations and illustrations.  
-**Approval boundary:** One proposed orientation BB only. This does not approve the DSA pathway, placement, roster entry or release. Approved DSA-SEQ-001 remains unchanged.
+**Status:** `APPROVED · AUTHORING ONLY`
+**Founder direction:** 2026-08-28 — add a read-and-play introduction for the whole DSA pathway, with more animations and illustrations.
+**Founder approval:** 2026-08-28 — the founder approved the expanded introduction for now after reviewing the operation-first cases, trade-offs and same-data/different-work extension.
+**Approval boundary:** Approval covers this orientation BB only. It does not approve the DSA pathway, placement, roster entry, public learner release or deployment of the authoring route. Approved DSA-SEQ-001 remains unchanged.
 
 ## Single objective
 
@@ -31,7 +32,7 @@ Given a real-world problem, identify the important operation and choose an organ
 
 ## Read → play contract
 
-The reading defines a data structure as an organisational shape and an algorithm as a finite procedure for work. The play surface gives four requests and asks the learner to select an informal visual arrangement. Only after a correct choice does it reveal array/list, stack, queue or graph terminology.
+The reading defines a data structure as an organisational shape and an algorithm as a finite procedure for work. It now makes the trade-off explicit for every candidate: the same choice that makes one operation natural can make another operation awkward. The play surface gives four requests. For each request, the learner must first identify the operation or invariant that matters and only then select an informal visual arrangement. Formal array/list, stack, queue and graph terminology is revealed after the reasoning, not before it. A final transfer check asks for the general selection principle rather than another structure name. An extension then keeps the station facts fixed while changing the department's operation: a passenger display needs an ordered sequence, while a route planner needs a connection graph. The combined reveal establishes that a real system may maintain multiple useful organisations around the same entities and distinguishes stack/queue behaviour from a particular implementation.
 
 Animations are deterministic SVG/CSS, replayable where time-based, and honour reduced-motion preference. They explain state and operations; they do not supply answers to the play cases.
 
@@ -39,3 +40,6 @@ Animations are deterministic SVG/CSS, replayable where time-based, and honour re
 
 - 2026-08-28 — Initial introduction BB created from founder request for pathway orientation, animation and illustration.
 - 2026-08-28 — Founder requested substantially more polish. Rebuilt the orientation storyboard to prevent label collisions, strengthened contrast and state hierarchy, added a DSA operation identity to the hero, replaced text-symbol answers with code-native illustrated cards, and added an explicit read-to-play handoff.
+- 2026-08-28 — Founder requested richer, more substantial DSA. Expanded the same orientation BB rather than opening a later topic: added an honest benefit/trade-off comparison, a two-stage operation-then-structure decision for every case, stronger real-world constraints and a final transfer check. Status remains `AI_DRAFT`.
+- 2026-08-28 — Founder requested further additions and extensions within the current setup. Added one transfer lab using identical station facts for an ordered passenger display and a connection-based route planner, followed by a combined-system and abstraction-level precision note. No later DSA BB was opened.
+- 2026-08-28 — Founder approved the expanded introduction “for now” and requested deployment. Learner-facing approval inputs were digest locked; pathway placement and release remain undecided.

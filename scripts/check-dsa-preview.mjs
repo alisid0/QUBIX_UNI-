@@ -56,21 +56,41 @@ check(/Replay movement/.test(insertionFigure) && /on:click=\{play\}/.test(insert
 check(/ArrayInsertionFigure/.test(insertionView), 'second reading includes the animated model');
 
 check(introduction.id === 'DSA-INTRO-000', 'orientation has a stable curriculum identifier');
-check(/AI_DRAFT.*AUTHORING ONLY/.test(introduction.status), 'orientation states its review boundary');
+check(/APPROVED.*AUTHORING ONLY/.test(introduction.status), 'orientation states its approval and authoring boundary');
 check(introduction.objective.split(/[.!?]/).filter(Boolean).length === 1, 'orientation has one objective');
 check(introduction.prerequisites.some(item => /No coding required/.test(item)), 'orientation is explicit that coding is not a prerequisite');
 check(introduction.structures.length === 4 && introduction.cases.length === 4, 'orientation compares four problem shapes');
+check(introduction.operationLenses.length === 4, 'orientation asks learners to identify the operation before the structure');
 check(introduction.cases.every(item => introduction.structures.some(shape => shape.id === item.answer)), 'every orientation case has a valid structural answer');
+check(introduction.cases.every(item => introduction.operationLenses.some(lens => lens.id === item.operation)), 'every orientation case has a valid operation lens');
+check(introduction.cases.every(item => item.constraint && item.constraint.length >= 45), 'every orientation case states the constraint that drives the decision');
 check(new Set(introduction.cases.map(item => item.answer)).size === 4, 'each problem shape is earned exactly once');
+check(introduction.structures.every(item => item.tradeoff && item.tradeoff.length >= 45), 'every structure names a real trade-off');
+check(introduction.transfer.answers.some(answer => answer.id === introduction.transfer.correct), 'orientation ends with a valid transfer check');
+check(introduction.extension.stations.length === 4 && introduction.extension.links.length === 4, 'orientation extension keeps one stable station dataset');
+check(introduction.extension.tasks.length === 2 && new Set(introduction.extension.tasks.map(item => item.answer)).size === 2, 'same data is used for two different structural decisions');
 check(/showDsaIntroductionPreview\s*=.*workshop/.test(app), 'orientation route is gated behind the authoring workshop');
 check(!/mission === ['"]dsa-introduction-preview/.test(app), 'orientation does not enter the learner mission roster');
 const introView = fs.readFileSync(new URL('../src/views/DsaIntroductionPreview.svelte', import.meta.url), 'utf8');
 const introFigure = fs.readFileSync(new URL('../src/lib/components/DsaOrientationFigure.svelte', import.meta.url), 'utf8');
 const introLab = fs.readFileSync(new URL('../src/lib/components/DsaOrientationLab.svelte', import.meta.url), 'utf8');
+const multipleViewsLab = fs.readFileSync(new URL('../src/lib/components/DsaMultipleViewsLab.svelte', import.meta.url), 'utf8');
 check(/DsaOrientationFigure/.test(introView) && /DsaOrientationLab/.test(introView), 'orientation pairs animated reading with illustrated play');
-check(/<svg[\s>]/.test(introFigure) && !/<img|\.png|\.jpe?g|\.webp/.test(`${introFigure}${introLab}`), 'orientation visuals are deterministic and raster-free');
+check(/DsaMultipleViewsLab/.test(introView), 'orientation extends into a same-data different-work transfer lab');
+check(/class="tradeoffs"/.test(introView), 'orientation reading makes benefits and trade-offs visible');
+check(/<svg[\s>]/.test(introFigure) && !/<img|\.png|\.jpe?g|\.webp/.test(`${introFigure}${introLab}${multipleViewsLab}`), 'orientation visuals are deterministic and raster-free');
 check(/Replay idea/.test(introFigure) && /prefers-reduced-motion/.test(`${introFigure}${introLab}`), 'orientation motion is replayable and honours reduced-motion preference');
+check(/One railway\. Two useful organisations\./.test(multipleViewsLab) && /different levels/.test(multipleViewsLab), 'extension explains multiple views and abstraction levels precisely');
 check(/opendatastructures\.org/.test(introView) && /opendsa-server\.cs\.vt\.edu/.test(introView) && /docs\.python\.org/.test(introView), 'orientation carries source links');
+
+const introductionApproval = approvals[introduction.id];
+check(introductionApproval?.approvedBy === 'founder' && introductionApproval?.approvedOn === '2026-08-28', 'orientation founder approval is recorded with its date');
+for (const [file, expected] of Object.entries(introductionApproval?.files || {})) {
+  const source = fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+    .replace(/\r\n/g, '\n');
+  const actual = crypto.createHash('sha256').update(source, 'utf8').digest('hex');
+  check(actual === expected, `${file} is unchanged since founder approval`);
+}
 
 if (failed) process.exit(1);
 console.log('\nall checks pass, the DSA sample remains authoring-only and mechanically coherent');

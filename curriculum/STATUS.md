@@ -22,7 +22,7 @@ Last updated: 2026-08-28
 | Animated figure: grain collapse (ch05.02) | **APPROVED** by founder, 2026-08-28. Scope is the figure only | Digest locked; the containing session stays `AI_DRAFT` |
 | DSA-SEQ-001: Sequences and indexed access | **APPROVED** by founder, 2026-08-28. Scope is the single read-and-do authoring sample only | Placement, roster entry and release remain undecided; approved source files are digest locked |
 | DSA-ARR-002: Making room in an array | `AI_DRAFT`, authoring-only second read-and-do sample | Founder review of idea, wording and interaction; placement remains undecided |
-| DSA-INTRO-000: How should the information live? | `AI_DRAFT`, authoring-only DSA orientation with animated read-and-play material | Founder review of idea, wording, animation and interaction; pathway placement remains undecided |
+| DSA-INTRO-000: How should the information live? | **APPROVED** by founder, 2026-08-28. Scope is the expanded authoring-only DSA orientation | Digest locked; pathway placement, roster entry and public learner release remain undecided |
 | Pre-Intern ebook 001 | *What Data Is and Why People Use It* generated from reviewable source; 1 chapter, 20 answered practice items | Founder reading and amendments; remains `AI_DRAFT` |
 | Pre-Intern ebook 002 | *What a Computer Program Does* generated from reviewable source; 1 chapter, 20 answered practice items | Founder reading and amendments; remains `AI_DRAFT` |
 

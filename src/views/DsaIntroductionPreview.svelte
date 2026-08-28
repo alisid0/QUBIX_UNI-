@@ -1,6 +1,7 @@
 <script>
   import DsaOrientationFigure from '../lib/components/DsaOrientationFigure.svelte';
   import DsaOrientationLab from '../lib/components/DsaOrientationLab.svelte';
+  import DsaMultipleViewsLab from '../lib/components/DsaMultipleViewsLab.svelte';
   import { DSA_INTRODUCTION_PREVIEW as lesson } from '../lib/content/dsa-introduction-preview.js';
 </script>
 
@@ -10,7 +11,7 @@
   <header class="topbar"><a href="?mode=factory">← Authoring</a><span>{lesson.status}</span></header>
   <article>
     <section class="hero">
-      <div class="hero-meta"><p class="code">{lesson.id} · THE DSA FRONT DOOR</p><span>NO CODE REQUIRED · 13 MIN</span></div>
+      <div class="hero-meta"><p class="code">{lesson.id} · THE DSA FRONT DOOR</p><span>NO CODE REQUIRED · 23 MIN</span></div>
       <h1>{lesson.title}</h1><p class="promise">{lesson.promise}</p>
       <div class="verb-strip" aria-label="The five operations introduced in this lesson"><span>FIND</span><span>ADD</span><span>REMOVE</span><span>ORDER</span><span>CONNECT</span></div>
       <div class="brief"><p><strong>Your objective</strong><br>{lesson.learnerObjective}</p><p><strong>Before this</strong><br>{lesson.prerequisites.join(' · ')}</p></div>
@@ -29,6 +30,15 @@
 
       <h2 class="subheading">There is no universally “best” structure</h2>
       <p>A structure is useful when it supports the operations a problem performs most often. A playlist needs order. Undo needs the newest action. A support desk needs arrival order. A route planner needs connections.</p>
+      <div class="tradeoffs" aria-label="What four organisational shapes make easy and what they make harder">
+        {#each lesson.structures as structure, index}
+          <article>
+            <span>{String(index + 1).padStart(2, '0')} · {structure.formal}</span>
+            <p><strong>Makes natural</strong>{structure.operation}</p>
+            <p><strong>Trade-off</strong>{structure.tradeoff}</p>
+          </article>
+        {/each}
+      </div>
       <div class="questions">
         <p><span>01</span><strong>What information exists?</strong>Items, events, people, places or relationships?</p>
         <p><span>02</span><strong>What work happens most?</strong>Finding, adding, removing, ordering or connecting?</p>
@@ -41,13 +51,20 @@
     <div class="handoff"><span>READING COMPLETE</span><strong>Stop naming structures. Start noticing operations.</strong><b>↓</b></div>
     <DsaOrientationLab />
 
+    <section class="extension" aria-labelledby="extension-heading">
+      <p class="section-label">EXTEND · REAL SYSTEMS KEEP MORE THAN ONE VIEW</p>
+      <h2 id="extension-heading">The data does not dictate one structure</h2>
+      <p class="lead">A structure is chosen for work, not permanently attached to a kind of data. Use the same four stations in two departments and decide what each department must keep visible.</p>
+      <DsaMultipleViewsLab />
+    </section>
+
     <section class="path">
       <p class="section-label">WHAT COMES NEXT</p><h2>One problem shape at a time</h2>
       <ol><li><b>Sequences and indices</b><span>Reach known positions and search for values.</span></li><li><b>Arrays and insertion</b><span>Preserve order while making room.</span></li><li><b>Stacks and queues</b><span>Control which item leaves next.</span></li><li><b>Trees, tables and graphs</b><span>Organise lookup, hierarchy and connections.</span></li></ol>
     </section>
 
     <footer>
-      <p><strong>Review boundary:</strong> this proposed DSA front door is `AI_DRAFT`, authoring-only, unrostered and undeployed.</p>
+      <p><strong>Approval boundary:</strong> this DSA front door is `APPROVED`, authoring-only and unrostered. Approval does not place or release the wider DSA pathway.</p>
       <p>Concept references: <a href="https://opendatastructures.org/">Open Data Structures</a>, <a href="https://opendsa-server.cs.vt.edu/ODSA/StandaloneModules/20250903221625/html/ListIntro.html">OpenDSA List Introduction</a>, and the <a href="https://docs.python.org/3.14/tutorial/datastructures.html">Python data structures tutorial</a>. Qubix wording, cases and visuals are original.</p>
     </footer>
   </article>
@@ -70,8 +87,8 @@
   .verb-strip span { padding:9px 5px; background:var(--qx-surface-2); color:var(--qx-accent-text); text-align:center; font-size:11px; font-weight:900; letter-spacing:.09em; }
   .brief { display:grid; grid-template-columns:1fr 1fr; gap:20px; padding-top:18px; border-top:2px solid #000; color:var(--qx-text-2); }
   .brief p { margin:0; }
-  .reading,.path { max-width:780px; margin:0 auto 48px; }
-  .reading > h2,.path h2 { margin:0; font-size:clamp(30px,5vw,48px); line-height:1.05; letter-spacing:-.03em; }
+  .reading,.extension,.path { max-width:780px; margin:0 auto 48px; }
+  .reading > h2,.extension > h2,.path h2 { margin:0; font-size:clamp(30px,5vw,48px); line-height:1.05; letter-spacing:-.03em; }
   .lead { font-size:21px; line-height:1.6; }
   .definition { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin:28px 0 42px; border:2px solid #000; background:#000; }
   .definition section { padding:22px; background:var(--qx-surface); }
@@ -79,6 +96,11 @@
   .definition h3 { margin:8px 0; font-size:23px; }
   .definition p { margin:0; color:var(--qx-text-2); line-height:1.5; }
   .subheading { margin-top:44px !important; }
+  .tradeoffs { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:24px 0 34px; }
+  .tradeoffs article { padding:18px; border:2px solid #000; background:var(--qx-surface); }
+  .tradeoffs > article > span { color:var(--qx-accent-text); font-size:11px; font-weight:900; letter-spacing:.1em; }
+  .tradeoffs p { margin:13px 0 0; color:var(--qx-text-2); line-height:1.45; }
+  .tradeoffs strong { display:block; margin-bottom:3px; color:var(--qx-text); font-size:12px; letter-spacing:.05em; text-transform:uppercase; }
   .questions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:28px; }
   .questions p { margin:0; padding:18px; border:2px solid #000; background:var(--qx-surface); color:var(--qx-text-2); }
   .questions span,.questions strong { display:block; }
@@ -90,11 +112,13 @@
   .handoff span { color:var(--qx-ink-accent); font-size:11px; font-weight:900; letter-spacing:.12em; }
   .handoff strong { font-size:17px; }
   .handoff b { color:var(--qx-ink-accent); font-size:24px; }
+  .extension { margin-top:72px; }
+  .extension > .lead { max-width:720px; }
   .path { margin-top:58px; padding:clamp(20px,4vw,34px); border:3px solid #000; background:var(--qx-surface); box-shadow:7px 7px 0 #000; }
   .path ol { margin:20px 0 0; padding:0; list-style:none; }
   .path li { display:grid; grid-template-columns:1fr 1.4fr; gap:14px; padding:13px 0; border-top:1px solid var(--qx-border-2); }
   .path span { color:var(--qx-text-2); }
   footer { margin-top:54px; padding-top:22px; border-top:2px solid #000; color:var(--qx-text-dim); font-size:14px; }
   footer a { color:var(--qx-accent-text); }
-  @media(max-width:640px) { .topbar { align-items:flex-start; } .topbar span { text-align:right; } .hero-meta { align-items:flex-start; } .hero-meta > span { white-space:normal; text-align:right; } .brief,.definition,.questions { grid-template-columns:1fr; } .handoff { grid-template-columns:1fr auto; } .handoff span { grid-column:1/-1; } .path li { grid-template-columns:1fr; gap:4px; } article { width:min(100% - 24px,920px); } .hero { box-shadow:6px 6px 0 #000; } }
+  @media(max-width:640px) { .topbar { align-items:flex-start; } .topbar span { text-align:right; } .hero-meta { align-items:flex-start; } .hero-meta > span { white-space:normal; text-align:right; } .brief,.definition,.tradeoffs,.questions { grid-template-columns:1fr; } .handoff { grid-template-columns:1fr auto; } .handoff span { grid-column:1/-1; } .path li { grid-template-columns:1fr; gap:4px; } article { width:min(100% - 24px,920px); } .hero { box-shadow:6px 6px 0 #000; } }
 </style>
