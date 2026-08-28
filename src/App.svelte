@@ -40,20 +40,21 @@
   const explicitReviewMode = params.get('mode') === 'review';
   const showWikiMode = params.get('mode') === 'wiki';
   const showDataConsole = params.get('lab') === 'sql';
-  // Authoring surface. Never reached in production: options are drafts, not curriculum.
-  // Dev always, plus any build that asks for the workshop explicitly.
+  // Factory and other authoring tools stay workshop-only. They are drafts, not
+  // curriculum, and must not be reachable in a production build.
   const workshop = !import.meta.env.PROD || import.meta.env.VITE_WORKSHOP === '1';
   const showFactoryMode = params.get('mode') === 'factory' && workshop;
   const showStrataMigrationFactory = params.get('mode') === 'strata-factory' && workshop;
   const showPartsSheet = params.get('mode') === 'parts' && workshop;
   const showExerciseFactory = params.get('mode') === 'exercises' && workshop;
   const showAssetShowcase = params.get('mode') === 'assets' && workshop;
-  const showDsaSequencePreview = params.get('mode') === 'dsa-sequence-preview' && workshop;
-  const showDsaArrayInsertionPreview = params.get('mode') === 'dsa-array-insertion-preview' && workshop;
-  const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview' && workshop;
-  // The academy ships. The showcases and factory tools above do not: they are
-  // internal workbenches, and this is a learner-facing route carrying its own
-  // AI_DRAFT labelling.
+  // Founder-approved DSA samples are reachable by URL on the live site. They
+  // stay off the learner roster and are not marked RELEASED.
+  const showDsaSequencePreview = params.get('mode') === 'dsa-sequence-preview';
+  const showDsaArrayInsertionPreview = params.get('mode') === 'dsa-array-insertion-preview';
+  const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview';
+  // The academy ships. Factory tools above do not: they are internal
+  // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');
   const showGameMission = params.get('mode') === 'game' || productionFoundationLanding;
   // The Approver is now reached only by asking for it. It used to be what

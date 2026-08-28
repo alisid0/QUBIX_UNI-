@@ -3,7 +3,8 @@
 **Status:** `APPROVED · AUTHORING ONLY`  
 **Founder direction:** 2026-08-28 — progress from the approved sequence-index lesson.  
 **Founder approval:** 2026-08-28 — the founder approved the amended idea, wording, interaction and visual direction after reviewing the authoring preview.  
-**Approval boundary:** Approval covers `DSA-ARR-002` only. It does not approve a wider DSA sequence, curriculum placement, roster entry, public release or deployment of the authoring route. `DSA-SEQ-001` remains digest locked and unchanged.
+**Approval boundary:** Approval covers `DSA-ARR-002` only. It does not approve a wider DSA sequence, curriculum placement, roster entry or `RELEASED` status. `DSA-SEQ-001` remains digest locked and unchanged.  
+**Live authoring URL:** On 2026-08-28 the founder instructed that this sample be merged and shown on the live site at `/?mode=dsa-array-insertion-preview`. Factory and other authoring tools stay workshop-only.
 
 ## Single objective
 

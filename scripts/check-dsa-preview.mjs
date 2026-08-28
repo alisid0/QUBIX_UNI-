@@ -24,7 +24,8 @@ check(lesson.prediction.answers.some(answer => answer.id === lesson.prediction.c
 
 const app = fs.readFileSync(new URL('../src/App.svelte', import.meta.url), 'utf8');
 const view = fs.readFileSync(new URL('../src/views/DsaSequencePreview.svelte', import.meta.url), 'utf8');
-check(/showDsaSequencePreview\s*=.*workshop/.test(app), 'route is gated behind the authoring workshop');
+check(/showDsaSequencePreview\s*=.*dsa-sequence-preview/.test(app) && !/showDsaSequencePreview\s*=.*workshop/.test(app), 'approved index sample is reachable by URL');
+check(/showFactoryMode\s*=.*workshop/.test(app), 'factory remains workshop-gated');
 check(!/mission === ['"]dsa-sequence-preview/.test(app), 'preview does not enter the learner mission roster');
 check(/opendatastructures\.org/.test(view) && /opendsa-server\.cs\.vt\.edu/.test(view) && /docs\.python\.org/.test(view), 'learner preview carries source links');
 
@@ -52,7 +53,7 @@ check(insertion.comparisons.every(choice => insertion.comparisons.filter(other =
 check(insertion.comparisons.some(choice => choice.id === insertion.prediction.correct), 'growth prediction names a compared position');
 check(itemsMovedForInsert(occupiedCount, insertion.comparisons[0].index) > itemsMovedForInsert(occupiedCount, insertion.comparisons[1].index), 'beginning costs more than the middle');
 check(itemsMovedForInsert(occupiedCount, insertion.comparisons[1].index) > itemsMovedForInsert(occupiedCount, insertion.comparisons[2].index), 'middle costs more than the empty end');
-check(/showDsaArrayInsertionPreview\s*=.*workshop/.test(app), 'second route is gated behind the authoring workshop');
+check(/showDsaArrayInsertionPreview\s*=.*dsa-array-insertion-preview/.test(app) && !/showDsaArrayInsertionPreview\s*=.*workshop/.test(app), 'approved insertion sample is reachable by URL');
 check(!/mission === ['"]dsa-array-insertion-preview/.test(app), 'second preview does not enter the learner mission roster');
 const insertionView = fs.readFileSync(new URL('../src/views/DsaArrayInsertionPreview.svelte', import.meta.url), 'utf8');
 const insertionLab = fs.readFileSync(new URL('../src/lib/components/ArrayInsertionLab.svelte', import.meta.url), 'utf8');
@@ -92,7 +93,7 @@ check(introduction.structures.every(item => item.tradeoff && item.tradeoff.lengt
 check(introduction.transfer.answers.some(answer => answer.id === introduction.transfer.correct), 'orientation ends with a valid transfer check');
 check(introduction.extension.stations.length === 4 && introduction.extension.links.length === 4, 'orientation extension keeps one stable station dataset');
 check(introduction.extension.tasks.length === 2 && new Set(introduction.extension.tasks.map(item => item.answer)).size === 2, 'same data is used for two different structural decisions');
-check(/showDsaIntroductionPreview\s*=.*workshop/.test(app), 'orientation route is gated behind the authoring workshop');
+check(/showDsaIntroductionPreview\s*=.*dsa-introduction-preview/.test(app) && !/showDsaIntroductionPreview\s*=.*workshop/.test(app), 'approved orientation is reachable by URL');
 check(!/mission === ['"]dsa-introduction-preview/.test(app), 'orientation does not enter the learner mission roster');
 const introView = fs.readFileSync(new URL('../src/views/DsaIntroductionPreview.svelte', import.meta.url), 'utf8');
 const introFigure = fs.readFileSync(new URL('../src/lib/components/DsaOrientationFigure.svelte', import.meta.url), 'utf8');
