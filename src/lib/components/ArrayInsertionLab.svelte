@@ -95,7 +95,7 @@
         >
           <span>{index}</span>
           <strong>{item || 'EMPTY'}</strong>
-          {#if danger && danger.lostAt === index}<em>would lose {danger.lostItem}</em>{/if}
+          {#if danger && danger.lostAt === index}<em>would be overwritten</em>{/if}
         </button>
       {/each}
     </div>

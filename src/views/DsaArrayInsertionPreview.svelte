@@ -69,7 +69,7 @@
 </main>
 
 <style>
-  :global(body) { margin:0; background:var(--qx-bg); color:var(--qx-text); }
+  :global(body) { margin:0; background:var(--qx-bg); color:var(--qx-text); position:static; }
   :global(.qubix-university) { height:auto!important; overflow:visible!important; }
   :global(html),:global(body),:global(#app) { height:auto!important; min-height:100%; overflow:visible!important; }
   .page { min-height:100vh; background:radial-gradient(circle at 80% 0%,var(--qx-bg-radial),var(--qx-bg) 42%); font-family:var(--qx-font); }

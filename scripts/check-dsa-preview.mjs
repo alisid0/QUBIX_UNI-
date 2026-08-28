@@ -59,7 +59,7 @@ const insertionLab = fs.readFileSync(new URL('../src/lib/components/ArrayInserti
 check(/opendatastructures\.org/.test(insertionView) && /opendsa-server\.cs\.vt\.edu/.test(insertionView) && /docs\.python\.org/.test(insertionView), 'second preview carries source links');
 check(/AI_DRAFT/.test(insertion.status) && !/APPROVED/.test(insertion.status), 'second sample is not marked approved');
 check(/OF 3/.test(insertionLab), 'insertion bench has a read-do-compare third step');
-check(/would overwrite/.test(insertionLab) && /would lose/.test(insertionLab), 'wrong-direction moves show the overwrite instead of only describing it');
+check(/would overwrite/.test(insertionLab) && /would be overwritten/.test(insertionLab), 'wrong-direction moves show the overwrite instead of only describing it');
 check(/inspectCost/.test(insertionLab) && /allCompared/.test(insertionLab), 'learner must inspect every comparison position before the recall check');
 check(/repeat\(7/.test(insertionLab) && !/repeat\(4/.test(insertionLab), 'the array stays one row of seven slots');
 const insertionFigure = fs.readFileSync(new URL('../src/lib/components/ArrayInsertionFigure.svelte', import.meta.url), 'utf8');
