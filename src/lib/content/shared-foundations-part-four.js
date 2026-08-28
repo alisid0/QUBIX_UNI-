@@ -166,6 +166,11 @@ export const SHARED_FOUNDATIONS_PART_FOUR = Object.freeze({
           Object.freeze({ id:'category', stage:'TILL DESIGN', prompt:'Product needs to preselect the payment method used most often.', answer:'mode', options:Object.freeze([['mean','Mean payment method'],['median','Median payment method'],['mode','Modal payment method']]), why:'Payment method is nominal. The most frequent category is meaningful; arithmetic on its labels is not.', retry:'This variable contains categories with no numerical order. Choose the measure that counts the most common label.' })
         ]), why:'A centre is chosen from the meaning of the variable and the decision—not from a fixed hierarchy of “best” statistics.'
       }),
+      // The claim of this session is a difference between two summaries, and a
+      // difference is the one thing a still figure states rather than shows.
+      figure: Object.freeze({ kind: 'outlier-pull', case: 'baskets',
+        caption: 'One basket arrives, and only one marker moves',
+        note: 'Both statistics come from the Distribution Desk, so the reading and the mission compute the same thing.' }),
       check: Object.freeze({
         prompt: 'For house prices in a town, the mean is £480,000 and the median is £265,000. What does the gap indicate?',
         answer: 'tail',

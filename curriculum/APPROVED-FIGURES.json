@@ -24,6 +24,14 @@
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
       "sha256": "9c88dc69c481553e295fa555bf1b680f54d86eb1a254eb0d6c72ec5fbc3df3d0"
+    },
+    {
+      "id": "base-rate",
+      "session": "ch08.02",
+      "component": "src/lib/components/BaseRateAlarm.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "cb473b449175ed5440d8e8ae25f9d91dcb925ceaca61c7ca17965847792dcf5f"
     }
   ]
 }

@@ -23,6 +23,7 @@
   import SamplingSpread from './SamplingSpread.svelte';
   import GrainCollapse from './GrainCollapse.svelte';
   import BaseRateAlarm from './BaseRateAlarm.svelte';
+  import OutlierPull from './OutlierPull.svelte';
 
   export let spec;
 
@@ -100,7 +101,11 @@
 </script>
 
 <figure class="qx-figure">
-  {#if spec.kind === 'base-rate'}
+  {#if spec.kind === 'outlier-pull'}
+    <!-- A causal demonstration: one value arrives and you watch which summary
+         it drags. Stated statically this is two numbers and a promise. -->
+    <OutlierPull caseId={spec.case ?? 'baskets'} />
+  {:else if spec.kind === 'base-rate'}
     <!-- Drawn as a population because the two-by-two table is precisely where
          the intuition fails: the false-alarm rate applies to a far larger group. -->
     <BaseRateAlarm days={spec.days ?? 200} failureIn={spec.failureIn ?? 200}

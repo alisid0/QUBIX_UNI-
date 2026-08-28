@@ -15,7 +15,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { JOIN_GRAIN_MISSION } from '../src/lib/game/join-grain-mission.js';
-import { DISTRIBUTION_DESK_MISSION } from '../src/lib/game/distribution-desk-mission.js';
+import { DISTRIBUTION_DESK_MISSION, summarise } from '../src/lib/game/distribution-desk-mission.js';
 import { runQuery } from '../src/lib/game/sql-console-mission.js';
 
 const dir = u => new URL(u, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
@@ -30,11 +30,13 @@ const component = readFileSync(dir('../src/lib/components/JoinFanOut.svelte'), '
 const sampler = readFileSync(dir('../src/lib/components/SamplingSpread.svelte'), 'utf8');
 const collapse = readFileSync(dir('../src/lib/components/GrainCollapse.svelte'), 'utf8');
 const alarm = readFileSync(dir('../src/lib/components/BaseRateAlarm.svelte'), 'utf8');
+const pull = readFileSync(dir('../src/lib/components/OutlierPull.svelte'), 'utf8');
 const ANIMATED = [
   { kind: 'join-fanout', file: 'JoinFanOut.svelte', source: component },
   { kind: 'sampling-spread', file: 'SamplingSpread.svelte', source: sampler },
   { kind: 'grain-collapse', file: 'GrainCollapse.svelte', source: collapse },
-  { kind: 'base-rate', file: 'BaseRateAlarm.svelte', source: alarm }
+  { kind: 'base-rate', file: 'BaseRateAlarm.svelte', source: alarm },
+  { kind: 'outlier-pull', file: 'OutlierPull.svelte', source: pull }
 ];
 
 /* ── every animated figure in the volume is one we know about ────────────── */
@@ -193,6 +195,37 @@ for (const { chapter, s } of alarmSessions) {
   check(precision < 0.2 && catchRate > 0.9,
     'the alarm is still accurate and still usually wrong',
     `${Math.round(catchRate * 100)}% accurate, ${Math.round(precision * 100)}% precise`);
+}
+
+/* ── one marker must move and the other must not ─────────────────────────────
+   The entire subject. If the mean ever stopped shifting, or the median started,
+   the figure would animate smoothly and demonstrate nothing.                 */
+const pullSessions = SHARED_FOUNDATIONS
+  .flatMap(({ chapter, book }) => book.sessions.map(s => ({ chapter, s })))
+  .filter(({ s }) => s.figure?.kind === 'outlier-pull');
+check(pullSessions.length > 0, 'the outlier figure is used by a session',
+  pullSessions.map(({ chapter, s }) => `ch${chapter}.${s.number}`).join(', '));
+
+for (const { chapter, s } of pullSessions) {
+  const all = DISTRIBUTION_DESK_MISSION.cases
+    .find(c => c.id === (s.figure.case ?? 'baskets'))?.values;
+  check(Array.isArray(all) && all.length > 10,
+    `ch${chapter}.${s.number} has values to add an outlier to`, `${all?.length} values`);
+  if (!all) continue;
+
+  const outlier = all[all.length - 1];
+  const before = summarise(all.slice(0, -1));
+  const after = summarise(all);
+
+  check(outlier > before.mean * 2,
+    'the added value is genuinely extreme, or nothing would move',
+    `£${outlier} against a mean of £${before.mean.toFixed(2)}`);
+  check(after.mean - before.mean > 1,
+    'the mean is dragged by it',
+    `£${before.mean.toFixed(2)} to £${after.mean.toFixed(2)}`);
+  check(after.median === before.median,
+    'and the median does not move at all, which is the whole point',
+    `£${before.median} both before and after`);
 }
 
 /* ── the contract, for every animated figure ─────────────────────────────── */
