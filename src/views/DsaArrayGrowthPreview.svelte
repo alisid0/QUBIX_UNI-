@@ -73,7 +73,7 @@
     </section>
 
     <footer>
-      <p><strong>Review boundary:</strong> this sample is <code>AI_DRAFT</code>. It has not been reviewed or approved by the founder, it is not rostered, and it is not released. The approved index, insertion and orientation samples are unchanged and remain digest locked.</p>
+      <p><strong>Review boundary:</strong> the founder approved this sample’s idea, wording, interaction and visual direction on 2026-08-29, and instructed that it be shown on the live site. It is not rostered and it is not released. Placement remains undecided. The approved orientation, index and insertion samples are unchanged and remain digest locked.</p>
       <p>Concept references: <a href="https://opendatastructures.org/versions/edition-0.1g/ods-python.pdf">Open Data Structures: Array-Based Lists and amortised analysis</a>, <a href="https://opendsa-server.cs.vt.edu/ODSA/StandaloneModules/20250903221625/html/ListIntro.html">OpenDSA List Introduction</a>, and the <a href="https://docs.python.org/3.14/tutorial/datastructures.html">Python data structures tutorial</a>. Qubix wording, cases, figures and interaction are original.</p>
     </footer>
   </article>

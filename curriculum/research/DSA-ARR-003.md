@@ -1,10 +1,10 @@
 # DSA-ARR-003 — When the array runs out of room
 
-**Status:** `AI_DRAFT · AUTHORING ONLY`
+**Status:** `APPROVED · AUTHORING ONLY`
 **Founder direction:** 2026-08-29 — continue building DSA topics after the approved orientation, index and insertion samples.
-**Founder approval:** none. This sample has not been reviewed. It is absent from `curriculum/APPROVED-DSA.json` and a guard asserts that absence.
-**Approval boundary:** nothing here is approved, rostered or released. `DSA-INTRO-000`, `DSA-SEQ-001` and `DSA-ARR-002` remain digest locked and unchanged.
-**Reachability:** workshop-gated at `/?mode=dsa-array-growth-preview`. It appears on the preview mirror and in local development, and is deliberately absent from the production site, because unreviewed material should not stand next to approved material.
+**Founder approval:** 2026-08-29 — the founder approved this sample and instructed that it be put online.
+**Approval boundary:** approval covers `DSA-ARR-003` only: its idea, learner-facing wording, interaction and visual direction. It does not approve a wider DSA sequence, curriculum placement, roster entry or `RELEASED` status. `DSA-INTRO-000`, `DSA-SEQ-001` and `DSA-ARR-002` remain digest locked and unchanged.
+**Live authoring URL:** on 2026-08-29 the founder instructed that this sample be shown on the live site at `/?mode=dsa-array-growth-preview`. The workshop gate has been removed and the four approved source files are digest locked in `curriculum/APPROVED-DSA.json`.
 
 ## Why this BB exists
 
@@ -85,3 +85,5 @@ Unrostered, like every DSA sample so far. It follows `DSA-ARR-002` conceptually 
 ## Amendment history
 
 - 2026-08-29 — Created from founder direction to continue the DSA strand, taking its subject from the promise made by the approved `DSA-ARR-002` precision note. No approval recorded. Workshop-gated. `AI_DRAFT`.
+- 2026-08-29 — Driving the lesson in a browser on desktop and phone found two faults that no guard caught: the figure's lane labels were clipped mid-word, and its 640-wide viewBox scaled 11px labels to under 6px on a phone. Labels moved above their lanes; the figure now raises its own type on narrow screens, and a guard holds it there.
+- 2026-08-29 — Founder approved the sample and instructed that it go online. Scope: idea, learner-facing wording, interaction and visual direction. Placement, roster entry and release remain undecided. Workshop gate removed; four source files digest locked.

@@ -9,7 +9,7 @@
 
 export const DSA_ARRAY_GROWTH_PREVIEW = Object.freeze({
   id: 'DSA-ARR-003',
-  status: 'AI_DRAFT · AUTHORING ONLY',
+  status: 'APPROVED · AUTHORING ONLY',
   title: 'When the array runs out of room',
   promise: 'Adding one more item is usually instant. Once in a while it copies everything. That is still the better deal.',
   objective: 'Explain why a full array must be copied into a larger one, and predict why doubling the capacity keeps the average cost of an append low.',

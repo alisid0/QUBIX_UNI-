@@ -31,5 +31,16 @@
       "src/lib/components/DsaMultipleViewsLab.svelte": "0bfb7e125eb8e9505aca4aef65e6e0d0b5fc5405a2159e6afe751d9c601d1953",
       "src/views/DsaIntroductionPreview.svelte": "f302c5de608cd606850b20205a8d46e630f425fc8ac8e1346a4422cedf657c90"
     }
+  },
+  "DSA-ARR-003": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-29",
+    "scope": "Single read-and-do authoring sample: idea, learner-facing wording, interaction and visual direction. Placement and release excluded.",
+    "files": {
+      "src/lib/content/dsa-array-growth-preview.js": "8ae34836e2d3661d697c4c021b0d07e15345a0f0a256dfbf555b83285fd62f61",
+      "src/lib/components/ArrayGrowthLab.svelte": "47dc9cb51b4089a5d90b42541025241c5066729f03e481ead83ffb7124ec3f61",
+      "src/lib/components/ArrayGrowthFigure.svelte": "e8e6f6a7a0338da59eed4a3e5ae2bac11c44a05d4d0f6f05a90037869e331c45",
+      "src/views/DsaArrayGrowthPreview.svelte": "8e0d3c470c0999595012caf9dd576ee946a493c69b06071e97ed92026f860057"
+    }
   }
 }

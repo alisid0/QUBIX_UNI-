@@ -54,10 +54,7 @@
   const showDsaSequencePreview = params.get('mode') === 'dsa-sequence-preview';
   const showDsaArrayInsertionPreview = params.get('mode') === 'dsa-array-insertion-preview';
   const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview';
-  // DSA-ARR-003 is an unreviewed AI_DRAFT. It is workshop-gated so the founder
-  // can read it on the preview mirror without it standing on the production
-  // site beside material they have actually approved.
-  const showDsaArrayGrowthPreview = params.get('mode') === 'dsa-array-growth-preview' && workshop;
+  const showDsaArrayGrowthPreview = params.get('mode') === 'dsa-array-growth-preview';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');

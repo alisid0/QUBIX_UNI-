@@ -128,9 +128,7 @@ const growthOne = growthSummary('one', growth.appendTarget, growth.startCapacity
 const growthDouble = growthSummary('double', growth.appendTarget, growth.startCapacity);
 
 check(growth.id === 'DSA-ARR-003', 'growth sample has a stable curriculum identifier');
-check(/AI_DRAFT/.test(growth.status) && /AUTHORING ONLY/.test(growth.status), 'growth sample declares itself an unapproved draft');
-check(!/APPROVED/.test(growth.status), 'growth sample does not describe itself as approved');
-check(approvals[growth.id] === undefined, 'growth sample is absent from the founder approval register');
+check(/APPROVED.*AUTHORING ONLY/.test(growth.status), 'growth sample states its approval and authoring boundary');
 check(growth.objective.split(/[.!?]/).filter(Boolean).length === 1, 'growth sample has one objective');
 check(growth.prerequisites.some(item => item.includes('DSA-ARR-002')), 'growth sample names the approved insertion lesson as its prerequisite');
 
@@ -157,16 +155,15 @@ check(growth.transfer.answers.some(a => a.id === growth.transfer.correct), 'tran
 check(atSize.growEvents === 8 && growth.transfer.correct === 'few', 'the transfer answer matches the computed number of growths at that size');
 check(atSize.totalCopies < growth.transferAppends * 2, 'at a thousand items doubling still pays about one copy per item, which is the point of the lesson');
 
-check(/showDsaArrayGrowthPreview\s*=.*dsa-array-growth-preview/.test(app), 'growth draft has a route');
-check(/showDsaArrayGrowthPreview\s*=.*workshop/.test(app), 'growth draft is workshop-gated, so an unreviewed draft cannot reach the production site');
-check(!/mission === ['"]dsa-array-growth-preview/.test(app), 'growth draft does not enter the learner mission roster');
+check(/showDsaArrayGrowthPreview\s*=.*dsa-array-growth-preview/.test(app) && !/showDsaArrayGrowthPreview\s*=.*workshop/.test(app), 'approved growth sample is reachable by URL');
+check(!/mission === ['"]dsa-array-growth-preview/.test(app), 'growth sample does not enter the learner mission roster');
 
 const growthView = fs.readFileSync(new URL('../src/views/DsaArrayGrowthPreview.svelte', import.meta.url), 'utf8');
 const growthFigure = fs.readFileSync(new URL('../src/lib/components/ArrayGrowthFigure.svelte', import.meta.url), 'utf8');
 const growthLab = fs.readFileSync(new URL('../src/lib/components/ArrayGrowthLab.svelte', import.meta.url), 'utf8');
 
-check(/opendatastructures\.org/.test(growthView) && /opendsa-server\.cs\.vt\.edu/.test(growthView) && /docs\.python\.org/.test(growthView), 'growth draft carries source links');
-check(/AI_DRAFT/.test(growthView) && /not been reviewed or approved/.test(growthView), 'growth draft tells its reader it is unreviewed');
+check(/opendatastructures\.org/.test(growthView) && /opendsa-server\.cs\.vt\.edu/.test(growthView) && /docs\.python\.org/.test(growthView), 'growth sample carries source links');
+check(/founder approved this sample/.test(growthView) && /not rostered/.test(growthView) && /not released/.test(growthView), 'growth reading states what the approval covered and what it did not');
 check(/<svg[\s>]/.test(growthFigure) && !/<img|\.png|\.jpe?g|\.webp/.test(growthFigure + growthLab), 'growth visuals are deterministic SVG, not raster');
 check(/dsa-array-growth-preview/.test(growthFigure) && /growthTrace/.test(growthFigure), 'the figure is computed from the lesson, not a second set of numbers');
 check(/prefers-reduced-motion/.test(growthFigure) && /reducedMotion/.test(growthFigure), 'growth animation honours reduced-motion preference');
@@ -178,6 +175,16 @@ check(/destroyed/.test(growthLab) && /refused/.test(growthLab), 'wrong answers a
 check(/allInspected/.test(growthLab), 'learner must inspect both strategies before the transfer question');
 check(/growthSummary/.test(growthLab) && !/490|15\.31/.test(growthLab), 'the bench derives its totals rather than hardcoding them');
 check(!/490|15\.31/.test(growthView), 'the reading derives its totals rather than hardcoding them');
+
+const growthApproval = approvals[growth.id];
+check(growthApproval?.approvedBy === 'founder' && growthApproval?.approvedOn === '2026-08-29', 'growth founder approval is recorded with its date');
+check(Object.keys(growthApproval?.files || {}).length === 4, 'all four approved source files are digest locked');
+for (const [file, expected] of Object.entries(growthApproval?.files || {})) {
+  const source = fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+    .replace(/\r\n/g, '\n');
+  const actual = crypto.createHash('sha256').update(source, 'utf8').digest('hex');
+  check(actual === expected, `${file} is unchanged since founder approval`);
+}
 
 if (failed) process.exit(1);
 console.log('\nall checks pass, the DSA sample remains authoring-only and mechanically coherent');
