@@ -15,6 +15,8 @@ Last updated: 2026-08-21
 | Qubix Superstore learning world | Persistent company, relational model, 8 career routes and 14 mission phases | World implemented in `STAT-DATA-001`; later missions locked |
 | Superstore topic catalogue | 379 topics across 17 ordered phases | Pre-Intern phase 3 capstone current; later topic boards locked |
 | Data Science Wiki preview | Static local route implemented at `?mode=wiki`; catalogue, career path, Superstore world and reference shelf are browsable | Founder review before making it the public home page |
+| Animated figure: base-rate alarm (ch08.02) | **APPROVED** by founder, 2026-08-28. Scope is the figure only | Digest locked; the containing session stays `AI_DRAFT` |
+| Still figure: outlier pull (ch04.03) | **APPROVED** by founder, 2026-08-28. Built as an animation, dropped to a still by founder decision | Digest locked; asserted to carry no motion |
 | Animated figure: join fan-out (ch05.03) | **APPROVED** by founder, 2026-08-28. Scope is the figure only | Digest locked in `curriculum/APPROVED-FIGURES.json`; the containing session stays `AI_DRAFT` |
 | Animated figure: sampling spread (ch08.03) | **APPROVED** by founder, 2026-08-28. Scope is the figure only | Digest locked; the containing session stays `AI_DRAFT` |
 | Animated figure: grain collapse (ch05.02) | **APPROVED** by founder, 2026-08-28. Scope is the figure only | Digest locked; the containing session stays `AI_DRAFT` |

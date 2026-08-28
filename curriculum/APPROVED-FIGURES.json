@@ -32,6 +32,15 @@
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
       "sha256": "cb473b449175ed5440d8e8ae25f9d91dcb925ceaca61c7ca17965847792dcf5f"
+    },
+    {
+      "id": "outlier-pull",
+      "session": "ch04.03",
+      "component": "src/lib/components/OutlierPull.svelte",
+      "kind": "still",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "5ab07bab488743ed0bc175ea71c15ac7686fe77e910c0eae102c0b4ef556b19f"
     }
   ]
 }

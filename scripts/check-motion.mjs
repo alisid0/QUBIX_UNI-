@@ -35,8 +35,7 @@ const ANIMATED = [
   { kind: 'join-fanout', file: 'JoinFanOut.svelte', source: component },
   { kind: 'sampling-spread', file: 'SamplingSpread.svelte', source: sampler },
   { kind: 'grain-collapse', file: 'GrainCollapse.svelte', source: collapse },
-  { kind: 'base-rate', file: 'BaseRateAlarm.svelte', source: alarm },
-  { kind: 'outlier-pull', file: 'OutlierPull.svelte', source: pull }
+  { kind: 'base-rate', file: 'BaseRateAlarm.svelte', source: alarm }
 ];
 
 /* ── every animated figure in the volume is one we know about ────────────── */
@@ -227,6 +226,16 @@ for (const { chapter, s } of pullSessions) {
     'and the median does not move at all, which is the whole point',
     `£${before.median} both before and after`);
 }
+
+// Deliberately a still. It was built as an animation and reads better with both
+// mean positions on the page at once, because an animation asks the reader to
+// hold the first one in memory while the second appears. Asserted so it cannot
+// drift back into motion without somebody deciding to.
+check(!/transition\s*:/.test(pull) && !/setTimeout|setInterval/.test(pull),
+  'the outlier figure carries no motion, which is a decision rather than an omission',
+  'both mean positions are drawn at once and the gap between them is the figure');
+check(!/on:click/.test(pull),
+  'and offers no replay, because there is nothing to replay');
 
 /* ── the contract, for every animated figure ─────────────────────────────── */
 for (const { file, source } of ANIMATED) {
