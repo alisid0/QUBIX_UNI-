@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coordinate Geometry — Draft Review (219 BBs)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board-1:#1f3b30;
+    --board-2:#24463a;
+    --chalk:#f4f1e9;
+    --chalk-dim:#c7ccc0;
+    --chalk-faint:#8fa093;
+    --chalk-yellow:#f2d585;
+    --chalk-green:#a9d6a0;
+    --frame:#5a4632;
+    --hand:"Kalam","Comic Sans MS",cursive;
+    --hand-display:"Architects Daughter","Kalam",cursive;
+    --print:"Patrick Hand","Kalam",cursive;
+    --sans:"Nunito Sans","Helvetica Neue",system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:#152a22;color:var(--chalk);font-family:var(--hand);}
+  body{display:flex;min-height:100vh;}
+
+  /* ===== sidebar / TOC ===== */
+  #toc{
+    position:sticky;top:0;align-self:flex-start;
+    width:260px;flex-shrink:0;height:100vh;overflow-y:auto;
+    background:#152a22;border-right:2px solid var(--frame);
+    padding:20px 14px;
+  }
+  #toc h2{
+    font-family:var(--hand-display);font-size:18px;font-weight:400;
+    color:var(--chalk-yellow);margin-bottom:14px;padding-left:6px;
+  }
+  #toc .stat{
+    font-family:var(--print);font-size:12px;color:var(--chalk-faint);
+    margin-bottom:16px;padding-left:6px;
+  }
+  #toc a{
+    display:block;font-family:var(--print);font-size:13.5px;
+    color:var(--chalk-dim);text-decoration:none;
+    padding:6px 8px;border-radius:5px;line-height:1.35;
+  }
+  #toc a:hover{background:rgba(255,255,255,0.06);color:var(--chalk);}
+  #toc a .n{color:var(--chalk-faint);margin-right:4px;}
+
+  /* ===== main content ===== */
+  main{flex:1;padding:40px clamp(20px,5vw,60px);max-width:880px;}
+  header.page-head{margin-bottom:36px;}
+  header.page-head h1{
+    font-family:var(--hand-display);font-weight:400;
+    font-size:clamp(28px,4vw,40px);color:var(--chalk);margin-bottom:8px;
+  }
+  header.page-head p{
+    font-family:var(--print);color:var(--chalk-faint);font-size:14px;
+  }
+  header.page-head .badge{
+    display:inline-block;margin-top:14px;padding:6px 14px;
+    border:1.5px dashed var(--chalk-green);border-radius:20px;
+    font-family:var(--print);font-size:12.5px;color:var(--chalk-green);
+  }
+
+  .tier-section{margin-bottom:56px;scroll-margin-top:20px;}
+  .tier-head{
+    font-family:var(--hand-display);font-weight:400;
+    font-size:clamp(20px,3vw,26px);color:var(--chalk-yellow);
+    border-bottom:2px solid rgba(244,241,233,0.15);
+    padding-bottom:10px;margin-bottom:20px;
+  }
+  .tier-head .range{font-family:var(--print);font-size:13px;color:var(--chalk-faint);margin-left:8px;}
+
+  .bb{
+    background:var(--board-1);
+    border:2px solid var(--frame);border-radius:6px;
+    padding:20px 24px;margin-bottom:18px;
+    scroll-margin-top:20px;
+    display:flex;gap:20px;align-items:flex-start;
+  }
+  .bb-text{flex:1;min-width:0;}
+  .bb-diagram{
+    flex-shrink:0;width:200px;height:154px;
+    background:rgba(0,0,0,0.18);border:1.5px solid rgba(244,241,233,0.15);
+    border-radius:6px;overflow:hidden;
+  }
+  .bb-diagram.empty{display:none;}
+  .bb-diagram.interactive{height:auto;min-height:154px;overflow:visible;padding-bottom:8px;}
+  .bb-diagram.has-video{display:flex;align-items:center;justify-content:center;background:#000;}
+  .dg-readout{
+    font-family:'Patrick Hand',cursive;font-size:12.5px;color:#c7ccc0;
+    padding:6px 10px;border-top:1px dashed rgba(244,241,233,0.15);
+  }
+  .dg-sliders{padding:2px 10px 6px;}
+  .dg-slider-row{display:flex;align-items:center;gap:6px;font-size:11px;color:#8fa093;margin-bottom:4px;}
+  .dg-slider-row input[type=range]{flex:1;accent-color:#f2d585;}
+  .dg-slider-label{min-width:64px;}
+  .dg-slider-val{min-width:24px;text-align:right;color:#f2d585;}
+  @media (max-width: 700px){
+    .bb{flex-direction:column;}
+    .bb-diagram{width:100%;height:170px;}
+    .bb-diagram.interactive{height:auto;}
+  }
+  .bb-eyebrow{
+    display:flex;align-items:baseline;gap:10px;margin-bottom:8px;
+    font-family:var(--print);font-size:12.5px;color:var(--chalk-faint);
+  }
+  .bb-eyebrow .cgnum{color:var(--chalk-yellow);font-weight:700;}
+  .bb-eyebrow .existing-flag{
+    color:#f0a868;border:1px dashed #f0a868;border-radius:10px;
+    padding:1px 8px;font-size:11px;
+  }
+  .bb h3{
+    font-family:var(--hand-display);font-weight:400;font-size:21px;
+    margin-bottom:10px;color:var(--chalk);
+  }
+  .floor{
+    margin-bottom:10px;padding-left:14px;
+    border-left:2px solid rgba(244,241,233,0.12);
+  }
+  .floor-label{
+    font-family:var(--print);font-size:11px;color:var(--chalk-green);
+    text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;
+  }
+  .floor p{font-family:var(--hand);font-size:16px;line-height:1.55;margin-bottom:6px;color:var(--chalk-dim);}
+  .floor p:last-child{margin-bottom:0;}
+  .floor strong{color:var(--chalk-yellow);font-weight:700;}
+  .floor em{color:var(--chalk-green);font-style:normal;}
+  .formula{
+    font-family:var(--hand);font-weight:700;font-size:15px;color:#fff;
+    background:rgba(0,0,0,0.25);border:1.5px dashed var(--chalk-green);
+    padding:8px 12px;margin:8px 0;border-radius:5px;
+  }
+  .formula .gloss{display:block;font-weight:400;font-size:12.5px;color:var(--chalk-faint);margin-top:3px;font-family:var(--print);}
+
+  .bb-tags{
+    margin-top:12px;padding-top:10px;border-top:1px dashed rgba(244,241,233,0.15);
+    font-family:var(--sans);font-size:11.5px;color:var(--chalk-faint);
+  }
+  .bb-tags b{color:var(--chalk-faint);}
+
+  .recap-card{border-color:var(--chalk-yellow);background:var(--board-2);}
+  .recap-badge{
+    background:var(--chalk-yellow);color:var(--board-2);font-weight:700;
+    border-radius:10px;padding:1px 8px;font-size:10px;letter-spacing:0.03em;
+  }
+  .recap-card .floor ul{padding-left:18px;}
+  .recap-card .floor li{font-family:var(--hand);font-size:15px;line-height:1.6;color:var(--chalk-dim);margin-bottom:4px;}
+
+  .snippet-card{border:1.5px dashed var(--chalk-yellow);background:rgba(242,213,133,0.06);}
+  .snippet-card .floor{border-left-color:var(--chalk-yellow);}
+  .snippet-card .floor-label{color:var(--chalk-yellow);}
+  .snippet-badge{background:transparent;border:1.5px dashed var(--chalk-yellow);color:var(--chalk-yellow);}
+
+  .bridge-card{border-color:var(--chalk-green);background:rgba(169,214,160,0.06);}
+  .bridge-badge{background:var(--chalk-green);color:var(--board-2);border:none;}
+
+  #search{
+    width:100%;margin-bottom:14px;padding:8px 10px;border-radius:5px;
+    border:1px solid var(--chalk-faint);background:#0f1f17;color:var(--chalk);
+    font-family:var(--print);font-size:13px;
+  }
+  .hidden{display:none !important;}
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--chalk-faint);border-radius:4px;}
+</style>
+</head>
+<body>
+
+<nav id="toc">
+  <h2>Coordinate Geometry</h2>
+  <div class="stat" id="statline">219 BBs · 17 tiers</div>
+  <input type="text" id="search" placeholder="Filter by title or concept...">
+  <div id="tocLinks"></div>
+</nav>
+
+<main>
+  <header class="page-head">
+    <h1>Draft Review</h1>
+    <p>Generated via Editor Mode — simulated Instance 1/2 + Draft 1-3. Not yet reviewed. Read through, then we go tier-by-tier on Instance 1/2.</p>
+    <span class="badge">Staging only — nothing here is wired into the live deck</span>
+  </header>
+  <div id="errbox" style="display:none;background:#5a1f1f;border:2px solid #c0392b;border-radius:6px;padding:14px 18px;margin-bottom:24px;font-family:monospace;font-size:13px;color:#ffd6d6;white-space:pre-wrap;"></div>
+  <div id="content"></div>
+</main>
+<script>
+window.addEventListener('error', function(e){
+  const box = document.getElementById('errbox');
+  box.style.display = 'block';
+  box.textContent += 'ERROR: ' + e.message + '  (' + (e.filename||'') + ':' + e.lineno + ')\n';
+});
+</script>
+
+<script>
+function C(act,kicker,title,layers,img,tags){return {act,kicker,title,layers,img:img||null,tags:tags||null};}
+</script>
+<script src="COORDINATE-GEOMETRY-DRAFT.js"></script>
+<script src="diagram-engine.js"></script>
+<script src="diagram-specs.js"></script>
+<script src="interactive-specs.js"></script>
+<script>
+const MANIM_VIDEOS = {
+  CG8: "CG8.mp4", CG15: "CG15.mp4", CG17: "CG17.mp4", CG18: "CG18.mp4", CG21: "CG21.mp4"
+};
+</script>
+<script>
+const TIERS = [
+  {name:"Tier 0 — The plane itself", range:"CG1–17", data:TIER_00_THE_PLANE},
+  {name:"Bridge — everything is a machine", range:"connects to Card 14", data:BRIDGE_FUNCTIONS},
+  {name:"Tier 1 — Lines", range:"CG18–31", data:TIER_01_LINES},
+  {name:"Tier 2 — Curves", range:"CG32–50", data:TIER_02_CURVES},
+  {name:"Tier 3 — Functions as machines on the grid", range:"CG51–59", data:TIER_03_FUNCTIONS},
+  {name:"Tier 4 — Vectors on the grid", range:"CG60–69", data:TIER_04_VECTORS},
+  {name:"Tier 5 — Motion on the grid", range:"CG70–80", data:TIER_05_MOTION},
+  {name:"Tier 6 — Gateway to calculus: derivatives", range:"CG81–90", data:TIER_06_DERIVATIVES},
+  {name:"Tier 7 — Gateway to calculus: integrals", range:"CG91–100", data:TIER_07_INTEGRALS},
+  {name:"Tier 8 — Trigonometry on the grid", range:"CG101–115", data:TIER_08_TRIGONOMETRY},
+  {name:"Tier 9 — Waves as moving trig graphs", range:"CG116–135", data:TIER_09_WAVES},
+  {name:"Tier 10 — Polar coordinates", range:"CG136–145", data:TIER_10_POLAR},
+  {name:"Tier 11 — Parametric equations", range:"CG146–155", data:TIER_11_PARAMETRIC},
+  {name:"Tier 12 — The complex plane", range:"CG156–167", data:TIER_12_COMPLEX},
+  {name:"Tier 13 — Conic sections, unified", range:"CG168–177", data:TIER_13_CONICS},
+  {name:"Tier 14 — Vector fields", range:"CG178–187", data:TIER_14_VECTOR_FIELDS},
+  {name:"Tier 15 — Matrices as transformations", range:"CG188–199", data:TIER_15_MATRICES},
+  {name:"Tier 16 — Optimization & problem-solving toolkit", range:"CG200–219", data:TIER_16_OPTIMIZATION},
+];
+
+const FLOOR_NAMES=["Floor 0 — Idea","Floor 1 — Concrete","Floor 2 — Definition","Floor 3 — In action","Floor 4 — The law"];
+
+const contentEl=document.getElementById('content');
+const tocEl=document.getElementById('tocLinks');
+let totalBBs=0;
+
+TIERS.forEach((tier,ti)=>{
+  totalBBs+=tier.data.length;
+  const section=document.createElement('section');
+  section.className='tier-section';
+  section.id='tier-'+ti;
+
+  const head=document.createElement('div');
+  head.className='tier-head';
+  head.innerHTML=`${tier.name}<span class="range">${tier.range} · ${tier.data.length} BBs</span>`;
+  section.appendChild(head);
+
+  tier.data.forEach(bb=>{
+    const div=document.createElement('div');
+    div.className='bb';
+    div.id=bb.kicker.toLowerCase();
+    div.dataset.search=(bb.title+' '+bb.kicker+' '+(bb.tags&&bb.tags.concept||'')).toLowerCase();
+
+    const tags=bb.tags||{};
+    const isRecap = tags.kind === 'recap';
+    const isSnippet = tags.kind === 'snippet';
+    const isBridge = tags.kind === 'bridge';
+
+    let floorLabel = 'Quick recap';
+    if(isSnippet) floorLabel = 'Did you know';
+    else if(isBridge) floorLabel = null;
+    else if(!isRecap) floorLabel = null;
+
+    let floorsHTML='';
+    bb.layers.forEach((layer,d)=>{
+      if(layer===null) return;
+      let label = floorLabel || (FLOOR_NAMES[d]||('Floor '+d));
+      if(isBridge && d === bb.layers.filter(l=>l!==null).length - 1) label = 'Bridge — into this path';
+      floorsHTML+=`<div class="floor"><div class="floor-label">${label}</div>${layer}</div>`;
+    });
+
+    const buildsOn=(tags.buildsOn||[]).join(', ')||'—';
+    const spec = DIAGRAM_SPECS[bb.kicker];
+    const interactiveSpec = INTERACTIVE_SPECS[bb.kicker];
+    const videoFile = MANIM_VIDEOS[bb.kicker];
+
+    if(isRecap) div.classList.add('recap-card');
+    if(isSnippet) div.classList.add('snippet-card');
+    if(isBridge) div.classList.add('bridge-card');
+    let badge = '';
+    if(isRecap) badge = '<span class="recap-badge">RECAP</span>';
+    if(isSnippet) badge = '<span class="recap-badge snippet-badge">DID YOU KNOW</span>';
+    if(isBridge) badge = '<span class="recap-badge bridge-badge">BRIDGE</span>';
+
+    div.innerHTML=`
+      <div class="bb-text">
+        <div class="bb-eyebrow"><span class="cgnum">${bb.kicker}</span>${badge}</div>
+        <h3>${bb.title}</h3>
+        ${floorsHTML}
+        <div class="bb-tags"><b>subject:</b> ${tags.subject||'—'} &nbsp; <b>concept:</b> ${tags.concept||'—'} &nbsp; <b>buildsOn:</b> ${buildsOn}</div>
+      </div>
+      <div class="bb-diagram${(spec||interactiveSpec||videoFile)?'':' empty'}${interactiveSpec?' interactive':''}${videoFile?' has-video':''}"></div>
+    `;
+    section.appendChild(div);
+    if(videoFile){
+      const v=document.createElement('video');
+      v.src='videos/'+videoFile; v.controls=true; v.loop=true; v.muted=true; v.playsInline=true;
+      v.style.width='100%'; v.style.height='100%';
+      div.querySelector('.bb-diagram').appendChild(v);
+    } else if(interactiveSpec){
+      try{
+        if(interactiveSpec.sliders) DG.mountSliders(div.querySelector('.bb-diagram'), interactiveSpec);
+        else DG.mountInteractive(div.querySelector('.bb-diagram'), interactiveSpec);
+      }
+      catch(err){ div.querySelector('.bb-diagram').textContent = 'interactive diagram error: '+err.message; }
+    } else if(spec){
+      try{ DG.render(div.querySelector('.bb-diagram'), spec); }
+      catch(err){ div.querySelector('.bb-diagram').textContent = 'diagram error: '+err.message; }
+    }
+
+    const link=document.createElement('a');
+    link.href='#'+bb.kicker.toLowerCase();
+    link.innerHTML=`<span class="n">${bb.kicker}</span>${bb.title}`;
+    link.dataset.search=div.dataset.search;
+    tocEl.appendChild(link);
+  });
+
+  contentEl.appendChild(section);
+});
+
+document.getElementById('statline').textContent=`${totalBBs} BBs · ${TIERS.length} tiers`;
+
+document.getElementById('search').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#tocLinks a').forEach(a=>{
+    a.classList.toggle('hidden', q && !a.dataset.search.includes(q));
+  });
+  document.querySelectorAll('.bb').forEach(div=>{
+    div.classList.toggle('hidden', q && !div.dataset.search.includes(q));
+  });
+});
+</script>
+</body>
+</html>

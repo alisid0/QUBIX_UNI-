@@ -1,0 +1,59 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The Von Neumann Bottleneck",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cpu-architecture", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The CPU operates at a blistering speed, driven by a 3 GHz clock. It can execute three billion instructions per second.</p>" },
+        { "content": "<p>However, the RAM cannot move fast enough to feed it.</p>" },
+        { "content": "<p>Even though electricity travels near the speed of light, the physical distance across the motherboard (the System Bus) introduces microscopic delays. Furthermore, the capacitors in the RAM take a fraction of a second to stabilize before they can be read.</p>" },
+        { "content": "<p>This creates the Von Neumann Bottleneck. The ALU finishes a calculation in one nanosecond, but has to sit completely idle for dozens of clock cycles, wasting massive amounts of time waiting for the next instruction to arrive across the copper highway.</p>" },
+        { "content": "<p>In computer architecture, a processor is only as fast as the data that can reach it. If the CPU is starved for data, the high clock speed is entirely useless.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Cache Hierarchy",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "cache", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>To solve this starvation problem, engineers built a secondary memory system directly into the silicon of the CPU itself.</p>" },
+        { "content": "<p>This is called Cache Memory. It is built using a different, highly expensive physical structure called SRAM (Static RAM). Unlike standard RAM, SRAM does not need to constantly refresh its capacitors, making it exponentially faster.</p>" },
+        { "content": "<p>Cache acts as a high-speed staging area. It is broken into strict levels (L1, L2, L3).</p>" },
+        { "content": "<p>The L1 Cache sits millimeters away from the ALU. It is incredibly small (often just kilobytes of data) but runs at the exact speed of the processor. The L3 Cache is larger, holding a few megabytes, but sits slightly further away.</p>" },
+        { "content": "<p>The system uses statistical algorithms to predict exactly which data the CPU will need next. It pre-fetches that data from the slow RAM and stages it in the L1 Cache. When the CPU asks for a number, the data is already sitting next to the gates, completely bypassing the bottleneck.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Assembly Line (Pipelining)",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "pipelining", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Fixing the memory bottleneck keeps the CPU fed, but engineers found a way to manipulate the Fetch-Decode-Execute cycle itself to increase throughput.</p>" },
+        { "content": "<p>In a basic processor, an instruction is Fetched. Then the clock ticks, and it is Decoded. The clock ticks again, and it is Executed. While the ALU is executing the math, the Fetch circuits are sitting completely idle, doing nothing.</p>" },
+        { "content": "<p>To eliminate this wasted downtime, modern processors use Instruction Pipelining.</p>" },
+        { "content": "<p>Pipelining treats the CPU like a factory assembly line. While the ALU is executing Instruction 1, the Control Unit is simultaneously decoding Instruction 2, and the memory bus is simultaneously fetching Instruction 3.</p>" },
+        { "content": "<p>Multiple instructions are processed in parallel, staggering across the different substructures. While a single instruction still takes three clock cycles to finish, the pipeline spits out one completed calculation on every single tick of the clock.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The Branch Prediction Guess",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "branch-prediction", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Pipelining works flawlessly if the software is a simple, straight list of instructions. But software constantly uses 'If/Then' conditional branches.</p>" },
+        { "content": "<p>If a processor encounters an 'If/Then' statement, the pipeline physically breaks. The CPU does not know which path the software will take until the math is executed. It cannot fetch the next instruction because it does not know which instruction to fetch.</p>" },
+        { "content": "<p>To prevent the pipeline from stalling and emptying out, the CPU relies on a hardware mechanism called a Branch Predictor.</p>" },
+        { "content": "<p>The processor literally guesses which path the software will take based on historical data. It assumes a path, fetches the data, and begins executing the math before the 'If/Then' statement is actually resolved.</p>" },
+        { "content": "<p>This is called Speculative Execution. If the processor guessed correctly, the pipeline never stalls. If it guessed wrong, it flushes the incorrect math out of its registers and starts over. Modern predictors boast over a 95% accuracy rate, saving billions of wasted clock cycles.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Scaling Sideways (Multi-Core)",
+      "tags": { "subject": "computing", "topic": "The Bit", "concept": "multi-core", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>For decades, processor speed was increased by simply driving the quartz clock faster. A 1 GHz chip was replaced by a 2 GHz chip, then a 3 GHz chip.</p>" },
+        { "content": "<p>Eventually, this strategy hit a hard wall of physics. Pushing billions of electrical pulses through microscopic silicon generates extreme heat. Pushing a clock to 5 GHz generates so much thermal energy the silicon literally melts.</p>" },
+        { "content": "<p>Because engineers could no longer scale the clock speed vertically, they decided to scale the architecture horizontally.</p>" },
+        { "content": "<p>Instead of building one massive, impossibly fast processor, they took the complete architecture (Control Unit, ALU, L1 Cache) and stamped a perfect copy of it onto the exact same piece of silicon.</p>" },
+        { "content": "<p>This is a Multi-Core Processor. A 'Quad-Core' chip is simply four complete, independent CPUs sitting side-by-side on one square of metal. They divide the workload, executing four separate pipelines of software simultaneously, drastically increasing computational power without melting the machine.</p>" }
+      ]
+    }
+  ]
+}

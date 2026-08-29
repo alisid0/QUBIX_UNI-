@@ -1,0 +1,15 @@
+district_id,name,region_id,manager_employee_id
+DIS-01,"Northmarch Upper",RGN-N,E-911
+DIS-02,"Northmarch Coast",RGN-N,E-912
+DIS-03,"Westreach Vale",RGN-W,E-913
+DIS-04,"Westreach Moor",RGN-W,E-914
+DIS-05,"Cindermoor North",RGN-C,E-915
+DIS-06,"Cindermoor South",RGN-C,E-916
+DIS-07,"Eastfen Levels",RGN-E,E-917
+DIS-08,"Eastfen Shore",RGN-E,E-918
+DIS-09,"Southdown Weald",RGN-S,E-919
+DIS-10,"Southdown Harbour",RGN-S,E-920
+DIS-11,"Kingsbourne Inner",RGN-K,E-921
+DIS-12,"Kingsbourne Outer",RGN-K,E-922
+DIS-13,"Kingsbourne West",RGN-K,E-923
+DIS-14,"Cindermoor Fringe",RGN-C,E-924

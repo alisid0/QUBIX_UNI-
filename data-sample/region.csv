@@ -1,0 +1,7 @@
+region_id,name,director_employee_id,established
+RGN-N,"Northmarch",E-901,2009-01-01
+RGN-W,"Westreach",E-902,2009-01-01
+RGN-C,"Cindermoor",E-903,2012-04-01
+RGN-E,"Eastfen",E-904,2012-04-01
+RGN-S,"Southdown",E-905,2016-09-01
+RGN-K,"Kingsbourne",E-906,2018-02-01

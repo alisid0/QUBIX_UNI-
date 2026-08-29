@@ -1,0 +1,314 @@
+================================================================================
+STRATA / QUBIX — ONBOARDING BRIEF FOR GEMINI
+Prepared 2026-07-27. Purpose: give an AI assistant a complete, accurate picture
+of the app, where the project stands, and (in detail) the workshops we ship.
+Live app: https://qubix.university   |   Production branch @ commit c4666f7
+================================================================================
+
+--------------------------------------------------------------------------------
+1. WHAT THE APP IS
+--------------------------------------------------------------------------------
+Strata (internal codename) / Qubix (public brand) is a mobile-first STEM
+micro-learning app for roughly ages 9-16. It teaches Mathematics, Computer
+Science, Chemistry, and Physics as small, swipeable, tap-to-descend cards --
+think Instagram Stories, except each screen teaches one real idea and then lets
+you practise it hands-on.
+
+Two halves work together:
+  - READING (the "map"): short cards you swipe through to meet an idea.
+  - WORKSHOPS (the "territory"): interactive mini-apps where you DO the idea
+    with your hands (drag vectors, balance equations, wire circuits, etc.).
+
+The product thesis: reading alone is passive and forgettable; understanding
+sticks when you practise. So the app deliberately funnels reading into practice
+and back again.
+
+--------------------------------------------------------------------------------
+2. VOCABULARY (use these exact terms)
+--------------------------------------------------------------------------------
+  BB      - a "building block": one card / one idea on one screen. (Never say
+            "card" in product copy; BB is the locked term.)
+  Floor   - a depth step INSIDE a BB. Swiping DOWN descends floors (more depth
+            on the same idea); swiping SIDEWAYS moves to the next BB.
+  Tier    - difficulty layer of a concept (t0 foundational / t1 / t2). A concept
+            is often built as 3 BBs (a "tier pyramid") plus quizzes.
+  Path    - a topic-sized sequence of BBs (e.g. "The Line", "Chemical bonding").
+  Subject - one of the four gateways: Mathematics, Computer Science, Chemistry,
+            Physics.
+  Topic   - a Path shown to the learner (a subject contains many topics).
+  W       - the reward currency ("Ws"): points earned for reading, practising,
+            and passing recalls. Drives levels, streaks, and a local league.
+
+--------------------------------------------------------------------------------
+3. THE READER (core reading surface)
+--------------------------------------------------------------------------------
+  - Horizontal movement changes the BB; vertical movement changes the Floor.
+  - A depth "rail" shows how deep you are within a BB.
+  - Media rule: real-world photos/GIFs may show narrative/action analogies;
+    anything technical (graphs, formulae, geometry, particles, bonds, circuits,
+    rays, diagrams, labels, quantities) must be deterministic (Manim, SVG,
+    canvas, or Three.js), never baked into a raster image.
+  - The launch shipped text-first; interactive 3D (Three.js) illustration is the
+    next media initiative (chemistry atoms/molecules/lattices first).
+  - Exit funnel: at the end of a section the Reader offers "Practise this",
+    linking straight into the matching workshop.
+
+--------------------------------------------------------------------------------
+4. ARCHITECTURE & OPERATIONS (brief but accurate)
+--------------------------------------------------------------------------------
+  - Front end: a Svelte + Vite single-page app (pure client SPA, no SSR).
+  - Backend: Supabase (Postgres + auth). BB content lives in a `cards` table and
+    is pulled per-topic at runtime; bundled JS files act as offline fallbacks.
+  - Hosting: Vercel. Production is https://qubix.university.
+  - Environments: separate Supabase projects for staging vs production, with
+    separate user data. A legacy Supabase project is RETIRED and must never be
+    reconnected.
+  - Release model: feature branch -> verify -> merge to `main` -> MANUAL deploy
+    via `npm run deploy` (build production -> Vercel -> alias). IMPORTANT: a git
+    push does NOT deploy. Pushing only updates GitHub; production ships only when
+    someone runs the deploy.
+  - Security posture: HTML sanitiser on BB content; security headers live
+    (Content-Security-Policy currently in REPORT-ONLY mode, plus HSTS,
+    X-Frame-Options, etc.). Enforcing CSP is a pending task.
+
+--------------------------------------------------------------------------------
+5. PROGRESS SO FAR (what exists and is live)
+--------------------------------------------------------------------------------
+Shipped and verified in production as of this brief:
+  - A large, browsable Workshop catalogue (see section 6) across all four
+    subjects, each workshop with multiple practice modes.
+  - "Solve First" -- a category of problem-led discovery workshops where the
+    concept name is hidden until the learner has cracked it (6 of them).
+  - Home = a single state-aware "Continue now" card (due review -> resume ->
+    daily workout), replacing three competing cards.
+  - Subject "hubs": tapping a subject always opens the same per-subject overview
+    (Continue / Practise / Review + its topics), instead of navigation that
+    changed destination based on hidden progress.
+  - "Read <-> Practise" round-trip: Reader offers "Practise this"; topic pages
+    offer "Learn it by doing"; running workshops offer "Read this topic".
+  - Daily Workout: an adaptive 5-minute session mixing due recalls, weak spots,
+    and something new.
+  - A recently-fixed bug worth noting: the W-award reward chime used to loop
+    forever after a single reward; it now plays once.
+
+Known follow-ups (not yet done): enforce CSP; keyboard/screen-reader support for
+drag-based workshops; cloud sync of "Solve First" progress (currently local
+only); a Google sign-up/account-linking fix (gated on a Supabase change); and an
+optional MP3 layer for reward sounds (a synthesised chime is used today).
+
+================================================================================
+6. THE WORKSHOPS -- IN DETAIL (the heart of this brief)
+================================================================================
+
+6.1 WHAT A WORKSHOP IS
+----------------------
+A workshop is a small interactive "mini-app" attached to a topic. Instead of
+reading about, say, matrices, you drag two arrows and watch a shape warp. Each
+workshop is a sequence of interactions rendered by a shared runner
+(Workshop.svelte) that dispatches to a specialised interactive engine by a
+`type` field. The catalogue is organised as four subject sections (a stacked
+grid, like the Topics page), plus a dedicated "Solve First" section.
+
+CURRENT TOTALS (live counts):
+  - Solve First discoveries ... 6
+  - Mathematics workshops ...... 25
+  - Computer Science workshops . 21
+  - Chemistry workshops ........ 28
+  - Physics workshops .......... 28
+  --------------------------------------
+  TOTAL: 102 workshop modules + 6 Solve First = 108 interactive experiences.
+
+Modules come in a base set plus "Series II" and "Series III" expansions (e.g.
+"Trigonometry", then "Trigonometry II", "Trigonometry III") that add fresh
+problem banks at higher difficulty for volume and replay.
+
+6.2 THE FOUR PRACTICE MODES
+---------------------------
+Most modules can be played in more than one mode. In the catalogue these show as
+small badges on each tile:
+
+  PRACTICE (always available)
+    Guided, confidence-building. Reveals feedback as you go. Grants +1 W per
+    correct answer plus a one-time completion bonus.
+
+  CHALLENGE  (badge: lightning)
+    Randomised targets against the clock; every run is different. Counts as a
+    real scored result for mastery. ~26 modules have a Challenge.
+
+  TEST  (badge: clipboard)
+    Cold assessment: one attempt per question, nothing revealed until the end.
+    "This one counts." Curated question banks. ~42 modules have a Test.
+
+  SOLVE FIRST  (badge: magnifier; also its own catalogue category)
+    Problem-led discovery: NO lesson first. You operate an unfamiliar system,
+    state the rule you found, transfer it to a new case, and only THEN is the
+    formal concept named. (Detailed in 6.5.)
+
+Priority when a workshop is open: Solve First > Practice > Challenge > Test.
+
+6.3 THE INTERACTIVE ENGINES (what the "types" actually do)
+----------------------------------------------------------
+Under the hood each interaction is one of ~30 specialised engines. Grouped by
+subject:
+
+MATHEMATICS
+  - FunctionMachineLab  : feed inputs to a rule, read outputs; explore notation,
+                          domains, graphs, inverses, and composite functions.
+  - UnitCircleLab / WaveTuner : drag an angle around the unit circle, read cos
+                          and sin, then "unwrap" the sine wave.
+  - MatrixCellFinder    : address cells by row/column (spreadsheet thinking).
+  - MatrixLab           : perform matrix operations.
+  - MatrixTransform     : treat a matrix as a geometric transformation of the
+                          plane (stretch, flip, rotate a shape).
+  - CoordinateDrill / CoordinateWorkbook : plot and read points across all four
+                          quadrants; distance, midpoints, matching lines.
+  - (Differentiation / limits modules use guided problem interactions.)
+
+COMPUTER SCIENCE
+  - BitMachineLab       : a tiny machine -- build a number, handle a carry, run
+                          simple machine instructions.
+  - BitsToNumber        : convert binary to decimal.
+  - BitsToWord          : convert bits/ASCII into text.
+  - BitPattern          : recognise and produce binary patterns.
+  - PixelGrid           : turn bits into pixels, colour, and images.
+  - GateBuilder         : wire logic gates (AND/OR/NOT...) into working circuits.
+  - SortingDesk         : drag items to run/observe a sorting algorithm.
+  - ScenarioChoice / PixiSceneChoice : scenario reasoning (e.g. rule-writing vs
+                          machine learning in the "AI era" modules).
+
+CHEMISTRY
+  - AtomFoundryLab / AtomBuilder : forge a nucleus (protons/neutrons), fill the
+                          electron shells, and strip electrons to make ions.
+  - BondLab             : place atoms on a bench and form stable compounds by
+                          SHARING (covalent) or TRANSFERRING (ionic) electrons.
+  - MoleculeBuilder     : assemble molecules and their VSEPR shapes.
+  - EquationBalancer    : balance chemical equations on a real balance SCALE
+                          (see signature labs, 6.6).
+
+PHYSICS
+  - ForceBalance        : add/oppose forces on an object; feel balanced vs
+                          unbalanced (Newton's laws).
+  - MotionLab           : kinematics -- position, velocity, acceleration.
+  - MomentumLab         : collisions and conservation of momentum ("Collision
+                          Lab").
+  - ThermoLab           : heat, gases, and engines.
+  - CircuitBenchLab     : build and reason about electrical circuits.
+  - UnitForgeLab / UnitDimensionCheck : measure, convert, and dimensionally
+                          check quantities before trusting a physics answer.
+  - TapErase            : a tap-to-remove interaction used in some drills.
+
+6.4 FULL CATALOGUE BY SUBJECT (live module list)
+-------------------------------------------------
+Legend: [P]=Practice (all), [C]=Challenge, [T]=Test, [S]=Solve First available.
+
+MATHEMATICS (25):
+  Plot, build, and measure [S,C,T] ; Function machine [C,T] ; Exponents and
+  logarithms [T] ; Spreadsheet to space machine (matrices) [S,C,T] ; Unit circle
+  and wave lab [C,T] ; Derivative control room [T] ; Coordinate geometry [C,T] ;
+  Coordinate maps [C,T] ; Lines and gradients [C,T] ; Limits and continuity
+  [S,T] ; then Series II/III: Functions II/III, Exponents & logs II/III,
+  Trigonometry II/III, Differentiation II, Limits II/III, Coordinate geometry
+  II/III, Lines and gradients II, The Line II, Matrices II, Coordinate maps II.
+
+COMPUTER SCIENCE (21):
+  Bit machine lab ; Binary and data lab [C,T] ; Logic gate trainer [S,C,T] ;
+  Code and algorithm lab [T] ; Hardware and memory lab [T] ; Networks and cloud
+  lab [S,T] ; Security and architecture lab [T] ; AI-era computing [T] ; AI
+  behind the curtain [T] ; then Series II/III: Binary II/III, Logic gates
+  II/III, Networks II/III, Security II, Code & command line II, Hardware &
+  memory II, AI-era computing II/III, AI behind the curtain II.
+
+CHEMISTRY (28):
+  Atom Foundry [C,T] ; Bond bench ; Equation Balancer ; Atom and molecule
+  builder [C,T] ; Chemical structure and reactions [T] ; Mole and reaction lab
+  [T] ; Atomic structure [C,T] ; Nucleus and isotopes [C,T] ; Chemical bonding
+  [C,T] ; Bonding types [C,T] ; Molecular architecture [C,T] ; Reactions and the
+  mole [C,T] ; Counting atoms [C,T] ; Biomolecules [C,T] ; then Series II/III
+  across atomic structure, bonding, reactions/mole, counting atoms, biomolecules,
+  nucleus & isotopes, bonding types, molecular architecture, quantitative
+  chemistry, structure & reactions.
+
+PHYSICS (28):
+  Unit forge lab ; Units and dimensions lab [T] ; Forces, waves, and energy
+  [S,C,T] ; Heat, gas, and engines [T] ; Motion Lab [C,T] ; Collision Lab [C,T] ;
+  Forces and Newton [C,T] ; SI units and scale [C,T] ; Scale, estimation and
+  errors [C,T] ; Measurement limits [T] ; Foundations and frontiers [T] ; Circuit
+  Bench [C,T] ; Reflection and refraction bench [T] ; then Series II/III across
+  motion, forces, electricity, energy & momentum, SI units & scale, heat &
+  energy, units & dimensions, optics, forces/waves/energy, scale & estimation,
+  measurement limits, foundations.
+
+6.5 SOLVE FIRST -- THE DISCOVERY WORKSHOPS (6)
+----------------------------------------------
+These are the app's signature pedagogy: the syllabus name stays hidden until the
+learner experiments, states a rule, and transfers it to a new case. Each ends
+with a "concept uncovered" reveal and a distinctive reward.
+
+  1. Crack the Lockers (Computer Science) -- operate two security systems, prove
+     their rules, then uncover AND and OR (logic gates). Reward: Access Architect.
+  2. Stop the Cart (Physics) -- command two opposing thrusters; prove what makes
+     a cart move or hold still, then name the rule (balanced/unbalanced forces).
+     Reward: Force Controller.
+  3. Find the Signal (Mathematics) -- fly a locator drone through a blacked-out
+     map, recover every rescue signal, then name the map you rebuilt (coordinate
+     systems). Reward: Grid Navigator.
+  4. Recover the Reading (Mathematics) -- probe a failed sensor from both sides,
+     reconstruct what it was heading toward, and detect when no single value is
+     defensible (limits and continuity). Reward: Boundary Analyst.
+  5. Save the Broadcast (Computer Science) -- rebuild a live picture, keep its
+     pieces organised, and survive a broken route (packet switching / routing).
+     Reward: Route Architect.
+  6. Warp the Grid (Mathematics) -- drag two guide arrows to bend a shape; prove
+     the two arrows decide where every point lands (a = a*i + b*j), then the
+     machine is named: the transformation MATRIX. Reward: Space Bender.
+
+Design notes: integer-snapped dragging; the "read this topic" link is hidden
+during a Solve First run so it never spoils the discovery; completion is recorded
+locally (cloud sync is a pending task).
+
+6.6 SIGNATURE / BESPOKE LABS
+----------------------------
+A few workshops are richer, hand-built "signature" labs rather than drills:
+  - EQUATION BALANCER (Chemistry): a literal balance SCALE. CPK-coloured atoms
+    sit on two pans; the beam tips by total atomic mass and levels only when the
+    equation balances. Five stations (water, ammonia, methane, rust, ethane),
+    coefficient steppers, per-element balance chips (e.g. "H 2|2 ok, O 2|1 x"),
+    and a strategy hint.
+  - ATOM FOUNDRY (Chemistry): forge a nucleus, fill shells, strip electrons to
+    ions.
+  - COLLISION LAB / MOTION LAB (Physics): momentum/collisions and kinematics.
+  - CIRCUIT BENCH (Physics): build and analyse circuits.
+  - BIT MACHINE (CS) and UNIT FORGE (Physics): foundational "how the machine /
+    how measurement really works" labs.
+
+6.7 HOW WORKSHOPS FIT THE LEARNING LOOP
+---------------------------------------
+  - Reward economy: correct answers and completions grant Ws; Challenge and Test
+    runs count toward topic mastery; passing spaced-repetition recalls grants
+    bonus Ws. Ws drive levels, a streak, and a local league.
+  - Read <-> Practise round-trip (all live): Reader section end -> "Practise
+    this"; topic page -> "Learn it by doing"; open workshop -> "Read this topic"
+    (shown only when the topic has reading, hidden during Solve First).
+  - Daily Workout: an adaptive ~5-minute session that composes due recalls, the
+    weakest tested topic, and one new thing -- surfaced as the single primary
+    action on Home.
+
+================================================================================
+7. WHERE THINGS ARE HEADED (queue)
+================================================================================
+  - Gated on decisions/infra: Google sign-up/account-linking fix (needs a
+    Supabase migration + a setting change); optional MP3 reward sounds (needs
+    audio files).
+  - Review-then-ship branches: math typesetting, legal/marketing copy accuracy,
+    an account-deletion flow.
+  - Non-blocking follow-ups: enforce CSP (+ a report endpoint); keyboard/screen-
+    reader access for drag-based workshops; a remote table so Solve First
+    discovery progress syncs to the cloud; and the Three.js interactive-media
+    initiative for the Reader (chemistry 3D first).
+
+================================================================================
+END OF BRIEF
+Authoritative in-repo references (for a human/agent with repo access):
+AGENTS.md, docs/SOURCE-OF-TRUTH.md, docs/RELEASE-MODEL.md, docs/ENVIRONMENTS.md,
+NOMENCLATURE.md, and docs/SESSION-BRIEF-2026-07-27.md (today's handoff).
+================================================================================

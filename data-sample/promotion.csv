@@ -1,0 +1,64 @@
+promotion_id,name,mechanic,starts,ends
+PRM-001,"Meal Deal 1",meal-deal,2026-03-29,2026-04-26
+PRM-002,"Half Price 2",price-cut,2026-03-15,2026-04-06
+PRM-003,"Two for 3",meal-deal,2026-03-05,2026-03-22
+PRM-004,"Half Price 4",meal-deal,2026-03-18,2026-04-03
+PRM-005,"Two for 5",multibuy,2026-03-04,2026-03-13
+PRM-006,"Half Price 6",meal-deal,2026-03-26,2026-04-21
+PRM-007,"Two for 7",meal-deal,2026-03-08,2026-03-30
+PRM-008,"Two for 8",percent-off,2026-03-17,2026-03-26
+PRM-009,"Half Price 9",multibuy,2026-03-16,2026-03-29
+PRM-010,"Two for 10",multibuy,2026-03-11,2026-03-25
+PRM-011,"Meal Deal 11",percent-off,2026-03-04,2026-03-21
+PRM-012,"Weekly Deal 12",meal-deal,2026-03-11,2026-03-25
+PRM-013,"Seasonal 13",meal-deal,2026-03-11,2026-03-21
+PRM-014,"Bulk Buy 14",percent-off,2026-03-27,2026-04-20
+PRM-015,"Weekly Deal 15",multibuy,2026-03-10,2026-04-06
+PRM-016,"Half Price 16",meal-deal,2026-03-26,2026-04-21
+PRM-017,"Two for 17",percent-off,2026-03-29,2026-04-06
+PRM-018,"Meal Deal 18",meal-deal,2026-03-27,2026-04-20
+PRM-019,"Half Price 19",price-cut,2026-03-06,2026-03-28
+PRM-020,"Two for 20",percent-off,2026-03-27,2026-04-20
+PRM-021,"Bulk Buy 21",multibuy,2026-03-26,2026-04-22
+PRM-022,"Two for 22",price-cut,2026-03-20,2026-04-07
+PRM-023,"Seasonal 23",multibuy,2026-03-07,2026-03-28
+PRM-024,"Weekly Deal 24",price-cut,2026-03-22,2026-04-09
+PRM-025,"Bulk Buy 25",percent-off,2026-03-12,2026-03-20
+PRM-026,"Half Price 26",percent-off,2026-03-28,2026-04-14
+PRM-027,"Half Price 27",meal-deal,2026-03-24,2026-04-08
+PRM-028,"Weekly Deal 28",multibuy,2026-03-28,2026-04-18
+PRM-029,"Seasonal 29",meal-deal,2026-03-19,2026-04-10
+PRM-030,"Half Price 30",multibuy,2026-03-25,2026-04-04
+PRM-031,"Weekly Deal 31",percent-off,2026-03-16,2026-04-09
+PRM-032,"Half Price 32",percent-off,2026-03-22,2026-04-13
+PRM-033,"Half Price 33",price-cut,2026-03-12,2026-03-26
+PRM-034,"Meal Deal 34",meal-deal,2026-03-14,2026-04-02
+PRM-035,"Half Price 35",meal-deal,2026-03-17,2026-03-25
+PRM-036,"Seasonal 36",meal-deal,2026-03-25,2026-04-02
+PRM-037,"Weekly Deal 37",meal-deal,2026-03-20,2026-03-28
+PRM-038,"Bulk Buy 38",multibuy,2026-03-20,2026-04-07
+PRM-039,"Weekly Deal 39",price-cut,2026-03-16,2026-03-25
+PRM-040,"Weekly Deal 40",percent-off,2026-03-10,2026-04-06
+PRM-041,"Seasonal 41",meal-deal,2026-03-11,2026-03-31
+PRM-042,"Bulk Buy 42",multibuy,2026-03-09,2026-03-29
+PRM-043,"Meal Deal 43",price-cut,2026-03-03,2026-03-25
+PRM-044,"Half Price 44",price-cut,2026-03-06,2026-04-03
+PRM-045,"Bulk Buy 45",percent-off,2026-03-22,2026-04-17
+PRM-046,"Seasonal 46",multibuy,2026-03-21,2026-04-15
+PRM-047,"Seasonal 47",percent-off,2026-03-20,2026-04-03
+PRM-048,"Two for 48",price-cut,2026-03-21,2026-04-06
+PRM-049,"Weekly Deal 49",percent-off,2026-03-20,2026-03-28
+PRM-050,"Meal Deal 50",meal-deal,2026-03-02,2026-03-24
+PRM-051,"Bulk Buy 51",meal-deal,2026-03-12,2026-03-31
+PRM-052,"Seasonal 52",multibuy,2026-03-16,2026-03-30
+PRM-053,"Bulk Buy 53",multibuy,2026-03-22,2026-04-03
+PRM-054,"Seasonal 54",multibuy,2026-03-25,2026-04-22
+PRM-055,"Two for 55",meal-deal,2026-03-10,2026-04-04
+PRM-056,"Half Price 56",multibuy,2026-03-12,2026-04-08
+PRM-057,"Seasonal 57",multibuy,2026-03-27,2026-04-09
+PRM-058,"Seasonal 58",meal-deal,2026-03-18,2026-04-01
+PRM-059,"Meal Deal 59",multibuy,2026-03-24,2026-04-09
+PRM-060,"Weekly Deal 60",percent-off,2026-03-05,2026-03-13
+PRM-061,"Half Price 61",meal-deal,2026-03-19,2026-04-01
+PRM-062,"Bulk Buy 62",meal-deal,2026-03-23,2026-04-07
+PRM-063,"Weekly Deal 63",price-cut,2026-03-24,2026-04-19

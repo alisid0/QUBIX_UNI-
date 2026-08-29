@@ -1,0 +1,54 @@
+{
+  "note": "Figures the founder has reviewed and approved. Scope is the figure only: the sessions that contain them remain AI_DRAFT until reviewed whole, per docs/REVIEW-PROTOCOL.md. The digest exists so that AI cannot silently alter approved learner-facing material; changing a listed file returns it to AMENDMENTS_REQUIRED and the founder reviews it again.",
+  "figures": [
+    {
+      "id": "join-fanout",
+      "session": "ch05.03",
+      "component": "src/lib/components/JoinFanOut.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "20010869d5fe6c9443b7dde2fe09b4d26f07261233f07a9cce2ef182b88b38cf",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
+    },
+    {
+      "id": "sampling-spread",
+      "session": "ch08.03",
+      "component": "src/lib/components/SamplingSpread.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "2e1982cb15795d24dba7da644a0dd3dba25302df36ce2ac7425a813720e35dd4",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
+    },
+    {
+      "id": "grain-collapse",
+      "session": "ch05.02",
+      "component": "src/lib/components/GrainCollapse.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "17a8b5b103b996ed680999ac9a5e730fe185cc7d373990fc87e2dc08df919e88",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
+    },
+    {
+      "id": "base-rate",
+      "session": "ch08.02",
+      "component": "src/lib/components/BaseRateAlarm.svelte",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "0b483b2bdbbb39eac006f7cc52e7bea58d48b0b19b7a4acaacf54e128374b007",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
+    },
+    {
+      "id": "outlier-pull",
+      "session": "ch04.03",
+      "component": "src/lib/components/OutlierPull.svelte",
+      "kind": "still",
+      "approvedOn": "2026-08-28",
+      "approvedBy": "founder",
+      "sha256": "5ab07bab488743ed0bc175ea71c15ac7686fe77e910c0eae102c0b4ef556b19f"
+    }
+  ]
+}

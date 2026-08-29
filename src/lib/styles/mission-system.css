@@ -1,0 +1,67 @@
+/* The learner missions share one piece of institutional furniture. The room
+   and exercise inside it may change; the paper, frame and spacing do not. */
+.qubix-university .mission-shell {
+  min-height: 100vh !important;
+  max-width: none !important;
+  padding: 0 0 58px !important;
+  overflow: visible !important;
+  background: #e6e0d2 !important;
+  color: #20241f !important;
+}
+
+.qubix-university .mission-shell > main,
+.qubix-university .mission-shell > footer,
+.qubix-university .mission-shell > .variation-picker {
+  width: min(100%, 1120px) !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+  padding-inline: clamp(16px, 5vw, 56px) !important;
+  box-sizing: border-box !important;
+}
+
+.qubix-university .mission-shell .m1-workarea {
+  border: 6px solid #20241f !important;
+  border-radius: 0 !important;
+  box-shadow: 11px 11px 0 rgba(32, 36, 31, .16) !important;
+}
+
+.qubix-university .mission-shell .m1-workarea :is(button, select, input, textarea),
+.qubix-university .mission-shell :is(.decision-card, .lesson-card, aside) {
+  border-radius: 0 !important;
+}
+
+.qubix-university .mission-shell .variation-picker {
+  margin-bottom: 22px !important;
+  gap: 1px !important;
+}
+
+.qubix-university .mission-shell .variation-picker button {
+  border-radius: 0 !important;
+  border-color: #9c998d !important;
+  background: #f7f3e9 !important;
+  color: #20241f !important;
+}
+
+.qubix-university .mission-shell .variation-picker button.active {
+  border-color: #20241f !important;
+  background: #20241f !important;
+  color: #f7f3e9 !important;
+}
+
+.qubix-university .mission-shell > footer {
+  margin-top: 28px !important;
+  color: #62695f !important;
+}
+
+.qubix-university .mission-shell > footer a { color: #315f48 !important; }
+
+@media (max-width: 700px) {
+  .qubix-university .mission-shell { padding-bottom: 38px !important; }
+  .qubix-university .mission-shell > main,
+  .qubix-university .mission-shell > footer,
+  .qubix-university .mission-shell > .variation-picker { padding-inline: 16px !important; }
+  .qubix-university .mission-shell .m1-workarea {
+    border-width: 5px !important;
+    box-shadow: 8px 8px 0 rgba(32, 36, 31, .16) !important;
+  }
+}

@@ -1,0 +1,59 @@
+# What Vercel does not need in order to build and serve qubix.university.
+#
+# Without this file every tracked file goes up on every deploy. That was 64.8 MB
+# against a 1.3 MB site, almost all of it current-app/, which the build never
+# reads: nothing in vite.config.js, src/ or scripts/ references it. Uploading it
+# is pure waste, it makes every deploy slow, and on a poor connection it is the
+# difference between a deploy landing and timing out.
+#
+# Nothing here is deleted or untracked. It stays in Git, where it belongs, and
+# simply stops being sent to a host that has no use for it.
+
+# The consolidated application and creative work. Canonical in Git, not served.
+current-app/
+
+# Native shells. Built by Capacitor from dist/, never by Vercel.
+android/
+ios/
+
+# Authoring and governance material. The Factory is dev-only and the curriculum
+# records are not part of the site.
+supabase/
+
+# Same shape as docs/: the curriculum records are not served, but
+# release guards read the approval registers during prebuild.
+curriculum/*
+!curriculum/APPROVED-FIGURES.json
+!curriculum/APPROVED-DSA.json
+
+# docs/ is not served, but check-motion reads docs/MEDIA-RULE.md during
+# prebuild and the deploy failed on ENOENT without it. The contents are
+# excluded rather than the directory, because gitignore semantics cannot
+# re-include a file whose parent directory is already excluded.
+docs/*
+!docs/MEDIA-RULE.md
+
+# Local only.
+.playwright-session/
+*.log
+
+# book/dist is the self-contained build, kept for sending as single files.
+# What the site serves is public/library, produced from it by
+# scripts/publish-library.mjs during prebuild. Shipping both would double
+# roughly 7 MB for no reason.
+book/dist/
+
+# The generated quarter and its release archive. Both are large, both are
+# gitignored, and a .vercelignore replaces .gitignore rather than adding to it,
+# so without these lines 442 MB of local-only data went up on every deploy and
+# the first attempt was rejected: sale_line.csv alone is 187 MB against a
+# 100 MB per-file limit.
+#
+# Nothing in the build reads them. public/data/qubix-sample.db is rebuilt from
+# the committed data-sample/ by scripts/build-sample-db.mjs during prebuild,
+# which is also what the four figure guards read.
+# Anchored to the root. Unanchored, `data/` matches a directory of that name at
+# any depth, which quietly excluded src/lib/data/ and failed the Vercel build
+# on "Could not resolve ../lib/data/superstore.js".
+/data/
+/dist-data/

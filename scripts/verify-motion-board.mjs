@@ -1,0 +1,35 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch({ headless: true });
+for (const [label, viewport] of [['desktop', { width: 1280, height: 900 }], ['mobile', { width: 390, height: 844 }]]) {
+  const page = await browser.newPage({ viewport });
+  await page.goto('http://127.0.0.1:4178/?mode=factory&bb=speed-velocity', { waitUntil: 'networkidle' });
+  await page.getByRole('heading', { name: 'Speed and Velocity' }).waitFor();
+  const card = code => page.locator('article.variant').filter({ has: page.locator('.code', { hasText: code }) }).first();
+  for (const code of ['S1-I1','S1-I2','S2-I1','S2-I2','S3-I1','S3-I2']) if (await card(code).count() !== 1) throw new Error(`${label}: missing ${code}`);
+  await card('S1-I1').getByRole('slider').first().fill('60');
+  await card('S1-I1').getByRole('slider').nth(1).fill('10');
+  await card('S1-I1').getByText('6 m/s', { exact: true }).waitFor();
+  await card('S1-I1').getByRole('button', { name: 'WATCH THE JOURNEY' }).click();
+  if (await card('S1-I1').locator('.motion-track i.running').count() !== 1) throw new Error(`${label}: journey animation did not start`);
+  await card('S1-I2').getByRole('button', { name: '8 s' }).click();
+  await card('S1-I2').getByRole('button', { name: 'START ALL THREE TOGETHER' }).click();
+  if (await card('S1-I2').locator('.motion-race b.running').count() !== 3) throw new Error(`${label}: equal-time race did not start together`);
+  await card('S2-I1').getByRole('button', { name: 'LEFT' }).click();
+  await card('S2-I1').getByText('4 m/s left', { exact: true }).waitFor();
+  await card('S2-I1').getByRole('button', { name: 'MOVE AT 4 m/s' }).click();
+  if (await card('S2-I1').locator('.velocity-stage.running.left').count() !== 1) throw new Error(`${label}: leftward velocity animation failed`);
+  if (await card('S2-I2').getByText('5 m/s', { exact: true }).count() !== 2) throw new Error(`${label}: twin comparison failed`);
+  await card('S2-I2').getByRole('button', { name: 'MOVE TOGETHER' }).click();
+  if (await card('S2-I2').locator('.velocity-twins em.running').count() !== 2) throw new Error(`${label}: twin animation failed`);
+  await card('S3-I1').getByRole('button', { name: 'RUN THE ROUND TRIP' }).click();
+  await page.waitForTimeout(1650);
+  await card('S3-I1').getByText('40 m', { exact: true }).waitFor();
+  await card('S3-I2').getByRole('button', { name: /10 m · 1 s →/ }).click();
+  await card('S3-I2').getByRole('button', { name: /← 10 m · 1 s/ }).click();
+  await card('S3-I2').getByText('20 m', { exact: true }).waitFor();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  if (overflow > 1) throw new Error(`${label}: horizontal overflow ${overflow}px`);
+  console.log(`${label}: six interactions and responsive width verified`);
+  await page.close();
+}
+await browser.close();

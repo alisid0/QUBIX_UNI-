@@ -1,0 +1,114 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The mechanical rule",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>At its core, mathematics is not just about isolated numbers. It is about the relationships between things.</p>" },
+        { "content": "<p>A mechanical vending machine perfectly demonstrates this relationship. A specific code is pressed on the keypad, and a specific item drops to the bottom.</p>" },
+        { "content": "<p>There is an input (the button code) and an output (the physical item).</p>" },
+        { "content": "<p>The internal mechanics linking that specific button to that specific item is a strict, unchanging rule.</p>" },
+        { "content": "<p>In mathematics, a rule that securely maps an input to an output is called a Function.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The broken machine",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A function operates on one absolute, unbreakable rule: a specific input can only ever produce exactly one output.</p>" },
+        { "content": "<p>If button A1 is pressed and a cola drops out, the machine works. If A1 is pressed a hundred more times, a cola must drop out every single time.</p>" },
+        { "content": "<p>If A1 is pressed and a bag of chips drops out instead, the machine is broken. The relationship is unpredictable. In mathematics, it is no longer a function.</p>" },
+        { "content": "<p>However, a machine can be wired so that button A1 drops a cola, and button A2 also drops a cola. That is perfectly legal.</p>" },
+        { "content": "<p>Multiple different inputs can lead to the exact same output. But one input can never point to two different outputs. Predictability is the absolute requirement of a function.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The mathematical shorthand",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Mathematicians do not draw vending machines to show these relationships. They use a highly specific shorthand.</p>" },
+        { "content": "<p>Instead of a button code, the incoming input is simply labeled x.</p>" },
+        { "content": "<p>The machine itself — the internal rule linking the input to the output — is labeled f (for function).</p>" },
+        { "content": "<p>The entire process is written as f(x). This is read out loud as 'f of x.'</p>" },
+        { "content": "<p>If the rule of the machine is to double the input, it is written as f(x) = 2x. If the number 5 is dropped into this machine, it is written as f(5). The machine processes the 5, doubles it, and outputs a 10.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The boundaries",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A physical machine has limits. It only accepts specific inputs. A standard vending machine accepts coins and paper bills, but it will not accept a wooden block. If a wooden block is forced into the slot, the machine breaks.</p>" },
+        { "content": "<p>The complete list of all acceptable inputs that can be safely dropped into a function is called the Domain.</p>" },
+        { "content": "<p>Similarly, the machine only holds a specific inventory. It dispenses soda, water, and chips. It is physically impossible for it to dispense a car.</p>" },
+        { "content": "<p>The complete list of all possible outputs the machine can ever produce is called the Range.</p>" },
+        { "content": "<p>By defining the Domain and the Range, the absolute limits of a mathematical relationship are permanently fenced in.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The visual test",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This concept of functions connects directly back to coordinate geometry.</p>" },
+        { "content": "<p>Because an input is just an X-value (moving left to right), and an output is a Y-value (moving up and down), a function can be drawn as a line or a curve on a grid.</p>" },
+        { "content": "<p>The golden rule of functions — one output for every input — creates a strict visual rule on the graph.</p>" },
+        { "content": "<p>If a perfectly vertical straight line is dragged from left to right across the grid, it can only ever touch the function's curve in exactly one spot at a time.</p>" },
+        { "content": "<p>If the vertical line touches the curve in two places at once, it means a single X-input has produced two different Y-outputs. The machine is broken. The curve is not a function. This is known universally as the Vertical Line Test.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The straight path",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "linear-functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Not all mathematical machines behave the same way. The simplest functions apply a constant, unchanging rule to every input.</p>" },
+        { "content": "<p>If the rule of the machine is to simply add 2, the output grows at a perfectly steady, predictable rate. 1 becomes 3. 2 becomes 4.</p>" },
+        { "content": "<p>When plotted on a coordinate grid, this steady growth produces a perfectly straight line. This is called a Linear Function.</p>" },
+        { "content": "<p>A car driving on a highway at a locked speed of 60 miles per hour operates as a linear function.</p>" },
+        { "content": "<p>For every single hour that passes (the input), the distance increases by exactly 60 miles (the output). The slope never changes. There are no sudden leaps, and no surprises.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The explosion",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "exponential-functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Nature rarely moves in perfectly straight lines. Often, physical processes accelerate.</p>" },
+        { "content": "<p>A single bacterial cell divides into two. Those two divide into four. Four become eight, then sixteen, then thirty-two.</p>" },
+        { "content": "<p>The growth is not created by adding a fixed number. The growth is created by multiplying the previous output. As the output gets larger, the growth gets faster.</p>" },
+        { "content": "<p>This is an Exponential Function. Instead of the input sitting on the ground level of the equation (like 2x), the input becomes the exponent itself (like 2^x).</p>" },
+        { "content": "<p>On a graph, an exponential function starts almost completely flat, but as the inputs grow, the line violently bends upward, rocketing toward a vertical wall. It is the exact mathematical engine behind viral pandemics, compound interest, and nuclear chain reactions.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The falling object",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "quadratic-functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>There is a third major shape in the universe, dictated entirely by gravity.</p>" },
+        { "content": "<p>When a baseball is thrown high into the air, it slows down, stops for a microscopic fraction of a second at its peak, and falls back down to the ground.</p>" },
+        { "content": "<p>The math tracking this flight does not multiply by a constant, and it does not double. It squares the input (x²). This is called a Quadratic Function.</p>" },
+        { "content": "<p>On a grid, a quadratic function forms a perfectly symmetrical U-shape called a parabola.</p>" },
+        { "content": "<p>A parabola is not just an abstract concept drawn in textbooks. Every baseball ever hit, every artillery shell ever fired, and every stream of water from a drinking fountain traces this exact, unavoidable mathematical curve through the air.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Running it backward",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "inverse-functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If a function is a machine that turns an input into an output, a mechanical question naturally arises: can the machine run in reverse?</p>" },
+        { "content": "<p>If the final output (the dispensed soda) is known, can the math trace the process backward to reveal the exact input (the button) that was originally pressed?</p>" },
+        { "content": "<p>When a machine can successfully run backward, it is called an Inverse Function.</p>" },
+        { "content": "<p>But this only works if the original machine obeyed a strict physical rule. If a vending machine is wired so that button A1 drops a cola, and button A2 also drops a cola, the reverse process fails. Looking only at the cola, it is impossible to know which of the two buttons was pressed.</p>" },
+        { "content": "<p>For an inverse function to exist, the relationship must be perfectly one-to-one. One unique button for every unique soda. If that strict rule holds, time and math can be perfectly reversed.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Chaining them together",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "composite-functions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Complex systems in reality are rarely governed by just one rule. They are a chain reaction of events.</p>" },
+        { "content": "<p>A car engine burns fuel to create heat. That heat creates expansion. That expansion moves a piston.</p>" },
+        { "content": "<p>In mathematics, functions can be bolted together to mimic this exact chain. The output of the first machine is dropped directly into the input slot of a second machine.</p>" },
+        { "content": "<p>This is called a Composite Function. It is written as f(g(x)). The inside machine (g) runs first, and hands its final result to the outside machine (f) to be processed again.</p>" },
+        { "content": "<p>By chaining simple rules together, mathematicians can build incredibly complex software models. Predicting global weather patterns or rendering 3D video games relies entirely on thousands of these predictable rules, feeding outputs into inputs, billions of times a second.</p>" }
+      ]
+    }
+  ]
+}

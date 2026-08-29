@@ -1,0 +1,11 @@
+commodity_id,name,quoted_unit,base_index,volatility
+CMD-WHT,"Milling wheat","tonne",214,high
+CMD-DRY,"Raw milk","1000 L",398,medium
+CMD-COC,"Cocoa","tonne",6140,extreme
+CMD-COF,"Arabica coffee","tonne",4720,extreme
+CMD-PLM,"Palm oil","tonne",892,medium
+CMD-SUN,"Sunflower oil","tonne",1040,high
+CMD-ALU,"Aluminium","tonne",2180,medium
+CMD-BRD,"Corrugated board","tonne",505,low
+CMD-DSL,"Diesel","1000 L",1310,high
+CMD-GAS,"Natural gas","MWh",78,extreme

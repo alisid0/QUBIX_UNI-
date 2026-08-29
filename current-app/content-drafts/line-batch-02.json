@@ -1,0 +1,15 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "Segment, ray, line",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "segment-ray", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>If a railway track is not a true line, what is it? In math, it is called a line segment. A segment just has a hard start and a hard stop. Because it has two ends, you can easily measure it with a ruler. Almost everything we see, draw, or build in the physical world is a line segment.</p>" },
+        { "content": "<p>Then there is a ray. A ray has a starting point, but no ending point. It just keeps going in one direction. Think of turning on a strong flashlight in the dark. The beam starts right there at the bulb, but the light just shoots outward. It has a beginning, but it does not stop.</p>" },
+        { "content": "<p>Finally, if you take away that starting point too, you are back to a true line. The whole difference between the three concepts just comes down to counting the ends. A segment has two ends. A ray has one end. A true line has zero ends. That is really all there is to it.</p>" }
+      ]
+    }
+  ]
+}

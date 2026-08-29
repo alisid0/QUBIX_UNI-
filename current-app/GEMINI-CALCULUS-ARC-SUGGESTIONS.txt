@@ -1,0 +1,120 @@
+================================================================================
+QUBIX — REQUEST FOR SUGGESTIONS: THE INTERACTIVE CALCULUS ARC
+For: Gemini.  From: the Qubix build team.  Date: 2026-07-27.
+Purpose: we've built most of an "arithmetic-intuition -> derivative" arc of
+interactive workshops. We want your SUGGESTIONS to sharpen them — but they must
+land inside our real constraints (below), or they can't be used. Please read
+Section A first; ideas that ignore it are not actionable for us.
+================================================================================
+
+--------------------------------------------------------------------------------
+A. HARD CONSTRAINTS (please tailor every suggestion to these)
+--------------------------------------------------------------------------------
+Qubix (codename Strata) is a mobile-first STEM micro-learning app. Its workshops
+are small, self-contained interactive "engines." Our real, non-negotiable model:
+
+  DO assume:
+  - Svelte 4, plain JavaScript (NOT TypeScript). Pure client SPA (Vite).
+  - Rendering in SVG (preferred; theme-reactive) or canvas — deterministic only.
+  - Styling via our design tokens `--qx-*` (e.g. --qx-accent is a WARM RUST, not
+    blue; plus --qx-green, --qx-yellow, --qx-surface, --qx-text, --qx-border…).
+    Components must look right in BOTH light and dark themes.
+  - Touch-first: pointer events, ~16px min touch targets.
+  - Engine contract: each engine receives `prompt` (string) + `onDone(score,max)`
+    and calls `onDone(1,1)` when the learner completes it. That's the whole API.
+  - Reward economy: the currency is "Ws". It is POSITIVE-ONLY — we GRANT Ws, we
+    never deduct them. A wrong answer gets a gentle nudge + retry, never a penalty.
+
+  DO NOT propose (these do not exist / conflict with the product):
+  - TypeScript, Tailwind classes, `bg-slate-950`/neon, `dispatch('success')`,
+    hardcoded `rewardWs`.
+  - A multi-level "suite wrapper", cross-level unlock gates (e.g. "≥80% to
+    unlock"), or forced session length. Each workshop is an independent module
+    in a catalogue; the learning sequence is provided by our topic ordering, not
+    a bespoke gated container. Micro-learning = short, replayable, non-punitive.
+
+Each engine is a Practice-style lab with 3-5 internal STAGES that retry until
+correct, then a single 1/1 completion. It is wired as one module in the
+Mathematics track and appears in the workshop grid with the others.
+
+--------------------------------------------------------------------------------
+B. THE ARC — WHAT EXISTS AND WHAT'S LEFT
+--------------------------------------------------------------------------------
+Goal: take a learner from "rate of change" intuition to the derivative, all by
+hand/eye, before any formal rules.
+
+  [LIVE]   Asymptote Lab — read where f(x)=num/(x−p)+q blows up (vertical
+           asymptote) and levels off (horizontal). Drag a wall + a line onto the
+           curve's behaviour; formula hidden until the reveal.
+  [LIVE]   Limits — already covered by our "Recover the Reading" discovery
+           (dual-probe from both sides; detects when no single value is
+           defensible) + Limits I/II/III modules. (So we did NOT build a
+           separate limits studio.)
+  [LIVE]   Rate over an interval — on a distance–time curve f(t)=½t², drag an
+           interval [a,b]; a right triangle (Δt, Δd) + secant draw and the HUD
+           reads average speed Δd/Δt. Rounds target an average speed; since the
+           average is ½(a+b), several intervals work — the intended insight.
+  [DONE, NOT YET DEPLOYED — this is the one we most want feedback on]
+           Local Linearity — see Section C.
+  [PENDING — the capstone; we want your design ideas]
+           Secant -> Tangent / the derivative — see Section D.
+
+--------------------------------------------------------------------------------
+C. LOCAL LINEARITY (built; awaiting your suggestions before we ship)
+--------------------------------------------------------------------------------
+Concept: up close, a smooth curve looks like a straight line; a corner never
+does (differentiable vs not).
+
+What we built (SVG, our tokens, positive):
+  - The viewport is a fixed box, but the WORLD window it covers shrinks with
+    zoom: it shows ±(3/zoom) around a fixed inspection point (a, f(a)), which
+    stays centred. So smooth curves visibly straighten as you zoom; |x|-style
+    corners stay self-similar (a V at every zoom).
+  - Zoom buttons 1× / 10× / 100× / 1000×. A crosshair marks the point.
+  - At ≥100× we read out the one-sided micro-slopes (left vs right). They AGREE
+    for smooth points (one slope exists) and DISAGREE for corners (no single
+    slope) — reinforcing the definition of differentiability.
+  - The learner then classifies: "Straight line" vs "Sharp corner". Judging is
+    disabled until they've zoomed to ≥100× (so they must actually look).
+  - Three stages: y=x² at x=1.5 (smooth), y=|x| at x=0 (corner), y=sin x at x=1
+    (smooth). Wrong classification = a nudge ("keep zooming…"), no penalty.
+
+--------------------------------------------------------------------------------
+D. THE CAPSTONE (pending) — SECANT -> TANGENT / DERIVATIVE
+--------------------------------------------------------------------------------
+Planned concept: anchor point A at x; drag point B (x+h) toward A; as h→0 the
+secant collapses into the tangent line, and its slope is f'(x). Then sliding the
+tangent across f(x) "paints" the derivative graph f'(x) below.
+We have NOT built this yet and want your best thinking on it (within Section A).
+
+--------------------------------------------------------------------------------
+E. WHAT WE'D LOVE YOUR SUGGESTIONS ON (please be specific & on-model)
+--------------------------------------------------------------------------------
+1. LOCAL LINEARITY polish: Is the "zoom to 100× then classify" loop the best
+   teacher, or is there a sharper interaction (still SVG, still touch, still
+   positive)? Any missing stage that would deepen the idea (e.g. a cusp, a
+   vertical tangent, a piecewise join)? Any way to make "it straightens" more
+   visceral without an off-model animation library?
+
+2. The LEFT/RIGHT micro-slope readout: does surfacing both one-sided slopes help
+   or spoil the visual judgment? Better framing/wording?
+
+3. CAPSTONE design: give us a concrete, on-model interaction plan for the
+   secant->tangent->f'(x) lab — the exact handles, what the learner drags, how
+   we detect "h is small enough", and how the derivative-painting reads on a
+   phone screen. Keep it to SVG + our tokens + prompt/onDone; no wrapper/gates.
+   What's the single "aha" moment we must nail?
+
+4. ARC COHERENCE: across Rate-over-interval -> Local-linearity -> Secant/tangent,
+   is the conceptual hand-off clean? Any redundancy to cut, or a missing rung?
+
+5. ACCESSIBILITY: all four labs are drag/tap based. What is the minimum viable
+   keyboard / screen-reader path for a "drag a point on a curve" interaction
+   that we could apply uniformly? (This is a known gap we want to close.)
+
+6. ASSESSMENT: right now each lab is a 1/1 completion gate. Would a light,
+   POSITIVE scoring (e.g. Ws scaled by tries, never negative) improve motivation
+   without turning it punitive? If so, what scale?
+
+Please answer 1-6 directly. Concrete beats comprehensive. Thank you.
+================================================================================

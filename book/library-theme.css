@@ -1,0 +1,45 @@
+/* Shared Qubix jacket for generated books. The text remains a book; this only
+   standardises the way a reader enters and leaves it. */
+:root {
+  --ink: #20241f !important;
+  --teal: #315f48 !important;
+  --teal-text: #315f48 !important;
+  --orange: #b85530 !important;
+  --orange-text: #9d4426 !important;
+  --paper: #f7f3e9 !important;
+  --rule: #d2cbbb !important;
+  --mute: #62695f !important;
+  --edge: #8d8b81 !important;
+}
+
+body { background: #e6e0d2 !important; }
+
+.q-lib-nav {
+  min-height: 66px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px clamp(18px, 5vw, 56px);
+  border-bottom: 1px solid #c8c1b1;
+  background: #e6e0d2;
+  color: #20241f;
+  font: 500 14px ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.q-lib-nav a { color: #315f48; text-decoration: none; border-bottom: 1px solid transparent; }
+.q-lib-nav a:first-child { color: #20241f; font: 600 17px Georgia, serif; }
+.q-lib-nav a:hover { border-bottom-color: currentColor; }
+.q-lib-nav a:focus-visible { outline: 2px solid #315f48; outline-offset: 3px; }
+.q-lib-nav span { display: flex; gap: clamp(14px, 3vw, 28px); }
+
+.cover,
+body > header:not(.q-lib-nav) { border-radius: 0 !important; }
+.sheet { background: #fff; }
+
+@media (max-width: 560px) {
+  .q-lib-nav { align-items: flex-start; flex-direction: column; }
+  .q-lib-nav span { flex-wrap: wrap; }
+}
+
+@media print { .q-lib-nav { display: none !important; } body { background: #fff !important; } }

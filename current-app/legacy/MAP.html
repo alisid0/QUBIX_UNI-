@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strata · Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="map-style.css">
+<link rel="stylesheet" href="graph-style.css">
+</head>
+<body>
+<canvas id="field"></canvas>
+<main>
+  <a class="back-link" href="index.html">‹ back to the reader</a>
+
+  <!-- ============ SUBJECTS ============ -->
+  <section id="view-subjects" class="view active">
+    <div class="topline">
+      <div class="brand">STRATA</div>
+      <div class="level-chip" id="levelChip">Lv.1</div>
+    </div>
+    <h1>Your tracks</h1>
+    <div class="sub">Three subjects, one map that only grows.</div>
+    <div class="meter-label"><span id="overallLabel">0 of 0 boards read</span><span id="overallPct">0%</span></div>
+    <div class="meter"><div class="meter-fill" id="overallFill" style="width:0%"></div></div>
+    <div id="subjectCards"></div>
+  </section>
+
+  <!-- ============ THE MAP ============ -->
+  <section id="view-map" class="view">
+    <div class="topline">
+      <h1 style="margin:0;font-size:26px">The Map</h1>
+      <div class="sub" id="mapCounter" style="margin:0">0/0</div>
+    </div>
+    <div class="meter" style="margin-top:10px"><div class="meter-fill" id="mapFill" style="width:0%"></div></div>
+    <div class="graph-viewport" id="graphViewport" style="margin-top:14px">
+      <div class="graph-popover" id="graphPopover"></div>
+    </div>
+    <div class="graph-controls">
+      <button id="zoomOut" type="button">−</button>
+      <button id="zoomReset" type="button">⟲</button>
+      <button id="zoomIn" type="button">+</button>
+    </div>
+  </section>
+
+  <!-- ============ LEADERBOARD ============ -->
+  <section id="view-leaderboard" class="view">
+    <h1>Leaderboard</h1>
+    <div class="sub">Energy earned from boards read, quizzes passed and recalls. (Mock data - no accounts yet.)</div>
+    <div class="tabs" id="lbTabs">
+      <button data-tab="daily" class="active">Daily</button>
+      <button data-tab="weekly">Weekly</button>
+      <button data-tab="monthly">Monthly</button>
+    </div>
+    <div id="lbList"></div>
+  </section>
+</main>
+
+<nav class="bottom-nav">
+  <button data-view="subjects" class="active">Subjects</button>
+  <button data-view="map">Map</button>
+  <button data-view="leaderboard">Leaderboard</button>
+</nav>
+
+<script src="paths-manifest.js"></script>
+<script src="progress-store.js"></script>
+<script src="subject-mark.js"></script>
+<script src="ambient-field.js"></script>
+<script src="graph-data.js"></script>
+<script src="graph-layout.js"></script>
+<script src="graph-render.js"></script>
+<script>
+(function(){
+  initAmbientField('field');
+  // ---- view switching ----
+  function showView(name){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    document.getElementById('view-' + name).classList.add('active');
+    document.querySelectorAll('.bottom-nav button').forEach(function(b){
+      b.classList.toggle('active', b.dataset.view === name);
+    });
+    if(name === 'map') renderMap();
+    if(name === 'subjects') renderSubjects();
+  }
+  document.querySelectorAll('.bottom-nav button').forEach(function(b){
+    b.onclick = function(){ showView(b.dataset.view); };
+  });
+
+  const TOTAL_BOARDS = 70;
+  const STATE_LABELS = {
+    unwandered: 'Not started', wandered: 'Wandered', checked: 'Checked',
+    well_read: 'Well read', recalled: 'Recalled', mastered_1: 'Mastered ×1', mastered_2: 'Mastered ×2'
+  };
+
+  function firstUnreadCard(pathId){
+    const data = ProgressStore._load();
+    const manifest = PATHS_MANIFEST[pathId];
+    for(const n of manifest.cards){
+      if(!data.boards[n] || !data.boards[n].firstOpenedAt) return n;
+    }
+    return manifest.cards[0];
+  }
+
+  // ---- Subjects screen ----
+  const SUBJECT_PATHS = {
+    physics: ['P1', 'P2', 'P3'],
+    maths: ['M1', 'M3'],
+    chemistry: ['C1']
+  };
+  const SUBJECT_LABELS = { physics: 'Physics', maths: 'Mathematics', chemistry: 'Chemistry' };
+
+  function renderSubjects(){
+    const overall = ProgressStore.getOverallProgress();
+    document.getElementById('overallLabel').textContent = overall.read + ' of ' + TOTAL_BOARDS + ' boards read';
+    const pct = Math.round((overall.read / TOTAL_BOARDS) * 100);
+    document.getElementById('overallPct').textContent = pct + '%';
+    document.getElementById('overallFill').style.width = pct + '%';
+    document.getElementById('levelChip').textContent = 'Lv.' + (1 + Math.floor(overall.read / 5));
+
+    const container = document.getElementById('subjectCards');
+    container.innerHTML = '';
+    Object.keys(SUBJECT_PATHS).forEach(function(subject){
+      const pathIds = SUBJECT_PATHS[subject];
+      let totalCards = 0, readCards = 0, bestPathLabel = null;
+      pathIds.forEach(function(pid){
+        const st = ProgressStore.getPathState(pid);
+        totalCards += st.boardsTotal;
+        readCards += st.boardsRead;
+        if(st.state !== 'unwandered') bestPathLabel = PATHS_MANIFEST[pid].name + ' — ' + STATE_LABELS[st.state];
+      });
+      const ringPct = totalCards > 0 ? readCards / totalCards : 0;
+      const dashoffset = 126 * (1 - ringPct);
+      const card = document.createElement('div');
+      card.className = 'subject-card';
+      card.innerHTML =
+        '<div class="ring">' +
+          '<svg viewBox="0 0 44 44"><circle class="progress-bg" cx="22" cy="22" r="20"/>' +
+          '<circle class="progress-arc" cx="22" cy="22" r="20" style="stroke-dashoffset:' + dashoffset + '"/></svg>' +
+          '<div class="mark"></div>' +
+        '</div>' +
+        '<div class="info">' +
+          '<div class="name">' + SUBJECT_LABELS[subject] + '</div>' +
+          '<div class="count">' + readCards + ' / ' + totalCards + ' boards</div>' +
+          '<div class="status">' + (bestPathLabel || 'Not started yet') + '</div>' +
+        '</div>' +
+        '<div class="chev">›</div>';
+      card.onclick = function(){ showView('map'); };
+      container.appendChild(card);
+      renderSubjectMark(card.querySelector('.mark'), { subject: subject === 'maths' ? 'maths' : (subject === 'chemistry' ? 'chem' : 'physics'), accent: '#f2d585', size: 30 });
+    });
+  }
+
+  // ---- Map screen: full-curriculum hub/bridge graph ----
+  let graphScale = 1;
+  function applyGraphScale(){
+    const viewport = document.getElementById('graphViewport');
+    const svg = viewport.querySelector('.graph-svg');
+    const box = viewport._graphBox;
+    if(!svg || !box) return;
+    svg.style.width = (box.vbW * graphScale) + 'px';
+    svg.style.height = (box.vbH * graphScale) + 'px';
+  }
+  function renderMap(){
+    const overall = ProgressStore.getOverallProgress();
+    document.getElementById('mapCounter').textContent = overall.read + '/' + TOTAL_BOARDS;
+    document.getElementById('mapFill').style.width = Math.round((overall.read / TOTAL_BOARDS) * 100) + '%';
+
+    const viewport = document.getElementById('graphViewport');
+    const popover = document.getElementById('graphPopover');
+    GraphRender.renderGraph(viewport, popover);
+    // popover gets wiped by renderGraph's innerHTML reset - re-attach it
+    if(!document.getElementById('graphPopover')){
+      viewport.appendChild(popover);
+    }
+    const box = viewport._graphBox;
+    if(box){
+      const fitScale = (viewport.clientWidth - 20) / box.vbW;
+      graphScale = Math.max(0.45, Math.min(1, fitScale));
+      applyGraphScale();
+      // center the scroll on the hub cluster (graph origin) rather than top-left
+      requestAnimationFrame(function(){
+        viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
+        viewport.scrollTop = (viewport.scrollHeight - viewport.clientHeight) / 2;
+      });
+    }
+  }
+  document.getElementById('zoomIn').onclick = function(){ graphScale = Math.min(2.5, graphScale * 1.25); applyGraphScale(); };
+  document.getElementById('zoomOut').onclick = function(){ graphScale = Math.max(0.15, graphScale / 1.25); applyGraphScale(); };
+  document.getElementById('zoomReset').onclick = function(){ renderMap(); };
+  document.addEventListener('click', function(e){
+    const popover = document.getElementById('graphPopover');
+    if(!popover || !popover.classList.contains('active')) return;
+    if(e.target.closest('.graph-node') || e.target.closest('.graph-popover')) return;
+    popover.classList.remove('active');
+  });
+
+  // ---- Leaderboard (mock, no backend/auth yet) ----
+  const MOCK_LB = {
+    daily: [['Mara K.',980],['Tomás',870],['Priya',845],['Wei',760],['You',712],['Sam',690],['Leah',654]],
+    weekly: [['Priya',5420],['Mara K.',5180],['You',4990],['Wei',4610],['Tomás',4540],['Leah',4300],['Sam',4120]],
+    monthly: [['Wei',22300],['Priya',21750],['Mara K.',20900],['Tomás',19800],['You',18650],['Leah',17200],['Sam',16050]]
+  };
+  function renderLeaderboard(tab){
+    const list = document.getElementById('lbList');
+    list.innerHTML = '';
+    MOCK_LB[tab].forEach(function(row, i){
+      const isYou = row[0] === 'You';
+      const div = document.createElement('div');
+      div.className = 'rank-row' + (isYou ? ' you' : '');
+      div.innerHTML =
+        '<span class="rank">' + (i+1) + '</span>' +
+        '<span class="avatar">' + row[0].charAt(0) + '</span>' +
+        '<span class="name">' + row[0] + '</span>' +
+        '<span class="score">' + row[1].toLocaleString() + '</span>';
+      list.appendChild(div);
+    });
+  }
+  document.querySelectorAll('#lbTabs button').forEach(function(b){
+    b.onclick = function(){
+      document.querySelectorAll('#lbTabs button').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      renderLeaderboard(b.dataset.tab);
+    };
+  });
+
+  renderSubjects();
+  renderLeaderboard('daily');
+})();
+</script>
+</body>
+</html>

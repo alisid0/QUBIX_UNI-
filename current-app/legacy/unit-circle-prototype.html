@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Unit Circle — interactive floor prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board-1:#2e5642;
+    --frame:#5a4632;
+    --frame-dark:#3f3022;
+    --chalk:#f4f1e9;
+    --chalk-dim:#c7ccc0;
+    --chalk-faint:#8fa093;
+    --chalk-yellow:#f2d585;
+    --chalk-green:#a9d6a0;
+    --chalk-blue:#9ec6d8;
+    --hand:"Kalam","Comic Sans MS",cursive;
+    --hand-display:"Architects Daughter","Kalam",cursive;
+    --print:"Patrick Hand","Kalam",cursive;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;background:#22382d;}
+  body{
+    font-family:var(--hand);color:var(--chalk);
+    display:flex;flex-direction:column;align-items:center;
+    padding:32px 16px;
+    background:radial-gradient(ellipse at 50% 40%,#325c46,#1d3a2a 80%);
+    min-height:100%;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    opacity:0.055;mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:256px 256px;
+  }
+  h1{
+    font-family:var(--hand-display);font-weight:400;
+    font-size:clamp(26px,5vw,38px);
+    margin-bottom:6px;text-align:center;position:relative;z-index:1;
+  }
+  .sub{color:var(--chalk-faint);font-family:var(--print);font-size:14px;margin-bottom:24px;text-align:center;position:relative;z-index:1;}
+
+  .slab{
+    position:relative;z-index:1;
+    width:min(560px,94vw);
+    border-radius:4px;
+    background:var(--board-1);
+    border:12px solid var(--frame);
+    box-shadow:0 0 0 2px var(--frame-dark),0 2px 0 4px rgba(0,0,0,0.25) inset,0 30px 70px -28px rgba(0,0,0,0.85),inset 0 0 80px rgba(0,0,0,0.35);
+    padding:clamp(20px,4vw,36px);
+  }
+
+  svg{display:block;width:100%;height:auto;touch-action:none;}
+  .axis{stroke:var(--chalk-faint);stroke-width:1.5;opacity:0.6;}
+  .circle{stroke:var(--chalk);stroke-width:2;fill:none;}
+  .radius{stroke:var(--chalk-yellow);stroke-width:2.5;}
+  .proj-x{stroke:var(--chalk-green);stroke-width:2;stroke-dasharray:5 5;}
+  .proj-y{stroke:var(--chalk-blue);stroke-width:2;stroke-dasharray:5 5;}
+  .handle{fill:var(--chalk-yellow);stroke:var(--chalk);stroke-width:2;cursor:grab;}
+  .handle:active{cursor:grabbing;}
+  .origin{fill:var(--chalk);}
+  .axislabel{fill:var(--chalk-dim);font-family:var(--print);font-size:13px;}
+  .arc{stroke:var(--chalk-yellow);stroke-width:2;fill:none;opacity:0.8;}
+  .thetalabel{fill:var(--chalk-yellow);font-family:var(--print);font-size:14px;}
+
+  .readout{
+    margin-top:18px;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    font-family:var(--hand);
+  }
+  .formula{
+    font-family:var(--hand);font-weight:700;
+    font-size:clamp(18px,3vw,22px);color:#fff;
+    background:rgba(0,0,0,0.22);
+    border:1.5px dashed var(--chalk-green);
+    padding:10px 18px;border-radius:6px;
+    text-align:center;
+  }
+  .point{
+    font-size:clamp(16px,2.6vw,19px);
+    color:var(--chalk-yellow);
+  }
+  .slider-row{
+    display:flex;align-items:center;gap:12px;width:100%;
+    margin-top:8px;
+  }
+  .slider-row label{font-family:var(--print);font-size:13px;color:var(--chalk-dim);white-space:nowrap;}
+  input[type=range]{
+    flex:1;-webkit-appearance:none;height:6px;border-radius:4px;
+    background:var(--chalk-faint);outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+    background:var(--chalk-yellow);border:2px solid var(--chalk);cursor:pointer;
+  }
+  .quad-hint{font-size:13px;color:var(--chalk-faint);font-family:var(--print);}
+</style>
+</head>
+<body>
+
+<h1>The Unit Circle</h1>
+<div class="sub">Drag the point, or use the slider — sin and cos read straight off the axes.</div>
+
+<div class="slab">
+  <svg viewBox="0 0 400 400" id="svgRoot">
+    <line class="axis" x1="20" y1="200" x2="380" y2="200"/>
+    <line class="axis" x1="200" y1="20" x2="200" y2="380"/>
+    <text class="axislabel" x="368" y="194">x</text>
+    <text class="axislabel" x="206" y="32">y</text>
+
+    <circle class="circle" cx="200" cy="200" r="150"/>
+
+    <path class="arc" id="thetaArc" d=""/>
+    <text class="thetalabel" id="thetaLabel" x="0" y="0">θ</text>
+
+    <line class="proj-x" id="projX" x1="200" y1="200" x2="200" y2="200"/>
+    <line class="proj-y" id="projY" x1="200" y1="200" x2="200" y2="200"/>
+    <line class="radius" id="radiusLine" x1="200" y1="200" x2="350" y2="200"/>
+
+    <circle class="origin" cx="200" cy="200" r="3"/>
+    <circle class="handle" id="handle" cx="350" cy="200" r="10"/>
+  </svg>
+
+  <div class="readout">
+    <div class="point" id="pointReadout">P(0°) = (cos 0°, sin 0°) = (1.00, 0.00)</div>
+    <div class="formula">x² + y² = 1</div>
+    <div class="slider-row">
+      <label>θ</label>
+      <input type="range" id="thetaSlider" min="0" max="359" value="0" step="1">
+      <label id="thetaDeg" style="min-width:42px;text-align:right;">0°</label>
+    </div>
+    <div class="quad-hint" id="quadHint">Quadrant I — both cos and sin positive</div>
+  </div>
+</div>
+
+<script>
+const cx=200, cy=200, r=150;
+const handle=document.getElementById('handle');
+const radiusLine=document.getElementById('radiusLine');
+const projX=document.getElementById('projX');
+const projY=document.getElementById('projY');
+const thetaArc=document.getElementById('thetaArc');
+const thetaLabel=document.getElementById('thetaLabel');
+const pointReadout=document.getElementById('pointReadout');
+const thetaSlider=document.getElementById('thetaSlider');
+const thetaDeg=document.getElementById('thetaDeg');
+const quadHint=document.getElementById('quadHint');
+const svgRoot=document.getElementById('svgRoot');
+
+function quadrantText(deg){
+  if(deg===0||deg===360) return "On the positive x-axis — cos = 1, sin = 0";
+  if(deg===90) return "On the positive y-axis — cos = 0, sin = 1";
+  if(deg===180) return "On the negative x-axis — cos = -1, sin = 0";
+  if(deg===270) return "On the negative y-axis — cos = 0, sin = -1";
+  if(deg>0&&deg<90) return "Quadrant I — both cos and sin positive";
+  if(deg>90&&deg<180) return "Quadrant II — cos negative, sin positive";
+  if(deg>180&&deg<270) return "Quadrant III — both cos and sin negative";
+  return "Quadrant IV — cos positive, sin negative";
+}
+
+function setAngle(deg, fromDrag){
+  deg=((deg%360)+360)%360;
+  const rad=deg*Math.PI/180;
+  const cosV=Math.cos(rad), sinV=Math.sin(rad);
+  const px=cx+r*cosV, py=cy-r*sinV; // svg y is flipped
+
+  handle.setAttribute('cx',px);
+  handle.setAttribute('cy',py);
+  radiusLine.setAttribute('x2',px);
+  radiusLine.setAttribute('y2',py);
+  projX.setAttribute('x1',px);projX.setAttribute('y1',py);
+  projX.setAttribute('x2',px);projX.setAttribute('y2',cy);
+  projY.setAttribute('x1',px);projY.setAttribute('y1',py);
+  projY.setAttribute('x2',cx);projY.setAttribute('y2',py);
+
+  // small arc showing theta from positive x-axis
+  const arcR=32;
+  const arcEndX=cx+arcR*cosV, arcEndY=cy-arcR*sinV;
+  const largeArc = deg>180 ? 1:0;
+  thetaArc.setAttribute('d',`M ${cx+arcR} ${cy} A ${arcR} ${arcR} 0 ${largeArc} 0 ${arcEndX} ${arcEndY}`);
+  const labelAngle=rad/2;
+  thetaLabel.setAttribute('x',cx+(arcR+18)*Math.cos(labelAngle));
+  thetaLabel.setAttribute('y',cy-(arcR+18)*Math.sin(labelAngle)+4);
+
+  pointReadout.textContent=`P(${deg.toFixed(0)}°) = (cos ${deg.toFixed(0)}°, sin ${deg.toFixed(0)}°) = (${cosV.toFixed(2)}, ${sinV.toFixed(2)})`;
+  thetaDeg.textContent=deg.toFixed(0)+'°';
+  quadHint.textContent=quadrantText(Math.round(deg));
+
+  if(!fromDrag) thetaSlider.value=Math.round(deg);
+}
+
+thetaSlider.addEventListener('input',e=>setAngle(parseFloat(e.target.value),false));
+
+let dragging=false;
+function pointerAngle(evt){
+  const rect=svgRoot.getBoundingClientRect();
+  const scale=400/rect.width;
+  const x=(evt.clientX-rect.left)*scale;
+  const y=(evt.clientY-rect.top)*scale;
+  const dx=x-cx, dy=cy-y;
+  let deg=Math.atan2(dy,dx)*180/Math.PI;
+  return deg;
+}
+handle.addEventListener('pointerdown',e=>{dragging=true;handle.setPointerCapture(e.pointerId);});
+handle.addEventListener('pointermove',e=>{if(dragging) setAngle(pointerAngle(e),true);});
+handle.addEventListener('pointerup',e=>{dragging=false;});
+svgRoot.addEventListener('pointerdown',e=>{
+  if(e.target===handle) return;
+  setAngle(pointerAngle(e),false);
+});
+
+setAngle(0,false);
+</script>
+</body>
+</html>

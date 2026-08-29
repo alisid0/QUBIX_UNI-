@@ -1,0 +1,70 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The chemist's dozen",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Humans count things in groups. A dozen eggs is 12. A century is 100 years.</p>" },
+        { "content": "<p>Chemists must count things too. If a reaction requires two hydrogen atoms and one oxygen atom to make water, a method is needed to group them.</p>" },
+        { "content": "<p>But atoms are so small that a dozen of them is uselessly few. So, chemistry relies on the biggest counting word in existence: the Mole.</p>" },
+        { "content": "<p>Just as 'dozen' always means 12, a mole always means about 602,000,000,000,000,000,000,000 things (6.022 × 10²³).</p>" },
+        { "content": "<p>It is just a number. There is nothing mystical about it. It was chosen because it is the exact size needed to scale the invisible atomic world up to the human world. A mole of marbles would bury the Earth kilometers deep, but a mole of water molecules fits perfectly inside a single tablespoon.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Counting by weighing",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Even with a massive grouping word, a mechanical problem remains. Tweezers cannot be used to count out 602 sextillion atoms.</p>" },
+        { "content": "<p>The solution is to count them by weighing them.</p>" },
+        { "content": "<p>Think of a jar of pennies. If the exact weight of one penny is known, the jar does not need to be opened and counted. The entire jar can be placed on a scale. Simple division then reveals the exact number of pennies inside.</p>" },
+        { "content": "<p>The Periodic Table provides this exact metric. The decimal number at the bottom of an element's box is its Molar Mass. It dictates exactly how many grams one mole of that element weighs.</p>" },
+        { "content": "<p>Carbon's molar mass is roughly 12. If exactly 12 grams of pure carbon is placed on a lab scale, it guarantees the presence of exactly one mole of carbon atoms, without a single atom being visually counted.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The bridge equation",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This scaling trick relies on the most critical equation in daily chemistry: n = m / M.</p>" },
+        { "content": "<p>It acts as a bridge. The number of moles (n) equals the physical mass on the scale (m), divided by the Molar Mass from the Periodic Table (M).</p>" },
+        { "content": "<p>To find how many moles are in 80 grams of Sodium Hydroxide (NaOH), the weights from the Periodic Table are simply added together: Sodium is 23, Oxygen is 16, Hydrogen is 1. The total Molar Mass (M) is 40.</p>" },
+        { "content": "<p>Dividing the physical weight on the desk (80g) by the Molar Mass (40g) yields an answer of 2.</p>" },
+        { "content": "<p>There are exactly 2 moles of NaOH present. The balance reads in grams; the equation translates it into moles.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The chemical recipe",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "stoichiometry", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Converting grams into moles is necessary because a chemical equation only runs on moles.</p>" },
+        { "content": "<p>Look at a standard equation: 2H₂ + O₂ → 2H₂O.</p>" },
+        { "content": "<p>That equation is not referring to grams. If 2 grams of hydrogen and 1 gram of oxygen are mixed, the reaction will fail entirely.</p>" },
+        { "content": "<p>The large numbers out front (the coefficients) are mole ratios. The recipe literally reads: 'Mix 2 moles of Hydrogen with 1 mole of Oxygen to produce 2 moles of Water.'</p>" },
+        { "content": "<p>The workflow in a lab is rigid. A powder is weighed in grams. The bridge equation converts the grams into moles. The reaction follows the mole ratio. Finally, the leftover moles are converted back into grams to measure the physical product.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The detective work",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "empirical-formula", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Moles also allow chemists to reverse-engineer unknown substances.</p>" },
+        { "content": "<p>If an unknown white powder is burned in a mass spectrometer, the machine might reveal it is 40% Carbon, 6.7% Hydrogen, and 53.3% Oxygen by mass.</p>" },
+        { "content": "<p>Mass percentages alone do not reveal the molecular structure. Those percentages must be converted into moles to find the actual ratio of atoms.</p>" },
+        { "content": "<p>When those masses are divided by their Periodic Table weights, the math yields a clean ratio: 1 Carbon, 2 Hydrogens, 1 Oxygen.</p>" },
+        { "content": "<p>This is the Empirical Formula (CH₂O). It is the simplest possible whole-number ratio of the atoms hiding inside the powder.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The final multiplier",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "molecular-formula", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The Empirical Formula (CH₂O) provides the ratio, but it does not dictate the actual size of the molecule.</p>" },
+        { "content": "<p>The real molecule might be CH₂O. But it could also be C₂H₄O₂, or C₆H₁₂O₆. They all share the exact same 1:2:1 ratio.</p>" },
+        { "content": "<p>To find the true size, the Molecular Formula is required. This is the exact, literal count of atoms in one single molecule.</p>" },
+        { "content": "<p>To find it, the weights are compared. If the Empirical Formula (CH₂O) weighs 30 grams, but lab tests prove the real molecule weighs 180 grams, it means the real molecule is exactly 6 times larger (180 / 30 = 6).</p>" },
+        { "content": "<p>The entire Empirical Formula is multiplied by 6. CH₂O becomes C₆H₁₂O₆. The unknown white powder is identified as glucose. The puzzle is solved through simple ratios.</p>" }
+      ]
+    }
+  ]
+}

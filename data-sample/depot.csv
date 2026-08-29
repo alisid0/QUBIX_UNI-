@@ -1,0 +1,6 @@
+depot_id,name,county_id,regime,pallet_capacity,opened
+DC-01,"Kettleby",CTY-EAV,ambient,42000,2004-06-01
+DC-02,"Harrowgate",CTY-ARD,ambient,28500,2011-10-01
+DC-03,"Saltney",CTY-KEN,chilled,11200,2015-03-01
+DC-04,"Wrenfold",CTY-HAL,frozen,8400,2018-08-01
+DC-05,"Port Anster",CTY-NOR,import,19000,2009-02-01

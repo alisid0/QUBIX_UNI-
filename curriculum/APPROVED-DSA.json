@@ -1,0 +1,48 @@
+{
+  "DSA-SEQ-001": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-28",
+    "scope": "Single read-and-do authoring sample: idea, learner-facing wording, interaction and visual direction. Placement and release excluded.",
+    "files": {
+      "src/lib/content/dsa-sequence-preview.js": "4a51c6c56c53340d9b28538ceebb44f1932979190f5bf73278e99f1899f05e84",
+      "src/lib/components/SequenceAccessLab.svelte": "0aa49cbe58f5a1a80bce740bef1e2fd8292790c3e328273a609259ddcfd004fc",
+      "src/views/DsaSequencePreview.svelte": "7295c6cae54ebea6a97a7aec00b17adc21c6bd21a1573d148e7c8e58a25f5bfc"
+    }
+  },
+  "DSA-ARR-002": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-28",
+    "scope": "Single read-and-do authoring sample: idea, learner-facing wording, interaction and visual direction. Placement and release excluded.",
+    "files": {
+      "src/lib/content/dsa-array-insertion-preview.js": "852fc190e780d521a6bb999df9db2554e94a02957b8ba0ad731a36d0a2545906",
+      "src/lib/components/ArrayInsertionLab.svelte": "4e3d4d24eb00639c95ae3cb2f65b79439325cff6a733400f62169c1c90d4f464",
+      "src/lib/components/ArrayInsertionFigure.svelte": "090407a5ebd0daee961e7c4530a2faa3209983924ba5733963635ad1b43eb1c1",
+      "src/views/DsaArrayInsertionPreview.svelte": "a998a4e8a006193da56986edee67e570a8c920888c7ed1877c03675bba08e27b"
+    },
+    "amendedOn": "2026-08-29",
+    "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
+  },
+  "DSA-INTRO-000": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-28",
+    "scope": "Expanded authoring-only DSA orientation: idea, learner-facing wording, operation-first cases, trade-offs, illustrations, same-data/different-work extension and visual direction. Pathway placement, roster entry and public learner release excluded.",
+    "files": {
+      "src/lib/content/dsa-introduction-preview.js": "d74ee304b1aa90ff8a21afa0a9f2f383feb09f53886ec2b027ede45a1a9b309d",
+      "src/lib/components/DsaOrientationFigure.svelte": "f17f35f43d42a474877346f787386f56f8933861aada86f346525b02fef46194",
+      "src/lib/components/DsaOrientationLab.svelte": "218eb326f50fb40edf28dab3304f87a15bd90dfaaf0c1a70970cd3d4e220b597",
+      "src/lib/components/DsaMultipleViewsLab.svelte": "0bfb7e125eb8e9505aca4aef65e6e0d0b5fc5405a2159e6afe751d9c601d1953",
+      "src/views/DsaIntroductionPreview.svelte": "f302c5de608cd606850b20205a8d46e630f425fc8ac8e1346a4422cedf657c90"
+    }
+  },
+  "DSA-ARR-003": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-29",
+    "scope": "Single read-and-do authoring sample: idea, learner-facing wording, interaction and visual direction. Placement and release excluded.",
+    "files": {
+      "src/lib/content/dsa-array-growth-preview.js": "8ae34836e2d3661d697c4c021b0d07e15345a0f0a256dfbf555b83285fd62f61",
+      "src/lib/components/ArrayGrowthLab.svelte": "47dc9cb51b4089a5d90b42541025241c5066729f03e481ead83ffb7124ec3f61",
+      "src/lib/components/ArrayGrowthFigure.svelte": "e8e6f6a7a0338da59eed4a3e5ae2bac11c44a05d4d0f6f05a90037869e331c45",
+      "src/views/DsaArrayGrowthPreview.svelte": "8e0d3c470c0999595012caf9dd576ee946a493c69b06071e97ed92026f860057"
+    }
+  }
+}

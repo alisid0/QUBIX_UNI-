@@ -1,0 +1,38 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "The number line",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "number-line", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>We know that a true line goes on forever in both directions. But a completely blank line is not very useful. To make it useful, we can lay down marks on it at even intervals, like marks on a tape measure. When we do this, it becomes a number line.</p>" },
+        { "content": "<p>Before we can start counting, we need a place to stand. We pick a spot on the line, drop a pin, and call it zero. Zero often gets a bad reputation as just meaning nothing, but on a number line, it is highly important. It is our anchor. It tells us where we are starting from.</p>" },
+        { "content": "<p>From zero, we take steps to the right. One step right is 1, two steps right is 2, and so on. These are your standard, everyday counting numbers. Because the right side of the line never ends, you will never run out of room to keep counting up.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The left side",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "negatives", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>But remember, a true line does not just go to the right. It stretches out endlessly in two directions. So, what happens if we stand at zero and take a step to the left?</p>" },
+        { "content": "<p>This is all a negative number is. If stepping right is walking forward, stepping left is just walking backward. One step to the left of zero is -1. Two steps is -2. You are using the exact same distances, just heading the opposite way.</p>" },
+        { "content": "<p>We actually use this concept in daily life all the time. If the temperature drops below freezing, it goes into the negatives. If you have five dollars, you are on the right side of zero (+5). If you owe five dollars, you are on the left side (-5).</p>" },
+        { "content": "<p>When you group all these clean, whole steps together — the positive numbers, the negative numbers, and zero — math calls them integers. That is just the official name for numbers with no fractions and no messy decimals. They are just the solid stepping stones on the line.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The spaces between",
+      "tags": { "subject": "maths", "topic": "the-line", "concept": "fractions", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": null },
+        { "content": "<p>So far, we have only looked at the whole steps. But a drawn line is not just a row of disconnected stepping stones. It is a solid, continuous track. That means there is space between 1 and 2, and space between 2 and 3.</p>" },
+        { "content": "<p>This is where fractions and decimals live. If you look at the gap between 0 and 1 and chop it exactly in half, you get a fraction: 1/2. If you write it as a decimal, it is 0.5. These numbers exist simply to fill in the gaps between the integers.</p>" },
+        { "content": "<p>Because the line is solid, you can keep zooming in and chopping those spaces into smaller and smaller pieces. You could point to any random, microscopic spot anywhere on the line, and a number will exist for it. The line is completely packed.</p>" }
+      ]
+    }
+  ]
+}

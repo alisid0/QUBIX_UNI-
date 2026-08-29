@@ -1,0 +1,14 @@
+country_id,name,currency_code,role,trades_in
+BR,"Brannoch",GBP,"home",true
+AV,"Averlund",EUR,"acquired estate",true
+ES,"Estramar",EUR,"sourcing",false
+PL,"Polvenia",PLN,"sourcing",false
+DK,"Danmark Nord",DKK,"sourcing",false
+MA,"Maghreb Sud",MAD,"sourcing",false
+KE,"Kirinyaga",KES,"sourcing",false
+VN,"Anh Viet",VND,"sourcing",false
+BZ,"Brasilia Verde",BRL,"sourcing",false
+GH,"Ashanti Coast",GHS,"sourcing",false
+CR,"Costa Alta",USD,"sourcing",false
+TR,"Anatolia",TRY,"sourcing",false
+NL,"Vlaanden",EUR,"sourcing",false

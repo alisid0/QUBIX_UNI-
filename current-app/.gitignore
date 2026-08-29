@@ -1,0 +1,49 @@
+.vercel
+node_modules
+.DS_Store
+Thumbs.db
+legacy/content-database.csv
+manim_anims/media
+manim_anims/__pycache__
+_deepseek_output.txt
+deepseek-drafts-*.md
+__pycache__/
+.venv/
+.env
+.env.local
+.env.*.local
+source-material/*.pdf
+dist/
+_deepseek_*
+node_modules/
+
+audio/
+
+# Scratch files from development sessions
+_vr*
+
+
+# one-off per-board authoring/upload helper scripts (throwaway)
+scripts/_*.mjs
+media/videos/
+
+# Playwright browser session (local only)
+.playwright-session/
+
+# Read-only production catalogue/media audit exports (regenerate; never authoritative)
+.audit-cache/
+
+# Debug screenshots (one-off inspection)
+el-screenshot.png
+
+# Work mode (local state)
+.mode
+tests/solve-first/.out
+tests/arcade/.out
+
+# Transient Vite config-load temp files
+vite.config.js.timestamp-*.mjs
+
+# Stray pnpm artifacts from a failed install (repo is npm/package-lock.json)
+pnpm-lock.yaml
+pnpm-workspace.yaml

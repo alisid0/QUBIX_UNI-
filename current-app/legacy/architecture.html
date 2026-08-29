@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strata — System Architecture</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px;
+  }
+  h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 6px; letter-spacing: .03em; }
+  p  { font-size: .85rem; color: #94a3b8; margin-bottom: 36px; }
+  .diagram {
+    background: #1e2130;
+    border: 1px solid #2d3148;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 960px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+</style>
+</head>
+<body>
+
+<h1>Strata · System Architecture</h1>
+<p>PreUni STEM — current stack as of June 2026</p>
+
+<div class="diagram">
+<div class="mermaid">
+flowchart TD
+
+  subgraph CREATE ["✍️  Content Creation"]
+    direction TB
+    FORM["📱 Google Form\nfill on any device"]
+    SHEET["📊 Google Sheets\nreview + approve"]
+    SCRIPT["⚙️ Apps Script\nStrata ▾ menu"]
+  end
+
+  subgraph DB ["🗄️  Supabase · PreUni STEM"]
+    direction TB
+    CARDS[("cards\n37 rows · public read")]
+    PROGRESS[("progress\nper-user · Phase 2")]
+  end
+
+  subgraph DEPLOY ["🚀  Deployment"]
+    direction TB
+    LOCAL["💻 Local\nindex.html · sw.js · images"]
+    GITHUB["🐙 GitHub\nalisid0/QUBIX_UNI- · foundation"]
+    VERCEL["▲ Vercel CDN\nauto-deploy on push"]
+  end
+
+  subgraph CLIENT ["📱  Client · PWA"]
+    direction TB
+    APP["🃏 Deck Engine\nloadCards · render"]
+    LS["💾 localStorage\ncard cache"]
+    SW["⚡ Service Worker\noffline fallback"]
+  end
+
+  %% Content pipeline
+  FORM -- "submits" --> SHEET
+  SHEET -- "mark Ready" --> SCRIPT
+  SCRIPT -- "POST\nservice_role key" --> CARDS
+
+  %% Deploy pipeline
+  LOCAL -- "git push" --> GITHUB
+  GITHUB -- "webhook\nauto-deploy" --> VERCEL
+
+  %% Runtime flow
+  VERCEL -- "serves HTML\n+ assets" --> APP
+  APP -- "fetch\nanon key" --> CARDS
+  CARDS -- "37 cards\nJSON" --> APP
+  APP -- "write cache" --> LS
+  LS -- "instant load\nnext visit" --> APP
+  APP -- "registers" --> SW
+  SW -- "offline\nfallback" --> APP
+
+  %% Future
+  CARDS -. "Phase 2\nmastery sync" .-> PROGRESS
+
+  %% Styles
+  classDef create  fill:#1e3a5f,stroke:#3b82f6,color:#bfdbfe
+  classDef db      fill:#1a3a2a,stroke:#22c55e,color:#bbf7d0
+  classDef deploy  fill:#3b1f3a,stroke:#a855f7,color:#e9d5ff
+  classDef client  fill:#3a2a1a,stroke:#f59e0b,color:#fde68a
+
+  class FORM,SHEET,SCRIPT create
+  class CARDS,PROGRESS db
+  class LOCAL,GITHUB,VERCEL deploy
+  class APP,LS,SW client
+</div>
+</div>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'dark', flowchart: { curve: 'basis' } });
+</script>
+</body>
+</html>

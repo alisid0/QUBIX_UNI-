@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Coordinate Geometry, Tier 1 (BB18-BB20 so far)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="quiz-style.css">
+</head>
+<body>
+<main>
+  <h1>Quick Quiz — Tier 1, checkpoint 1</h1>
+  <div class="sub">BB18 to BB20 (Lines, so far) · 3 questions · extends as more of Tier 1 locks</div>
+  <div id="progressWrap"><div id="progressBar"></div></div>
+  <div id="quizArea"></div>
+  <div class="result-card" id="resultCard">
+    <h2>Done</h2>
+    <div class="score" id="resultCardScore"></div>
+    <p id="resultCardSub"></p>
+    <button class="restartBtn" id="resultCardRestart">Try again (new values)</button>
+  </div>
+</main>
+
+<script src="paths-manifest.js"></script>
+<script src="progress-store.js"></script>
+<script src="quiz-engine.js"></script>
+<script>
+const QUESTION_DEFS = [
+
+  {cg:"CG18", type:"mcq", generate: () => {
+    const variants = [
+      {
+        q:"A line passes through Quadrant I, cuts into II, and reaches III — never touching IV. Its steepness is:",
+        correct:"Positive",
+        explain:"To sweep through I, II, and III without ever touching IV, x and y must increase together — that's positive steepness."
+      },
+      {
+        q:"A line passes through Quadrant II, cuts into I, and reaches IV — never touching III. Its steepness is:",
+        correct:"Negative",
+        explain:"As x increases through this line, y steadily falls (from high in Quadrant II down to negative in Quadrant IV) — that's negative steepness."
+      }
+    ];
+    const v = QuizEngine.pick(variants);
+    const opts = ["Positive","Negative","Zero","Undefined"];
+    return { q:v.q, opts, answer:opts.indexOf(v.correct), explain:v.explain };
+  }},
+
+  {cg:"CG19", type:"numeric", generate: () => {
+    const x1=QuizEngine.randInt(0,5), y1=QuizEngine.randInt(0,5);
+    const x2=x1+QuizEngine.randInt(1,6), y2=y1+QuizEngine.randInt(1,8);
+    return {
+      q:`Between the points (${x1}, ${y1}) and (${x2}, ${y2}), what is Δy (the vertical change)?`,
+      answer: y2-y1,
+      explain:`Δy = y₂ − y₁ = ${y2} − ${y1} = ${y2-y1}.`
+    };
+  }},
+
+  {cg:"CG20", type:"numeric", generate: () => {
+    const dx = QuizEngine.randInt(1,5);
+    let m = QuizEngine.randInt(-4,4); if(m===0) m=2;
+    const dy = m*dx;
+    const x1=QuizEngine.randInt(-5,5), y1=QuizEngine.randInt(-5,5);
+    const x2=x1+dx, y2=y1+dy;
+    return {
+      q:`Using the points (${x1}, ${y1}) and (${x2}, ${y2}), what is the gradient (slope)?`,
+      answer: m,
+      explain:`m = Δy / Δx = (${y2}−${y1}) / (${x2}−${x1}) = ${dy} / ${dx} = ${m}.`
+    };
+  }},
+
+];
+
+QuizEngine.mount({
+  questionDefs: QUESTION_DEFS,
+  reviewUrl: "COORDINATE-GEOMETRY-REVIEW.html",
+  mountId: "quizArea",
+  resultId: "resultCard",
+  completeMessage: "Clean sweep so far. On to BB21 (positive vs negative gradient).",
+  partialMessage: "Solid. Worth a quick second look at the one you missed.",
+  weakMessage: "A couple of gaps worth revisiting before pushing on.",
+  onComplete: function(score, total){ ProgressStore.recordQuizResult('M3', score, total); }
+});
+</script>
+</body>
+</html>

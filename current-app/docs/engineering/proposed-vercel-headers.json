@@ -1,0 +1,78 @@
+{
+  "_README": [
+    "DRAFT — NOT TESTED. Do not paste into vercel.json and deploy.",
+    "",
+    "Addresses F-02 in docs/engineering/2026-07-21-security-audit.md.",
+    "",
+    "The CSP below was written by reading the source for external origins, not",
+    "by observing a running page. A CSP that is wrong in production breaks the",
+    "app silently, and staging cannot fully rehearse it (staging has no service",
+    "worker — see docs/RELEASE-MODEL.md section 4).",
+    "",
+    "Before adopting:",
+    "  1. Deploy with Content-Security-Policy-Report-Only first and collect",
+    "     violations for a full session: sign-in, reader, a workshop, a quiz,",
+    "     audio playback, and a Three.js/Pixi scene.",
+    "  2. Only then switch the header name to Content-Security-Policy.",
+    "",
+    "Origins were derived from:",
+    "  - fonts.googleapis.com / fonts.gstatic.com  (public/sw.js isFontHost)",
+    "  - cdnjs.cloudflare.com                       (three.js, pixi.js)",
+    "  - *.supabase.co                              (auth, db, storage, functions)",
+    "  - Vercel Analytics                           (@vercel/analytics)",
+    "",
+    "KNOWN GAPS in this draft, each needing a decision:",
+    "  - 'unsafe-inline' is present for style-src. Svelte injects scoped styles",
+    "    at runtime; removing it needs nonces or hashes and is a real project.",
+    "  - script-src omits 'unsafe-inline' and 'unsafe-eval'. Verify Pixi and",
+    "    Three do not require eval in the build being shipped. If they do, the",
+    "    honest fix is self-hosting them, not weakening the policy.",
+    "  - CONFIRMED: GeoGebraPlane.svelte loads",
+    "    https://www.geogebra.org/apps/deployggb.js — now included in script-src.",
+    "    GeoGebra also loads further resources at runtime that are NOT yet",
+    "    accounted for here; the report-only pass will reveal them."
+  ],
+
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://va.vercel-scripts.com https://www.geogebra.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://www.geogebra.org; media-src 'self' blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://va.vercel-scripts.com https://www.geogebra.org; frame-src https://www.geogebra.org; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
+      ]
+    },
+    {
+      "source": "/videos/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    },
+    {
+      "_comment_assets": [
+        "F-10: the current vercel.json sets no-cache here. Vite emits",
+        "content-hashed filenames into /assets/, so they are safe to cache",
+        "immutably and a hash change is the cache bust. This is a performance",
+        "fix, not a security one — included because it sits in the same file.",
+        "Verify the build actually hashes every file in /assets/ before adopting."
+      ],
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
+}

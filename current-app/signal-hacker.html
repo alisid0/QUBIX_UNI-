@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Signal Hacker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0f0a; display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; font-family: 'Courier New', 'Consolas', monospace;
+    overflow: hidden; user-select: none; -webkit-user-select: none;
+  }
+  .terminal {
+    width: 420px; height: 640px; max-width: 100vw; max-height: 100vh;
+    background: #0a0f0a; border: 1px solid #0f03; position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 60px #0f02, inset 0 0 40px #0008;
+  }
+  canvas { display: block; width: 100%; height: 100%; }
+  .overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; background: #0a0f0aee;
+    z-index: 10; padding: 28px; text-align: center; gap: 14px;
+  }
+  .overlay h1 {
+    font-size: 20px; color: #0f0; text-shadow: 0 0 16px #0f0, 0 0 32px #0f04;
+    letter-spacing: 3px;
+  }
+  .overlay h2 { font-size: 14px; color: #0c0; text-shadow: 0 0 8px #0c0; }
+  .overlay p { color: #8b8; font-size: 11px; line-height: 1.6; max-width: 300px; }
+  .btn {
+    background: transparent; border: 1px solid #0f0; color: #0f0;
+    font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold;
+    padding: 10px 30px; cursor: pointer; letter-spacing: 2px;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: #0f01; box-shadow: 0 0 20px #0f04; }
+  .btn:active { transform: scale(0.96); }
+  .hidden { display: none !important; }
+  .scanlines {
+    position: absolute; inset: 0; z-index: 9; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, #00000008 2px, #00000008 4px);
+  }
+</style>
+</head>
+<body>
+<div class="terminal" id="term">
+  <canvas id="c"></canvas>
+  <div class="scanlines"></div>
+  <div class="overlay" id="overlay">
+    <h1>SIGNAL HACKER</h1>
+    <p>Match the security frequency.<br>Unlock the vault.<br>Math comes later.</p>
+    <button class="btn" onclick="startGame()">▶ HACK</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// SIGNAL HACKER — Sine wave transformation arcade game
+// ═══════════════════════════════════════════════════════════════
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const overlay = document.getElementById('overlay');
+
+const W = 420, H = 640;
+canvas.width = W; canvas.height = H;
+
+// ── Game State ──────────────────────────────────────────────
+let phase = 'title';  // title | briefing | playing | success | reveal
+let level = 0, score = 0, frame = 0;
+let params = { amp: 1, freq: 1, phase: 0, vShift: 0 };
+let target = { amp: 0, freq: 0, phase: 0, vShift: 0 };
+let matchPct = 0;
+let unlocked = false;
+let digitalRain = [];
+let scanLine = 0;
+
+// ── Levels ──────────────────────────────────────────────────
+const LEVELS = [
+  { // Level 1: Volume & Pitch (Amplitude & Frequency)
+    name: 'VAULT 1 — SIGNAL MATCH',
+    briefing: 'BREACH THE FIRST VAULT.\n\nTwo dials control the signal:\n  ■ VOLUME — how tall the wave swings\n  ■ PITCH — how tight the cycles repeat\n\nMatch the TARGET waveform (green).\nYour signal is white.',
+    params: ['amp', 'freq'],
+    targets: [
+      { amp: 60, freq: 2.0, phase: 0, vShift: 0, tolerance: 12,
+        hint: 'Taller waves need more VOLUME. Faster waves need more PITCH.' },
+      { amp: 90, freq: 1.0, phase: 0, vShift: 0, tolerance: 12,
+        hint: 'Slow, tall waves. VOLUME up, PITCH down.' },
+      { amp: 40, freq: 3.5, phase: 0, vShift: 0, tolerance: 12,
+        hint: 'Fast, short ripples. LOW volume, HIGH pitch.' }
+    ],
+    reveal: 'VOLUME controls AMPLITUDE.\nPITCH controls FREQUENCY.\n\nAmplitude = wave height from center.\nFrequency = cycles per second (Hertz).\n\nYou just tuned a sine wave.'
+  },
+  { // Level 2: Shifting (Phase + Vertical Shift)
+    name: 'VAULT 2 — PHASE SHIFT',
+    briefing: 'ADVANCED LOCK DETECTED.\n\nTwo new controls added:\n  ■ H-SHIFT — slide the wave left/right\n  ■ V-SHIFT — move the whole wave up/down\n\nPlus VOLUME and PITCH from before.',
+    params: ['amp', 'freq', 'phase', 'vShift'],
+    targets: [
+      { amp: 70, freq: 2.0, phase: 1.5, vShift: 0, tolerance: 15,
+        hint: 'Wave is shifted RIGHT. Use H-SHIFT to slide it.' },
+      { amp: 60, freq: 1.5, phase: 0, vShift: 50, tolerance: 15,
+        hint: 'Wave rides ABOVE center. Use V-SHIFT to lift it.' },
+      { amp: 80, freq: 2.5, phase: 0.8, vShift: -30, tolerance: 15,
+        hint: 'Shifted right AND dropped below center. Both shift controls needed.' }
+    ],
+    reveal: 'H-SHIFT = PHASE SHIFT.\nV-SHIFT = VERTICAL TRANSLATION.\n\nThe full sine wave formula:\nf(x) = A·sin(ωx + φ) + D\n\nA=amplitude  ω=frequency  φ=phase  D=vertical shift\n\nYou controlled every term.'
+  },
+  { // Level 3: The Boss — systems break, math decode
+    name: 'VAULT 3 — ROOT ACCESS',
+    briefing: '⚠ SYSTEM COMPROMISED ⚠\n\nDial labels are failing.\nRaw math data only.\n\nUse what you already know.',
+    params: ['amp', 'freq', 'phase', 'vShift'],
+    targets: [
+      { amp: 50, freq: 3.0, phase: 0.5, vShift: 20, tolerance: 10,
+        hint: 'A=50  ω=3.0  φ=0.5  D=+20', glitch: true },
+      { amp: 100, freq: 0.8, phase: 2.0, vShift: -40, tolerance: 10,
+        hint: 'A=100  ω=0.8  φ=2.0  D=-40', glitch: true },
+      { amp: 70, freq: 1.8, phase: 1.0, vShift: 0, tolerance: 8,
+        hint: 'A=70  ω=1.8  φ=1.0  D=0', glitch: true }
+    ],
+    reveal: 'YOU MASTERED SINE WAVES.\n\nf(x) = A·sin(ωx + φ) + D\n\nA = amplitude (height)\nω = angular frequency (speed)\nφ = phase shift (slide)\nD = vertical shift (lift)\n\n★ YOU ARE A SIGNAL HACKER ★'
+  }
+];
+
+let currentTarget = 0;
+let targetData = null;
+let attempts = 0;
+
+// ── Digital Rain ────────────────────────────────────────────
+function initRain() {
+  digitalRain = [];
+  for (let i = 0; i < 40; i++) {
+    digitalRain.push({
+      x: Math.random() * W, y: Math.random() * H,
+      speed: 1 + Math.random() * 4,
+      chars: String.fromCharCode(0x30A0 + Math.random() * 96),
+      alpha: 0.1 + Math.random() * 0.4
+    });
+  }
+}
+
+// ── Game Logic ──────────────────────────────────────────────
+function startGame() {
+  level = 0; score = 0; currentTarget = 0; attempts = 0;
+  loadLevel();
+  overlay.classList.add('hidden');
+}
+
+function loadLevel() {
+  const lvl = LEVELS[level];
+  targetData = lvl.targets[currentTarget];
+  target = { ...targetData };
+  // Randomize player starting params away from target
+  params = {
+    amp: 30 + Math.random() * 40,
+    freq: 1.5 + Math.random() * 2,
+    phase: Math.random() * 3,
+    vShift: (Math.random() - 0.5) * 80
+  };
+  phase = 'playing';
+  unlocked = false;
+  matchPct = 0;
+}
+
+function computeMatch() {
+  // Score each active parameter
+  let total = 0, max = 0;
+  const activeParams = LEVELS[level].params;
+  for (const key of activeParams) {
+    const maxVal = key === 'amp' ? 120 : key === 'freq' ? 5 : key === 'phase' ? Math.PI*2 : 100;
+    const range = Math.abs(key === 'phase' ? Math.PI*2 : (key === 'freq' ? 5 : (key==='amp'?120:100)));
+    const diff = key === 'phase'
+      ? Math.min(Math.abs(params[key] - target[key]), Math.PI*2 - Math.abs(params[key] - target[key]))
+      : Math.abs(params[key] - target[key]);
+    const score = Math.max(0, 1 - diff / (range * 0.5));
+    total += score;
+    max++;
+  }
+  matchPct = Math.round((total / max) * 100);
+  if (matchPct >= 85) { unlocked = true; }
+}
+
+function crackVault() {
+  if (!unlocked || phase !== 'playing') return;
+  phase = 'success'; attempts++; score++;
+  setTimeout(() => {
+    const lvl = LEVELS[level];
+    if (currentTarget < lvl.targets.length - 1) {
+      currentTarget++;
+      loadLevel();
+    } else {
+      phase = 'reveal';
+      showReveal();
+    }
+  }, 1500);
+}
+
+function showReveal() {
+  const lvl = LEVELS[level];
+  overlay.innerHTML = `
+    <h1>DECODED</h1>
+    <p style="white-space:pre-line;color:#0f0;text-shadow:0 0 8px #0f0;">${lvl.reveal}</p>
+    <p style="color:#ff0;">★ ${score + level*3} FREQUENCIES CRACKED ★</p>
+    ${level < 2
+      ? '<button class="btn" onclick="level++;currentTarget=0;loadLevel();overlay.classList.add(\'hidden\')">▶ NEXT VAULT</button>'
+      : '<button class="btn" onclick="level=0;currentTarget=0;score=0;startGame()">▶ REPLAY</button>'}
+  `;
+  overlay.classList.remove('hidden');
+}
+
+// ── Input ───────────────────────────────────────────────────
+const keyMap = {
+  '1': ['amp', -5], 'q': ['amp', 5],
+  '2': ['freq', -0.2], 'w': ['freq', 0.2],
+  '3': ['phase', -0.2], 'e': ['phase', 0.2],
+  '4': ['vShift', -8], 'r': ['vShift', 8],
+};
+
+document.addEventListener('keydown', e => {
+  if (phase !== 'playing') return;
+  const bind = keyMap[e.key];
+  if (bind) {
+    const [key, delta] = bind;
+    params[key] += delta;
+    if (key === 'amp') params[key] = Math.max(5, Math.min(120, params[key]));
+    if (key === 'freq') params[key] = Math.max(0.2, Math.min(5, params[key]));
+    if (key === 'phase') params[key] = ((params[key] % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+    if (key === 'vShift') params[key] = Math.max(-80, Math.min(80, params[key]));
+    computeMatch();
+    e.preventDefault();
+  }
+  if (e.key === ' ' && unlocked) { crackVault(); e.preventDefault(); }
+});
+
+// Mobile touch controls
+let touchSliders = {};
+canvas.addEventListener('touchstart', e => {
+  if (phase !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const py = (e.touches[0].clientY - rect.top) * (H / rect.height);
+  // Bottom third: slider area
+  if (py > H * 0.72) {
+    const px = (e.touches[0].clientX - rect.left) * (W / rect.width);
+    const activeParams = LEVELS[level].params;
+    const idx = Math.floor((px / W) * activeParams.length);
+    if (idx >= 0 && idx < activeParams.length) {
+      touchSliders[idx] = true;
+    }
+  }
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  if (phase !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const px = (e.touches[0].clientX - rect.left) * (W / rect.width);
+  const activeParams = LEVELS[level].params;
+  for (const idx of Object.keys(touchSliders)) {
+    const key = activeParams[parseInt(idx)];
+    const val = px / W; // 0..1
+    if (key === 'amp') params[key] = 5 + val * 115;
+    if (key === 'freq') params[key] = 0.2 + val * 4.8;
+    if (key === 'phase') params[key] = val * Math.PI * 2;
+    if (key === 'vShift') params[key] = -80 + val * 160;
+    computeMatch();
+  }
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener('touchend', () => { touchSliders = {}; });
+
+// ── Rendering ───────────────────────────────────────────────
+function drawGrid() {
+  ctx.strokeStyle = '#0f02'; ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  // Center line
+  ctx.strokeStyle = '#0f04'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, H/2 - 40); ctx.lineTo(W, H/2 - 40); ctx.stroke();
+}
+
+function drawWave(fn, color, width, glow) {
+  ctx.beginPath();
+  let first = true;
+  for (let x = 0; x <= W; x += 2) {
+    const y = fn(x);
+    if (first) { ctx.moveTo(x, y); first = false; }
+    else ctx.lineTo(x, y);
+  }
+  if (glow) { ctx.shadowColor = color; ctx.shadowBlur = glow; }
+  ctx.strokeStyle = color; ctx.lineWidth = width;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+function drawSignalDisplay() {
+  const centerY = H/2 - 40;
+  const scale = 1;
+
+  // Target wave (green)
+  const targetFn = (x) => centerY + target.amp * scale * Math.sin(target.freq * (x/W) * Math.PI*2 + target.phase) + target.vShift * scale;
+  drawWave(targetFn, '#0f04', 3, 0);
+
+  // Player wave (white/cyan)
+  const playerFn = (x) => centerY + params.amp * scale * Math.sin(params.freq * (x/W) * Math.PI*2 + params.phase) + params.vShift * scale;
+  drawWave(playerFn, '#0ff', 2.5, 10);
+
+  // Match zone overlay
+  if (matchPct > 50) {
+    ctx.fillStyle = `rgba(0,255,0,${(matchPct-50)/200})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+}
+
+function drawHUD() {
+  // Top status bar
+  ctx.fillStyle = '#0a0f0a'; ctx.fillRect(0, 0, W, 28);
+  ctx.strokeStyle = '#0f03'; ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(0, 28); ctx.lineTo(W, 28); ctx.stroke();
+
+  ctx.fillStyle = '#0f0'; ctx.font = 'bold 10px monospace';
+  ctx.fillText(`VAULT ${level+1}`, 10, 18);
+  ctx.fillText(`LOCK ${currentTarget+1}/${LEVELS[level].targets.length}`, 100, 18);
+  ctx.fillText(`MATCH: ${matchPct}%`, 220, 18);
+  if (matchPct >= 85) {
+    ctx.fillStyle = '#ff0'; ctx.fillText('◄ UNLOCKED — SPACE TO BREACH ►', 310, 18);
+  }
+
+  // Bottom slider panel
+  const py = H - 120;
+  ctx.fillStyle = '#0a0f0a88'; ctx.fillRect(0, py, W, 120);
+  ctx.strokeStyle = '#0f04'; ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(W, py); ctx.stroke();
+
+  const activeParams = LEVELS[level].params;
+  const labels = { amp: 'VOLUME', freq: 'PITCH', phase: 'H-SHIFT', vShift: 'V-SHIFT' };
+  const keys = { amp: '1/Q', freq: '2/W', phase: '3/E', vShift: '4/R' };
+  const units = { amp: '', freq: ' Hz', phase: ' rad', vShift: ' px' };
+
+  activeParams.forEach((key, i) => {
+    const x = 10 + (W - 20) * i / activeParams.length;
+    const w = (W - 20) / activeParams.length - 10;
+    const val = params[key];
+    const maxVal = key === 'amp' ? 120 : key === 'freq' ? 5 : key === 'phase' ? Math.PI*2 : 80;
+    const minVal = key === 'vShift' ? -80 : 0;
+
+    // Label
+    ctx.fillStyle = '#0f0'; ctx.font = 'bold 9px monospace';
+    let displayVal = key === 'phase' ? (val / Math.PI).toFixed(1) + 'π' : Math.round(val);
+    if (LEVELS[level].targets[currentTarget].glitch) {
+      displayVal = key === 'amp' ? 'A='+Math.round(val) : key === 'freq' ? 'ω='+val.toFixed(1) : key === 'phase' ? 'φ='+(val/Math.PI).toFixed(1)+'π' : 'D='+Math.round(val);
+    }
+    ctx.fillText(labels[key] + ' ' + displayVal + units[key], x, py + 18);
+
+    // Slider bar
+    const barY = py + 28, barH = 8;
+    ctx.fillStyle = '#0f02'; ctx.fillRect(x, barY, w, barH);
+    const pct = (val - minVal) / (maxVal - minVal);
+    ctx.fillStyle = matchPct >= 85 ? '#ff0' : '#0f0';
+    ctx.fillRect(x, barY, w * pct, barH);
+
+    // Key binding
+    ctx.fillStyle = '#0f08'; ctx.font = '8px monospace';
+    ctx.fillText(keys[key], x, py + 60);
+  });
+}
+
+function drawRain() {
+  for (const drop of digitalRain) {
+    drop.y += drop.speed;
+    if (drop.y > H) { drop.y = -10; drop.x = Math.random() * W; }
+    ctx.fillStyle = `rgba(0,255,0,${drop.alpha})`;
+    ctx.font = '10px monospace';
+    ctx.fillText(drop.chars, drop.x, drop.y);
+  }
+}
+
+function draw() {
+  ctx.fillStyle = '#0a0f0a'; ctx.fillRect(0, 0, W, H);
+  drawRain();
+  drawGrid();
+  drawSignalDisplay();
+  drawHUD();
+
+  // Glitch effect in Level 3
+  if (LEVELS[level]?.targets[currentTarget]?.glitch && frame % 30 < 5) {
+    ctx.fillStyle = `rgba(0,255,0,${0.03})`;
+    for (let i = 0; i < 3; i++) {
+      ctx.fillRect(Math.random()*W, Math.random()*H, Math.random()*80, Math.random()*3);
+    }
+  }
+
+  // Scan line
+  scanLine = (scanLine + 2) % H;
+  ctx.fillStyle = 'rgba(0,255,0,0.015)';
+  ctx.fillRect(0, scanLine, W, 1);
+
+  // Success flash
+  if (phase === 'success') {
+    ctx.fillStyle = 'rgba(0,255,0,0.08)'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#0f0'; ctx.font = 'bold 24px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('ACCESS GRANTED', W/2, H/2 - 20);
+    ctx.textAlign = 'start';
+  }
+}
+
+// ── Loop ────────────────────────────────────────────────────
+function loop() {
+  frame++;
+  draw();
+  requestAnimationFrame(loop);
+}
+
+initRain();
+loop();
+</script>
+</body>
+</html>

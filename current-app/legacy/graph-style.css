@@ -1,0 +1,151 @@
+/* ============================================================
+   Hub/bridge curriculum graph — loaded after map-style.css so
+   the six shared mastery-state classes resolve from that one
+   source; here they're just re-targeted at SVG fill/stroke
+   instead of HTML border/background.
+   ============================================================ */
+
+.graph-viewport {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  min-height: 380px;
+  overflow: auto;
+  border: 1.5px dashed var(--chalk-faint);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.15);
+  touch-action: pan-x pan-y;
+}
+
+.graph-svg {
+  display: block;
+}
+
+/* ---- edges ---- */
+.graph-edge {
+  stroke: var(--chalk-faint);
+  stroke-width: 1.2;
+  opacity: 0.5;
+}
+.graph-edge.hub {
+  stroke-dasharray: 3 4;
+}
+.graph-edge.bridge {
+  stroke: var(--chalk-green);
+  stroke-width: 1.8;
+  opacity: 0.75;
+}
+.graph-edge.bridge.new {
+  stroke-dasharray: 5 4;
+}
+.graph-edge.bridge.built {
+  stroke-dasharray: none;
+}
+
+/* ---- nodes ---- */
+.graph-node { cursor: pointer; }
+
+.graph-node .node-circle {
+  stroke-width: 2;
+  transition: stroke 0.3s ease, fill 0.3s ease;
+}
+
+.graph-node.hub .node-circle {
+  fill: var(--chalk-yellow);
+  stroke: var(--frame-dark);
+  stroke-width: 2.5;
+}
+.graph-node.hub .node-label {
+  font-family: var(--print);
+  font-size: 11px;
+  fill: var(--chalk);
+}
+
+.graph-node.topic .node-circle {
+  fill: var(--chalk-faint);
+  fill-opacity: 0.35;
+}
+
+.graph-node.topic.unbuilt .node-circle {
+  stroke: var(--locked);
+  stroke-dasharray: 2 3;
+  fill-opacity: 0.22;
+  opacity: 0.7;
+}
+.graph-node.topic.partial .node-circle {
+  stroke: var(--chalk-faint);
+  stroke-dasharray: 3 3;
+  fill-opacity: 0.4;
+}
+
+.graph-node.topic.built.wandered .node-circle { stroke: var(--chalk-faint); fill-opacity: 0.5; }
+.graph-node.topic.built.checked .node-circle { stroke: var(--chalk-yellow); fill: var(--chalk-yellow); fill-opacity: 0.25; }
+.graph-node.topic.built.well_read .node-circle { stroke: var(--chalk-green); stroke-width: 2.5; fill: var(--chalk-green); fill-opacity: 0.3; }
+.graph-node.topic.built.recalled .node-circle { stroke: var(--chalk-blue); stroke-width: 2.5; fill: var(--chalk-blue); fill-opacity: 0.3; }
+.graph-node.topic.built.mastered_1 .node-circle,
+.graph-node.topic.built.mastered_2 .node-circle {
+  fill: var(--chalk-yellow);
+  stroke: none;
+}
+
+/* ---- zoom controls ---- */
+.graph-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: center;
+}
+.graph-controls button {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--chalk-faint);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--chalk);
+  font-family: var(--print);
+  font-size: 16px;
+  cursor: pointer;
+}
+.graph-controls button:active { background: rgba(0, 0, 0, 0.35); }
+
+/* ---- popover ---- */
+.graph-popover {
+  display: none;
+  position: absolute;
+  left: 50%; bottom: 14px;
+  transform: translateX(-50%);
+  width: min(280px, 86%);
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px dashed var(--chalk-green);
+  border-radius: 10px;
+  padding: 10px 14px;
+  z-index: 5;
+}
+.graph-popover.active { display: block; }
+.graph-popover .popover-name {
+  font-family: var(--hand-display);
+  font-size: 17px;
+  color: var(--chalk);
+  margin-bottom: 3px;
+}
+.graph-popover .popover-status {
+  font-family: var(--print);
+  font-size: 12px;
+  color: var(--chalk-green);
+}
+.graph-popover .popover-desc {
+  font-family: var(--hand);
+  font-size: 13px;
+  color: var(--chalk-dim);
+  margin-top: 5px;
+}
+.graph-popover .popover-go {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: var(--print);
+  font-size: 13px;
+  color: var(--board-1);
+  background: var(--chalk-yellow);
+  border-radius: 12px;
+  padding: 4px 12px;
+  text-decoration: none;
+}

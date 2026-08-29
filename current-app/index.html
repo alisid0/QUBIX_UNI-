@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <!-- Primary SEO -->
+  <title>Qubix — Learn STEM Forwards. Solve It Backwards.</title>
+  <meta name="description" content="Qubix pairs guided Learn First workshops with problem-led Solve First discoveries. Build a STEM concept step by step, or meet the problem before the explanation.">
+  <meta name="keywords" content="learn physics, learn maths, learn mathematics, STEM learning, physics concepts, maths concepts, chemistry, microlearning, interactive learning, Brilliant alternative, apps like Brilliant, study physics online, quizzes, mastery">
+  <link rel="canonical" href="https://qubix.university/">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Qubix">
+  <meta property="og:title" content="Qubix — Learn Forwards. Solve Backwards.">
+  <meta property="og:description" content="Two routes through difficult STEM ideas: build the concept with guidance, or uncover it by solving the problem first.">
+  <meta property="og:url" content="https://qubix.university/">
+  <meta property="og:image" content="https://qubix.university/og.png">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Qubix — Learn Forwards. Solve Backwards.">
+  <meta name="twitter:description" content="Learn First builds the idea. Solve First reverses the route. Same concept, deeper understanding.">
+  <meta name="twitter:image" content="https://qubix.university/og.png">
+
+  <!-- App / PWA -->
+  <meta name="theme-color" content="#141310">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Qubix">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+  <!-- Structured data: helps Google understand what Qubix is -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "Qubix",
+        "url": "https://qubix.university/",
+        "description": "Paired Learn First and Solve First journeys for mathematics, physics, chemistry and computer science."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Qubix",
+        "applicationCategory": "EducationApplication",
+        "operatingSystem": "Web, iOS, Android",
+        "url": "https://qubix.university/",
+        "description": "Qubix pairs guided Learn First workshops with problem-led Solve First discoveries for STEM concepts.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "about": ["Physics", "Mathematics", "Chemistry", "STEM education"]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- Crawlable first paint: real content for search engines and the brief pre-JS
+       splash for users. Removed by main.js once the Svelte app mounts. -->
+  <div id="seo-splash">
+    <main class="seo-hero">
+      <div class="seo-brand">QUBIX</div>
+      <h1>Learn STEM forwards. Solve it backwards.</h1>
+      <p>Qubix gives difficult concepts two complementary journeys. Learn First builds the idea step by step with teaching along the way. Solve First starts with the problem, lets you uncover the pattern, and reveals the formal concept only after you have proved it.</p>
+      <ul class="seo-topics">
+        <li>Physics — units &amp; dimensions, forces &amp; Newton's laws, motion, measurement</li>
+        <li>Mathematics — coordinate geometry: the plane, lines, slope &amp; distance</li>
+        <li>Chemistry — atomic structure, bonding, the mole &amp; molecular shapes</li>
+      </ul>
+      <p class="seo-alt">Same concept. Opposite route. One goal: understanding that survives outside the lesson.</p>
+      <div class="seo-loading" aria-hidden="true"><span></span><span></span><span></span></div>
+    </main>
+  </div>
+
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+
+  <style>
+    #seo-splash {
+      position: fixed; inset: 0; z-index: 9999; overflow-y: auto;
+      background:
+        radial-gradient(ellipse at 50% -10%, rgba(210,138,94,0.16), transparent 42%),
+        radial-gradient(ellipse at 50% 6%, #1D1A15, #141310 80%),
+        #141310;
+      color: #F2EADB; font-family: 'Mulish', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+      display: flex; align-items: center; justify-content: center; padding: 32px;
+    }
+    #seo-splash .seo-hero { max-width: 560px; text-align: center; }
+    #seo-splash .seo-brand {
+      font-family: 'Bricolage Grotesque', 'Mulish', system-ui, sans-serif;
+      font-size: clamp(28px, 7vw, 40px); font-weight: 800; letter-spacing: -0.02em;
+      color: #DDA079; margin-bottom: 18px; line-height: 1.05;
+    }
+    #seo-splash h1 {
+      font-family: 'Bricolage Grotesque', 'Mulish', system-ui, sans-serif;
+      font-size: clamp(22px, 5vw, 32px); font-weight: 700; line-height: 1.15;
+      letter-spacing: -0.015em; margin: 0 0 16px; color: #F2EADB;
+    }
+    #seo-splash p { font-size: 16px; line-height: 1.6; color: #CFC6B4; margin: 0 auto 16px; max-width: 48ch; }
+    #seo-splash .seo-topics { list-style: none; padding: 0; margin: 0 auto 16px; max-width: 48ch; text-align: left; display: grid; gap: 8px; }
+    #seo-splash .seo-topics li { font-size: 14px; color: #CFC6B4; padding-left: 18px; position: relative; }
+    #seo-splash .seo-topics li::before { content: "▸"; position: absolute; left: 0; color: #D28A5E; }
+    #seo-splash .seo-alt { font-size: 14px; color: #A79E8B; }
+    #seo-splash .seo-loading { display: flex; gap: 8px; justify-content: center; margin-top: 22px; }
+    #seo-splash .seo-loading span { width: 8px; height: 8px; border-radius: 50%; background: #D28A5E; opacity: 0.5; animation: seoBounce 1.4s infinite ease-in-out both; }
+    #seo-splash .seo-loading span:nth-child(1) { animation-delay: -0.32s; }
+    #seo-splash .seo-loading span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes seoBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+  </style>
+</body>
+</html>

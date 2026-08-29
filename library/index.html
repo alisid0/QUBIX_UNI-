@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qubix Library</title>
+<link rel="stylesheet" href="./qubix-library.css">
+
+<meta name="description" content="Source-first Qubix ebooks and reference sheets for data, programming, functions and graphs.">
+<link rel="canonical" href="https://qubix.university/library/index.html">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Qubix University">
+<meta property="og:title" content="Qubix Library">
+<meta property="og:description" content="Source-first Qubix ebooks and reference sheets for data, programming, functions and graphs.">
+<meta property="og:url" content="https://qubix.university/library/index.html">
+<meta name="twitter:card" content="summary">
+<style>
+  :root { --ink:#20241f; --teal:#315f48; --teal-text:#315f48; --paper:#f7f3e9; --rule:#d2cbbb;
+          --mute:#62695f; --edge:#8d8b81;
+          --serif:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,serif;
+          --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e6e0d2; color:var(--ink); font:16px/1.65 var(--serif); }
+  a.skip { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+  a.skip:focus { position:fixed; left:0; top:0; width:auto; height:auto; clip:auto; z-index:9;
+                 background:var(--ink); color:#fff; padding:10px 16px; font-family:var(--sans); }
+  header:not(.q-lib-nav) { background:var(--ink); color:#fff; padding:60px 44px 52px;
+           max-width:1080px; margin:0 auto 44px; box-shadow:11px 11px 0 rgba(32,36,31,.16); }
+  header .kick { color:#e9a07d; font-family:var(--sans); font-size:11px; letter-spacing:.16em; font-weight:700; }
+  header h1 { font-size:clamp(32px,5vw,46px); line-height:1.04; margin:14px 0 16px; letter-spacing:-.022em; }
+  header p { color:#d8d1c4; max-width:52ch; margin:0; font-size:15px; }
+  main { max-width:56rem; margin:0 auto; padding:0 22px 90px; }
+  .shelf { display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+  .vol { border:1px solid var(--edge); padding:22px 24px 20px; background:var(--paper);
+         display:flex; flex-direction:column; gap:9px; }
+  .vol h2 { font-size:22px; margin:0; letter-spacing:-.015em; text-wrap:balance; }
+  .vol .sub { font-family:var(--sans); font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+              color:var(--teal-text); }
+  .vol p { margin:0; font-size:14.5px; color:#33445c; }
+  .vol a { margin-top:6px; align-self:flex-start; font-family:var(--sans); font-size:13px; font-weight:600;
+           text-decoration:none; color:#fff; background:var(--teal-text); padding:9px 16px;
+           min-height:24px; }
+  .vol a:hover { background:var(--ink); }
+  .vol a:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+  .note { margin-top:34px; font-size:14px; color:var(--mute); border-top:1px solid var(--rule); padding-top:18px; }
+  .note a { color:var(--teal-text); }
+</style></head><body>
+<nav class="q-lib-nav" aria-label="Qubix sections"><a href="/">Qubix</a><span><a href="/library/index.html">Library</a><a href="/?mode=game">Play</a><a href="/?mode=wiki">Wiki</a></span></nav>
+<a class="skip" href="#shelf">Skip to the library</a>
+<header>
+  <div class="kick">QUBIX UNIVERSITY</div>
+  <h1>The Library</h1>
+  <p>Source-first ebooks and reference sheets, generated from reviewable files and rebuilt on every release. Data foundations begin with plain language and synthetic Superstore evidence; technical figures are computed from their own data.</p>
+</header>
+<main>
+  <div class="shelf" id="shelf">
+    <article class="vol">
+      <div class="sub">Pre-Intern 001 · Data Foundations</div>
+      <h2>What Data Is and Why People Use It</h2>
+      <p>Start from zero. Follow a Superstore sale from a real-world event to a recorded fact, an organised table and a decision. Twenty practice questions, all explained.</p>
+      <a href="./what-data-is.html">Open</a>
+    </article><article class="vol">
+      <div class="sub">Pre-Intern 002 · Digital Foundations</div>
+      <h2>What a Computer Program Does</h2>
+      <p>See a program as precise stored instructions: input enters, steps transform it, and output or an action follows. Superstore examples, four worked cases and twenty explained questions.</p>
+      <a href="./what-a-program-does.html">Open</a>
+    </article><article class="vol">
+      <div class="sub">Book 1: Functions</div>
+      <h2>Calculus From The Ground Up</h2>
+      <p>Fourteen chapters from what a function is to the Fundamental Theorem. Every practice item answered, every answer drawn, every figure computed from the formula beside it.</p>
+      <a href="./functions.html">Open</a>
+    </article><article class="vol">
+      <div class="sub">Every idea, drawn</div>
+      <h2>The Big Sheet of Graphs</h2>
+      <p>The whole of mathematics that can be reached from the origin, as one sheet: 681 concepts in thirteen stages, each classified by what a picture can honestly do for it.</p>
+      <a href="./big-sheet-of-graphs.html">Open</a>
+    </article>
+  </div>
+  <!-- Absolute, because the library is served from two places: the site itself,
+       and a Pages mirror on a different host where "/" is not Qubix. -->
+  <p class="note">Both open as ordinary web pages and print to PDF from any browser.
+    <a href="https://qubix.university/">Back to Qubix</a></p>
+</main>
+</body></html>

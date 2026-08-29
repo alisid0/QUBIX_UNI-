@@ -1,0 +1,61 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "Dead weight",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "neutrons", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>We know that protons dictate the atom's identity (6 protons is Carbon), and electrons do all the moving and bonding.</p>" },
+        { "content": "<p>But what about the neutrons? We know they sit in the center and act as peacekeepers so the protons don't repel each other. Do they do anything else?</p>" },
+        { "content": "<p>Chemically, no. Neutrons have no charge. They don't pull on electrons. They don't affect how the atom bonds with other atoms.</p>" },
+        { "content": "<p>All they do is add dead weight. They just sit in the center and make the atom heavier.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The heavy twins",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "isotopes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because neutrons don't change the atom's identity or its chemical behavior, an element can actually come in a few different weights.</p>" },
+        { "content": "<p>Think of Carbon. Every Carbon atom in the universe has exactly 6 protons. If it didn't, it wouldn't be Carbon.</p>" },
+        { "content": "<p>But some Carbon atoms have 6 neutrons, while others have 7, or even 8.</p>" },
+        { "content": "<p>Because the electrons haven't changed, all three versions act exactly the same. They look the same, they bond the same, and they build the exact same things. The only difference is that one is slightly heavier than the other.</p>" },
+        { "content": "<p>In chemistry, these different-weight versions of the exact same atom are called Isotopes. They are just identical twins, where one twin is wearing a heavier backpack.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The decimal problem",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "isotopes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If you look closely at a Periodic Table, the weight of each element is listed at the bottom of its box. But the numbers are weird.</p>" },
+        { "content": "<p>For example, Chlorine's weight is listed as 35.5.</p>" },
+        { "content": "<p>How is that possible? Protons and neutrons are solid physical objects. You cannot have half of a neutron. An atom either has a whole neutron, or it doesn't.</p>" },
+        { "content": "<p>The answer is that the number on the Periodic Table is not the weight of a single atom.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The handful",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "isotopes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Imagine going to a dog park. Most of the dogs weigh 30 pounds. A few of the dogs weigh 40 pounds. If you average them all out, the 'average dog' weighs 32.5 pounds. There is no actual dog that weighs 32.5 pounds. It is just the average of the whole park.</p>" },
+        { "content": "<p>Atoms work the exact same way. In nature, Chlorine exists as a mix of isotopes.</p>" },
+        { "content": "<p>About 75% of Chlorine atoms in the world are the lighter version, and 25% are the heavier version.</p>" },
+        { "content": "<p>When you scoop up a handful of Chlorine, you are holding a mix of both. The 35.5 on the table is just the weighted average of the whole handful.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Counting by weighing",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Why do chemists care so much about the exact weight of a handful of atoms? Because it is the only way to do chemistry.</p>" },
+        { "content": "<p>If you want to bake a cake, you count your ingredients. You need exactly 3 eggs.</p>" },
+        { "content": "<p>Chemists need to count ingredients too. To make water, a chemist needs exactly two Hydrogen atoms for every one Oxygen atom. But atoms are invisible. You cannot pick them up with tweezers and count them out.</p>" },
+        { "content": "<p>So, you cheat. You count them by weighing them.</p>" },
+        { "content": "<p>Think of a giant jar of pennies. If you know exactly how much one penny weighs, you don't have to count the jar. You just put the whole jar on a scale. If you know the weight, you know the exact number of pennies inside. That is how all chemistry in the real world is actually done.</p>" }
+      ]
+    }
+  ]
+}

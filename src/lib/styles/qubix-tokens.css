@@ -1,0 +1,171 @@
+/* ============================================================
+   Qubix — design tokens. LOCKED 5-COLOUR SYSTEM (UI chrome).
+
+   Five roles, tuned per theme (light + dark). The two neutrals invert
+   between modes; the three accents lighten on dark for contrast:
+     1. Ink     — text / dark base
+     2. Canvas  — background / surfaces (surfaces are tints of this)
+     3. Clay    — the brand accent: buttons, links, active, highlight, streak
+     4. Olive   — positive: correct, complete, mastered, success
+     5. Red     — alert: errors, wrong answers, destructive
+
+   Legacy token names are kept so components don't churn, but collapsed to
+   the five: accent + yellow = Clay, green + pink = Olive, danger = Red.
+   Content (illustrations, 3D molecular models) is exempt — it has its own
+   palette and only needs to harmonise. Never add a sixth UI hue.
+   ============================================================ */
+
+:root {
+  --qx-font: 'Mulish', sans-serif;
+  --qx-radius-sm: 10px;
+  --qx-radius-md: 14px;
+  --qx-radius-lg: 18px;
+  --qx-radius-pill: 999px;
+
+  /* Reading-optimised type: larger, book-like body with generous line-height. */
+  --qx-fs-body: 17.5px;
+  --qx-lh-body: 1.72;
+}
+
+/* ── Light — Canvas background, Ink text ── */
+:root[data-qx-theme="light"] {
+  --qx-bg: #F1EDE4;
+  --qx-bg-radial: #FBF8F1;
+  --qx-surface: #FFFFFF;
+  --qx-surface-2: #F4F0E7;
+  --qx-surface-3: #ECE7DC;
+  --qx-surface-elevated: #241F16;
+  /* Overlay ground. The --qx-surface family is translucent on dark so a card
+     in the flow picks up the radial behind it. Anything that has to COVER
+     the page needs an opaque ground instead: Ask Qubix became a see-through
+     sheet on mobile, where the panel is fixed and full width, and the page
+     headline read straight through its own header. Not a sixth hue: the same
+     Canvas and Ink, without the alpha. */
+  --qx-overlay: #FFFFFF;
+  --qx-overlay-2: #F4F0E7;
+  --qx-border: #E4DDCE;
+  --qx-border-2: #D8D0BE;
+
+  --qx-text: #241F16;
+  --qx-text-2: #57503F;
+  --qx-text-dim: #726A58;
+  --qx-text-faint: #9E947E;
+  --qx-text-faintest: #B4AB97;
+
+  /* Clay (accent + yellow) */
+  --qx-accent: #A85A34;
+  --qx-accent-soft: #F2E4DA;
+  --qx-accent-soft-2: #F7EDE6;
+  --qx-accent-text: #8C4C2E;
+  --qx-yellow: #A85A34;
+  --qx-yellow-soft: #F2E4DA;
+  --qx-yellow-text: #8C4C2E;
+
+  /* Olive (green + pink) */
+  --qx-green: #3E9E2A;
+  --qx-green-soft: #E7EFDC;
+  --qx-green-text: #3C6427;
+  --qx-pink: #3E9E2A;
+  --qx-pink-soft: #E7EFDC;
+  --qx-pink-soft-2: #EFF4E8;
+  --qx-pink-text: #3C6427;
+
+  /* Red (danger) */
+  --qx-danger: #CF3423;
+  --qx-danger-soft: #F7DCD6;
+  --qx-danger-text: #A02D1D;
+
+  --qx-shadow-card: 0 10px 22px -10px rgba(36,31,22,0.16);
+
+  /* ── Workbench ──────────────────────────────────────────────────────────
+     The dark side of the same paper: the surfaces you work on rather than read.
+     Missions, the academy, the campaign.
+
+     Deliberately not the [data-qx-theme="dark"] block below. That one is a
+     theme override, and a mission is dark whichever theme the reader chose, so
+     it needs tokens that are always available.
+
+     These exist because the missions had drifted into four different dark
+     backgrounds (#171510, #151515, #10191a, #0f1216) and five different accents
+     across screens meant to read as one product. Every hue here is the Qubix
+     terracotta over a warm near-black, lifted enough to hold contrast on it. */
+  --qx-ink: #171510;             /* the workbench itself */
+  --qx-ink-rise: #241f16;        /* the lift behind a mission header */
+  --qx-ink-panel: #1f1c15;       /* a panel sitting on the workbench */
+  --qx-ink-well: #100e0a;        /* a recess: code, terminals, output */
+  --qx-ink-line: rgba(255, 255, 255, 0.11);
+  --qx-ink-line-2: rgba(255, 255, 255, 0.18);
+
+  --qx-ink-text: #ece7dc;
+  --qx-ink-text-2: #a89e8d;
+  --qx-ink-text-dim: #766d5b;
+
+  --qx-ink-accent: #c77e61;      /* terracotta, lifted to carry on near-black */
+  --qx-ink-accent-2: #a85a34;    /* the same terracotta the light surfaces use */
+  --qx-ink-accent-soft: rgba(199, 126, 97, 0.16);
+
+  /* Judgement colours, shared so right and wrong never change between missions. */
+  --qx-ink-good: #9fd0b4;
+  --qx-ink-bad: #f0a99e;
+
+  /* The slip a decision is made on: paper, laid on the workbench. */
+  --qx-slip: #f1ede4;
+  --qx-slip-ink: #25231f;
+  --qx-slip-dim: #625a49;
+  --qx-slip-line: #d8d0be;
+}
+
+/* ── Dark — Ink background, Canvas-warm text; accents lightened ── */
+:root[data-qx-theme="dark"] {
+  --qx-bg: #141310;
+  --qx-bg-radial: #1D1A15;
+  --qx-surface: rgba(255,255,255,0.05);
+  --qx-surface-2: rgba(255,255,255,0.06);
+  --qx-surface-3: rgba(255,255,255,0.07);
+  --qx-surface-elevated: #211B12;
+  --qx-overlay: #1D1A15;
+  --qx-overlay-2: #241F19;
+  --qx-border: rgba(255,255,255,0.09);
+  --qx-border-2: rgba(255,255,255,0.14);
+
+  --qx-text: #F2EADB;
+  --qx-text-2: #CFC6B4;
+  --qx-text-dim: #A79E8B;
+  --qx-text-faint: #8C8573;
+  --qx-text-faintest: #6F6656;
+
+  /* Clay (accent + yellow) */
+  --qx-accent: #D28A5E;
+  --qx-accent-soft: rgba(210,138,94,0.16);
+  --qx-accent-soft-2: rgba(210,138,94,0.11);
+  --qx-accent-text: #DDA079;
+  --qx-yellow: #D28A5E;
+  --qx-yellow-soft: rgba(210,138,94,0.15);
+  --qx-yellow-text: #DDA079;
+
+  /* Olive (green + pink) */
+  --qx-green: #6BC93F;
+  --qx-green-soft: rgba(134,184,99,0.16);
+  --qx-green-text: #9CC97A;
+  --qx-pink: #6BC93F;
+  --qx-pink-soft: rgba(134,184,99,0.15);
+  --qx-pink-soft-2: rgba(134,184,99,0.11);
+  --qx-pink-text: #9CC97A;
+
+  /* Red (danger) */
+  --qx-danger: #EC4B31;
+  --qx-danger-soft: rgba(236,75,49,0.16);
+  --qx-danger-text: #F26B52;
+
+  --qx-shadow-card: 0 14px 30px -14px rgba(0,0,0,0.55);
+}
+
+.qx-shell {
+  font-family: var(--qx-font);
+  background: radial-gradient(ellipse at 50% 6%, var(--qx-bg-radial), var(--qx-bg) 80%), var(--qx-bg);
+  color: var(--qx-text);
+  -webkit-font-smoothing: antialiased;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}

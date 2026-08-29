@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Strata — Physics, layer by layer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* chalkboard palette */
+    --board-1:#1f3b30;   /* surface — fresh dark green slate */
+    --board-2:#24463a;
+    --board-3:#2c2f2a;   /* deeper — older, greyer board */
+    --board-4:#262422;   /* bedrock — near-black slate */
+    --frame:#5a4632;     /* wood chalk-tray brown */
+    --frame-dark:#3f3022;
+    --chalk:#f4f1e9;     /* main chalk white, slightly warm */
+    --chalk-dim:#c7ccc0; /* faded chalk */
+    --chalk-faint:#8fa093;
+    --chalk-yellow:#f2d585; /* yellow chalk for emphasis */
+    --chalk-green:#a9d6a0;  /* pale green chalk */
+    --chalk-blue:#9ec6d8;
+    --line:rgba(244,241,233,0.16);
+    --hand:"Kalam","Comic Sans MS",cursive;            /* handwritten body */
+    --hand-display:"Architects Daughter","Kalam",cursive; /* chalk headings */
+    --print:"Patrick Hand","Kalam",cursive;            /* neat hand-print labels */
+    --sans:"Nunito Sans","Helvetica Neue",system-ui,sans-serif;
+    --mono:"Patrick Hand",ui-monospace,monospace;
+    /* legacy aliases so the rest of the sheet keeps working */
+    --paper:var(--chalk);
+    --paper-dim:var(--chalk-dim);
+    --gold:var(--chalk-yellow);
+    --gold-dim:#bfa55f;
+    --ink:#1f3b30;
+    --bg-1:#152a22;
+    --serif:var(--hand);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+  html,body{height:100%;overflow:hidden;background:#15281f;}
+  body{
+    font-family:var(--hand);
+    color:var(--chalk);
+    position:fixed;width:100%;
+    overscroll-behavior:none;
+    background:
+      radial-gradient(ellipse at 50% 45%,#1c3528,#11201a 80%);
+  }
+
+  /* faint chalk-dust / board-texture overlay on the whole page */
+  body::after{
+    content:"";position:fixed;inset:0;z-index:30;pointer-events:none;
+    background:
+      radial-gradient(circle at 20% 30%,rgba(255,255,255,0.025),transparent 40%),
+      radial-gradient(circle at 80% 70%,rgba(255,255,255,0.02),transparent 45%);
+    mix-blend-mode:screen;
+  }
+
+  /* ====== ambient field ====== */
+  #field{position:fixed;inset:0;z-index:0;opacity:0.5;}
+
+  /* ====== deck rail (horizontal track of cards) ====== */
+  #rail{
+    position:fixed;top:0;left:0;z-index:1;
+    width:100%;height:100%;
+    display:flex;
+    transition:transform 0.62s cubic-bezier(0.16,0.84,0.24,1);
+    will-change:transform;
+  }
+  .card{
+    position:relative;
+    flex:0 0 100%;
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    /* top padding clears the fixed #topbar (~52px); bottom clears #hint (~44px) */
+    padding:clamp(64px,8vh,96px) clamp(22px,5vw,80px) clamp(56px,7vh,84px);
+  }
+
+  /* the slab = a framed chalkboard that descends through depth */
+  .slab{
+    position:relative;
+    width:min(680px,100%);
+    max-height:100%;
+    border-radius:4px;
+    background:var(--board-1);
+    /* wooden frame via border + tray shadow */
+    border:12px solid var(--frame);
+    box-shadow:
+      0 0 0 2px var(--frame-dark),
+      0 2px 0 4px rgba(0,0,0,0.25) inset,
+      0 30px 70px -28px rgba(0,0,0,0.85),
+      inset 0 0 80px rgba(0,0,0,0.35);
+    transition:background 0.7s ease, box-shadow 0.7s ease, border-color 0.7s ease, transform 0.45s cubic-bezier(0.2,0.8,0.2,1);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  /* depth tint: fresh green board → older greyer → near-black slate */
+  .slab[data-depth="0"]{background:#1f3b30;}
+  .slab[data-depth="1"]{background:#26443a;}
+  .slab[data-depth="2"]{background:#2c3a33;}
+  .slab[data-depth="3"]{background:#2b2f2a;}
+  .slab[data-depth="4"]{background:#24221f;}
+
+  .slab-inner{
+    padding:clamp(28px,4.5vw,54px);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--chalk-faint) transparent;
+  }
+  .slab-inner::-webkit-scrollbar{width:5px;}
+  .slab-inner::-webkit-scrollbar-thumb{background:var(--chalk-faint);border-radius:3px;}
+
+  /* ====== eyebrow row (chalk hand-print) ====== */
+  .eyebrow{
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:clamp(16px,2.6vw,26px);
+    font-family:var(--print);
+    font-size:14px;letter-spacing:0.04em;
+    color:var(--chalk-dim);
+  }
+  .eyebrow .num{
+    color:var(--chalk-yellow);font-weight:400;
+  }
+  .eyebrow .act{
+    flex:1;color:var(--chalk-faint);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .eyebrow .depthtag{
+    color:var(--chalk-green);
+    border:1.5px dashed var(--chalk-faint);
+    border-radius:14px;padding:2px 11px;
+    font-size:12px;letter-spacing:0.02em;
+    transform:rotate(-1.2deg);
+  }
+
+  /* ====== card content type ====== */
+  .kicker{
+    font-family:var(--print);
+    font-size:15px;letter-spacing:0.03em;
+    color:var(--chalk-yellow);margin-bottom:10px;
+    transform:rotate(-0.6deg);
+  }
+  h1.title{
+    font-family:var(--hand-display);
+    font-weight:400;
+    font-size:clamp(30px,6.4vw,50px);
+    line-height:1.06;letter-spacing:0.005em;
+    margin-bottom:clamp(16px,3vw,26px);
+    color:var(--chalk);
+    /* faint chalk-stroke softness */
+    text-shadow:0 1px 0 rgba(0,0,0,0.25);
+  }
+  .body{
+    font-family:var(--hand);
+    font-size:clamp(18px,2.5vw,22px);
+    line-height:1.62;
+    color:var(--chalk);
+  }
+  .body p{margin-bottom:0.85em;}
+  .body p:last-child{margin-bottom:0;}
+  .body strong{color:var(--chalk-yellow);font-weight:700;}
+  .body em{color:var(--chalk-green);font-style:normal;border-bottom:1.5px dotted var(--chalk-faint);}
+  .formula{
+    font-family:var(--hand);font-weight:700;
+    font-size:clamp(19px,2.9vw,25px);
+    color:#fff;
+    background:rgba(0,0,0,0.22);
+    border:1.5px dashed var(--chalk-green);
+    padding:14px 18px;margin:18px 0;
+    border-radius:6px;
+    line-height:1.45;
+    transform:rotate(-0.4deg);
+    /* boxed-on-the-board feel */
+    box-shadow:0 2px 0 rgba(0,0,0,0.2);
+  }
+  .formula .gloss{
+    display:block;font-family:var(--hand);font-weight:400;
+    font-size:0.72em;color:var(--chalk-dim);margin-top:7px;font-style:normal;
+  }
+
+  /* ====== descend control (chalk hand-print) ====== */
+  .descend{
+    margin-top:clamp(20px,3.5vw,30px);
+    display:flex;align-items:center;gap:13px;
+    cursor:pointer;
+    border:none;background:none;color:inherit;
+    font-family:var(--print);
+    font-size:15px;letter-spacing:0.02em;
+    padding:6px 0;
+    transition:opacity 0.3s;
+    opacity:0.92;
+  }
+  .descend:hover{opacity:1;}
+  .descend .chev{
+    width:34px;height:34px;border-radius:50%;
+    border:1.5px dashed var(--chalk-green);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--chalk-green);flex-shrink:0;font-size:17px;
+    transition:transform 0.3s, border-color 0.3s, background 0.3s;
+  }
+  .descend:hover .chev{transform:translateY(3px);background:rgba(169,214,160,0.14);}
+  .descend .label-top{color:var(--chalk);}
+  .descend .label-sub{color:var(--chalk-faint);display:block;font-size:12.5px;margin-top:0px;}
+  .descend.atfloor{opacity:0.45;cursor:default;}
+  .descend.atfloor .chev{border-style:dotted;color:var(--chalk-faint);}
+
+  /* ascend (back up a layer) */
+  .ascend{
+    position:absolute;top:12px;right:12px;z-index:5;
+    width:36px;height:36px;border-radius:50%;
+    border:1.5px dashed var(--chalk-faint);background:rgba(0,0,0,0.2);
+    color:var(--chalk-dim);cursor:pointer;
+    display:none;align-items:center;justify-content:center;
+    font-size:17px;transition:color 0.25s,border-color 0.25s;
+  }
+  .ascend:hover{color:var(--chalk-yellow);border-color:var(--chalk-yellow);}
+  .slab[data-depth="0"] .ascend{display:none !important;}
+
+  /* depth ladder (left spine showing how deep you are) — chalk ticks */
+  .ladder{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    z-index:5;display:flex;flex-direction:column;gap:9px;
+  }
+  .rung{
+    width:9px;height:9px;border-radius:50%;
+    border:1.5px solid var(--chalk-faint);
+    background:transparent;transition:all 0.4s;
+  }
+  .rung.filled{background:var(--chalk-yellow);border-color:var(--chalk-yellow);box-shadow:0 0 9px rgba(242,213,133,0.55);}
+  .rung.passed{background:var(--chalk-faint);border-color:var(--chalk-faint);}
+
+  /* layer-transition flash */
+  .slab.descending{animation:sink 0.5s cubic-bezier(0.4,0,0.2,1);}
+  @keyframes sink{
+    0%{transform:translateY(0) scale(1);}
+    35%{transform:translateY(14px) scale(0.975);}
+    100%{transform:translateY(0) scale(1);}
+  }
+  .slab.rising{animation:rise 0.45s cubic-bezier(0.4,0,0.2,1);}
+  @keyframes rise{
+    0%{transform:translateY(0) scale(1);}
+    35%{transform:translateY(-12px) scale(1.015);}
+    100%{transform:translateY(0) scale(1);}
+  }
+
+  /* ====== top progress + title ====== */
+  #topbar{
+    position:fixed;top:0;left:0;right:0;z-index:10;
+    display:flex;align-items:center;gap:16px;
+    padding:16px clamp(18px,4vw,34px);
+    pointer-events:none;
+  }
+  #brand{
+    font-family:var(--print);font-size:17px;letter-spacing:0.04em;
+    color:var(--chalk);
+  }
+  #brand b{color:var(--chalk-yellow);font-weight:400;}
+  #progress-wrap{flex:1;height:0;border-top:2px dashed rgba(244,241,233,0.25);position:relative;}
+  #progress{position:absolute;top:-2px;left:0;height:0;border-top:2px solid var(--chalk-yellow);width:0;transition:width 0.5s ease;}
+  #counter{font-family:var(--print);font-size:15px;color:var(--chalk-dim);letter-spacing:0.02em;min-width:54px;text-align:right;}
+
+  /* ====== nav arrows (desktop) ====== */
+  .nav{
+    position:fixed;top:50%;transform:translateY(-50%);z-index:8;
+    width:48px;height:48px;border-radius:50%;
+    border:1.5px dashed var(--chalk-faint);background:rgba(21,42,34,0.6);
+    backdrop-filter:blur(6px);
+    color:var(--chalk-dim);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;transition:all 0.25s;
+  }
+  .nav:hover{color:var(--chalk-yellow);border-color:var(--chalk-yellow);background:rgba(21,42,34,0.85);}
+  #prev{left:18px;}#next{right:18px;}
+  .nav:disabled{opacity:0.18;cursor:default;}
+  @media(max-width:720px){.nav{display:none;}}
+
+  /* ====== hint footer ====== */
+  #hint{
+    position:fixed;bottom:0;left:0;right:0;z-index:9;
+    text-align:center;padding:14px;
+    font-family:var(--print);font-size:14px;letter-spacing:0.02em;
+    color:var(--chalk-dim);opacity:0.7;
+    pointer-events:none;
+    transition:opacity 0.6s;
+  }
+  #hint b{color:var(--chalk-yellow);}
+  #hint.gone{opacity:0;}
+
+  /* ====== intro overlay = the whole blackboard ====== */
+  #intro{
+    position:fixed;inset:0;z-index:40;
+    background:
+      radial-gradient(ellipse at 50% 38%,rgba(255,255,255,0.04),transparent 55%),
+      #20392f;
+    /* chalk-tray wooden frame around the whole board */
+    border:18px solid var(--frame);
+    box-shadow:inset 0 0 0 3px var(--frame-dark), inset 0 0 120px rgba(0,0,0,0.4);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:30px;
+    transition:opacity 0.8s ease;
+  }
+  #intro .chalk-eyebrow{
+    font-family:var(--print);font-size:clamp(15px,2.4vw,19px);
+    color:var(--chalk-green);margin-bottom:18px;letter-spacing:0.03em;
+    transform:rotate(-1deg);
+  }
+  #intro h1{
+    font-family:var(--hand-display);
+    font-size:clamp(44px,12vw,104px);line-height:0.98;
+    letter-spacing:0.01em;font-weight:400;margin-bottom:20px;
+    color:var(--chalk);text-shadow:0 2px 0 rgba(0,0,0,0.25);
+  }
+  #intro h1 em{color:var(--chalk-yellow);font-style:normal;
+    /* underline like a chalk swoosh */
+    border-bottom:4px solid var(--chalk-yellow);padding-bottom:2px;}
+  #intro .sub{
+    font-family:var(--hand);
+    font-size:clamp(17px,2.5vw,22px);color:var(--chalk-dim);
+    max-width:32ch;line-height:1.55;margin-bottom:42px;
+  }
+  #enter{
+    font-family:var(--print);font-size:18px;letter-spacing:0.02em;
+    color:var(--chalk);background:transparent;
+    border:2px dashed var(--chalk-yellow);cursor:pointer;
+    padding:13px 32px;border-radius:30px;
+    transition:transform 0.25s,background 0.25s,color 0.25s;
+    transform:rotate(-0.8deg);
+  }
+  #enter:hover{transform:rotate(-0.8deg) translateY(-2px);background:var(--chalk-yellow);color:#20392f;}
+  #intro .legend{
+    margin-top:40px;display:flex;gap:30px;flex-wrap:wrap;justify-content:center;
+    font-family:var(--print);font-size:15px;letter-spacing:0.01em;color:var(--chalk-faint);
+  }
+  #intro .legend span b{color:var(--chalk-yellow);}
+  #intro.gone{opacity:0;pointer-events:none;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<canvas id="field"></canvas>
+
+<div id="topbar">
+  <div id="brand"><b>STRATA</b> · physics</div>
+  <div id="progress-wrap"><div id="progress"></div></div>
+  <div id="counter">01 / 31</div>
+</div>
+
+<div id="rail"></div>
+
+<button id="prev" class="nav" aria-label="Previous">‹</button>
+<button id="next" class="nav" aria-label="Next">›</button>
+
+<div id="hint">swipe <b>← →</b> across ideas &nbsp;·&nbsp; tap <b>↓ dig in</b> to go a layer deeper</div>
+
+<div id="intro">
+  <div class="chalk-eyebrow">— Physics, from scratch —</div>
+  <h1>One formula<br>to rule them <em>all</em></h1>
+  <div class="sub">Fifty ideas, from "things move" to the law beneath gravity, light and heat. Each one digs five layers deep — as far as you care to go.</div>
+  <button id="enter">Start the lesson</button>
+  <div class="legend">
+    <span><b>→</b> across — the next idea</span>
+    <span><b>↓</b> down — deeper into this one</span>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   STRATA — content model
+   Each entry = one "column" (a layer-1 idea) with up to 5 depths.
+   depth 0 = swipe card · 1 = concrete · 2 = definition
+   3 = in action · 4 = the law / relationship
+   Not every column has all 5; some ideas are complete shallow.
+   ============================================================ */
+const ACTS = {
+  I:"I · Things move, and something makes them",
+  II:"II · Energy and the idea of change",
+  III:"III · Motion is change stacked on change",
+  IV:"IV · The reaching forces & the shape they share",
+  V:"V · One formula to rule them all"
+};
+
+const DEPTH_NAMES=["Idea","Concrete","Definition","In action","The law"];
+
+// helper to keep authoring terse
+function C(act,kicker,title,layers){return {act,kicker,title,layers};}
+
+const DECK=[
+  /* ---------- ACT I ---------- */
+  C("II","Card 01","Steepness decides everything",[
+    "<p>On that coaster, the steepest part is where you gain speed fastest. Gentle slope, gentle change. Flat ground, no change at all.</p><p>The <strong>shape</strong> of the track decides how violently things change. Hold that thought — it matters soon.</p>"
+  ]),
+  C("II","Card 02","Average versus exact",[
+    "<p>Drive 60 miles in an hour and your <strong>average</strong> speed is 60. But you weren't doing 60 the whole time — you stopped, sped up, slowed down.</p><p>Average hides what's really happening moment to moment.</p>",
+    "<p>A motorway average-speed camera works on exactly this gap. It clocks your time in and out of a stretch and divides distance by time — your <em>average</em>.</p><p>Brake hard past each camera, floor it between, and you're still caught: your average over the whole stretch betrays you. Your speedometer shows the <strong>exact</strong> speed at each instant. Genuinely different numbers.</p>"
+  ]),
+  C("II","Card 03","The impossible question",[
+    "<p>So what was your <strong>exact</strong> speed at one frozen instant?</p><p>Speed is distance over time — but in a single instant, no time passes and no distance is covered. You'd divide nothing by nothing. The question seems to break.</p>"
+  ]),
+  C("II","Card 04","The ancient trick",[
+    "<p>The Greeks wanted the area of a circle, which has no straight edges. So they drew a many-sided shape <strong>inside</strong> it. More sides, closer fit. Infinite sides — the gap vanishes.</p><p>You don't solve the impossible. You <strong>sneak up</strong> on it.</p>",
+    "<p>Look at a pizza cut into 4 fat wedges, rearranged alternating up-down — a lumpy strip, only roughly a rectangle. Cut into 16 — much straighter. Into 100 needle-thin slices — almost a perfect rectangle, whose area is easy.</p><p>The circle never <em>became</em> a rectangle. But the more slices, the closer it gets, with no limit. That \"closer and closer, no limit\" is the whole trick behind calculus.</p>"
+  ]),
+  C("II","Card 05","Sneaking up on the instant",[
+    "<p>Use the same trick for speed. Don't freeze time — shrink it. Speed over one second, then a tenth, then a hundredth.</p><p>Watch where the answer is <strong>heading</strong>. That destination is the exact answer. This sneaking-up is the heart of calculus.</p>"
+  ]),
+  C("II","Card 06","The rate of change",[
+    "<p>That's all calculus really gives you here: a way to ask <strong>how fast is something changing, right now, at this exact instant?</strong></p><p>The steepness of a curve at a single point. It sounds small. It cracks the universe open.</p>",
+    "<p><strong>Made physical.</strong> Film a falling apple at 10 frames per second and measure its speed between two neighbouring frames — close to the truth. At 1,000 frames — closer. At a million — the gap between frames shrinks toward an instant, and the speed homes in on the apple's <em>exact</em> speed at that moment.</p><p>You never reach a zero gap — but you see precisely where the answer is heading. That homing-in is the rate of change calculus was built to capture.</p>"
+  ]),
+
+  /* ---------- ACT III ---------- */
+  C("III","Card 07","Why Newton invented new maths",[
+    "<p>To talk about acceleration properly, Newton needed a way to describe rates of change exactly. No such maths existed.</p><p>So he built it. Calculus wasn't a hobby — it was the <strong>only</strong> tool that could say what acceleration even is.</p>"
+  ]),
+  C("III","Card 08","The second rule, revealed",[
+    "<p>Now \"force equals mass times acceleration\" tells the truth about itself.</p><p>Force is what you get when mass meets a change-of-a-change in position. The crash, the orbit, the falling apple — all of it is this one sentence, in the language of change.</p>"
+  ]),
+  C("III","Card 09","Pause and look back",[
+    "<p>You now know what makes things move, what energy is, and how change stacks into motion. That's the <strong>foundation</strong>.</p><p>Everything from here is the universe using these ideas to build forces that reach across empty space.</p>",
+    null,
+    null,
+    "<p><strong>The foundation, acting as one.</strong> Drop a ball and everything happens together in under a second. Gravity <em>acts</em> as the force. The ball <em>accelerates</em> — velocity changing every instant. Its stored height-energy <em>converts</em> to motion.</p><p>It hits the ground; by the pairing rule the ground strikes back equally, stopping it over a tiny crush of time, the energy fleeing as sound and heat. One dropped ball exercises the entire foundation at once.</p>"
+  ]),
+
+  /* ---------- ACT IV ---------- */
+  C("IV","Card 10","Some forces reach across nothing",[
+    "<p>The Sun pulls the Earth across 93 million miles of empty space. A magnet grabs a paperclip without touching it.</p><p>Some forces don't need contact at all. They <strong>reach</strong>. This act is about those forces — and a secret they share.</p>"
+  ]),
+  C("IV","Card 11","Gravity, in one breath",[
+    "<p>Every two objects in the universe pull on each other. You and your phone. The Earth and the Moon. Always.</p><p>This pull is <strong>gravity</strong>, and it can be written as a simple formula — but here's the plain version.</p>",
+    null,
+    null,
+    "<p><strong>Gravity, acting across space.</strong> The Moon is falling — right now, and forever. Earth's gravity reaches across a quarter-million miles and pulls it; the Moon, moving sideways fast enough, keeps <em>missing</em> the Earth as it falls, curving endlessly around instead.</p><p>That is what an orbit <strong>is</strong>: perpetual falling that never lands. The same reaching pull that drops an apple holds the Moon in its month-long loop.</p>"
+  ]),
+  C("IV","Card 12","What gravity depends on",[
+    "<p>The pull is stronger when the objects are more massive, and weaker when they're farther apart.</p><p>Big things pull hard. Distant things pull softly. That's the whole idea.</p>",
+    null,
+    null,
+    null,
+    "<p>The pull grows in lockstep with either mass — twice the mass, twice the pull (<strong>directly proportional</strong>) — and it can be written exactly:</p><div class='formula'>F = G · (M · m) / r²<span class='gloss'>The pull = G, times the two masses, over the distance squared.</span></div><p>G is the universe's dial setting for gravity. This law predicted the planet <strong>Neptune before anyone saw it</strong>, from wobbles in another planet's path. Theory pointed at empty sky; the telescope looked; the planet was there.</p>"
+  ]),
+  C("IV","Card 13","The strange part of distance",[
+    "<p>Move twice as far away and the pull doesn't drop to half. It drops to a <strong>quarter</strong>. Three times as far — a <strong>ninth</strong>.</p><p>Distance bites back far harder than you'd expect. This odd pattern has a name.</p>",
+    "<p>Stand near a campfire and feel its warmth. Step twice as far back and you don't feel half — you feel about a <strong>quarter</strong>. Three times as far, roughly a ninth.</p><p>The heat hasn't disappeared; it's spread out. Same for a lamp's brightness, a speaker's loudness. Distance weakens these far faster than instinct expects — always by the distance <em>squared</em>.</p>"
+  ]),
+  C("IV","Card 14","The inverse square law",[
+    "<p>That pattern — strength falling as the <strong>square</strong> of the distance — is called an inverse square law.</p><p>Twice as far, a quarter as strong. Remember this shape. You're about to meet it where you'd never expect it.</p>",
+    null,
+    null,
+    null,
+    "<p>The shape, written plainly:</p><div class='formula'>force  ∝  1 / distance²<span class='gloss'>An inverse relationship, with a square stacked on top.</span></div><p>It's the form gravity takes — but keep watching. The very same shape is about to appear in something that has <em>nothing</em> to do with gravity.</p>"
+  ]),
+  C("IV","Card 15","Now, electricity",[
+    "<p>Forget gravity for a second. Think of the spark when you touch a doorknob in winter.</p><p>That's <strong>electric charge</strong> — the force between charged things. Lightning, static, the cling of a balloon on hair. A completely different phenomenon.</p>"
+  ]),
+  C("IV","Card 16","Coulomb's law, in one breath",[
+    "<p>Two charged objects push or pull on each other. Stronger when the charges are bigger, weaker when they're farther apart.</p><p>Sound familiar? It should.</p>",
+    "<p>Rub a balloon on your hair and hold it to a wall — it clings, no glue, no hook. Charged particles reach across the gap and pull on charges in the wall.</p><p>Bring two balloons rubbed the same way together and they <strong>refuse</strong> to touch, pushing apart through empty air. A force acting with no contact whatsoever — attracting, repelling, reaching.</p>",
+    null,
+    null,
+    "<p>The identical skeleton, now for charges, with its own constant k:</p><div class='formula'>F = k · (Q · q) / r²<span class='gloss'>The force = k, times the two charges, over the distance squared.</span></div><p>Set this beside gravity and they are the <strong>same equation</strong> in different clothes — masses swapped for charges, G swapped for k. Coulomb measured it with a delicate twisting balance; it has anchored all of electronics ever since.</p>"
+  ]),
+  C("IV","Card 17","The same shape appears",[
+    "<p>The electric force falls off with distance as the <strong>square</strong> — twice as far, a quarter as strong. The exact same pattern as gravity.</p><p>Two unrelated forces, wearing the identical mathematical shape. This is not a coincidence.</p>"
+  ]),
+  C("IV","Card 18","Why on earth would they match?",[
+    "<p>Gravity and electricity have nothing to do with each other. So why the same law?</p><p>The answer isn't about gravity or charge at all. It's about the shape of <strong>space itself</strong>.</p>"
+  ]),
+  C("IV","Card 19","Influence spreading out",[
+    "<p>Picture anything spreading from a point — light from a bulb, a force, a field.</p><p>It spreads outward over the surface of a <strong>growing sphere</strong>. The farther out, the more it's stretched thin.</p>",
+    "<p>Blow up a balloon with a dot-grid drawn on it: as it inflates, every dot drifts apart, the grid spreading over more surface.</p><p>Now imagine paint sprayed evenly over it — when small, thick; as it inflates, the <em>same</em> paint must cover far more surface, so it thins. Light, gravity, heat all behave like that paint, spreading ever thinner over an invisible sphere.</p>"
+  ]),
+  C("IV","Card 20","The geometry that does it",[
+    "<p>The surface of a sphere grows as the <strong>square</strong> of its radius. So anything spreading across it gets diluted by that square.</p><p>That's <strong>why</strong> the strength drops as one-over-distance-squared. The inverse square law is really a law about 3D space.</p>",
+    "<p>The why, made concrete: take a balloon and double its radius. Its surface doesn't double — it becomes <strong>four times</strong> bigger. Triple the radius, <strong>nine times</strong> bigger.</p><p>So a fixed amount of light or heat spreading over it gets diluted by that square. Double the distance, four times the area, one quarter the strength. The inverse square isn't a fact about gravity — it's a fact about the shape of a sphere.</p>"
+  ]),
+  C("IV","Card 21","Once you see it, it's everywhere",[
+    "<p>Light gets dimmer with distance — inverse square. Sound gets quieter — inverse square. Radiation weakens — inverse square.</p><p>The same shape, again and again, because they're all just influence spreading over a sphere.</p>",
+    null,
+    null,
+    "<p><strong>Made to act.</strong> Switch on a bare bulb in a dark room. Close to it, a small patch of wall is fiercely bright. The same cone of light reaching a wall twice as far must spread across <em>four times</em> the area — so each patch is a quarter as bright.</p><p>The light didn't weaken; it <strong>thinned</strong>, spreading over the swelling surface of an invisible sphere. You're seeing the inverse square law happening, in real time, on your wall.</p>"
+  ]),
+  C("IV","Card 22","The third great realm: heat",[
+    "<p>Now meet <strong>thermodynamics</strong> — the physics of heat and energy.</p><p>It runs the engine, the star, the cooling cup of coffee. It has its own rules, and the most famous is one you've already met in disguise.</p>",
+    null,
+    "<p><strong>What is temperature, really?</strong></p><p>A measure of how vigorously the tiny particles inside a thing are jiggling. Hot = fast; cold = slow. The <em>average</em> energy of that random microscopic motion.</p><p>Temperature is <strong>not</strong> heat. A firework spark is at a ferocious temperature but carries almost no heat — it's tiny. A warm bath is mild but holds enormous heat — it's huge. Measured in <strong>kelvin</strong>, starting at absolute zero where jiggling all but stops.</p>"
+  ]),
+  C("IV","Card 23","Heat flows one way",[
+    "<p>Heat always flows from hot to cold, never the reverse on its own. A hot drink cools; it never spontaneously heats up.</p><p>And every time energy changes form, a little slips into disorder. That creeping disorder is called <strong>entropy</strong>.</p>",
+    "<p>Drop an ice cube into hot tea. The tea cools and the ice melts until everything is lukewarm.</p><p>You'll <strong>never</strong> see the reverse — the tea heating back up while the puddle refreezes — even though it wouldn't break the energy rule. Heat only flows hot-to-cold, smoothing differences, never sharpening them. That one-way drift is why time seems to have a direction at all.</p>"
+  ]),
+  C("IV","Card 24","Hot things glow, and it spreads",[
+    "<p>A hot object radiates energy outward as waves of heat and light. And how does that radiation spread? Outward, over the surface of a growing sphere.</p><p>Which means its intensity falls off as — yes — the <strong>square</strong> of the distance. The same shape, now in heat.</p>",
+    "<p>Hold one end of a metal strip in a flame for five seconds, then pull it out. Two things happen at once. <strong>Conduction:</strong> fiercely jiggling atoms at the hot end jostle their neighbours, who jostle theirs — heat creeps up the strip, searing end, warm middle, cool tip.</p><p><strong>Radiation:</strong> the whole strip broadcasts heat into the room (glowing red if hot enough), weakening with distance by the inverse square. The strip both <em>carries</em> heat along itself and <em>broadcasts</em> it outward.</p>",
+    null,
+    "<p><strong>Heat flowing and radiating, completed.</strong> Conduction walks energy up the metal atom by atom. Radiation throws it into the room as invisible waves, fading by the inverse square as it spreads.</p><p>Push the flame hotter and the glow leaps from dull red to bright orange — the fourth-power twist acting before your eyes. Heat flowing one way, heat radiating outward, the colour betraying the temperature: the whole thermodynamics topic, in one strip of metal.</p>"
+  ]),
+  C("IV","Card 25","Heat's own violent twist",[
+    "<p>But heat adds a kick of its own. How much a hot thing radiates depends on its temperature raised to the <strong>fourth power</strong>.</p><p>Make it a little hotter and it glows enormously brighter. It's why stars blaze and a slightly hotter fire is dazzling.</p>",
+    "<p>Watch an electric hob ring heat up. Warm, nothing visible. Hotter, a dull red glow. Hotter still, bright orange.</p><p>That dramatic jump in brightness from a modest rise in temperature is the fourth power at work: doubling the temperature radiates roughly <strong>sixteen times</strong> more energy. It's why a blacksmith reads metal's heat by its colour.</p>",
+    null,
+    null,
+    "<p>The fourth-power shape, hardened with its constant σ:</p><div class='formula'>P = σ · T⁴<span class='gloss'>Radiated power = σ times temperature to the fourth.</span></div><p>This is how we take the temperature of a star we can never visit — by reading the light it pours out. Found by measurement, then derived from deeper principles, then confirmed against furnace and star alike.</p>"
+  ]),
+
+  /* ---------- ACT V ---------- */
+  C("V","Card 26","Three realms, one pattern",[
+    "<p>Gravity. Electricity. Heat radiation. Three utterly different corners of physics.</p><p>And the same <strong>inverse square law</strong> sits at the centre of all three — because all three are influence spreading across the geometry of space.</p>",
+    null,
+    null,
+    null,
+    "<p>Lay the great laws together and the deck's secret stands exposed:</p><div class='formula'>Gravity:&nbsp;&nbsp;&nbsp;&nbsp;F ∝ 1 / r²<br>Electricity:&nbsp;F ∝ 1 / r²<br>Light · sound · radiation:&nbsp;∝ 1 / r²<span class='gloss'>The same inverse square, written again and again.</span></div><p>All of them are influence spreading across the surface of a sphere — and a sphere's surface grows as r². The geometry of space, signing its name on every reaching force.</p>"
+  ]),
+  C("V","Card 27","What \"one formula\" really means",[
+    "<p>It was never about a single line of algebra.</p><p>It's a suspicion: that under gravity and charge and heat and light, the universe runs a <strong>tiny set of structural rules</strong> — and those rules keep surfacing, in disguise, everywhere we look.</p>"
+  ]),
+  C("V","Card 28","The bet physics is making",[
+    "<p>Every \"unified theory\" anyone has chased is one bet: dig deep enough, and all these separate formulas turn out to be the <strong>same formula</strong>, seen from different angles.</p><p>We haven't reached the bottom. Maybe there isn't one. But the pattern keeps holding.</p>"
+  ]),
+  C("V","Card 29","You came in knowing nothing",[
+    "<p>Things move and something makes them. Then: energy, traded and never lost. Then: change stacked into motion, needing a whole new maths. Then: forces reaching across space, all sharing one shape.</p><p>You built the whole picture, <strong>brick by brick</strong>.</p>"
+  ]),
+  C("V","Card 30","The shiver of recognition",[
+    "<p>That feeling when the same inverse square law turns up where it has no business being — that shiver is the whole reason people do physics.</p><p>It's the universe, quietly <strong>repeating itself</strong>, and letting you catch it.</p>"
+  ]),
+  C("V","Card 31","The gap that never closes",[
+    "<p>You hold the proven laws now. So here's the question that should haunt you: if the laws are perfect, <strong>why do rockets still explode on the pad?</strong> Why is a missile not always intercepted?</p><p>The laws are perfect. Our use of them never is.</p>",
+    "<p>Every equation assumes you <em>know</em> every force acting. But a real rocket meets a gust no model saw, a fuel line a fraction too cold, a weld with an invisible flaw.</p><p>The law says F = ma exactly. But the real F, in the real moment, has a thousand tiny contributors we can never fully list. The map is breathtakingly accurate — and still not the territory.</p>",
+    "<p><strong>The language we can't fully translate.</strong> Think of the universe as written in a language we're slowly learning to read. Our formulas are translations — astonishingly good. Good enough to land craft on other worlds, hold bridges up for a century, put a voice in the glass in your pocket.</p><p>But a translation is never the original. Something always escapes — a residue between what the law predicts and what the world does. It looks built-in: finite minds reading an infinite text.</p>",
+    null,
+    "<p><strong>What we call the gap.</strong> That distance — between the smooth ideal and the messy real, between the average and the exact, between where the answer is <em>heading</em> and where it actually <em>is</em> — has a name in mathematics.</p><p>It is the <strong>limit</strong>. It is <strong>calculus</strong> — the machinery built to <em>approach</em> a value you can never quite touch. The circle filled with ever-more polygons. The camera at ever-higher frame rates. Always closer, never arrived.</p><p>And so is <strong>this</strong> — what you are doing right now. Learning is the act of getting closer, narrowing the distance between not-knowing and knowing, without ever reaching a final, finished understanding. There is always another decimal place. Another layer.</p><p style='color:var(--gold);font-style:italic;margin-top:1.2em'>The text is infinite. So the reading never ends.</p>"
+  ])
+];
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const rail=document.getElementById('rail');
+const progress=document.getElementById('progress');
+const counter=document.getElementById('counter');
+const hint=document.getElementById('hint');
+let idx=0;                       // current column
+let depthOf=DECK.map(()=>0);     // current depth per column
+
+// build all cards
+DECK.forEach((col,i)=>{
+  const card=document.createElement('div');
+  card.className='card';
+  card.dataset.i=i;
+  card.innerHTML=`
+    <div class="slab" data-depth="0" data-col="${i}">
+      <button class="ascend" aria-label="Back up a layer">↑</button>
+      <div class="ladder"></div>
+      <div class="slab-inner"></div>
+    </div>`;
+  rail.appendChild(card);
+});
+
+const slabs=[...document.querySelectorAll('.slab')];
+
+function renderColumn(i){
+  const col=DECK[i];
+  const d=depthOf[i];
+  const slab=slabs[i];
+  const inner=slab.querySelector('.slab-inner');
+  const ladder=slab.querySelector('.ladder');
+  // how many real (non-null) layers exist
+  const available=col.layers.map((l,k)=>l!==null?k:-1).filter(k=>k>=0);
+  const maxDepth=Math.max(...available);
+  const content=col.layers[d];
+
+  inner.innerHTML=`
+    <div class="eyebrow">
+      <span class="num">${col.kicker}</span>
+      <span class="act">${ACTS[col.act]}</span>
+      <span class="depthtag">${DEPTH_NAMES[d]}</span>
+    </div>
+    ${d===0?`<div class="kicker">${col.act==="V"&&i===DECK.length-1?'The closing':'Idea'}</div>`:''}
+    <h1 class="title">${col.title}</h1>
+    <div class="body">${content}</div>
+    ${buildDescend(i,d,maxDepth,available)}
+  `;
+  slab.dataset.depth=d;
+
+  // ladder rungs
+  ladder.innerHTML='';
+  for(let k=0;k<=maxDepth;k++){
+    if(col.layers[k]===null) continue;
+    const r=document.createElement('div');
+    r.className='rung'+(k===d?' filled':(k<d?' passed':''));
+    ladder.appendChild(r);
+  }
+  // ascend button
+  const asc=slab.querySelector('.ascend');
+  asc.style.display = d>0 ? 'flex':'none';
+
+  // wire descend
+  const desc=inner.querySelector('.descend');
+  if(desc && !desc.classList.contains('atfloor')){
+    desc.onclick=(e)=>{e.stopPropagation();goDeeper(i);};
+  }
+  asc.onclick=(e)=>{e.stopPropagation();goShallower(i);};
+}
+
+function buildDescend(i,d,maxDepth,available){
+  // find next available depth below d
+  const next=available.find(k=>k>d);
+  if(next===undefined){
+    return `<button class="descend atfloor"><span class="chev">●</span><span><span class="label-top">Bedrock reached</span><span class="label-sub">nothing deeper here</span></span></button>`;
+  }
+  const labels=[
+    ["Dig in","make it concrete"],
+    ["Dig deeper","define the idea"],
+    ["Go deeper","watch it act"],
+    ["The law","see it written"]
+  ];
+  // choose label by the depth we're GOING TO
+  const lab=labels[Math.min(next-1,labels.length-1)];
+  return `<button class="descend"><span class="chev">↓</span><span><span class="label-top">${lab[0]}</span><span class="label-sub">${lab[1]}</span></span></button>`;
+}
+
+function goDeeper(i){
+  const col=DECK[i];
+  const available=col.layers.map((l,k)=>l!==null?k:-1).filter(k=>k>=0);
+  const next=available.find(k=>k>depthOf[i]);
+  if(next===undefined) return;
+  depthOf[i]=next;
+  slabs[i].classList.remove('rising');
+  slabs[i].classList.add('descending');
+  setTimeout(()=>slabs[i].classList.remove('descending'),520);
+  renderColumn(i);
+  fadeHint();
+}
+function goShallower(i){
+  const col=DECK[i];
+  const available=col.layers.map((l,k)=>l!==null?k:-1).filter(k=>k>=0);
+  const below=[...available].reverse().find(k=>k<depthOf[i]);
+  if(below===undefined) return;
+  depthOf[i]=below;
+  slabs[i].classList.remove('descending');
+  slabs[i].classList.add('rising');
+  setTimeout(()=>slabs[i].classList.remove('rising'),460);
+  renderColumn(i);
+}
+
+function move(to){
+  idx=Math.max(0,Math.min(DECK.length-1,to));
+  rail.style.transform=`translateX(${-idx*rail.clientWidth}px)`;
+  progress.style.width=((idx+1)/DECK.length*100)+'%';
+  counter.textContent=String(idx+1).padStart(2,'0')+' / '+DECK.length;
+  document.getElementById('prev').disabled=idx===0;
+  document.getElementById('next').disabled=idx===DECK.length-1;
+}
+
+// initial render of all columns
+DECK.forEach((_,i)=>renderColumn(i));
+move(0);
+
+// counter shows total properly
+counter.textContent='01 / '+DECK.length;
+
+/* ---- controls ---- */
+document.getElementById('next').onclick=()=>move(idx+1);
+document.getElementById('prev').onclick=()=>move(idx-1);
+
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('intro').classList.contains('gone')===false) return;
+  if(e.key==='ArrowRight') move(idx+1);
+  else if(e.key==='ArrowLeft') move(idx-1);
+  else if(e.key==='ArrowDown'){e.preventDefault();goDeeper(idx);}
+  else if(e.key==='ArrowUp'){e.preventDefault();goShallower(idx);}
+});
+
+/* ---- touch: horizontal swipe = move, vertical swipe = depth ---- */
+let tx=0,ty=0,tdx=0,tdy=0,touching=false;
+rail.addEventListener('touchstart',e=>{
+  touching=true;tx=e.touches[0].clientX;ty=e.touches[0].clientY;tdx=0;tdy=0;
+},{passive:true});
+rail.addEventListener('touchmove',e=>{
+  if(!touching)return;
+  tdx=e.touches[0].clientX-tx;tdy=e.touches[0].clientY-ty;
+},{passive:true});
+rail.addEventListener('touchend',()=>{
+  touching=false;
+  const ax=Math.abs(tdx),ay=Math.abs(tdy);
+  if(ax<30&&ay<30) return;            // tap, ignore
+  if(ax>ay){                          // horizontal
+    if(tdx<0) move(idx+1); else move(idx-1);
+  }else{                              // vertical
+    if(tdy<0) goDeeper(idx); else goShallower(idx);
+  }
+},{passive:true});
+
+function fadeHint(){hint.classList.add('gone');}
+let hintTimer=setTimeout(fadeHint,7000);
+
+/* ---- intro ---- */
+document.getElementById('enter').onclick=()=>{
+  const intro=document.getElementById('intro');
+  intro.classList.add('gone');
+  setTimeout(()=>intro.remove(),850);
+};
+
+/* ============================================================
+   AMBIENT PARTICLE FIELD — quiet drifting "dust of space"
+   warms toward ember as you descend the deck
+   ============================================================ */
+const cv=document.getElementById('field');
+const ctx=cv.getContext('2d');
+let W,H,parts;
+function size(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;}
+size();addEventListener('resize',()=>{size();move(idx);});
+function seed(){
+  parts=[];
+  const n=Math.min(90,Math.floor(innerWidth/14));
+  for(let i=0;i<n;i++){
+    parts.push({
+      x:Math.random()*W,y:Math.random()*H,
+      r:(Math.random()*1.6+0.3)*devicePixelRatio,
+      vx:(Math.random()-0.5)*0.12*devicePixelRatio,
+      vy:(Math.random()-0.5)*0.12*devicePixelRatio,
+      a:Math.random()*0.5+0.15
+    });
+  }
+}
+seed();
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function tick(){
+  ctx.clearRect(0,0,W,H);
+  // colour shifts with act of current card
+  const act=DECK[idx].act;
+  const tint = act==="V"?[242,213,133] : act==="IV"?[169,214,160] : [225,228,218];
+  for(const p of parts){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();
+    ctx.fillStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${p.a})`;
+    ctx.arc(p.x,p.y,p.r,0,7);
+    ctx.fill();
+  }
+  if(!reduce) requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>

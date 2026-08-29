@@ -1,0 +1,185 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "The anchor",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "nucleus", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>We know the atom is mostly empty space. It has a tiny, heavy center called the nucleus, and a cloud of gnats — the electrons — zipping around the outside.</p>" },
+        { "content": "<p>But if the electrons are moving so incredibly fast, what keeps them from just flying away into deep space? Why do they stay trapped in their lanes?</p>" },
+        { "content": "<p>To understand that, we have to zoom in and crack open the heavy little marble sitting dead in the center: the nucleus. Inside the nucleus, there are larger, heavy particles. The most important one is called the proton.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The invisible tether",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "electric-charge", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Protons and electrons have a very special relationship. They possess a property called electrical charge.</p>" },
+        { "content": "<p>Electrons have a negative charge. Protons have a positive charge. And in the physics of our universe, opposites attract.</p>" },
+        { "content": "<p>If you put a proton and an electron near each other, they pull toward one another like powerful magnets.</p>" },
+        { "content": "<p>This pull is electrical, not magnetic. The positive nucleus attracts the negative electron cloud, so the electrons remain bound around the atom instead of simply drifting away.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The absolute identity",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "protons", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Protons do more than just hold the electrons on a leash. They dictate exactly what the atom is.</p>" },
+        { "content": "<p>The number of protons in the center is the atom's ultimate identity badge.</p>" },
+        { "content": "<p>If an atom has exactly 1 proton in its center, it is Hydrogen. It will always be Hydrogen. If an atom has exactly 8 protons, it is Oxygen. If it has 79 protons, it is Gold.</p>" },
+        { "content": "<p>An atom can lose or trade its outside electrons all day long — that is just chemistry. But if an atom somehow loses a proton, it instantly transforms into a completely different element. Identity is strictly a headcount of protons.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The ticking bomb",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "nucleus", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>But if you think about this for a second, there is a massive problem hidden inside the nucleus.</p>" },
+        { "content": "<p>Remember how opposites attract? Well, likes repel. If you take two positive magnets and try to push them together, they violently push back against your hands.</p>" },
+        { "content": "<p>Now think about that Gold atom. It has 79 highly positive protons all crammed perfectly together inside a microscopic space.</p>" },
+        { "content": "<p>The repulsive force between 79 positive charges should be unimaginable. The protons should violently repel each other and instantly blow the nucleus to pieces.</p>" },
+        { "content": "<p>So why doesn't the atom explode? Because the protons are not sitting in the center alone. They have a buffer.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The peacekeepers",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "neutrons", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Sitting right next to the protons in the center are particles called Neutrons.</p>" },
+        { "content": "<p>Neutrons are exactly the same size and weight as protons, but they have absolutely no electrical charge. They are totally neutral. They do not attract, and they do not repel.</p>" },
+        { "content": "<p>They act as physical wedges. They pack themselves between the angry, repelling protons, spacing them out just enough to keep them from blowing apart.</p>" },
+        { "content": "<p>Without neutrons acting as the heavy peacekeepers, every single element in the universe heavier than Hydrogen would instantly destroy itself.</p>" },
+        { "content": "<p>So, the nucleus is a perfectly balanced machine. The protons pull on the outside electrons to hold the atom together, and the neutrons hold the protons together so the center doesn't explode.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The hidden weight",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "isotopes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>We know the identity of an atom is based entirely on how many protons are sitting in its center. 6 protons is always Carbon. 8 protons is always Oxygen.</p>" },
+        { "content": "<p>But protons are not alone in the center of the atom. There is another particle sitting right next to them, called a neutron.</p>" },
+        { "content": "<p>Neutrons have absolutely no electrical charge. They don't affect the electron traffic lanes. They don't change how the atom bonds. Chemically, they do absolutely nothing.</p>" },
+        { "content": "<p>All they do is add dead weight. They just sit in the center and make the atom heavier.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The heavy twin",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "isotopes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because neutrons don't change the atom's identity, an element can actually come in a few different weights.</p>" },
+        { "content": "<p>Think of Carbon. Every Carbon atom in the universe has exactly 6 protons. If it didn't, it wouldn't be Carbon.</p>" },
+        { "content": "<p>But some Carbon atoms have 6 neutrons, while others have 7, or even 8.</p>" },
+        { "content": "<p>Because the electron lanes haven't changed, all three versions act exactly the same. They look the same, and they build the exact same things. The only difference is that one is slightly heavier than the other.</p>" },
+        { "content": "<p>In chemistry, these different-weight versions of the exact same atom are called Isotopes. They are just identical twins, where one twin is carrying a heavier backpack.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The decimal problem",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "isotopes", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If you look at a Periodic Table, the weight of each element is listed at the bottom of its box. But the numbers are weird.</p>" },
+        { "content": "<p>For example, Chlorine's weight is listed as 35.5. How is that possible? You can't have half of a neutron. An atom either has a whole neutron, or it doesn't.</p>" },
+        { "content": "<p>The answer is that the number on the table isn't the weight of a single atom. It is a population average.</p>" },
+        { "content": "<p>In nature, about 75% of Chlorine atoms are the lighter isotope, and 25% are the heavier isotope. When you scoop up a handful of Chlorine, you are holding a mix of both. The 35.5 is just the average weight of the whole handful.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The tug-of-war",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "covalent-bonding", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Let's go back to how atoms bond together. Earlier, we saw Sodium throw an extra electron away, and Chlorine catch it. That exchange locked them together to make salt.</p>" },
+        { "content": "<p>But what happens if two atoms meet, and neither one of them wants to give up an electron?</p>" },
+        { "content": "<p>Imagine two Oxygen atoms bumping into each other. They both desperately want to steal an electron to fill their outer lanes. They are equally strong. It is a perfect tug-of-war, and nobody is winning.</p>" },
+        { "content": "<p>So, they compromise. They overlap their outer lanes and agree to share.</p>" },
+        { "content": "<p>Two electrons drop into the space directly between them. Because both atoms are pulling hard on those shared electrons, they are physically glued together. This is called a Covalent bond.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The architecture of life",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "covalent-bonding", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>When atoms steal and catch electrons (like salt), they tend to just stack up into rigid, boring crystals.</p>" },
+        { "content": "<p>But when atoms share electrons, they can do incredible things. They can share one pair, two pairs, or even three pairs of electrons at the same time, creating incredibly strong links.</p>" },
+        { "content": "<p>Because they are sharing, they can act like Tinkertoys. They can build long chains, branch out into rings, and fold into massive, complex structures.</p>" },
+        { "content": "<p>This sharing of electrons is the entire basis of biology. Water, DNA, human skin, and tree bark are all built with covalent bonds. Carbon is the ultimate sharing atom, which is exactly why carbon is the backbone of all life.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The electron sea",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "metallic-bonding", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>There is one final way that atoms bond, and it only happens with metals like copper, iron, and gold.</p>" },
+        { "content": "<p>Metals don't throw their electrons to a specific partner, and they don't neatly share them in pairs. They do something totally weird.</p>" },
+        { "content": "<p>Imagine a block of solid copper. The heavy centers of the atoms lock themselves into a neat, rigid grid. But they let their outer electrons completely off the leash.</p>" },
+        { "content": "<p>Trillions of loose electrons leave their atoms and just flow around the grid like a giant communal ocean. The grid of heavy atoms stays in place, totally glued together by this swirling sea of negative charge.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Why a wire bends",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "metallic-bonding", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This swirling 'sea of electrons' is the only reason human civilization has electricity and machines.</p>" },
+        { "content": "<p>Think about hitting a salt crystal with a hammer. It shatters instantly. The atoms are locked in a rigid grip, and if you push them, they break.</p>" },
+        { "content": "<p>Now hit a piece of copper wire with a hammer. It doesn't shatter. It bends. It flattens out. Why? Because the atoms aren't rigidly locked to a specific partner. The heavy atoms just slide past each other, and the liquid sea of electrons just flows right around them to keep the bond intact.</p>" },
+        { "content": "<p>If you plug that copper wire into a battery, the entire sea of loose electrons shifts and flows down the wire. That flow of moving electrons is exactly what electricity is.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The chemist's dozen",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If you want to bake a cake, you need to count your ingredients. You need 2 cups of flour and 3 eggs.</p>" },
+        { "content": "<p>Chemists need to count their ingredients too. To make water, you need exactly 2 hydrogen atoms and 1 oxygen atom. But atoms are too small to pick up with tweezers.</p>" },
+        { "content": "<p>If you go to a baker and ask for 12 eggs, you don't say '12 eggs.' You ask for a dozen. 'Dozen' is just a shorthand word for the number 12.</p>" },
+        { "content": "<p>Chemists use a shorthand word too. It is called a Mole.</p>" },
+        { "content": "<p>Instead of meaning 12, a mole means exactly 602,000,000,000,000,000,000,000. It is just a massive counting number. Nothing more.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "A spoonful of water",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>That number (called Avogadro's number) is so big it is almost impossible to picture.</p>" },
+        { "content": "<p>If you had a mole of regular glass marbles, they would cover the entire surface of the Earth several miles deep.</p>" },
+        { "content": "<p>But atoms are so unimaginably tiny that a mole of water molecules — all 602 sextillion of them — fits perfectly inside a single tablespoon.</p>" },
+        { "content": "<p>Chemists use this massive number because it is the exact amount needed to scale the microscopic world up to the real world. A single atom is invisible. A mole of atoms is something you can actually hold in your hand.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Counting by weighing",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>You still have a problem. Even if you know you need 'a mole' of carbon to run an experiment, you can't sit there and count out a trillion trillion atoms.</p>" },
+        { "content": "<p>So, you cheat. You count them by weighing them.</p>" },
+        { "content": "<p>Think of a jar of pennies. If you know exactly how much one penny weighs, you don't have to count the jar. You just put the whole jar on a scale, do some quick division, and the scale tells you exactly how many pennies are inside.</p>" },
+        { "content": "<p>The Periodic Table does this for you. That decimal number at the bottom of the box? It tells you exactly how many grams one mole of that element weighs.</p>" },
+        { "content": "<p>One mole of Carbon weighs exactly 12 grams. So, if you put 12 grams of carbon on a kitchen scale, you know with absolute certainty that you are holding exactly one mole of atoms.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The recipe",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "mole", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This is the daily arithmetic of chemistry. It is how every laboratory on earth functions.</p>" },
+        { "content": "<p>When a chemist looks at a chemical equation, they don't see a terrifying math problem. They just see a cooking recipe.</p>" },
+        { "content": "<p>If the recipe says you need 2 parts Hydrogen and 1 part Oxygen, they don't try to count the invisible atoms.</p>" },
+        { "content": "<p>They look at the Periodic Table, find the weight, and pour the ingredients onto a glass scale. By measuring the grams, they are perfectly counting the invisible atoms. Weight translates the microscopic world into the physical world.</p>" }
+      ]
+    }
+  ]
+}

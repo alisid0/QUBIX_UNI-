@@ -1,0 +1,68 @@
+{
+  "boards": [
+    {
+      "kicker": "", "title": "The invisible geometry",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "vsepr", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A molecule is often drawn on paper as a flat, two-dimensional sketch. But molecules are not flat. They are three-dimensional objects with highly specific geometry.</p>" },
+        { "content": "<p>The shape of a molecule is not random. It is dictated by a single, unbreakable rule of physics: electron pairs repel each other.</p>" },
+        { "content": "<p>The electrons holding a molecule together carry a negative charge. Because like-charges repel, these electron pairs constantly push against one another, forcing themselves as far apart as physically possible in 3D space.</p>" },
+        { "content": "<p>This behavior is called VSEPR (Valence Shell Electron Pair Repulsion). By simply counting the electron pairs around a central atom, the exact shape of any molecule can be predicted.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "Bending the shape",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "vsepr", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>If an atom has two electron pairs attached to it, they push to opposite sides. The widest possible spread is 180°. The molecule becomes perfectly linear, like a straight stick.</p>" },
+        { "content": "<p>If there are three pairs, they spread flat in a circle, sitting 120° apart. This forms a flat triangle.</p>" },
+        { "content": "<p>If there are four pairs, they can no longer sit flat without crowding. They pop into three dimensions, pointing to the corners of a pyramid-like shape called a tetrahedron. The angle between them is exactly 109.5°.</p>" },
+        { "content": "<p>However, not all electron pairs form bonds. Some sit unused, as 'lone pairs.' Because lone pairs sit closer to the nucleus, they repel even more aggressively.</p>" },
+        { "content": "<p>In a water molecule (H₂O), the oxygen atom has two bonded pairs and two lone pairs. The aggressive lone pairs squeeze the bonded hydrogens closer together, shrinking the angle to 104.5°. The water molecule is permanently bent.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The lopsided pull",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "polarity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>That slight bend in a water molecule dictates exactly how it interacts with the physical world. It all comes down to how atoms share electrons.</p>" },
+        { "content": "<p>In a covalent bond, electrons are shared, but rarely equally. Oxygen has a massive, positively charged nucleus. It pulls on shared electrons much harder than the tiny hydrogen atoms can.</p>" },
+        { "content": "<p>Because the negative electrons spend more time near the oxygen, the oxygen end of the molecule becomes slightly negative. The hydrogen ends are left slightly positive.</p>" },
+        { "content": "<p>This is called a Polar Bond. It is a microscopic tug-of-war where one side is winning, creating a lopsided electrical charge.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The symmetry loophole",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "polarity", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A molecule can have polar bonds, yet remain entirely neutral overall. It depends completely on the 3D shape.</p>" },
+        { "content": "<p>Carbon dioxide (CO₂) has oxygen atoms that pull electrons fiercely away from the center carbon. The bonds are highly polar.</p>" },
+        { "content": "<p>But CO₂ is a perfectly straight, linear molecule (180°). The oxygen on the left pulls exactly as hard as the oxygen on the right. The electrical pulls perfectly cancel each other out. The molecule is non-polar overall.</p>" },
+        { "content": "<p>Water (H₂O) does not have this symmetry. Because it is bent at a 104.5° angle, the pulls do not cancel. The entire molecule carries a permanent positive side and a permanent negative side.</p>" },
+        { "content": "<p>This polarity is why water is a powerful solvent. The positive and negative ends act like microscopic magnets, violently ripping apart salts and sugars.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The weak glue",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "intermolecular-forces", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Covalent and ionic bonds hold atoms together inside a molecule. But there is a secondary force at work in the universe.</p>" },
+        { "content": "<p>Intermolecular forces hold whole molecules to each other.</p>" },
+        { "content": "<p>They are incredibly weak compared to true chemical bonds, but they dictate the physical state of matter. They are the reason water is a liquid at room temperature instead of a gas, and the reason geckos can walk on ceilings.</p>" },
+        { "content": "<p>The strongest of these weak forces is called Hydrogen Bonding. When the slightly positive hydrogen end of one water molecule drifts near the slightly negative oxygen end of another, they magnetically cling together.</p>" },
+        { "content": "<p>This weak, fleeting attraction causes water molecules to stick to each other, creating surface tension and raising the boiling point of water.</p>" }
+      ]
+    },
+    {
+      "kicker": "", "title": "The zipper of life",
+      "tags": { "subject": "chemistry", "topic": "The Atom", "concept": "dna-proteins", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Hydrogen bonding is not limited to water. It is the fastener that holds biological life together.</p>" },
+        { "content": "<p>DNA is a long, double-stranded polymer. The two strands spiral around each other to form a double helix.</p>" },
+        { "content": "<p>The rungs of this genetic ladder (the A, T, G, and C bases) are not held together by permanent covalent bonds. They are held together purely by hydrogen bonds.</p>" },
+        { "content": "<p>This is a mechanical necessity. The hydrogen bonds act like a biological zipper. They are strong enough to hold the massive helix together, but weak enough that enzymes can easily unzip them when the DNA needs to be copied.</p>" },
+        { "content": "<p>Proteins rely on the exact same mechanism. Hydrogen bonds pull long chains of amino acids into tight coils and pleated sheets, folding them into the microscopic machines that run the human body. Biology and chemistry are the same interaction, just applied at different scales.</p>" }
+      ]
+    }
+  ]
+}

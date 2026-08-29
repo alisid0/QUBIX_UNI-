@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Qubix Admin, Operations &amp; Disaster-Recovery Guide</title>
+<meta name="author" content="Arcave Technologies">
+<meta name="description" content="Operator-grade reference for deploying, operating, and recovering the Qubix platform.">
+<meta name="keywords" content="Qubix, Strata, admin guide, disaster recovery, runbook, Supabase, Vercel">
+<style>
+  @page {
+    size: A4; margin: 18mm 16mm 20mm 16mm;
+    @bottom-left  { content: "Qubix Admin & DR Guide"; font-size: 7.5pt; color: #9a9a9a; }
+    @bottom-center{ content: "CONFIDENTIAL — Arcave Technologies"; font-size: 7.5pt; color: #9a9a9a; }
+    @bottom-right { content: "p. " counter(page) " / " counter(pages); font-size: 7.5pt; color: #9a9a9a; }
+  }
+  @page :first { @bottom-left{content:"";} @bottom-center{content:"";} @bottom-right{content:"";} }
+  @page landscape-card { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 9.5pt; line-height: 1.45; color: #1c1c22; margin: 0; }
+  h1,h2,h3,h4 { font-family: "DejaVu Sans", Arial, sans-serif; color: #14131a; line-height: 1.2; }
+  h2 { font-size: 15.5pt; border-bottom: 2px solid #454ADE; padding-bottom: 3px; margin: 22px 0 10px; page-break-after: avoid; bookmark-level: 1; bookmark-label: content(); }
+  h3 { font-size: 11.5pt; color: #3237c4; margin: 15px 0 5px; page-break-after: avoid; bookmark-level: 2; bookmark-label: content(); }
+  h4 { font-size: 10pt; margin: 11px 0 3px; page-break-after: avoid; bookmark-level: 3; bookmark-label: content(); }
+  p { margin: 5px 0; }
+  code { font-family: "DejaVu Sans Mono", monospace; background: #f1f1f6; padding: 1px 3px; border-radius: 3px; font-size: 8.1pt; color: #a52a5a; }
+  pre { font-family: "DejaVu Sans Mono", monospace; background: #16161d; color: #e6e6ef; padding: 9px 11px; border-radius: 5px; font-size: 7.7pt; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; margin: 7px 0; page-break-inside: avoid; }
+  pre code { background: none; color: inherit; padding: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 8.2pt; page-break-inside: avoid; }
+  thead { display: table-header-group; }
+  th { background: #454ADE; color: #fff; text-align: left; padding: 5px 7px; font-weight: 700; }
+  td { border: 1px solid #d8d8e2; padding: 4px 7px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f7fb; }
+  .cover { text-align: center; padding-top: 45mm; page-break-after: always; }
+  .cover .brand { font-size: 13pt; font-weight: 800; letter-spacing: 0.3em; color: #454ADE; }
+  .cover h1 { font-size: 26pt; margin: 12px 0 4px; }
+  .cover .sub { font-size: 11pt; color: #55555f; max-width: 130mm; margin: 6px auto; }
+  .cover .meta { margin-top: 24mm; font-size: 8.5pt; color: #77777f; }
+  .toc { page-break-after: always; }
+  .toc h2 { border: none; }
+  .toc ul { list-style: none; padding-left: 0; }
+  .toc > ul > li { font-weight: 700; margin: 6px 0 2px; }
+  .toc ul ul { padding-left: 16px; font-weight: 400; font-size: 8.8pt; }
+  .toc ul ul li { margin: 1px 0; color: #44444c; }
+  .callout { border-left: 4px solid #454ADE; background: #f0f0fb; padding: 7px 11px; margin: 9px 0; border-radius: 0 4px 4px 0; page-break-inside: avoid; }
+  .warn { border-left-color: #CF3423; background: #fbeeeb; }
+  .ok   { border-left-color: #2c9e5b; background: #edf7f0; }
+  .stop { border-left-color: #b8860b; background: #fbf6e6; }
+  .callout p { margin: 2px 0; }
+  .small { font-size: 8pt; color: #66666e; }
+  .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; }
+  ul.tight, ol.tight { margin: 3px 0; padding-left: 17px; }
+  ul.tight li, ol.tight li { margin: 1px 0; }
+  .lbl { display: inline-block; font-size: 7pt; font-weight: 700; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.04em; vertical-align: middle; }
+  .v-ver { background: #dff3e6; color: #1c7a44; border: 1px solid #9ed7b4; }
+  .v-unv { background: #fdeede; color: #a5641a; border: 1px solid #e9c091; }
+  .v-pro { background: #e6ecfb; color: #2f43a8; border: 1px solid #b3c2ef; }
+  .v-app { background: #fbe4e4; color: #a52121; border: 1px solid #e6a3a3; }
+  .playbook { border: 1px solid #d8d8e2; border-radius: 5px; padding: 8px 11px; margin: 9px 0; page-break-inside: avoid; }
+  .playbook h4 { margin-top: 0; color: #b3261e; }
+  .pbrow { margin: 3px 0; }
+  .pbrow b { color: #3237c4; }
+  .emergency { page-break-before: always; page-break-after: always; }
+  .emergency table { font-size: 7.6pt; }
+  hr { border: none; border-top: 1px solid #e0e0e8; margin: 14px 0; }
+</style>
+</head>
+<body>
+
+<!-- ============================ COVER ============================ -->
+<div class="cover">
+  <div class="brand">QUBIX</div>
+  <h1>Admin, Operations &amp;<br>Disaster-Recovery Guide</h1>
+  <div class="sub">The operator-grade reference for running Qubix in normal times and in an incident — deployment, data model, backups, and emergency playbooks.</div>
+  <div class="meta">
+    Internal codename <b>Strata</b> · public brand <b>Qubix</b> · operated by <b>Arcave Technologies</b><br>
+    Production reference <span class="mono">2f3238f</span> · deployed 2026-07-22 · <span class="mono">qubix.university</span><br>
+    Document version 2.0 · generated 2026-07-22<br><br>
+    <span class="lbl v-ver">VERIFIED</span> confirmed from code/system &nbsp;
+    <span class="lbl v-unv">UNVERIFIED</span> needs admin access &nbsp;
+    <span class="lbl v-pro">PROPOSED</span> recommended, not yet in place &nbsp;
+    <span class="lbl v-app">REQUIRES APPROVAL</span> Ali must authorise
+  </div>
+</div>
+
+<!-- ============================ TOC ============================ -->
+<div class="toc">
+  <h2>Contents</h2>
+  <ul>
+    <li>A · Authority, ownership &amp; document control
+      <ul><li>Document control</li><li>Precedence of sources</li><li>Access &amp; ownership matrix</li><li>Approval gates</li></ul></li>
+    <li>B · Architecture &amp; complete data/API reference
+      <ul><li>Runtime components &amp; trust boundaries</li><li>Every Supabase call site</li><li>Full schema — every table</li><li>Functions, triggers, buckets, Edge/serverless</li><li>Migration &amp; bootstrap order</li></ul></li>
+    <li>C · Normal release runbook
+      <ul><li>Preconditions</li><li>Git checks &amp; stop conditions</li><li>Deploy &amp; deployment-ID capture</li><li>Post-deploy smoke test</li><li>Go/No-Go</li></ul></li>
+    <li>D · Database &amp; content-change runbooks
+      <ul><li>Additive-first schema change</li><li>Running the destructive staging tests safely</li><li>Content export/import &amp; card rollback</li></ul></li>
+    <li>E · Backup, restore &amp; disaster recovery
+      <ul><li>Capability status by system</li><li>Restore procedure</li><li>RPO/RTO targets vs verified capability</li><li>Restore-drill template</li></ul></li>
+    <li>F · Emergency incident playbooks (1–12)</li>
+    <li>G · Security operations &amp; CSP completion
+      <ul><li>Where the logs are</li><li>Secret inventory &amp; rotation order</li><li>CSP: collector → observe → enforce</li></ul></li>
+    <li>H · User support, privacy &amp; data requests</li>
+    <li>I · One-page emergency reference (print separately)</li>
+    <li>Appendix · corrections from guide v1.0</li>
+  </ul>
+</div>
+
+<!-- ============================ A ============================ -->
+<h2>A · Authority, ownership &amp; document control</h2>
+
+<h3>Document control</h3>
+<table>
+  <tr><th>Field</th><th>Value</th></tr>
+  <tr><td>Document owner</td><td>Ali (founder / primary operator) <span class="lbl v-app">REQUIRES APPROVAL</span> to change ownership</td></tr>
+  <tr><td>Authoring / technical reviewer</td><td>Claude (drafting) &amp; Codex (cross-review), under Ali's direction</td></tr>
+  <tr><td>Last code verification</td><td>2026-07-22, against <span class="mono">origin/main = origin/staging = 2f3238f</span></td></tr>
+  <tr><td>Last live verification</td><td>2026-07-22 — homepage &amp; legal pages HTTP 200; security headers verified post-deploy by Codex under Ali's authorisation</td></tr>
+  <tr><td>Production commit / deploy</td><td><span class="mono">2f3238f</span> / Vercel <span class="mono">dpl_84E64sJmRPzABzm9LpDDPg1Tp8rq</span></td></tr>
+  <tr><td>Next review due</td><td>On the next production deploy, or 2026-10-22, whichever is first</td></tr>
+</table>
+<p class="small"><b>Revision history.</b> v1.0 (2026-07-22) — first 14-page guide. v2.0 (2026-07-22) — operator-grade rewrite: corrected release/DB/server facts, added full schema/API appendix, disaster recovery, 12 incident playbooks, secret-rotation, CSP completion, support/privacy workflows, one-page emergency card, verification labels. v2.1 (2026-07-22) — Codex cross-review corrections: split fresh-bootstrap from the 0006 repair (0006 not applied to a fresh DB); PowerShell-first destructive-test commands; corrected live-verification attribution (Codex under Ali's authorisation); removed unverified provider-plan backup claims; PDF/UA tagging where supported.</p>
+
+<h3>Precedence of sources</h3>
+<p>When two sources disagree, trust them in this order. The running system always wins.</p>
+<ol class="tight">
+  <li><b>The running production system</b> — what the live site and Supabase project actually do.</li>
+  <li><b><code>docs/PUBLIC-BETA-CHECKLIST.md</code></b> — authoritative live status of every gate.</li>
+  <li><b><code>docs/ENVIRONMENTS.md</code></b> and <b><code>docs/RELEASE-MODEL.md</code></b> — configuration &amp; release model.</li>
+  <li><b>The migration files</b> in <code>supabase/migrations/</code> — the schema of record.</li>
+  <li><b>This guide.</b> If it conflicts with any of the above, the above wins and this guide is stale.</li>
+</ol>
+
+<h3>Access &amp; ownership matrix</h3>
+<p>Roles and recovery paths only — <b>never</b> record credentials here. <span class="lbl v-unv">UNVERIFIED</span> rows need Ali to confirm the owning account and that recovery (2FA backup codes, recovery email) is in place.</p>
+<table>
+  <tr><th>System</th><th>Owner / account</th><th>Recovery path to confirm</th></tr>
+  <tr><td>GitHub (<code>alisid0/QUBIX_UNI-</code>)</td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Account 2FA backup codes; is anyone else an admin?</td></tr>
+  <tr><td>Vercel (production project)</td><td>Ali / <code>qubixprod</code> team <span class="lbl v-unv">UNVERIFIED</span></td><td>Team recovery; SSO vs password; 2FA</td></tr>
+  <tr><td>Supabase Production (<code>wmetdmfsniqrshuaoodc</code>)</td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Org owner; MFA; is the DB password stored safely?</td></tr>
+  <tr><td>Supabase Staging (<code>atmmfkhjsdqqwnhqifxm</code>)</td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Same org as production?</td></tr>
+  <tr><td>DNS / registrar (<code>arcavetech.co.uk</code>)</td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Registrar login + 2FA; who can change records</td></tr>
+  <tr><td>Google OAuth (Cloud Console)</td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Project owner; consent-screen contact</td></tr>
+  <tr><td>SMTP provider</td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Provider account; sending-domain DNS</td></tr>
+  <tr><td>Google Play (dev acct <code>6992886775198578677</code>)</td><td>Arcave Technologies</td><td>Play Console access; <b>upload/signing key backup</b></td></tr>
+  <tr><td>Google Search Console</td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Verified via DNS TXT — <b>do not delete that record</b></td></tr>
+  <tr><td>Support mailbox <code>admin@arcavetech.co.uk</code></td><td>Ali <span class="lbl v-unv">UNVERIFIED</span></td><td>Who monitors it; forwarding; retention</td></tr>
+</table>
+
+<h3>Approval gates — actions that require Ali's explicit go-ahead</h3>
+<div class="callout warn">
+<p>None of the following may be done by an agent or operator without Ali approving first, in writing on the board or equivalent:</p>
+<ul class="tight">
+  <li>Any <b>production deploy</b> (<code>pnpm run deploy</code>).</li>
+  <li>Any <b>schema or RLS change</b> applied to the production database.</li>
+  <li>Any <b>DNS or custom-domain move</b>.</li>
+  <li>Any <b>secret rotation</b> or credential change.</li>
+  <li>Any <b>destructive user-data action</b> (bulk delete, manual account deletion).</li>
+  <li>Flipping the <b>CSP from report-only to enforcing</b>.</li>
+  <li>Running any <b>destructive test against anything but staging</b>.</li>
+</ul>
+</div>
+
+<!-- ============================ B ============================ -->
+<h2>B · Architecture &amp; complete data/API reference</h2>
+
+<h3>Runtime components &amp; trust boundaries</h3>
+<p>Qubix has <b>no always-on custom application server</b>. It does, however, run server-side code in two managed places: Supabase <b>Edge Functions</b> and one <b>dormant</b> Vercel serverless function. The distinction matters for incident response.</p>
+<table>
+  <tr><th>Component</th><th>Runs where</th><th>Credential it may use</th><th>Trust boundary</th></tr>
+  <tr><td>Svelte SPA</td><td>User's browser / Android TWA, served from Vercel CDN</td><td>Public anon key only</td><td>Untrusted client — RLS enforces access</td></tr>
+  <tr><td>Supabase Auth</td><td>Supabase (managed)</td><td>—</td><td>Owns identities; app never sees passwords</td></tr>
+  <tr><td>PostgreSQL + RLS</td><td>Supabase (managed, London)</td><td>Enforces per-user rows</td><td>The security boundary of record</td></tr>
+  <tr><td>Storage buckets</td><td>Supabase (managed)</td><td>Public read (2) / per-user (1)</td><td>Screenshots private per folder</td></tr>
+  <tr><td><code>delete-account</code> Edge Function</td><td>Supabase Deno runtime</td><td><b>Service-role key</b> (injected)</td><td>Trusted server code; the only place the service key is used at runtime</td></tr>
+  <tr><td><code>api/csp-report.js</code></td><td>Vercel serverless — <b>dormant</b></td><td>None</td><td>Deployed but unreferenced; 204s until wired</td></tr>
+  <tr><td>Ingest / admin scripts</td><td>Operator's machine, on demand</td><td><b>Service-role key</b> from local env</td><td>Trusted, human-run; never in CI or browser</td></tr>
+</table>
+
+<h3>Every Supabase call site <span class="lbl v-ver">VERIFIED</span></h3>
+<p>Complete inventory from the codebase at <span class="mono">2f3238f</span>. There is one client, in <code>src/lib/supabase.js</code>. Every write carries an explicit <code>user_id</code> and is enforced by RLS.</p>
+<table>
+  <tr><th>File</th><th>Operation</th><th>Target</th><th>Auth assumption / control</th></tr>
+  <tr><td><code>lib/stores/auth.js</code></td><td>signUp, signInWithPassword, signInWithOAuth, signInWithOtp, verifyOtp, resetPasswordForEmail, updateUser, resend, signOut, getSession, onAuthStateChange</td><td>Supabase Auth</td><td>Public flows; OTP path gated off</td></tr>
+  <tr><td><code>lib/stores/profile.js</code></td><td>select / upsert</td><td><code>user_profiles</code></td><td>Own row (RLS)</td></tr>
+  <tr><td><code>lib/stores/progress.js</code></td><td>select ×5, upsert ×3, insert ×2</td><td><code>user_board_progress</code>, <code>user_path_progress</code>, <code>user_quiz_attempts</code>, <code>user_workshop_attempts</code>, <code>user_w_events</code>, <code>user_daily_activity</code></td><td>Own rows (RLS); reads also filter <code>eq('user_id')</code></td></tr>
+  <tr><td><code>lib/stores/engagement.js</code></td><td>insert</td><td><code>user_engagement_sessions</code></td><td>Own row (RLS)</td></tr>
+  <tr><td><code>lib/stores/issueReports.js</code></td><td>insert; storage upload</td><td><code>issue_reports</code>; <code>issue-screenshots</code></td><td>Signed-in only (F-04); upload under own folder</td></tr>
+  <tr><td><code>lib/supabase.js</code></td><td>rpc</td><td><code>export_my_user_data()</code></td><td>Authenticated; self-scoped</td></tr>
+  <tr><td><code>lib/supabase.js</code></td><td>fetch POST</td><td><code>functions/v1/delete-account</code></td><td>Bearer JWT + confirm phrase</td></tr>
+  <tr><td><code>lib/content/dynamicBoards.js</code></td><td>select</td><td><code>cards</code></td><td>Public read</td></tr>
+</table>
+<p class="small">Admin-only script call sites (service role, never shipped to users): <code>scripts/ingest-bbs.mjs</code>, <code>ingest-snippets.mjs</code>, <code>ingest-final-review.mjs</code>, <code>sync-bbs-from-md.mjs</code>, <code>migrate-dynamic-kickers.mjs</code>, <code>generate-audio.mjs</code>, <code>progress-report.mjs</code> — all write <code>cards</code> or storage.</p>
+
+<h3>Full schema — every table <span class="lbl v-ver">VERIFIED</span></h3>
+<p>From <code>schema.sql</code> + migrations 0002–0007. All <code>user_*</code> tables: RLS enabled, <code>user_id</code> → <code>auth.users(id)</code> <b>ON DELETE CASCADE</b>, own-row policies for select/insert/update/delete. Grants set explicitly in 0007.</p>
+
+<h4>cards — public catalogue (service-role write only)</h4>
+<table>
+  <tr><th>Column</th><th>Type</th><th>Constraints</th></tr>
+  <tr><td>id</td><td>uuid</td><td>PK, default uuid_generate_v4()</td></tr>
+  <tr><td>sort_order</td><td>integer</td><td>not null, <b>unique</b> — the BB number</td></tr>
+  <tr><td>act</td><td>text</td><td>not null, check in I–V</td></tr>
+  <tr><td>kicker, title</td><td>text</td><td>not null</td></tr>
+  <tr><td>layers</td><td>jsonb</td><td>not null default '[]' — floor HTML</td></tr>
+  <tr><td>img_url</td><td>text</td><td>nullable</td></tr>
+  <tr><td>tags</td><td>jsonb</td><td>nullable</td></tr>
+  <tr><td>created_at, updated_at</td><td>timestamptz</td><td>default now(); updated_at via trigger</td></tr>
+</table>
+<p class="small">Index: <code>cards_sort_order_idx</code>. RLS: public read; no anon/authenticated write policy. Grant (0007): <code>select</code> to anon + authenticated.</p>
+
+<h4>user_profiles — one private profile per account</h4>
+<table>
+  <tr><th>Column</th><th>Type</th><th>Constraints</th></tr>
+  <tr><td>user_id</td><td>uuid</td><td>PK → auth.users, ON DELETE CASCADE</td></tr>
+  <tr><td>internal_username</td><td>text</td><td>not null, unique, regex <code>^[a-z0-9_]{3,40}$</code>; from user-id not email (F-03)</td></tr>
+  <tr><td>age_band</td><td>text</td><td>check: 13_15 / 16_17 / 18_plus / prefer_not (under_13 removed, F-08)</td></tr>
+  <tr><td>learning_goal</td><td>text</td><td>check: exam/school/career/curiosity/coding/teaching/prefer_not</td></tr>
+  <tr><td>daily_goal_minutes</td><td>integer</td><td>check in (5,10,15,30)</td></tr>
+  <tr><td>selected_topics</td><td>jsonb</td><td>not null default '[]'</td></tr>
+  <tr><td>heard_from, learner_type</td><td>text</td><td>nullable</td></tr>
+  <tr><td>onboarding_completed</td><td>boolean</td><td>not null default false</td></tr>
+  <tr><td>created_at, updated_at</td><td>timestamptz</td><td>default now()</td></tr>
+</table>
+
+<h4>user_board_progress (PK user_id+bbid)</h4>
+<p class="small">bbid int; first/last_opened_at, open_count (≥0), deepest_floor_reached (≥0), deepest_floor_completed_at, recall_due_at, recall_stage (≥0), recall_passes (≥0), created/updated_at. Indexes on (user_id,last_opened_at) and partial (user_id,recall_due_at).</p>
+<h4>user_path_progress (PK user_id+path_id)</h4>
+<p class="small">path_id text; first/last_opened_at, best_score, best_total, first_pass_at, mastered_once_at, recalled_mastered_twice_at, timestamps. Check: score valid vs total.</p>
+<h4>user_quiz_attempts (PK id uuid) / user_workshop_attempts (PK id uuid)</h4>
+<p class="small">quiz: path_id, score(≥0), total(&gt;0), completed_at, metadata; check score≤total. workshop: module_id, score, total, best_streak(≥0), is_challenge bool, completed_at, metadata.</p>
+<h4>user_w_events (PK id uuid)</h4>
+<p class="small">event_type, event_ref, amount(&gt;0), bonus bool, repeatable bool, created_at, metadata. Unique partial index (user_id,event_type,event_ref) where not repeatable.</p>
+<h4>user_daily_activity (PK user_id+activity_date) / user_engagement_sessions (PK id uuid)</h4>
+<p class="small">daily: activity_date, event_count(≥0), timestamps. sessions: started_at, ended_at (≥started), active_seconds(≥0), route, metadata, created_at.</p>
+<h4>issue_reports (PK id uuid)</h4>
+<table>
+  <tr><th>Column</th><th>Notes</th></tr>
+  <tr><td>user_id</td><td>→ auth.users <b>ON DELETE SET NULL</b> (report survives, anonymised)</td></tr>
+  <tr><td>category</td><td>check: bug/content/workshop/audio/visual/account/idea/other</td></tr>
+  <tr><td>message</td><td>not null, 3–4000 chars</td></tr>
+  <tr><td>route, bbid, workshop_id, screenshot_path, app_version, user_agent</td><td>context (cleared on deletion — F-06)</td></tr>
+  <tr><td>status</td><td>check: open/reviewing/fixed/closed; user may only set 'closed' (F-07 trigger)</td></tr>
+  <tr><td>viewport, metadata</td><td>jsonb; cleared on deletion (F-06)</td></tr>
+</table>
+<p class="small">Insert: authenticated only, <code>auth.uid()=user_id</code> (F-04). Update guarded by <code>guard_issue_report_update()</code>; insert rate-limited by <code>guard_issue_report_rate()</code> (10/hr). Legacy <code>public.progress</code> retired in 0005 (F-09).</p>
+
+<h3>Functions, triggers, buckets, Edge/serverless <span class="lbl v-ver">VERIFIED</span></h3>
+<table>
+  <tr><th>Object</th><th>Type</th><th>Privilege &amp; behaviour</th></tr>
+  <tr><td><code>create_private_user_profile()</code></td><td>trigger on auth.users insert</td><td>security definer; makes neutral-username profile</td></tr>
+  <tr><td><code>delete_my_user_data()</code></td><td>RPC</td><td>security definer; erases caller's learning data, anonymises reports; execute→authenticated only (0007)</td></tr>
+  <tr><td><code>export_my_user_data()</code></td><td>RPC</td><td>returns caller's data as JSON; execute→authenticated only (0007)</td></tr>
+  <tr><td><code>guard_issue_report_update()</code></td><td>trigger</td><td>blocks edits after submit; allows deletion-time anonymisation</td></tr>
+  <tr><td><code>guard_issue_report_rate()</code></td><td>trigger</td><td>10 reports/user/hour</td></tr>
+  <tr><td><code>set_updated_at()</code></td><td>trigger</td><td>maintains updated_at</td></tr>
+  <tr><td><code>card-images</code>, <code>card-audio</code></td><td>storage bucket</td><td>public read</td></tr>
+  <tr><td><code>issue-screenshots</code></td><td>storage bucket</td><td>private; policy scopes each user to <code>&lt;uid&gt;/</code></td></tr>
+  <tr><td><code>delete-account</code></td><td>Supabase Edge Function</td><td>service-role; verifies JWT + confirm phrase; drains screenshots, calls RPC, deletes identity; fails loud if identity delete fails (orphan flagged)</td></tr>
+  <tr><td><code>api/csp-report.js</code></td><td>Vercel serverless</td><td>dormant; POST-only, trims to path, drops noise, never logs IP</td></tr>
+</table>
+
+<h3>Migration &amp; bootstrap order <span class="lbl v-ver">VERIFIED</span></h3>
+<p>Two distinct sequences. Per <code>docs/ENVIRONMENTS.md</code>, a fresh clean bootstrap is <b>schema → 0002 → 0003 → 0004 → 0005 → 0007</b> (plus the Edge Function). <b>0006 is NOT part of a fresh bootstrap</b> — it is an incremental repair for a database that already had the earlier broken 0005.</p>
+<h4>Fresh bootstrap (rebuild from scratch)</h4>
+<table>
+  <tr><th>Step</th><th>File</th><th>Role</th></tr>
+  <tr><td>1</td><td><code>supabase/schema.sql</code></td><td>Base: cards, legacy progress, first policies, set_updated_at</td></tr>
+  <tr><td>2</td><td><code>0002_storage_buckets.sql</code></td><td>The 3 buckets</td></tr>
+  <tr><td>3</td><td><code>0003_bbid.sql</code></td><td>Board-id handling</td></tr>
+  <tr><td>4</td><td><code>0004_secure_user_data.sql</code></td><td>User-data model: all user_* tables, RLS, profile trigger</td></tr>
+  <tr><td>5</td><td><code>0005_launch_hardening.sql</code></td><td>F-03,04,06,07,08,09; export fn; defines <code>delete_my_user_data()</code></td></tr>
+  <tr><td>6</td><td><code>0007_explicit_api_grants.sql</code></td><td>Explicit role grants; revoke default execute</td></tr>
+  <tr><td>7</td><td>deploy <code>delete-account</code> Edge Fn + set its <code>SUPABASE_SERVICE_ROLE_KEY</code> secret</td><td>The Edge Function removes screenshots via the Storage API</td></tr>
+</table>
+<div class="callout warn"><p><b>Do NOT apply <code>0006</code> on a fresh bootstrap.</b> On a clean build the corrected <code>delete_my_user_data()</code> is already in place from 0005 as combined with the Edge Function, and screenshot deletion is handled by the Edge Function — not by SQL. Applying 0006 to a fresh DB is unnecessary and misleading about where the fix lives.</p></div>
+<h4>Conditional upgrade / repair — earlier-0005 databases only</h4>
+<table>
+  <tr><th>File</th><th>When to apply</th></tr>
+  <tr><td><code>0006_delete_account_storage_fix.sql</code></td><td><b>Only</b> to a database that had the earlier 0005 whose <code>delete_my_user_data()</code> tried to delete from <code>storage.objects</code> directly (which Supabase rejects). It replaces that function with the corrected version. Not needed on a fresh bootstrap.</td></tr>
+</table>
+<div class="callout"><p><span class="lbl v-ver">VERIFIED</span> against migration contents and <code>docs/ENVIRONMENTS.md</code>. Before any from-scratch rebuild, reconcile against the Supabase project's actual migration history in the dashboard.</p></div>
+
+<!-- ============================ C ============================ -->
+<h2>C · Normal release runbook</h2>
+<p><span class="lbl v-app">REQUIRES APPROVAL</span> The production deploy step needs Ali's go-ahead.</p>
+
+<h3>Preconditions</h3>
+<ol class="tight">
+  <li><code>git fetch origin</code> — start from the true remote state, not a stale local clone.</li>
+  <li>Identify the exact reviewed commit to ship; confirm <code>origin/staging</code> is what was reviewed.</li>
+  <li>Clean, isolated worktree — no unrelated modified or untracked files. In particular confirm no stray public asset (e.g. a rejected image) is staged: <code>git status</code> should be clean.</li>
+  <li>Secret scan: no key material in the diff.</li>
+  <li>Security tests green: <code>pnpm run test:security</code> (47/47).</li>
+  <li>Staging QA passed on <code>qubix-staging.vercel.app</code>.</li>
+  <li>Production build succeeds: <code>pnpm run build:production</code>.</li>
+</ol>
+
+<h3>Git checks &amp; stop conditions</h3>
+<pre>git fetch origin
+git log --oneline origin/main..origin/staging   # what will ship
+git rev-parse origin/main origin/staging         # capture both hashes</pre>
+<div class="callout stop"><p><b>STOP</b> if either remote moved since review, if <code>origin/main</code> is not an ancestor of <code>origin/staging</code> (not a clean fast-forward), or if a local <code>main</code> is polluted (a prior incident put a staging commit on a local <code>main</code>). Recover <code>main</code> from <code>origin/main</code>; never deploy from an unreviewed local branch.</p></div>
+
+<h3>Deploy &amp; deployment-ID capture</h3>
+<pre>pnpm run build:production
+pnpm run deploy                 # manual — this changes the live site
+# record the Vercel deployment ID (e.g. dpl_...) and confirm the stable
+# production alias points at it.</pre>
+<p>Confirm the deployed commit matches Git: the bundle should contain the production Supabase ref and not the retired ref.</p>
+
+<h3>Post-deploy smoke test</h3>
+<table>
+  <tr><th>Check</th><th>Pass criteria</th></tr>
+  <tr><td>Homepage + <code>/privacy.html</code> + <code>/terms.html</code></td><td>HTTP 200</td></tr>
+  <tr><td>Sign-in (email &amp; Google)</td><td>Completes, session persists</td></tr>
+  <tr><td>Board loads incl. a dynamic card (85+)</td><td>Renders sanitised HTML</td></tr>
+  <tr><td>Progress write</td><td>A board open persists for a test account</td></tr>
+  <tr><td>Logout / session restore</td><td>Clean, where safe to test</td></tr>
+  <tr><td>Service worker</td><td>New build activates (skipWaiting)</td></tr>
+  <tr><td>Asset URLs</td><td>Content-hashed, cache-immutable</td></tr>
+  <tr><td>Console / network</td><td>No severe errors, no failed requests</td></tr>
+  <tr><td>Security headers</td><td>See below</td></tr>
+</table>
+<p><b>Expected headers now</b> <span class="lbl v-ver">verified post-deploy 2026-07-22 by Codex under Ali's authorisation</span>: CSP <i>report-only</i> present; enforcing CSP <b>absent</b> (by design); HSTS; <code>X-Frame-Options: DENY</code>; <code>X-Content-Type-Options: nosniff</code>; <code>Referrer-Policy: strict-origin-when-cross-origin</code>.</p>
+
+<h3>Go / No-Go</h3>
+<table>
+  <tr><th>Evidence field</th><th>Record</th></tr>
+  <tr><td>Source commit</td><td>________</td></tr>
+  <tr><td>Deployment ID</td><td>________</td></tr>
+  <tr><td>Smoke test</td><td>pass / fail</td></tr>
+  <tr><td>Headers present</td><td>yes / no</td></tr>
+  <tr><td>Decision</td><td>GO / NO-GO</td></tr>
+</table>
+<p><b>Rollback threshold:</b> any smoke-test failure that affects sign-in, board loading, or data writes → roll back immediately (§E / Playbook 1), do not "fix forward" under pressure.</p>
+
+<!-- ============================ D ============================ -->
+<h2>D · Database &amp; content-change runbooks</h2>
+
+<h3>Additive-first schema change</h3>
+<div class="callout warn"><p><span class="lbl v-app">REQUIRES APPROVAL</span> Applying to production is irreversible and immediate. Git and Vercel do <b>not</b> promote schema; a migration file in Git is not "applied" until run in the SQL editor.</p></div>
+<ol class="tight">
+  <li>Confirm backup/restore readiness (§E) before any production DDL.</li>
+  <li>Write the change as a new numbered migration (<code>0008_*.sql</code>). Prefer additive: add a column/table, backfill, then stop reading the old shape in a later deploy.</li>
+  <li>Apply in the <b>staging</b> SQL editor; run both isolation tests (below); QA the app.</li>
+  <li>Deploy tolerant client code to production <b>first</b>.</li>
+  <li>Apply the migration in the <b>production</b> SQL editor.</li>
+  <li>Verify immediately: RLS still isolates, grants intact, no user-facing breakage.</li>
+  <li>Keep a corrective-migration plan ready (there is no automatic rollback).</li>
+</ol>
+
+<h3>Running the destructive staging tests safely</h3>
+<p>Both scripts create and delete accounts. They refuse anything but staging via a four-gate fail-closed guard. Provide the staging service-role key in-shell for the run only — <b>never</b> write it to a file or into this guide.</p>
+<h4>Windows PowerShell (Ali's environment)</h4>
+<pre>$env:SUPABASE_SERVICE_ROLE_KEY = '&lt;staging service role key&gt;'
+node --env-file=.env.staging.local scripts/test-rls-isolation.mjs --staging
+node --env-file=.env.staging.local scripts/test-user-data-lifecycle.mjs --staging
+Remove-Item Env:SUPABASE_SERVICE_ROLE_KEY</pre>
+<h4>Bash / macOS / Linux (equivalent)</h4>
+<pre>export SUPABASE_SERVICE_ROLE_KEY='&lt;staging service role key&gt;'
+node --env-file=.env.staging.local scripts/test-rls-isolation.mjs --staging
+node --env-file=.env.staging.local scripts/test-user-data-lifecycle.mjs --staging
+unset SUPABASE_SERVICE_ROLE_KEY</pre>
+<table>
+  <tr><th>Guard</th><th>Behaviour</th></tr>
+  <tr><td>No <code>--staging</code></td><td>Refuse, exit 2</td></tr>
+  <tr><td>Target host = production</td><td>Refuse (host match)</td></tr>
+  <tr><td>Target host ≠ configured staging host</td><td>Refuse</td></tr>
+  <tr><td>Correct staging host</td><td>Proceed</td></tr>
+</table>
+<div class="callout stop"><p><b>Absolute ban:</b> never point these at production, never set an <code>RLS_ALLOW_PROD</code>-style override. Verify production isolation with read-only checks only. Expected result: all checks pass; both scripts clean up their test accounts in a <code>finally</code> block. Confirm no <code>rls-test</code>/<code>lifecycle-</code> accounts remain afterward.</p></div>
+
+<h3>Content export/import &amp; card rollback</h3>
+<p>Content lives in the Supabase <code>cards</code> table, not Git. A code deploy never changes content; a card edit never needs a deploy.</p>
+<ul class="tight">
+  <li><b>Edit a card:</b> change the row in the Supabase table editor (or ingest scripts with the service-role key). Live on the learner's next open of that board.</li>
+  <li><b>Refresh staging from production catalogue:</b> <code>pnpm run content:export-staging-sql</code> → review the generated SQL chunks → apply in staging → verify the card count. Public cards only; never copies users or private data.</li>
+  <li><b>Rollback a bad edit:</b> edit the row back to its previous value. Keep a note of the prior content before a bulk change.</li>
+</ul>
+
+<!-- ============================ E ============================ -->
+<h2>E · Backup, restore &amp; disaster recovery</h2>
+<div class="callout"><p>Several capabilities below are <span class="lbl v-unv">UNVERIFIED</span> because confirming them needs Supabase/Vercel/registrar dashboard access I do not have. Each gives the exact admin check. Treat an unverified backup as <b>no backup</b> until confirmed.</p></div>
+
+<h3>Capability status by system</h3>
+<table>
+  <tr><th>System</th><th>Capability</th><th>Status</th><th>Admin check / gap</th></tr>
+  <tr><td>Supabase Postgres</td><td>Automated backups / Point-in-Time Recovery</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Dashboard → Database → Backups: record the plan, backup frequency, retention window, PITR availability/status, last successful backup, and the restore procedure. (Provider plan features change — do not assume; check and date the finding.)</td></tr>
+  <tr><td>Supabase schema/functions/policies</td><td>Reproducible from Git migrations</td><td><span class="lbl v-ver">VERIFIED</span></td><td>Migrations 0002–0007 + schema.sql rebuild it</td></tr>
+  <tr><td>Public catalogue (cards)</td><td>Exportable via script</td><td><span class="lbl v-ver">VERIFIED</span></td><td><code>content:export-staging-sql</code> / catalogue audit</td></tr>
+  <tr><td>Storage objects</td><td>Backup</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Not covered by DB backup. Decide: are card-images/audio reproducible from source, and are user screenshots worth backing up? (They are deletable personal data.)</td></tr>
+  <tr><td>Auth users</td><td>Backup/export</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Auth export is limited. Never copy production auth users to staging.</td></tr>
+  <tr><td>Vercel deployment</td><td>Previous-deployment rollback</td><td><span class="lbl v-ver">VERIFIED (mechanism)</span></td><td>Immutable prior builds selectable in dashboard</td></tr>
+  <tr><td>Git history</td><td>Reviewed remote commits</td><td><span class="lbl v-ver">VERIFIED</span></td><td>Recover from <code>origin</code>, not polluted local branches</td></tr>
+  <tr><td>DNS / domain</td><td>Registrar-held</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Confirm registrar access + record backup</td></tr>
+  <tr><td>Android signing/upload key</td><td>Backed up</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Once a key exists, its loss is unrecoverable except via Play App Signing key reset. Back it up offline.</td></tr>
+</table>
+
+<h3>Restore procedure (database)</h3>
+<div class="callout warn"><p>Restore to a <b>separate recovery project first</b>. Never make production the first target of a restore test.</p></div>
+<ol class="tight">
+  <li>Create a fresh recovery Supabase project.</li>
+  <li>Restore the backup / apply migrations in bootstrap order (§B).</li>
+  <li>Verify: table integrity, RLS enabled + policies present, grants (0007), auth callback URLs, storage buckets, card count and sample content.</li>
+  <li>Point a staging build at the recovery project and smoke-test.</li>
+  <li>Only after verification, plan the production cutover (auth Site URL, redirect allowlist, client env, DNS if needed).</li>
+</ol>
+
+<h3>Other recovery paths</h3>
+<ul class="tight">
+  <li><b>Vercel:</b> select the previous good deployment, reassign the stable production alias, capture the new deployment ID, re-run the smoke test.</li>
+  <li><b>Git:</b> reset local <code>main</code> to <code>origin/main</code>; never rely on a local branch that may carry stray commits.</li>
+  <li><b>DNS/domain move:</b> keep the Search Console TXT record; verify HTTPS/cert issues after the move; account for TTL; update Supabase auth Site URL and OAuth redirect URIs to the new origin.</li>
+  <li><b>Edge Function / secrets:</b> redeploy <code>delete-account</code>; re-set <code>SUPABASE_SERVICE_ROLE_KEY</code> as a function secret. Secrets are not in Git — keep an offline record of <i>which</i> secrets exist (not their values).</li>
+  <li><b>Android:</b> the upload key and Play App Signing boundary determine recoverability; document where the keystore is backed up.</li>
+</ul>
+
+<h3>RPO / RTO — proposed targets vs verified capability</h3>
+<table>
+  <tr><th></th><th>Proposed target</th><th>Verified capability</th></tr>
+  <tr><td>RPO (max data loss)</td><td><span class="lbl v-pro">PROPOSED</span> ≤ 24h for user data</td><td><span class="lbl v-unv">UNVERIFIED</span> — depends on Supabase backup tier</td></tr>
+  <tr><td>RTO (time to restore)</td><td><span class="lbl v-pro">PROPOSED</span> ≤ 4h for the web app; DB per provider</td><td>Vercel rollback: minutes. DB: <span class="lbl v-unv">UNVERIFIED</span></td></tr>
+</table>
+<p class="small">Do not claim an SLA or a backup feature that has not been checked in the dashboard.</p>
+
+<h3>Restore-drill template <span class="lbl v-pro">PROPOSED</span></h3>
+<p>Schedule a restore drill (e.g. quarterly). Record: date, operator, backup source + timestamp, recovery project ref, integrity/RLS/grant/auth/storage/card-count results, time taken (actual RTO), data-loss window (actual RPO), issues found, sign-off.</p>
+
+<!-- ============================ F ============================ -->
+<h2>F · Emergency incident playbooks</h2>
+<p>Each: <b>first 15 minutes → containment → recovery → verification → communication → follow-up</b>. Actions marked <span class="lbl v-app">APPROVAL</span> need Ali first. <b>Never</b>, as a "quick fix": disable RLS, expose a service key, copy real users to staging, delete evidence, or apply an unreviewed production migration.</p>
+
+<div class="playbook">
+<h4>1 · Public site down / bad Vercel deployment</h4>
+<div class="pbrow"><b>15 min:</b> Confirm scope — is it the site or the whole of Vercel? Check the Vercel dashboard build/function logs and the deployment status.</div>
+<div class="pbrow"><b>Containment:</b> Roll back — reassign the stable production alias to the last known-good deployment ID. This is safe and immediate.</div>
+<div class="pbrow"><b>Recovery:</b> Capture the new (old) deployment ID; investigate the bad build offline.</div>
+<div class="pbrow"><b>Verify:</b> Homepage + legal 200; sign-in; a board loads; headers present.</div>
+<div class="pbrow"><b>Comms:</b> If users were affected, note duration and cause for the record.</div>
+<div class="pbrow"><b>Follow-up:</b> Fix forward on a branch → staging → re-deploy per §C.</div>
+</div>
+
+<div class="playbook">
+<h4>2 · Broken auth / SMTP / recovery links / Google OAuth</h4>
+<div class="pbrow"><b>15 min:</b> Reproduce. Which flow — sign-up email, password reset, or Google? Check Supabase Auth logs.</div>
+<div class="pbrow"><b>Containment:</b> If a recent change caused it, roll the client back (Playbook 1). Do not disable auth.</div>
+<div class="pbrow"><b>Recovery:</b> SMTP → check provider status + sending-domain SPF/DKIM. OAuth → the redirect URI must exactly equal the Supabase callback <code>https://wmetdmfsniqrshuaoodc.supabase.co/auth/v1/callback</code>. Recovery links to localhost/staging → auth <b>Site URL</b> is wrong for the environment.</div>
+<div class="pbrow"><b>Verify:</b> Full loop on a real device — sign-up, confirm, reset, Google, logout.</div>
+<div class="pbrow"><b>Follow-up:</b> Record which config was wrong; update the auth runbook.</div>
+</div>
+
+<div class="playbook">
+<h4>3 · Suspected secret leak (service-role / Vercel / SMTP / OAuth / GitHub / DNS / signing key)</h4>
+<div class="pbrow"><b>15 min:</b> Treat as live. Identify which secret and where it may have leaked (commit, log, screenshot). Preserve evidence — do <b>not</b> delete the leak; screenshot/record it without copying the secret value anywhere new.</div>
+<div class="pbrow"><b>Containment <span class="lbl v-app">APPROVAL</span>:</b> Rotate the affected secret at its source (§G rotation order). The service-role key is the highest priority — its leak exposes all data.</div>
+<div class="pbrow"><b>Recovery:</b> Re-set the new secret everywhere it is consumed (dashboard, Edge Function secret, local env). Redeploy/redeploy functions as needed.</div>
+<div class="pbrow"><b>Verify:</b> Old secret no longer works; app still functions; deletion/export still work if the service key rotated.</div>
+<div class="pbrow"><b>Follow-up:</b> Assess exposure window; if personal data may have been accessed, escalate to Ali for a breach decision (do not invent legal deadlines).</div>
+</div>
+
+<div class="playbook">
+<h4>4 · Suspected cross-user exposure / RLS regression</h4>
+<div class="pbrow"><b>15 min:</b> Capture the report/evidence. Identify the table and operation.</div>
+<div class="pbrow"><b>Containment:</b> Do <b>not</b> disable RLS. If a recent migration caused it, prepare a corrective migration; if a recent client change, roll it back.</div>
+<div class="pbrow"><b>Recovery <span class="lbl v-app">APPROVAL</span>:</b> Apply a corrective migration (staging-tested) restoring the own-row policy.</div>
+<div class="pbrow"><b>Verify:</b> Run <code>test-rls-isolation.mjs</code> against staging (never prod); read-only checks against production.</div>
+<div class="pbrow"><b>Follow-up:</b> Add a regression test; breach assessment with Ali.</div>
+</div>
+
+<div class="playbook">
+<h4>5 · Accidental production schema/RLS change</h4>
+<div class="pbrow"><b>15 min:</b> Stop further changes. Identify exactly what was run and when (SQL editor history).</div>
+<div class="pbrow"><b>Containment:</b> Assess blast radius — did it drop/alter a column an active client reads? If so, expect running sessions to break.</div>
+<div class="pbrow"><b>Recovery <span class="lbl v-app">APPROVAL</span>:</b> Write and staging-test a corrective migration. If data was lost, consider a restore to a recovery project (§E) to recover rows. No automatic undo exists.</div>
+<div class="pbrow"><b>Verify:</b> Schema matches intent; RLS/grants intact; app works.</div>
+<div class="pbrow"><b>Follow-up:</b> Reinforce the approval gate; never run ad-hoc DDL on production.</div>
+</div>
+
+<div class="playbook">
+<h4>6 · Public catalogue content deleted/corrupted</h4>
+<div class="pbrow"><b>15 min:</b> Determine which cards and how (bad ingest run? manual edit?). Halt any running ingest script.</div>
+<div class="pbrow"><b>Containment:</b> No user data is at risk — this is public content. Note the current row count vs the expected 1,145.</div>
+<div class="pbrow"><b>Recovery:</b> Re-import from source (<code>1945_BBs/</code>, content drafts) via the ingest scripts, or restore <code>cards</code> from a DB backup to a recovery project and copy rows back. Public-card-only.</div>
+<div class="pbrow"><b>Verify:</b> Count = expected; spot-check sample boards render.</div>
+<div class="pbrow"><b>Follow-up:</b> Add a pre-ingest count/backup step.</div>
+</div>
+
+<div class="playbook">
+<h4>7 · Malicious/unsafe HTML content or XSS report</h4>
+<div class="pbrow"><b>15 min:</b> The render-time sanitiser (F-01) is the active defence and strips scripts. Confirm it is deployed (it is, at <span class="mono">2f3238f</span>). Identify the offending card row.</div>
+<div class="pbrow"><b>Containment:</b> Edit the card row to remove the payload (content change, immediate). Query <code>cards.layers</code> for <code>&lt;script</code>, <code>onerror=</code>, <code>onload=</code>, <code>javascript:</code>.</div>
+<div class="pbrow"><b>Recovery:</b> Clean any other affected rows; review the ingest pipeline that admitted it.</div>
+<div class="pbrow"><b>Verify:</b> Re-run the catalogue scan; sanitiser tests green.</div>
+<div class="pbrow"><b>Follow-up:</b> Add ingest-time sanitisation/validation; accelerate CSP enforcement (§G).</div>
+</div>
+
+<div class="playbook">
+<h4>8 · CSP rollout breakage</h4>
+<div class="pbrow"><b>15 min:</b> Symptom: legitimate resources blocked after enforcing the CSP. Identify the blocked directive from a report/console.</div>
+<div class="pbrow"><b>Containment:</b> Roll back the CSP header to <code>Content-Security-Policy-Report-Only</code> (or revert the <code>vercel.json</code> commit) and redeploy. The report-only policy blocks nothing.</div>
+<div class="pbrow"><b>Recovery:</b> Widen the policy for the legitimate origin (e.g. GeoGebra, fonts, Supabase), re-observe, then re-enforce.</div>
+<div class="pbrow"><b>Verify:</b> Full session surface loads; no legitimate violations.</div>
+<div class="pbrow"><b>Follow-up:</b> Keep the collector's privacy minimisation (path-only, no IP).</div>
+</div>
+
+<div class="playbook">
+<h4>9 · Account-deletion failure / orphaned screenshots / incomplete anonymisation</h4>
+<div class="pbrow"><b>15 min:</b> Reproduce with a test account on staging. The Edge Function fails <i>loud</i> if the identity delete fails, returning a "contact support" error — check its logs.</div>
+<div class="pbrow"><b>Containment:</b> If data was erased but the identity survived, that user is a flagged orphan — record the user id (no other PII).</div>
+<div class="pbrow"><b>Recovery <span class="lbl v-app">APPROVAL</span>:</b> Manually complete deletion via the dashboard (delete the auth user; drain their screenshot folder). Confirm the report row is anonymised (null user_id/user_agent/screenshot_path/viewport/metadata).</div>
+<div class="pbrow"><b>Verify:</b> <code>test-user-data-lifecycle.mjs</code> on staging.</div>
+<div class="pbrow"><b>Follow-up:</b> Fix the failure cause; the privacy policy promises deletion works.</div>
+</div>
+
+<div class="playbook">
+<h4>10 · Domain / DNS / certificate outage</h4>
+<div class="pbrow"><b>15 min:</b> Confirm whether it is DNS resolution, the cert, or the registrar. The current live origin is <code>qubix.university</code> (Vercel-managed cert); a custom-domain move adds registrar/cert steps.</div>
+<div class="pbrow"><b>Containment:</b> If a recent DNS change broke it, revert the record. <b>Do not delete the Search Console TXT record.</b></div>
+<div class="pbrow"><b>Recovery <span class="lbl v-app">APPROVAL</span>:</b> Fix at the registrar; allow for TTL; re-issue/verify HTTPS; update auth Site URL + OAuth redirects if the origin changed.</div>
+<div class="pbrow"><b>Verify:</b> HTTPS valid; site loads; auth redirects work.</div>
+</div>
+
+<div class="playbook">
+<h4>11 · Service worker traps users on a broken shell</h4>
+<div class="pbrow"><b>15 min:</b> Symptom: users stuck on an old/broken UI after a deploy. Cause: a change to a cached shell file in <code>public/sw.js</code> without bumping the cache version.</div>
+<div class="pbrow"><b>Containment:</b> Bump the <code>CACHE</code> version string in <code>sw.js</code>; the activate handler purges old caches on next load. Redeploy.</div>
+<div class="pbrow"><b>Recovery:</b> The worker is network-first for navigation + calls skipWaiting, so most users recover on next launch.</div>
+<div class="pbrow"><b>Verify:</b> A returning session gets the new shell.</div>
+<div class="pbrow"><b>Follow-up:</b> Add "bump sw cache version" to the shell-change checklist.</div>
+</div>
+
+<div class="playbook">
+<h4>12 · Lost admin access / primary operator unavailable</h4>
+<div class="pbrow"><b>15 min:</b> Identify which system's access is lost. Use the access matrix (§A) recovery paths.</div>
+<div class="pbrow"><b>Containment:</b> Use provider account-recovery (2FA backup codes, recovery email). For a team resource, a second admin (if one exists) can restore access.</div>
+<div class="pbrow"><b>Recovery:</b> Regain access; rotate anything that may have been exposed during recovery.</div>
+<div class="pbrow"><b>Follow-up <span class="lbl v-app">APPROVAL</span>:</b> Add a second admin/owner where safe; store 2FA backup codes and the Android keystore offline. This is the biggest single-point-of-failure risk while Ali is the sole operator.</div>
+</div>
+
+<!-- ============================ G ============================ -->
+<h2>G · Security operations &amp; CSP completion</h2>
+
+<h3>Where the logs are</h3>
+<table>
+  <tr><th>What</th><th>Where</th></tr>
+  <tr><td>Build / serverless function logs</td><td>Vercel dashboard → project → Deployments / Functions</td></tr>
+  <tr><td>Database / Auth / Edge Function logs</td><td>Supabase dashboard → Logs</td></tr>
+  <tr><td>Code history</td><td>GitHub — <code>origin/main</code>, commit messages, the agent board</td></tr>
+  <tr><td>Client errors / blocked resources</td><td>Browser dev tools → Console + Network</td></tr>
+  <tr><td>CSP violations</td><td>Once wired: the <code>/api/csp-report</code> collector's Vercel logs</td></tr>
+</table>
+
+<h3>Secret inventory &amp; rotation order</h3>
+<p>Values never recorded here. Rotate in an order that avoids locking yourself out.</p>
+<table>
+  <tr><th>Secret</th><th>Stored in</th><th>Consumed by</th><th>Rotation note</th></tr>
+  <tr><td>Supabase service-role key</td><td>Supabase dashboard</td><td><code>delete-account</code> secret; local ingest scripts</td><td>Highest impact. Rotate → update Edge Function secret → update local env. App keeps working (browser never uses it).</td></tr>
+  <tr><td>Supabase anon key</td><td><code>.env.production</code> (public)</td><td>Browser</td><td>Public by design; rotating needs a client redeploy.</td></tr>
+  <tr><td>SMTP password</td><td>Supabase dashboard</td><td>Supabase Auth email</td><td>Rotate at provider → update in Supabase.</td></tr>
+  <tr><td>Google OAuth client secret</td><td>Supabase dashboard</td><td>Supabase Auth Google provider</td><td>Rotate in Cloud Console → update in Supabase.</td></tr>
+  <tr><td>Vercel / GitHub tokens</td><td>Provider account</td><td>CI/deploy</td><td>Rotate in provider settings.</td></tr>
+  <tr><td>Android upload/signing key</td><td>Offline keystore</td><td>Play upload</td><td>Loss is near-unrecoverable — back up offline; Play App Signing key reset is the only remedy.</td></tr>
+</table>
+
+<h3>CSP: collector → observe → enforce</h3>
+<p>Current state: security headers live, CSP in <b>report-only</b>, collector <b>dormant</b> and unreferenced. F-02 is therefore latent, not active; the F-01 sanitiser is the working XSS defence. Completion sequence (design in <code>docs/engineering/CSP-REPORTING.md</code>):</p>
+<ol class="tight">
+  <li><span class="lbl v-app">APPROVAL</span> Wire the collector: add <code>Reporting-Endpoints</code> header + <code>report-to</code>/<code>report-uri</code> directives pointing at <code>/api/csp-report</code>. Deploy. Confirm it 204s.</li>
+  <li>Observe 1–2 weeks across the full session surface (sign-in, reader, workshop, quiz, audio, Three.js, GeoGebra), desktop + Android.</li>
+  <li>Review reports (privacy-minimised: path-only, noise dropped, no IP). Widen the policy for every legitimate blocked origin.</li>
+  <li><span class="lbl v-app">APPROVAL</span> Flip <code>Content-Security-Policy-Report-Only</code> → <code>Content-Security-Policy</code> in a separate commit. F-02 becomes active.</li>
+  <li>Rollback if anything legitimate breaks: revert to report-only and redeploy (Playbook 8).</li>
+  <li>Keep monitoring post-enforcement for regressions.</li>
+</ol>
+<p class="small">Enforcement criteria: a clean observation window with zero legitimate violations; every external origin accounted for; tested on real Android.</p>
+
+<h3>Current known risks / launch blockers</h3>
+<p>Must match <code>docs/PUBLIC-BETA-CHECKLIST.md</code>. As of 2026-07-22: CSP not yet enforcing; both DB tests not yet executed against staging; support-mailbox monitoring is an operational obligation; Play verification pending the Companies House certificate (external long-pole).</p>
+
+<!-- ============================ H ============================ -->
+<h2>H · User support, privacy &amp; emergency data requests</h2>
+
+<h3>Self-service export &amp; deletion</h3>
+<p>Users act from <b>Settings → Your data</b>. Export returns a JSON of all their rows. Deletion is immediate and irreversible: it <b>erases</b> login, profile, all progress/attempts/rewards/activity, and screenshots; it <b>anonymises</b> issue reports (fault kept, reporter stripped). This matches the published privacy policy.</p>
+
+<h3>Locked-out user</h3>
+<ol class="tight">
+  <li>Prefer self-service: password reset via email.</li>
+  <li>If escalated: verify identity proportionately before any action; act least-privilege; keep an evidence record (what was requested, what was done, when).</li>
+  <li>Deliver any export securely to the account's own verified address.</li>
+  <li>Never expose a service key or disable a security control to "help".</li>
+</ol>
+
+<h3>Support mailbox &amp; breach handling</h3>
+<ul class="tight">
+  <li><code>admin@arcavetech.co.uk</code> is the published route for data/deletion requests — it must be monitored (owner to confirm, §A).</li>
+  <li>Log requests and responses; apply a consistent retention decision.</li>
+  <li>On a suspected personal-data breach, escalate to Ali. Do <b>not</b> invent statutory deadlines — follow approved legal advice; the ICO is the UK supervisory authority.</li>
+</ul>
+
+<!-- ============================ I ============================ -->
+<div class="emergency">
+<h2 style="margin-top:0;">I · One-page emergency reference</h2>
+<p class="small">Print this page on its own. Contains no secrets.</p>
+<table>
+  <tr><th>Production</th><td><span class="mono">qubix.university</span> · Supabase <span class="mono">wmetdmfsniqrshuaoodc</span> (London) · commit <span class="mono">2f3238f</span></td></tr>
+  <tr><th>Staging</th><td><span class="mono">qubix-staging.vercel.app</span> · Supabase <span class="mono">atmmfkhjsdqqwnhqifxm</span></td></tr>
+  <tr><th>Retired — do not use</th><td>Supabase <span class="mono">xzesbcrlnbesmvxmgotp</span></td></tr>
+</table>
+<table>
+  <tr><th>STOP before production</th></tr>
+  <tr><td>A Git push is not a deploy · production deploy, schema/RLS, DNS, secret rotation, destructive-data, and CSP-enforce all need Ali's approval · never disable RLS · never expose the service key · never run destructive tests off staging · never copy real users to staging.</td></tr>
+</table>
+<table>
+  <tr><th>Deploy</th><td><span class="mono">pnpm run build:production &amp;&amp; pnpm run deploy</span> → capture <span class="mono">dpl_</span> id → smoke test</td></tr>
+  <tr><th>Rollback (site)</th><td>Vercel → reassign stable alias to last good deployment ID</td></tr>
+  <tr><th>Rollback (content)</th><td>Edit the <span class="mono">cards</span> row back</td></tr>
+  <tr><th>Rollback (schema)</th><td>No auto-undo → corrective migration (staging-tested)</td></tr>
+  <tr><th>Security tests</th><td><span class="mono">pnpm run test:security</span> (47/47)</td></tr>
+  <tr><th>Headers expected</th><td>CSP report-only · HSTS · X-Frame-Options DENY · nosniff · referrer strict-origin</td></tr>
+</table>
+<table>
+  <tr><th>Symptom</th><th>First check</th><th>Safe action</th><th>Escalate?</th></tr>
+  <tr><td>Site down</td><td>Vercel deploy status</td><td>Roll back alias</td><td>If not resolved</td></tr>
+  <tr><td>Can't sign in</td><td>Supabase Auth logs</td><td>Roll back recent client</td><td>SMTP/OAuth cfg</td></tr>
+  <tr><td>Email not arriving</td><td>SPF/DKIM + provider</td><td>—</td><td>Yes if domain-wide</td></tr>
+  <tr><td>Suspected key leak</td><td>Where it leaked</td><td>Preserve evidence</td><td><b>Yes — rotate w/ Ali</b></td></tr>
+  <tr><td>Cross-user data</td><td>Which table</td><td>Do NOT disable RLS</td><td><b>Yes</b></td></tr>
+  <tr><td>Bad card / XSS</td><td>cards.layers scan</td><td>Edit row (sanitiser holds)</td><td>If widespread</td></tr>
+  <tr><td>Old shell stuck</td><td>sw.js cache version</td><td>Bump + redeploy</td><td>No</td></tr>
+  <tr><td>Deletion failed</td><td>Edge Fn logs</td><td>Record orphan uid</td><td>Yes — complete manually</td></tr>
+</table>
+<table>
+  <tr><th>Deeper runbooks</th><td>This guide §C deploy · §D DB · §E disaster recovery · §F playbooks · §G CSP/secrets. Live status: <span class="mono">docs/PUBLIC-BETA-CHECKLIST.md</span>. Config: <span class="mono">docs/ENVIRONMENTS.md</span>, <span class="mono">docs/RELEASE-MODEL.md</span>.</td></tr>
+  <tr><th>Owners</th><td>Primary operator: Ali. Support mailbox: <span class="mono">admin@arcavetech.co.uk</span>. (Add a second admin — single-operator risk.)</td></tr>
+</table>
+</div>
+
+<!-- ============================ APPENDIX ============================ -->
+<h2>Appendix · Corrections applied since guide v1.0</h2>
+<p>Codex's review of the first PDF found factual imprecisions. Each is corrected in this version:</p>
+<table>
+  <tr><th>v1.0 said</th><th>Corrected to</th></tr>
+  <tr><td>"a push/merge to main automatically updates staging"</td><td><span class="lbl v-unv">UNVERIFIED</span> — the intended flow is feature→staging→QA→main→manual prod deploy, but that <code>qubix-staging</code> follows <code>origin/staging</code> is <b>pending confirmation</b> in the Vercel dashboard (per the checklist). State only what is verified.</td></tr>
+  <tr><td>"database changes are not versioned by Git"</td><td>Migration files <b>are</b> version-controlled; <i>applying</i> them to a Supabase project is a separate manual action, effective immediately, not rolled back by Git or Vercel.</td></tr>
+  <tr><td>"no server of its own"</td><td>No always-on custom server, but Supabase Edge Functions and a dormant Vercel serverless CSP collector exist.</td></tr>
+  <tr><td><code>npm run test:security</code></td><td><code>pnpm run test:security</code> (repo-standard).</td></tr>
+  <tr><td>"full schema" / "every API call" with only 2 tables detailed</td><td>Full schema/API appendix added (§B) covering every table and call site.</td></tr>
+  <tr><td>Android wording</td><td>Web/UI changes avoid a Play update; wrapper/app-ID/icon/permissions/target-URL/SDK/signing/Digital-Asset-Links changes need a new signed <code>.aab</code>.</td></tr>
+</table>
+
+<div class="callout" style="margin-top:18px;">
+<p class="small">Generated from <code>docs/qubix-admin-guide.src.html</code> via <code>docs/build-admin-guide.py</code> (WeasyPrint). To regenerate after editing the source: <code>python3 docs/build-admin-guide.py</code>. Reflects <span class="mono">origin/main = origin/staging = 2f3238f</span>, 2026-07-22. The authoritative live-status list is <code>docs/PUBLIC-BETA-CHECKLIST.md</code>; where it conflicts with this guide, it wins.</p>
+</div>

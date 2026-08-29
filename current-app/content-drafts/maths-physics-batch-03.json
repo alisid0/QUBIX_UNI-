@@ -1,0 +1,235 @@
+{
+  "boards": [
+    {
+      "kicker": "",
+      "title": "The anchor point",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "y-intercept", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Slope is just a measure of steepness. An equation like Y = 2X dictates that a line leans upward, climbing two steps for every one step across.</p>" },
+        { "content": "<p>But steepness is not the whole story. A line can have that exact same 2-to-1 lean, but float much higher up on the grid, or sit far below it.</p>" },
+        { "content": "<p>To lock a line into place, it needs an anchor. It needs to cross the vertical center of the grid (the Y-axis) at a specific height.</p>" },
+        { "content": "<p>If the line crosses the middle at the number 3, the equation simply becomes Y = 2X + 3. The steepness hasn't changed. The entire line has just been lifted 3 steps into the air.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The two-number code",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "y=mx+c", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>In mathematics, this full rule is written as y = mx + c. It is the master equation for every straight line in existence.</p>" },
+        { "content": "<p>It looks like a random string of letters, but it is just a two-number control panel.</p>" },
+        { "content": "<p>The m controls the tilt. Change it, and the line rotates to become steeper or flatter.</p>" },
+        { "content": "<p>The c controls the height. Change it, and the line slides up or down without tilting.</p>" },
+        { "content": "<p>Those two numbers control infinity. A line stretches forever in both directions, but its entire existence is completely defined by just its tilt and its height.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Railway tracks",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "parallel-lines", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Once a line is reduced to just two numbers, certain behaviors become obvious without having to draw anything.</p>" },
+        { "content": "<p>Take the equations Y = 2X + 3, and Y = 2X − 4.</p>" },
+        { "content": "<p>They cross the middle at different heights (one is up at 3, the other is down at −4). But they share the exact same tilt (2).</p>" },
+        { "content": "<p>Because they lean at the exact same angle, the gap between them will never close, even if they run for a million miles. They are parallel.</p>" },
+        { "content": "<p>To know if two lines will ever crash into each other, nobody has to draw them and check. The slope alone decides it. If the tilt is identical, they never touch.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The diagonal gap",
+      "tags": { "subject": "maths", "topic": "The Line", "concept": "distance-formula", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Finding the distance between two points on a flat grid sounds simple. If two dots sit on a straight horizontal line, the distance is just basic subtraction.</p>" },
+        { "content": "<p>But if the dots are slanted away from each other, counting grid squares no longer works. The gap runs diagonally.</p>" },
+        { "content": "<p>To measure a slant, a grid requires a trick. A right-angled triangle is drawn underneath the slanted gap. The horizontal width becomes the bottom of the triangle. The vertical height becomes the side.</p>" },
+        { "content": "<p>Using Pythagoras' ancient theorem, the square of the bottom and the square of the side are added together. The result perfectly measures the diagonal gap.</p>" },
+        { "content": "<p>This is how modern GPS systems calculate the distance between a phone and a coffee shop. It is not guessing. It is just building an invisible triangle on a digital grid.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Motion in the sky",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "kinematics", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Once a grid exists to measure distance and time, the movement of physical objects can be tracked.</p>" },
+        { "content": "<p>About 66 million years ago, a mountain-sized rock fell out of the sky. What turned this rock into a planet-wide catastrophe was not just its size. It was the specific mechanics of how it was moving.</p>" },
+        { "content": "<p>Three distinct properties defined that motion: speed, velocity, and acceleration. In everyday language, these sound like synonyms. In physics, they are sharply divided.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The target",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "kinematics", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The first factor was speed. The asteroid arrived at roughly 20 kilometers every second. That is over 70,000 kilometers per hour. Speed alone makes an object dangerous, because speed carries energy.</p>" },
+        { "content": "<p>But speed is a scalar. It is just an amount. A rock drifting harmlessly past Earth and a rock barreling straight toward it can share the exact same speed.</p>" },
+        { "content": "<p>What separated this asteroid was its velocity. Velocity is speed paired with an exact direction.</p>" },
+        { "content": "<p>The velocity of this asteroid pointed dead at the ground. Same speed as a near-miss, but an utterly different outcome, entirely because of the direction.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The buildup",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "kinematics", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The final factor was acceleration. The rock was not just falling; it was speeding up.</p>" },
+        { "content": "<p>Earth's gravity was constantly pulling on it, adding more speed mile after mile. That steady building-up of velocity is acceleration.</p>" },
+        { "content": "<p>The closer it fell, the stronger gravity's grip became. By the moment of impact, the fall had wrung out every last bit of speed possible.</p>" },
+        { "content": "<p>An enormous velocity, constantly increased by acceleration, slammed into the ground. It was enough to darken the sky for years and end the age of the dinosaurs.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The city bus",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "kinematics", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The exact same three properties that ended an era also describe something as ordinary as a city bus.</p>" },
+        { "content": "<p>When a bus sits at a stop, it is motionless. The driver pulls away, and the bus gains pace. Out on the open road, it settles into a steady cruise. Nearing a red light, it slows down and halts.</p>" },
+        { "content": "<p>Speed is simply how fast it goes. At the stop, speed is zero. Pulling away, it climbs. Speed is a single number on the dashboard.</p>" },
+        { "content": "<p>Velocity is what lane the bus is in, and which compass direction it is heading.</p>" },
+        { "content": "<p>Acceleration is the rate at which the speedometer needle actually moves. Pulling away is positive acceleration. Braking is negative acceleration. Cruising at a perfectly steady 30 miles per hour means acceleration is dead zero, because the speed is no longer changing.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The illusion of friction",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A car coasts down a long, straight highway. If the driver takes their foot off the gas pedal, the car eventually slows down and stops.</p>" },
+        { "content": "<p>Common sense says that motion naturally fades away. It seems obvious that an object needs a continuous push to keep moving, and without it, the object simply comes to a halt.</p>" },
+        { "content": "<p>This was the accepted rule of the world for two thousand years. But it was completely wrong.</p>" },
+        { "content": "<p>The motion was never fading on its own. A quieter force was always acting against it: friction in the wheels, and the invisible wall of air pushing against the windshield.</p>" },
+        { "content": "<p>If that friction is stripped away — if the car is placed on a vast sheet of perfectly smooth, frictionless ice in a vacuum — it would never stop. It would coast at the exact same speed, in the exact same direction, forever.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The stubbornness of matter",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>This realization completely flipped the rules of physics. Motion does not need a continuous cause. Things do not stop on their own. Something must force them to stop.</p>" },
+        { "content": "<p>This tendency for matter to hold on to its current state is called inertia.</p>" },
+        { "content": "<p>If an object is sitting still, it stubbornly remains still. If it is moving, it stubbornly keeps moving in a straight line.</p>" },
+        { "content": "<p>To change that state — to speed it up, slow it down, or turn it — requires an outside force. This is Newton's First Law. Motion simply persists, free of charge, until a force interferes.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The hidden tug-of-war",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>A massive cargo ship sits motionless on a calm sea. The engine is off. There is no wind. Nothing seems to be happening to it at all.</p>" },
+        { "content": "<p>But that stillness is a disguise. At every moment, large forces are pushing and pulling on the hull. It stays put only because they cancel out perfectly.</p>" },
+        { "content": "<p>Gravity pulls thousands of tonnes of steel straight down. Buoyancy pushes straight back up.</p>" },
+        { "content": "<p>When every push is matched by an equal pull the other way, the forces are balanced. The net force is zero. And when the net force is zero, an object's motion cannot change.</p>" },
+        { "content": "<p>This is the baseline of the universe. A book on a table, a parked car, a suspension bridge — each is held in place by forces in a dead heat. 'At rest' never means there are no forces. It just means the forces are perfectly balanced.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Breaking the balance",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Motion appears the instant that balance breaks.</p>" },
+        { "content": "<p>When the cargo ship fires its engine, the propellers push the water backward. The thrust is now stronger than the drag of the water against the hull.</p>" },
+        { "content": "<p>There is a leftover, uncancelled force pointing forward. An unbalanced force.</p>" },
+        { "content": "<p>The first law states that an unbalanced force changes motion. The ship begins to accelerate.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The exact price of speed",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>The First Law dictates that an unbalanced force causes acceleration. The Second Law dictates exactly how much.</p>" },
+        { "content": "<p>If a shopping cart is pushed with a steady force, it speeds up steadily. If pushed twice as hard, it speeds up twice as fast. The acceleration tracks the force perfectly.</p>" },
+        { "content": "<p>Now, if the cart is filled with heavy bricks, that exact same push barely moves it. The acceleration falls as the mass rises.</p>" },
+        { "content": "<p>This trade-off is captured in a single line of math: F = ma. Force equals mass multiplied by acceleration.</p>" },
+        { "content": "<p>It is a precise accounting system. If the force and the mass are known, the exact acceleration is guaranteed. It sizes the thrust needed for a rocket engine, and dictates the braking distance of a loaded truck.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Nature's balance sheet",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Every time a force is applied, nature keeps a ledger. And the two sides of the ledger are required to balance.</p>" },
+        { "content": "<p>If a heavy rock is pushed to shift it, a force is exerted on the stone. Instantly, the rock exerts a force straight back. The pressure can be felt pressing into the palms of the hands exactly as hard as the push.</p>" },
+        { "content": "<p>Push harder, it pushes back harder. Ease off, it eases off. Every single push comes with an equal entry the other way.</p>" },
+        { "content": "<p>When object A exerts a force on object B, object B exerts an equal and opposite force back on A. This is Newton's Third Law.</p>" },
+        { "content": "<p>There are no one-sided forces in nature. Every interaction is a transaction, booked on two different objects, matched to the exact decimal point.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The trap of equal forces",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Newton's Third Law states that every action has an equal and opposite reaction. This simple phrase causes massive confusion.</p>" },
+        { "content": "<p>If every force is perfectly matched by an equal and opposite force, how does anything ever move? Shouldn't everything just cancel out and freeze?</p>" },
+        { "content": "<p>The answer is in the ledger. A book sitting on a table has gravity pulling it down, and the table pushing it up. Those two forces cancel out. But both forces are acting on the same object (the book).</p>" },
+        { "content": "<p>The Third Law is different. When a skater pushes against a wall, the skater applies a force to the wall, and the wall applies an equal force to the skater.</p>" },
+        { "content": "<p>The forces are equal, but they are acting on two completely different objects. Because the force from the wall is acting on the skater, and nothing is pushing the skater from behind to cancel it out, the skater slides backward.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Unequal results",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "newtons-laws", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Equal forces do not mean equal results. The ledger balances the force applied, not the acceleration that happens afterward.</p>" },
+        { "content": "<p>When a rifle is fired, the expanding gas pushes the bullet forward, and pushes the rifle backward with the exact same amount of force.</p>" },
+        { "content": "<p>But remember the Second Law (F = ma). Acceleration depends on mass.</p>" },
+        { "content": "<p>Because the bullet is incredibly light, that force rockets it forward at lethal speeds. Because the rifle is heavy, that exact same force simply kicks the shooter's shoulder.</p>" },
+        { "content": "<p>Even walking is a transaction. A shoe pushes the Earth backward, and the Earth pushes the shoe forward with the same force. The human accelerates forward. The Earth, weighing 6 × 10²⁴ kilograms, barely twitches.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Shifting the momentum",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "momentum", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Because every force is booked twice with opposite signs, the total amount of motion in a closed system never actually changes.</p>" },
+        { "content": "<p>If one object gains momentum, another object must lose exactly that much. The books always sum back to what they started with.</p>" },
+        { "content": "<p>This is called the conservation of momentum. It dictates that motion cannot be created out of nothing. It can only be shifted from one account to another.</p>" },
+        { "content": "<p>This is the only reason a rocket can fly through the vacuum of empty space.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "Pushing against nothing",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "momentum", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>In 1920, the idea of sending a rocket to the Moon was openly mocked by major newspapers.</p>" },
+        { "content": "<p>Critics argued that a rocket engine worked by pushing against the air. Once the rocket left the atmosphere and entered the vacuum of space, there would be nothing to push against, and the engine would become useless.</p>" },
+        { "content": "<p>This criticism fundamentally misunderstood the ledger. A rocket does not push against the air outside. It pushes against its own exhaust.</p>" },
+        { "content": "<p>By violently throwing burnt rocket fuel out the back, the rocket debits a massive amount of backward momentum. To balance the ledger, it must credit itself with an equal amount of forward momentum.</p>" },
+        { "content": "<p>It simply moves momentum from the fuel into the ship. It works perfectly in a vacuum. Decades later, as Apollo 11 coasted toward the Moon, those newspapers printed a quiet retraction.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The amount of stuff",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "mass", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Throughout all these transactions, the single most important physical property of an object is its mass.</p>" },
+        { "content": "<p>Mass is a measurement of how hard it is to get an object moving, or how hard it is to stop it.</p>" },
+        { "content": "<p>If two objects are drifting in deep space, stripped of gravity and friction, they still possess mass. If both are given an identical push, the one with more matter packed inside of it will speed up far less.</p>" },
+        { "content": "<p>For ordinary objects, mass is simply a measure of how much physical stuff is present. Because it is a property of the object itself, it never changes. A kilogram of steel is exactly the same amount of stuff on Earth, on the Moon, or drifting in a void.</p>" }
+      ]
+    },
+    {
+      "kicker": "",
+      "title": "The local gravity",
+      "tags": { "subject": "physics", "topic": "Physics", "concept": "mass-vs-weight", "ground": "g0", "buildsOn": [] },
+      "floors": [
+        { "content": "<p>Mass is universal, but weight is local.</p>" },
+        { "content": "<p>Weight is simply the force of gravity pulling down on an object's mass. It is a force, measured in Newtons, and it shifts entirely depending on location.</p>" },
+        { "content": "<p>A bag of sugar with a mass of 1 kilogram is pulled downward by Earth's gravity with a force of roughly 9.8 Newtons.</p>" },
+        { "content": "<p>If that same bag is carried to the Moon, the mass is untouched. It is still exactly 1 kilogram of sugar. But because the Moon's gravity is far weaker, the weight drops to 1.6 Newtons.</p>" },
+        { "content": "<p>A bathroom scale measures the force pressing down on it, and then quietly assumes the user is standing on Earth to display a number in kilograms. If taken to the Moon, the scale would read a sixth of the normal number, falsely implying the user had lost physical matter.</p>" }
+      ]
+    }
+  ]
+}
