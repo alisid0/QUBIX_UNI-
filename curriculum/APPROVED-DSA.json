@@ -6,8 +6,11 @@
     "files": {
       "src/lib/content/dsa-sequence-preview.js": "4a51c6c56c53340d9b28538ceebb44f1932979190f5bf73278e99f1899f05e84",
       "src/lib/components/SequenceAccessLab.svelte": "0aa49cbe58f5a1a80bce740bef1e2fd8292790c3e328273a609259ddcfd004fc",
-      "src/views/DsaSequencePreview.svelte": "7295c6cae54ebea6a97a7aec00b17adc21c6bd21a1573d148e7c8e58a25f5bfc"
-    }
+      "src/lib/components/SequenceAccessContrastFigure.svelte": "3809fb9b27e2986a5ab0183fa6cf89b6b6e7cd4fb1ecd060af9c231d2f478efc",
+      "src/views/DsaSequencePreview.svelte": "648c9da83e2e6cfd2681f2e27f5e6de5c339499ff31719edc6b9dcf0f1db0f31"
+    },
+    "amendedOn": "2026-08-29",
+    "amendment": "Founder-approved addition (2026-08-29): added a still direct-access-vs-search contrast figure (SequenceAccessContrastFigure.svelte) whose step count and inspection count are computed from the lesson data (items, direct.targetIndex, search.target, inspectionsToFind); no learner-facing wording, existing interaction or data changed."
   },
   "DSA-ARR-002": {
     "approvedBy": "founder",
