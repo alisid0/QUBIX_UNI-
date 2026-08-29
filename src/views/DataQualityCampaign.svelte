@@ -1,8 +1,9 @@
 <script>
   import PixelAsset from '../lib/components/game/PixelAsset.svelte';
   import SiteNav from '../lib/components/SiteNav.svelte';
+  import { paramsForLocation } from '../lib/routes/clean-paths.js';
 
-  const params = new URLSearchParams(window.location.search);
+  const params = paramsForLocation(window.location);
   const complete = params.get('screen') === 'complete';
   const missions = [
     { id: '001', title: 'Process a Sale', task: 'Scan a basket and separate observations, stored facts and calculated values.', interaction: '3D checkout', icon: 'branch', href: '?mode=game&mission=checkout' },

@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { superstoreTopics, superstoreTopicCount } from '../factory/superstore-topics.js';
+  import { cleanPathForParams, paramsForLocation } from '../lib/routes/clean-paths.js';
 
   const books = [
     { stage: 'Qubix Ebook 001', title: 'What Data Is and Why People Use It', author: 'Qubix University · Pre-Intern Academy', note: 'The first source-first title: event, record, context, evidence and decision inside Qubix Superstore.', access: 'AI_DRAFT', url: '/library/what-data-is.html' },
@@ -43,17 +44,15 @@
   let view = 'learn';
 
   function wikiUrl({ phase = null, section = null, search = '' } = {}) {
-    const url = new URL(window.location.href);
-    url.search = '';
-    url.searchParams.set('mode', 'wiki');
-    if (phase !== null) url.searchParams.set('phase', phase);
-    if (section) url.searchParams.set('section', section);
-    if (search.trim()) url.searchParams.set('q', search.trim());
-    return `${url.pathname}${url.search}`;
+    const params = new URLSearchParams({ mode: 'wiki' });
+    if (phase !== null) params.set('phase', phase);
+    if (section) params.set('section', section);
+    if (search.trim()) params.set('q', search.trim());
+    return cleanPathForParams(params);
   }
 
   function readUrl({ normalise = false } = {}) {
-    const params = new URLSearchParams(window.location.search);
+    const params = paramsForLocation(window.location);
     const phaseValue = params.get('phase');
     const phase = phaseValue !== null && /^\d+$/.test(phaseValue) ? Number(phaseValue) : null;
     const validPhase = phase !== null && superstoreTopics.some((item) => item.phase === phase);

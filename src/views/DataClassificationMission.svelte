@@ -3,8 +3,9 @@
 
   import { recordCompletion } from '../lib/game/progress.js';
   import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
+  import { cleanPathForParams, paramsForLocation } from '../lib/routes/clean-paths.js';
   const stepOrder = ['primary', 'subtype', 'scale'];
-  const requestedVariation = new URLSearchParams(window.location.search).get('variation');
+  const requestedVariation = paramsForLocation(window.location).get('variation');
   const requestedIndex = CLASSIFICATION_MISSION.variations.findIndex(item => item.id === requestedVariation);
   let variationIndex = requestedIndex >= 0 ? requestedIndex : 0;
   let variableIndex = 0;
@@ -62,9 +63,9 @@
   function openVariation(index) {
     variationIndex = index;
     resetVariation();
-    const url = new URL(window.location.href);
-    url.searchParams.set('variation', CLASSIFICATION_MISSION.variations[index].id);
-    history.replaceState({}, '', url);
+    const params = paramsForLocation(window.location);
+    params.set('variation', CLASSIFICATION_MISSION.variations[index].id);
+    history.replaceState({}, '', cleanPathForParams(params));
   }
 
   function openNextVariation() {

@@ -1,5 +1,6 @@
 <script>
   import SiteNav from '../lib/components/SiteNav.svelte';
+  import { paramsForLocation } from '../lib/routes/clean-paths.js';
   const gamePlans = {
     analyst: {
       volume: 'Volume I · Analyst Foundations', title: 'Analyst Decision Desk', colour: '#a85a34',
@@ -27,7 +28,7 @@
     }
   };
 
-  const requested = new URLSearchParams(window.location.search).get('role');
+  const requested = paramsForLocation(window.location).get('role');
   const role = gamePlans[requested] ? requested : 'analyst';
   const game = gamePlans[role];
   let selectedStep = 0;

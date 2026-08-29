@@ -14,9 +14,10 @@
   import { load, statusOf, xpOf, rankOf, TOTAL_XP } from '../lib/game/progress.js';
   import { planWith, nextRoom, box, project } from '../lib/game/store-map.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
+  import { paramsForLocation } from '../lib/routes/clean-paths.js';
 
   let state = { completed: [], started: null };
-  const requestedRoom = new URLSearchParams(window.location.search).get('room');
+  const requestedRoom = paramsForLocation(window.location).get('room');
   let chosen = requestedRoom || '';
   let roomNav;
   let missing = {};      // rooms whose art failed to load

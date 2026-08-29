@@ -9,11 +9,13 @@
   import SqlWorkshop from '../lib/components/SqlWorkshop.svelte';
   import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
   import { readingAssistantFor } from '../lib/content/foundations-assistant.js';
+  import { paramsForLocation } from '../lib/routes/clean-paths.js';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
   // first, so a stale link opens something rather than nothing.
-  const askedChapter = Number(new URLSearchParams(window.location.search).get('chapter'));
+  const routeParams = paramsForLocation(window.location);
+  const askedChapter = Number(routeParams.get('chapter'));
   const chapterNumber = Number.isInteger(askedChapter) && bookForChapter(askedChapter) ? askedChapter : 1;
   const book = bookForChapter(chapterNumber);
 
@@ -98,7 +100,7 @@
   // The contents page links to a session directly, so a chapter button can open
   // the part it names rather than always landing on the first one.
   {
-    const asked = Number(new URLSearchParams(window.location.search).get('session'));
+    const asked = Number(routeParams.get('session'));
     if (Number.isInteger(asked) && asked >= 1 && asked <= book.sessions.length) activeIndex = asked - 1;
   }
 

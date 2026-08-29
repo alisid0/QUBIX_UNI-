@@ -1,8 +1,10 @@
 <script>
+  import { onMount } from 'svelte';
   import ChangeLab from './views/ChangeLab.svelte';
   import Home from './views/Home.svelte';
   import WikiMode from './views/WikiMode.svelte';
   import { view } from './lib/stores/view.js';
+  import { cleanPathForParams, installCleanLinkRewriter, paramsForLocation } from './lib/routes/clean-paths.js';
 
   // The Factory is loaded on demand. Imported statically it dragged every board
   // of authoring options into the production bundle, where the route cannot even
@@ -36,7 +38,15 @@
   let DsaIntroductionPreview = null;
   let DsaArrayGrowthPreview = null;
 
-  const params = new URLSearchParams(window.location.search);
+  const params = paramsForLocation(window.location);
+  const cleanLocation = cleanPathForParams(params);
+  if (cleanLocation && `${window.location.pathname}${window.location.search}` !== cleanLocation) {
+    history.replaceState({}, '', cleanLocation);
+  }
+
+  onMount(() => {
+    return installCleanLinkRewriter(document.getElementById('app'));
+  });
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
   const explicitReviewMode = params.get('mode') === 'review';
   const showWikiMode = params.get('mode') === 'wiki';

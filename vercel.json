@@ -3,6 +3,18 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/academy", "destination": "/index.html" },
+    { "source": "/academy/:path*", "destination": "/index.html" },
+    { "source": "/learn/:path*", "destination": "/index.html" },
+    { "source": "/superstore", "destination": "/index.html" },
+    { "source": "/superstore/:path*", "destination": "/index.html" },
+    { "source": "/wiki", "destination": "/index.html" },
+    { "source": "/wiki/:path*", "destination": "/index.html" },
+    { "source": "/dsa/:path*", "destination": "/index.html" },
+    { "source": "/pilot/:path*", "destination": "/index.html" },
+    { "source": "/tools/:path*", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
