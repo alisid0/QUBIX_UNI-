@@ -1,6 +1,7 @@
 <script>
   import ArrayInsertionLab from '../lib/components/ArrayInsertionLab.svelte';
   import ArrayInsertionFigure from '../lib/components/ArrayInsertionFigure.svelte';
+  import ArrayAccessContrastFigure from '../lib/components/ArrayAccessContrastFigure.svelte';
   import { DSA_ARRAY_INSERTION_PREVIEW as lesson } from '../lib/content/dsa-array-insertion-preview.js';
 </script>
 
@@ -36,6 +37,8 @@
         <section><span>READ POSITION 2</span><strong>Go straight there</strong><p>No other item needs to move.</p></section>
         <section><span>INSERT AT POSITION 2</span><strong>Make room first</strong><p>Every later item may need a new position.</p></section>
       </div>
+
+      <ArrayAccessContrastFigure />
 
       <p>The cost is not the same for every insertion. After you make room once, the bench asks you to count the moves at the beginning, the middle and the empty end.</p>
 

@@ -17,10 +17,11 @@
       "src/lib/content/dsa-array-insertion-preview.js": "852fc190e780d521a6bb999df9db2554e94a02957b8ba0ad731a36d0a2545906",
       "src/lib/components/ArrayInsertionLab.svelte": "4e3d4d24eb00639c95ae3cb2f65b79439325cff6a733400f62169c1c90d4f464",
       "src/lib/components/ArrayInsertionFigure.svelte": "090407a5ebd0daee961e7c4530a2faa3209983924ba5733963635ad1b43eb1c1",
-      "src/views/DsaArrayInsertionPreview.svelte": "a998a4e8a006193da56986edee67e570a8c920888c7ed1877c03675bba08e27b"
+      "src/lib/components/ArrayAccessContrastFigure.svelte": "eb8b8ceea9b919f9650687f675fb4581f7bf7f9761d657d46a3f94373472a13c",
+      "src/views/DsaArrayInsertionPreview.svelte": "f7e6cac3151cf34df08367253758f2c93d822844e2287cbbfa8c96a2b07083c5"
     },
     "amendedOn": "2026-08-29",
-    "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
+    "amendment": "Founder-directed polish (2026-08-29): dead canvas trimmed where the figure left empty space below its content, and labels raised to clear the 11px floor on a phone. No wording, no data and no motion changed. Founder-approved addition (2026-08-29): added a still read-vs-insert contrast figure (ArrayAccessContrastFigure.svelte) whose move counts are computed from the same array and insertion index; no learner-facing wording, existing figures, interaction or data changed."
   },
   "DSA-INTRO-000": {
     "approvedBy": "founder",
