@@ -7,7 +7,7 @@
       "component": "src/lib/components/JoinFanOut.svelte",
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
-      "sha256": "43ea3ff7d43d2ca0b04c41cd6f44822931d99b5bc123a23c3e7b42ef3288234e",
+      "sha256": "20010869d5fe6c9443b7dde2fe09b4d26f07261233f07a9cce2ef182b88b38cf",
       "amendedOn": "2026-08-29",
       "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
     },

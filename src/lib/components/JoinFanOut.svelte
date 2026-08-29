@@ -219,11 +219,12 @@
   /* On a phone the 640-wide viewBox scales to about 0.45, so an 11px label
      renders near 5px. check-type reads declared sizes and cannot see that.
      The headings and the copy tag sit on free canvas and can be raised; the
-     row text lives inside fixed rects and is left alone. */
+     row text lives inside fixed rects and is left alone. So does the copy tag: it
+     sits in a 15-unit band between two row boxes, so anything above 14px reaches
+     back into the row above it. */
   @media (max-width: 700px) {
     .cap { font-size: 25px; }
     .sub { font-size: 25px; }
     /* .row text is more specific once Svelte scopes it, so match that. */
-    .row text.tag { font-size: 25px; }
   }
 </style>
