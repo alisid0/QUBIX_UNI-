@@ -238,13 +238,13 @@
     </div>
   {:else if spec.kind === 'record-chain'}
     <div class="record-chain" role="img" aria-label="A checkout event becomes an observed barcode, joins to a stored product price, and produces a derived line total.">
-      <div><span>1 · WORLD</span><b>Sale happens</b><small>Two bottles reach checkout</small></div>
+      <div><b>Sale happens</b><small>Two bottles reach checkout</small></div>
       <i aria-hidden="true">→</i>
-      <div><span>2 · OBSERVE</span><b>Scan barcode</b><code>5012345678900</code></div>
+      <div><b>Scan barcode</b><code>5012345678900</code></div>
       <i aria-hidden="true">+</i>
-      <div><span>3 · LOOK UP</span><b>Stored price</b><code>£3.40 each</code></div>
+      <div><b>Stored price</b><code>£3.40 each</code></div>
       <i aria-hidden="true">→</i>
-      <div class="result"><span>4 · DERIVE</span><b>Line total</b><code>2 × £3.40 = £6.80</code></div>
+      <div class="result"><b>Line total</b><code>2 × £3.40 = £6.80</code></div>
     </div>
   {:else if spec.kind === 'row-grain'}
     <div class="grain-map" role="img" aria-label="One completed sale has one sale row, three sale-line rows and one payment row.">

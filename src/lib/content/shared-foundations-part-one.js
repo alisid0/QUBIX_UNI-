@@ -16,7 +16,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         ]) }),
         Object.freeze({ heading: 'A row records what happened, not why', paragraphs: Object.freeze([
           'The sale row says two bottles at £3.40. It does not say this was the last brand left on the shelf. The footfall count says four hundred and twelve people came through the door. It does not say it rained all morning. The freezer reading says minus sixteen. It does not say the door had been propped open.',
-          'The till was built to take payment, and it keeps what payment needs.'
+          'The checkout (the till) was built to take payment, and it keeps what payment needs.'
         ]) }),
         Object.freeze({ heading: 'The scan, the saved price and the calculated total', paragraphs: Object.freeze([
           'Some values are observed when the event happens. A barcode is scanned or a sensor takes a reading. Some values already exist as stored reference information. A product already has a name, category and approved unit price.',
