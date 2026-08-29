@@ -108,4 +108,10 @@
   figcaption { padding:13px 16px; border-top:1px solid var(--qx-border-2); color:var(--qx-text-2); font-size:14px; }
   @media(max-width:560px) { .figure-head { align-items:flex-start; } .figure-head strong { font-size:14px; } button { max-width:92px; } }
   @media(prefers-reduced-motion:reduce) { .item,.new-item { transition:none; } }
+  /* The slot labels sit inside fixed rects and are left alone. The
+     explanation line sits on free canvas and is raised to clear 11px once
+     the viewBox has been scaled down. */
+  @media (max-width: 700px) {
+    .explanation { font-size: 22px; }
+  }
 </style>

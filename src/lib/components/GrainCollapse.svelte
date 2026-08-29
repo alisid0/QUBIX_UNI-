@@ -66,7 +66,7 @@
   const gathered = (i, g) => TOP + i * (ROW_H + GAP) + g * 12;
   const groupY = g => TOP + 18 + g * 76;
 
-  const H = TOP + sales.length * (ROW_H + GAP) + 2 * 12 + 40;
+  const H = TOP + sales.length * (ROW_H + GAP) + 2 * 12 + 8;
   const money = v => '£' + Number(v).toFixed(2);
 
   $: description = `Twelve sales grouped by branch. Before, ${sales.length} rows and one row is `
@@ -177,5 +177,13 @@
 
   @media (prefers-reduced-motion: reduce) {
     .src, .out, .link { transition: none !important; }
+  }
+  /* Same reason as the fan-out figure: at about 0.45 scale an 11px label
+     renders near 5px. Headings sit on free canvas; the fifteen row labels
+     sit inside fixed rects and are left alone. The right-hand labels start at x=392,
+     so 248 units of viewBox remain and 23px is the largest that fits. */
+  @media (max-width: 700px) {
+    .cap { font-size: 23px; }
+    .sub { font-size: 21px; }
   }
 </style>

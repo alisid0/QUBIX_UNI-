@@ -16,9 +16,11 @@
     "files": {
       "src/lib/content/dsa-array-insertion-preview.js": "852fc190e780d521a6bb999df9db2554e94a02957b8ba0ad731a36d0a2545906",
       "src/lib/components/ArrayInsertionLab.svelte": "4e3d4d24eb00639c95ae3cb2f65b79439325cff6a733400f62169c1c90d4f464",
-      "src/lib/components/ArrayInsertionFigure.svelte": "72fecde061fa3a06f1df99bc553326b34b6fd6af7ec601ade3cacab297cb03fc",
+      "src/lib/components/ArrayInsertionFigure.svelte": "090407a5ebd0daee961e7c4530a2faa3209983924ba5733963635ad1b43eb1c1",
       "src/views/DsaArrayInsertionPreview.svelte": "a998a4e8a006193da56986edee67e570a8c920888c7ed1877c03675bba08e27b"
-    }
+    },
+    "amendedOn": "2026-08-29",
+    "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
   },
   "DSA-INTRO-000": {
     "approvedBy": "founder",

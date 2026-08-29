@@ -73,7 +73,7 @@
 
   const leftY = i => TOP + i * (ROW_H + GAP) * 1.6;
   const rightY = i => TOP + i * (ROW_H + GAP);
-  const H = Math.max(leftY(left.length - 1), rightY(results.length - 1)) + ROW_H + 52;
+  const H = Math.max(leftY(left.length - 1), rightY(results.length - 1)) + ROW_H + 18;
 
   // A curve from the left row to each row it became.
   const link = (li, ri) => {
@@ -215,5 +215,15 @@
   /* Nothing moves. The finished state is drawn immediately and stays readable. */
   @media (prefers-reduced-motion: reduce) {
     .src, .out, .link, .tag { transition: none !important; }
+  }
+  /* On a phone the 640-wide viewBox scales to about 0.45, so an 11px label
+     renders near 5px. check-type reads declared sizes and cannot see that.
+     The headings and the copy tag sit on free canvas and can be raised; the
+     row text lives inside fixed rects and is left alone. */
+  @media (max-width: 700px) {
+    .cap { font-size: 25px; }
+    .sub { font-size: 25px; }
+    /* .row text is more specific once Svelte scopes it, so match that. */
+    .row text.tag { font-size: 25px; }
   }
 </style>

@@ -7,7 +7,9 @@
       "component": "src/lib/components/JoinFanOut.svelte",
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
-      "sha256": "1ef2eec00fcadf9f153d4142502efe60e97b0615810d0e96e6a6c630968aa9cb"
+      "sha256": "43ea3ff7d43d2ca0b04c41cd6f44822931d99b5bc123a23c3e7b42ef3288234e",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
     },
     {
       "id": "sampling-spread",
@@ -15,7 +17,9 @@
       "component": "src/lib/components/SamplingSpread.svelte",
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
-      "sha256": "75b0a46d5cab559a9d5a7c46ad1a32613c4a896547d760af055a9ec833340987"
+      "sha256": "2e1982cb15795d24dba7da644a0dd3dba25302df36ce2ac7425a813720e35dd4",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
     },
     {
       "id": "grain-collapse",
@@ -23,7 +27,9 @@
       "component": "src/lib/components/GrainCollapse.svelte",
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
-      "sha256": "9c88dc69c481553e295fa555bf1b680f54d86eb1a254eb0d6c72ec5fbc3df3d0"
+      "sha256": "17a8b5b103b996ed680999ac9a5e730fe185cc7d373990fc87e2dc08df919e88",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
     },
     {
       "id": "base-rate",
@@ -31,7 +37,9 @@
       "component": "src/lib/components/BaseRateAlarm.svelte",
       "approvedOn": "2026-08-28",
       "approvedBy": "founder",
-      "sha256": "cb473b449175ed5440d8e8ae25f9d91dcb925ceaca61c7ca17965847792dcf5f"
+      "sha256": "0b483b2bdbbb39eac006f7cc52e7bea58d48b0b19b7a4acaacf54e128374b007",
+      "amendedOn": "2026-08-29",
+      "amendment": "Founder-directed polish: dead canvas trimmed where the figure left empty space below its content, and labels that sit on free canvas raised so they clear the 11px floor once the viewBox is scaled down on a phone. No wording, no data and no motion changed."
     },
     {
       "id": "outlier-pull",

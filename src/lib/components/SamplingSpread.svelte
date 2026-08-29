@@ -194,4 +194,12 @@
   @media (prefers-reduced-motion: reduce) {
     .dot { transition: none !important; }
   }
+  /* Every label in this figure is short and sits on free canvas, so unlike
+     the table figures it can be raised the whole way: at about 0.45 scale
+     these clear 11px rendered. The span labels are the exception: they sit in a 78px left gutter that a longer string cannot fit, so they keep their size. */
+  @media (max-width: 700px) {
+    .truth-t { font-size: 25px; }
+    .n { font-size: 25px; }
+    .axis { font-size: 25px; }
+  }
 </style>

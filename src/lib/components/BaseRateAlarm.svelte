@@ -160,4 +160,11 @@
   @media (prefers-reduced-motion: reduce) {
     .day, .verdict { transition: none !important; }
   }
+  /* Every label here sits on free canvas, but two of them are full sentences
+     that would run off a 640-wide viewBox if scaled to match. The headline
+     and the count are raised; the two sentences keep their size. */
+  @media (max-width: 700px) {
+    .cap { font-size: 25px; }
+    .big { font-size: 30px; }
+  }
 </style>
