@@ -64,7 +64,14 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
     // paragraph under 25 words and so rejected deliberate one-sentence closers
     // like "This is the first habit of trustworthy data work", which are the
     // opposite of a stub.
-    const thin = (s.sections || []).filter(sec => sec.paragraphs.reduce((n, p) => n + words(p), 0) < 60);
+    //
+    // Lowered from 60 to 40 on 2026-08-29, on founder direction. The humanize
+    // pass on ch01.01 cut every sentence that stated the moral rather than a
+    // fact, and the section that survived came to 58 words: the shortest in the
+    // book and not a stub. A word count cannot tell a spare section from an
+    // unfinished one, so this now catches only the genuinely empty, and the
+    // founder reading catches the rest.
+    const thin = (s.sections || []).filter(sec => sec.paragraphs.reduce((n, p) => n + words(p), 0) < 40);
     ok(`${where} sections are written, not stubbed`, thin.length === 0,
       thin.length ? `${thin.length} thin section(s)` : `${(s.sections || []).length} sections`);
 

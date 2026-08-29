@@ -9,11 +9,10 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       id: 'representation', number: '01', title: 'A sale is not its record', studyMinutes: 7, playMinutes: 5,
       objective: 'Explain the difference between something that happened and the data recorded about it.',
       audioSummary: 'Imagine buying three products from a shop. The purchase is an event in the real world. When the products are scanned, the checkout creates a record of that event. The record keeps selected details, so it is not the event itself. A value may be observed at the checkout, looked up from stored product information or calculated from other values. Keeping those origins separate helps us find mistakes and explain where a result came from.',
-      opening: 'Imagine buying three products from a shop. Your purchase happens in the real world. The checkout system then creates data that describes part of what happened.',
+      opening: 'You buy three things and walk out with a receipt. It lists what you bought, the time of the purchase, and the total you paid. Everything on that receipt is data.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Your shopping trip happens before the data', paragraphs: Object.freeze([
-          'A customer buys three products. A freezer reaches a particular temperature. A supplier changes a price. Each is something that happens, or is true, in the real world.',
-          'A system may notice part of that reality and create a record. The purchase is the event. The checkout row is data about the event. They are connected, but they are not the same thing.'
+        Object.freeze({ heading: 'A shop holds more data than it holds food', paragraphs: Object.freeze([
+          'Look around a shop and you are looking at data. The inventory count for every shelf is data. The temperature inside the freezer is data. The electricity the store used last night is data. The number of people who came through the door this morning is data, and so is the number who left again without buying anything.'
         ]) }),
         Object.freeze({ heading: 'The till remembers only part of the story', paragraphs: Object.freeze([
           'The checkout might record the time, product, quantity and price. It may not record how long the customer waited, why they chose the product or whether the shop felt crowded.',
