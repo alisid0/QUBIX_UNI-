@@ -14,9 +14,9 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         Object.freeze({ heading: 'A shop holds more data than it holds food', paragraphs: Object.freeze([
           'Look around a shop and you are looking at data. The inventory count for every shelf is data. The temperature inside the freezer is data. The electricity the store used last night is data. The number of people who came through the door this morning is data, and so is the number who left again without buying anything.'
         ]) }),
-        Object.freeze({ heading: 'The till remembers only part of the story', paragraphs: Object.freeze([
-          'The checkout might record the time, product, quantity and price. It may not record how long the customer waited, why they chose the product or whether the shop felt crowded.',
-          'Data is therefore a selected, structured description of reality. Every dataset has a purpose and a boundary: it contains what the system was designed to keep, not everything that was true.'
+        Object.freeze({ heading: 'A row records what happened, not why', paragraphs: Object.freeze([
+          'The sale row says two bottles at £3.40. It does not say this was the last brand left on the shelf. The footfall count says four hundred and twelve people came through the door. It does not say it rained all morning. The freezer reading says minus sixteen. It does not say the door had been propped open.',
+          'The till was built to take payment, and it keeps what payment needs.'
         ]) }),
         Object.freeze({ heading: 'The scan, the saved price and the calculated total', paragraphs: Object.freeze([
           'Some values are observed when the event happens. A barcode is scanned or a sensor takes a reading. Some values already exist as stored reference information. A product already has a name, category and approved unit price.',

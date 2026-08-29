@@ -59,21 +59,22 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
         `${words(s.check.explanation)} words`);
     }
 
-    // Prose that is present but empty is the failure this is really guarding.
-    // Measured per section, not per paragraph: the first version flagged any
-    // paragraph under 25 words and so rejected deliberate one-sentence closers
-    // like "This is the first habit of trustworthy data work", which are the
-    // opposite of a stub.
+    // A section must carry prose. It does not have to carry a particular amount.
     //
-    // Lowered from 60 to 40 on 2026-08-29, on founder direction. The humanize
-    // pass on ch01.01 cut every sentence that stated the moral rather than a
-    // fact, and the section that survived came to 58 words: the shortest in the
-    // book and not a stub. A word count cannot tell a spare section from an
-    // unfinished one, so this now catches only the genuinely empty, and the
-    // founder reading catches the rest.
-    const thin = (s.sections || []).filter(sec => sec.paragraphs.reduce((n, p) => n + words(p), 0) < 40);
-    ok(`${where} sections are written, not stubbed`, thin.length === 0,
-      thin.length ? `${thin.length} thin section(s)` : `${(s.sections || []).length} sections`);
+    // This was a word count: 60 words per section, then 40. Dropped entirely on
+    // 2026-08-29 on founder direction, on the grounds that how much a section
+    // needs to say depends on what it is saying, and no threshold can know that.
+    // The humanize pass had already produced a 58-word section that was spare
+    // rather than unfinished, and padding it to satisfy a number would have been
+    // the guard writing the curriculum.
+    //
+    // What survives is the structural half: a heading with nothing under it is a
+    // defect in any voice. Whether the prose is enough is a reading judgement and
+    // belongs to the founder.
+    const empty = (s.sections || []).filter(sec =>
+      !sec.paragraphs?.length || sec.paragraphs.every(p => !String(p).trim()));
+    ok(`${where} sections carry prose`, empty.length === 0,
+      empty.length ? `${empty.length} empty section(s)` : `${(s.sections || []).length} sections`);
 
     ok(`${where} cites over https`,
       (s.sources || []).every(src => /^https:\/\//.test(src.url) && src.label));
