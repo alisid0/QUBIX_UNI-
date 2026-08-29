@@ -217,6 +217,26 @@
         </tbody>
       </table>
     </div>
+  {:else if spec.kind === 'row-column'}
+    <div class="row-col" role="img" aria-label="A table of four sales. One highlighted row holds every detail of sale S-1043 in Leeds: seven items totalling 41 pounds 10. One highlighted column holds the basket total of all four sales. The row is one case; the column is one question asked of every case.">
+      <div class="rc-table-wrap">
+        <table class="rc-table">
+          <thead>
+            <tr><th>sale_id</th><th>branch</th><th>items</th><th class="c">basket_total</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>S-1041</td><td>Camden</td><td>3</td><td class="c">£18.70</td></tr>
+            <tr><td>S-1042</td><td>Camden</td><td>1</td><td class="c">£6.25</td></tr>
+            <tr class="r"><td>S-1043</td><td>Leeds</td><td>7</td><td class="c both">£41.10</td></tr>
+            <tr><td>S-1044</td><td>Leeds</td><td>2</td><td class="c">£9.80</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rc-keys">
+        <div class="rc-key row"><span>ONE ROW</span><b>One completed sale</b><small>Everything in the band belongs to sale S-1043. Change the table and a row might be one customer, or one product, instead.</small></div>
+        <div class="rc-key col"><span>ONE COLUMN</span><b>One question, asked of every sale</b><small>How much was paid? The column puts that question to all four rows and keeps the four answers.</small></div>
+      </div>
+    </div>
   {:else if spec.kind === 'data-types'}
     <div class="type-map" role="img" aria-label="Data types map. A variable can be categorical or quantitative. Categorical variables can be nominal or ordinal. Quantitative variables can be discrete or continuous.">
       <div class="type-root"><span>START HERE</span><b>A variable</b><small>What does this column mean?</small></div>
@@ -300,6 +320,40 @@
 </figure>
 
 <style>
+  .row-col { display: grid; gap: 14px; }
+  .rc-table-wrap { overflow-x: auto; border: 2px solid #241f16; }
+  .rc-table { width: 100%; min-width: 420px; border-collapse: collapse; background: #fff; }
+  .rc-table th, .rc-table td { padding: 9px 13px; border-bottom: 1px solid #ded6c6; text-align: left;
+    font: 700 13px var(--qx-font); color: #25231f; white-space: nowrap; }
+  .rc-table th { background: #241f16; color: #f1ede4; font: 800 11px var(--qx-font);
+    letter-spacing: .08em; text-transform: uppercase; border-bottom: 0; }
+  .rc-table tbody tr:last-child td { border-bottom: 0; }
+  /* The row band and the column band are the whole figure, so they are the only
+     two colours in it and they never appear anywhere else in this drawing. */
+  .rc-table tr.r td { background: var(--qx-accent-soft, #f2e4da); }
+  .rc-table td.c, .rc-table th.c { background: var(--qx-green-soft, #e7efdc); }
+  .rc-table th.c { background: #3c6427; }
+  .rc-table td.c.both { background: #e0d2b8; font-weight: 900; }
+  .rc-table tr.r td:first-child { box-shadow: inset 4px 0 0 var(--qx-accent, #a85a34); }
+  .rc-keys { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .rc-key { padding: 12px 14px; border: 2px solid #241f16; background: #fff; }
+  .rc-key span { display: block; font: 900 11px var(--qx-font); letter-spacing: .1em; }
+  .rc-key.row span { color: var(--qx-accent-text, #8c4c2e); }
+  .rc-key.col span { color: var(--qx-green-text, #3c6427); }
+  .rc-key.row { border-left: 6px solid var(--qx-accent, #a85a34); }
+  .rc-key.col { border-left: 6px solid var(--qx-green, #3e9e2a); }
+  .rc-key b { display: block; margin: 5px 0 4px; font: 800 15px var(--qx-font); }
+  .rc-key small { color: #6b6152; font: 600 12.5px/1.5 var(--qx-font); }
+  /* On a phone the four columns forced a scroll inside the wrapper, and the
+     column that fell off the right edge was basket_total: the highlighted one,
+     which is half of what the figure teaches. Tighter cells and a wrapping
+     header fit all four in, so the band stays visible without scrolling. */
+  @media (max-width: 620px) {
+    .rc-keys { grid-template-columns: 1fr; }
+    .rc-table { min-width: 0; }
+    .rc-table th, .rc-table td { padding: 8px 6px; font-size: 12px; }
+    .rc-table th { white-space: normal; line-height: 1.25; }
+  }
   .qx-figure { margin: 30px 0 0; padding: 20px 20px 16px; border: 1px solid #ded7c8;
                border-radius: 13px; background: #fbf9f4; }
   svg { display: block; width: 100%; height: auto; overflow: visible; }
@@ -376,12 +430,13 @@
   .record-chain > div { min-width: 0; padding: 14px 12px; display: grid; align-content: center; gap: 4px;
                         border: 1px solid #cbbfa6; border-radius: 9px; background: #fff; }
   .record-chain > div.result { border: 2px solid #241f16; background: #eef1e9; box-shadow: 3px 3px 0 #241f16; }
-  .record-chain span, .grain-map span { color: #8c4c2e; font: 900 11px var(--qx-font); letter-spacing: .1em; }
   .record-chain b { font: 700 15px Georgia, serif; }
   .record-chain small { color: #625a49; font: 650 11px/1.35 var(--qx-font); }
   .record-chain code { color: #4e6548; font: 750 11px/1.35 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
   .record-chain > i { align-self: center; color: #8c4c2e; font: 900 18px var(--qx-font); font-style: normal; }
 
+  /* record-chain lost its step labels, so only grain-map still needs this. */
+  .grain-map span { color: #8c4c2e; font: 900 11px var(--qx-font); letter-spacing: .1em; }
   .grain-map { display: grid; justify-items: center; }
   .grain-event { min-width: 220px; padding: 12px 18px; display: grid; justify-items: center; gap: 2px;
                  border: 2px solid #241f16; border-radius: 9px; background: #f4ede0; box-shadow: 4px 4px 0 #241f16; }

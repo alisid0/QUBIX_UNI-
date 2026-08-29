@@ -53,7 +53,10 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
           'Digits do not automatically make a value quantitative. Barcode 5012345678901 is an identifier. Adding two barcodes or calculating their average would be meaningless. Choose a data type by asking what operations make sense, not by looking at the characters.'
         ]) })
       ]),
-      figure: Object.freeze({ kind: 'data-types', caption: 'Choose the type from the meaning', note: 'First ask whether the value is a label or an amount. Then ask whether order, counting or measurement makes sense.' }),
+      figures: Object.freeze([
+        Object.freeze({ kind: 'row-column', caption: 'One row, one column', note: 'The band across is one sale. The band down is one question asked of every sale.' }),
+        Object.freeze({ kind: 'data-types', caption: 'Choose the type from the meaning', note: 'First ask whether the value is a label or an amount. Then ask whether order, counting or measurement makes sense.' })
+      ]),
       example: Object.freeze({ title: 'The value tells you less than the meaning', headers: Object.freeze(['Column','Example value','What you may sensibly do']), rows: Object.freeze([
         Object.freeze(['branch_id','B-08','identify or group branches']), Object.freeze(['satisfaction','Good','place responses in order']), Object.freeze(['basket_total','£18.70','add, compare or calculate a difference'])
       ]) }),

@@ -196,7 +196,14 @@
 
         {#if session.workshopLab}<SqlWorkshop spec={session.workshopLab} />{/if}
 
-        {#if session.figure}<Figure spec={session.figure} />{/if}
+        <!-- A session may carry one figure or several. Sections render as one
+             block above, so figures follow the reading in the order they are
+             listed rather than sitting beside the section they illustrate. -->
+        {#if session.figures}
+          {#each session.figures as figureSpec}<Figure spec={figureSpec} />{/each}
+        {:else if session.figure}
+          <Figure spec={session.figure} />
+        {/if}
 
         <section class="example">
           <div class="section-label"><span>WORKED EXAMPLE</span><b>{session.example.title}</b></div>

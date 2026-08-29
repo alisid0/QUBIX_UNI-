@@ -35,8 +35,11 @@ let drawn = 0;
 
 for (const { chapter, book } of SHARED_FOUNDATIONS) {
   for (const session of book.sessions) {
-    const f = session.figure;
-    if (!f) continue;
+    // A session may carry one figure or a list of them. Reading only
+    // session.figure made this guard skip any session that moved to the array
+    // form, so every figure on it went unchecked while the suite still passed.
+    const figures = session.figures || (session.figure ? [session.figure] : []);
+    for (const f of figures) {
     drawn += 1;
     const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${f.kind}`;
 
@@ -116,6 +119,7 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
       // The point of the figure is the contrast, so it needs both kinds.
       const states = new Set(found.filter(Boolean).map(c => c.valueState));
       ok(`${where} contrasts a value with an absence`, states.size > 1, [...states].join(' and '));
+    }
     }
   }
 }
