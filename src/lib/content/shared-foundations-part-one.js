@@ -6,56 +6,57 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
   totalMinutes: 40,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'representation', number: '01', title: 'Data is a record, not reality', studyMinutes: 5, playMinutes: 5,
-      objective: 'Distinguish a real thing or event from the record created about it.',
-      audioSummary: 'Data is a record of reality, not reality itself. A checkout sale happens in the world, while the system stores selected details about it. Some values are observed directly, such as a scanned barcode. Some are stored reference values, such as the governed unit price. Others are derived by calculation, such as quantity multiplied by price. Keeping these stages separate helps you find where an error entered and explain how a result was produced.',
-      opening: 'A sale happens in a shop. A row about that sale is created in a system. The event and the record are connected, but they are not the same thing.',
+      id: 'representation', number: '01', title: 'A sale is not its record', studyMinutes: 7, playMinutes: 5,
+      objective: 'Explain the difference between something that happened and the data recorded about it.',
+      audioSummary: 'Imagine buying three products from a shop. The purchase is an event in the real world. When the products are scanned, the checkout creates a record of that event. The record keeps selected details, so it is not the event itself. A value may be observed at the checkout, looked up from stored product information or calculated from other values. Keeping those origins separate helps us find mistakes and explain where a result came from.',
+      opening: 'Imagine buying three products from a shop. Your purchase happens in the real world. The checkout system then creates data that describes part of what happened.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Start with the world', paragraphs: Object.freeze([
-          'Before looking at a table, ask what happened in the world. A customer bought three products. A freezer sensor took a reading. A supplier changed a price. These are events or states that a system may observe.',
-          'Data is a deliberately structured record of part of that reality. It keeps selected details and leaves other details out. A checkout record might keep the time, product and price, but not the customer’s mood or the queue length. Every dataset is therefore a representation with a purpose and a boundary.'
+        Object.freeze({ heading: 'Your shopping trip happens before the data', paragraphs: Object.freeze([
+          'A customer buys three products. A freezer reaches a particular temperature. A supplier changes a price. Each is something that happens, or is true, in the real world.',
+          'A system may notice part of that reality and create a record. The purchase is the event. The checkout row is data about the event. They are connected, but they are not the same thing.'
         ]) }),
-        Object.freeze({ heading: 'Observed, stored and derived', paragraphs: Object.freeze([
-          'An observation arrives from an event or measurement: a barcode was scanned or a temperature was read. Master data already exists to describe something: a product has a name, category and governed price. Derived data is calculated from other values: quantity multiplied by unit price produces a line total.',
-          'These categories matter because they answer different questions. If a total looks wrong, inspect the observation, the stored reference and the calculation separately. Treating every value as if it came from the same place makes errors harder to explain.'
+        Object.freeze({ heading: 'The till remembers only part of the story', paragraphs: Object.freeze([
+          'The checkout might record the time, product, quantity and price. It may not record how long the customer waited, why they chose the product or whether the shop felt crowded.',
+          'Data is therefore a selected, structured description of reality. Every dataset has a purpose and a boundary: it contains what the system was designed to keep, not everything that was true.'
         ]) }),
-        Object.freeze({ heading: 'A record can be wrong without the event changing', paragraphs: Object.freeze([
-          'A customer may really have bought two bottles even if the quantity was recorded as one. Correcting the row does not rewrite the past. It improves the representation of the past while preserving evidence about what was originally captured and why it changed.',
-          'This is the first habit of trustworthy data work: keep the world, the source observation and later transformations conceptually separate.'
+        Object.freeze({ heading: 'The scan, the saved price and the calculated total', paragraphs: Object.freeze([
+          'Some values are observed when the event happens. A barcode is scanned or a sensor takes a reading. Some values already exist as stored reference information. A product already has a name, category and approved unit price.',
+          'Other values are calculated. If two bottles cost £3.40 each, the system derives a line total of £6.80. “Derived” simply means calculated from other values.',
+          'The distinction helps when something looks wrong. Check what was observed, what was looked up and what was calculated. A wrong record does not change the past; correcting it improves our description of the past and should preserve evidence of what changed.'
         ]) })
       ]),
-      figure: Object.freeze({ kind: 'record-chain', caption: 'From a real event to a usable result', note: 'Each stage can introduce or reveal a different error, so keep the event, reference record and calculation distinguishable.' }),
-      example: Object.freeze({ title: 'Checkout example', headers: Object.freeze(['Stage','Value','Meaning']), rows: Object.freeze([
-        Object.freeze(['Observe','5012345678900','barcode emitted by the scan event']), Object.freeze(['Look up','£3.40','governed unit price in the product record']), Object.freeze(['Derive','2 × £3.40 = £6.80','calculated transaction-line total'])
+      figure: Object.freeze({ kind: 'record-chain', caption: 'One purchase, three steps into data', note: 'The scan is observed, the price is looked up and the total is calculated. Each step can fail in a different way.' }),
+      example: Object.freeze({ title: 'Follow one product through the checkout', headers: Object.freeze(['What the system does','Value','Where it came from']), rows: Object.freeze([
+        Object.freeze(['Observes a scan','5012345678900','the barcode scanner']), Object.freeze(['Looks up the price','£3.40','the stored product record']), Object.freeze(['Calculates the total','2 × £3.40 = £6.80','quantity multiplied by unit price'])
       ]) }),
-      workbook: Object.freeze({ title: 'Ten-minute observation inventory', prompt: 'Choose an ordinary process such as making tea, taking a bus or buying lunch.', steps: Object.freeze(['Write down one event that happens.', 'List three details a system might record about it.', 'List two real details the record would probably omit.', 'Mark each recorded value as observed, stored or derived.']) }),
-      check: Object.freeze({ prompt: 'A checkout stores quantity 2 and unit price £3.40, then calculates £6.80. What is £6.80?', answer: 'derived', options: Object.freeze([['observation','A value captured directly from the event'],['master','A value already governed in a reference record'],['derived','A value calculated from other recorded values']]), explanation: '£6.80 is derived because the system calculates it from quantity and unit price.' }),
-      practice: Object.freeze({ title: 'Process a Sale', href: '?mode=game&mission=checkout', instruction: 'Scan the basket and watch one event become observed, stored and derived records.' }),
+      workbook: Object.freeze({ title: 'Describe an everyday event', prompt: 'Choose something familiar: making tea, taking a bus or buying lunch.', steps: Object.freeze(['Write one sentence describing what happens in the real world.', 'List three details a system might record.', 'List two real details the system would probably leave out.', 'Label each recorded value as observed, stored or calculated.']) }),
+      check: Object.freeze({ prompt: 'A checkout records quantity 2 and looks up a unit price of £3.40. It then produces £6.80. What kind of value is £6.80?', answer: 'derived', options: Object.freeze([['observation','Observed directly when the event happened'],['master','Already stored as product information'],['derived','Calculated from the quantity and price']]), explanation: '£6.80 is derived because the system calculates it by multiplying two recorded values.' }),
+      practice: Object.freeze({ title: 'Process a Sale', href: '?mode=game&mission=checkout', instruction: 'Process one basket and identify what the checkout observes, looks up and calculates.' }),
       sources: Object.freeze([Object.freeze({label:'W3C PROV Overview',url:'https://www.w3.org/TR/prov-overview/'})])
     }),
     Object.freeze({
-      id: 'observations-variables', number: '02', title: 'Observations, variables and types of data', studyMinutes: 7, playMinutes: 5,
-      objective: 'Explain what a row observes, what each variable means and whether it is categorical or quantitative.',
-      audioSummary: 'A dataset records observations in rows and variables in columns. Before analysing a variable, ask what its values mean. A categorical variable describes a group or label. Nominal categories have no natural order, while ordinal categories do. A quantitative variable describes an amount. Discrete values are counted, while continuous values are measured. Do not classify a variable by appearance alone. A barcode may contain digits, but it is still a nominal label because adding or averaging barcodes has no useful meaning. In the Superstore mission, you will use this first distinction and then go deeper into measurement scales.',
-      opening: 'A table becomes understandable when you can finish two sentences: “one row represents…” and “this column records…”.',
+      id: 'observations-variables', number: '02', title: 'What is this table describing?', studyMinutes: 9, playMinutes: 5,
+      objective: 'Say what one row represents, explain what a column records and choose a data type from meaning rather than appearance.',
+      audioSummary: 'A table is easier to understand when you ask two questions. What does one row represent, and what question does each column answer? A row describes one observation, such as one product or one sale. A column records one variable consistently across those observations. Some variables are categories or labels. Others are quantities we can count or measure. A barcode contains digits, but it is still a label because arithmetic with barcodes has no useful meaning. The meaning of a value—not the way it looks—decides its data type.',
+      opening: 'Look at any table and pause before reading the numbers. First ask: what does one row describe, and what question does each column answer?',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Observations stay together', paragraphs: Object.freeze([
-          'An observation is the case being described. In a customer table, an observation may be one customer. In a sales table, it may be one completed sale. Values across a row belong to the same observation, so moving or mixing them changes the story the row tells.',
-          'The same real object can appear in many observations. One product may occur in thousands of sale lines because each line records a different sale occurrence. Counting rows is therefore not automatically the same as counting products.'
+        Object.freeze({ heading: 'One row: one customer, one sale or one product?', paragraphs: Object.freeze([
+          'Suppose a table lists five customers. Each row holds details that belong to one customer. That customer is the case being described, which data professionals call an observation.',
+          'In another table, one row might describe one completed sale. The meaning of a row depends on the table. The same product can appear in thousands of sale rows because it was part of thousands of different purchase events.'
         ]) }),
-        Object.freeze({ heading: 'Variables are questions asked consistently', paragraphs: Object.freeze([
-          'A variable records the same kind of characteristic for every observation. Product category asks “which group does this product belong to?” Basket total asks “how much money was paid for this sale?” The column name, definition, unit and allowed values should make that question stable.',
-          'A column containing digits is not automatically quantitative. Product code 10482 may look numerical, but adding two product codes has no meaning. It is an identifier and should be treated as a categorical label.'
+        Object.freeze({ heading: 'Each column keeps one kind of detail', paragraphs: Object.freeze([
+          'A customer-name column asks “what is this customer called?” for every row. A basket-total column asks “how much was paid in this sale?” A characteristic recorded consistently across observations is called a variable.',
+          'A useful column has a clear name, meaning and—when needed—a unit. If people interpret the question differently, values that look tidy can still mean different things. Write the question in ordinary language whenever a column name feels unclear.'
         ]) }),
-        Object.freeze({ heading: 'Types of data control valid comparisons', paragraphs: Object.freeze([
-          'Categorical variables place observations into named groups. Nominal categories, such as branch ID, have no natural order. Ordinal categories, such as a satisfaction level, can be ranked, but the distance between neighbouring levels is not necessarily equal.',
-          'Quantitative variables express amounts. Discrete variables come from counting, such as the number of items in a basket. Continuous variables come from measurement and can take values between two points, such as basket weight or waiting time.',
-          'Classification is not clerical tidying. It determines whether an average, ranking, distance or ratio makes sense. Asking what the values mean is more reliable than guessing from their appearance.'
+        Object.freeze({ heading: 'Why a barcode is not really a number', paragraphs: Object.freeze([
+          'Categorical data names or groups things. A branch ID is a category with no natural order; this is called nominal data. Satisfaction levels such as Poor, Fair and Good can be ordered; this is called ordinal data. The gap between Fair and Good is not necessarily a measurable distance.',
+          'Quantitative data describes an amount. Item count is discrete because it comes from counting whole items. Waiting time is continuous because it is measured and could, in principle, fall anywhere between two times.',
+          'Digits do not automatically make a value quantitative. Barcode 5012345678901 is an identifier. Adding two barcodes or calculating their average would be meaningless. Choose a data type by asking what operations make sense, not by looking at the characters.'
         ]) })
       ]),
-      figure: Object.freeze({ kind: 'data-types', caption: 'The first data-type decision', note: 'Read from meaning, not appearance: label or group, then count or measurement. The mission adds the deeper measurement-scale decision.' }),
-      example: Object.freeze({ title: 'Three variables, three meanings', headers: Object.freeze(['Variable','Example','Valid use']), rows: Object.freeze([
-        Object.freeze(['branch_id','B-08','identify or group branches']), Object.freeze(['satisfaction','Good','compare ordered response levels']), Object.freeze(['basket_total','£18.70','sum, compare or calculate differences'])
+      figure: Object.freeze({ kind: 'data-types', caption: 'Choose the type from the meaning', note: 'First ask whether the value is a label or an amount. Then ask whether order, counting or measurement makes sense.' }),
+      example: Object.freeze({ title: 'The value tells you less than the meaning', headers: Object.freeze(['Column','Example value','What you may sensibly do']), rows: Object.freeze([
+        Object.freeze(['branch_id','B-08','identify or group branches']), Object.freeze(['satisfaction','Good','place responses in order']), Object.freeze(['basket_total','£18.70','add, compare or calculate a difference'])
       ]) }),
       rehearsal: Object.freeze({
         mission: 'classify-data',
@@ -75,32 +76,32 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         ]),
         closing: 'This is the question the whole mission asks, twenty-four times over. What kind of thing is this value, and what does that permit?'
       }),
-      workbook: Object.freeze({ title: 'Fifteen-minute variable audit', prompt: 'Use a receipt, timetable, fitness app or another small record you can see.', steps: Object.freeze(['Name what one observation represents.', 'List five variables recorded about it.', 'Write the meaning of each variable in a full sentence.', 'Classify each as categorical or quantitative.', 'Circle any identifier that contains digits but is not an amount.']) }),
-      check: Object.freeze({ prompt: 'Employee number 700184 contains digits. Why is it categorical?', answer: 'label', options: Object.freeze([['large','The number happens to be large'],['label','It identifies a person and arithmetic on it has no meaning'],['whole','It contains no decimal places']]), explanation: 'An employee number is a label. Its numerical appearance does not make it a measured amount.' }),
-      practice: Object.freeze({ title: 'Classify Store Data', href: '?mode=game&mission=classify-data', instruction: 'Apply meaning, subtype and measurement scale across Superstore variables.' }),
+      workbook: Object.freeze({ title: 'Read a small table properly', prompt: 'Use a receipt, timetable, fitness app or another small record you can see.', steps: Object.freeze(['Finish the sentence “one row represents…”', 'Choose five columns and write the question each one answers.', 'Classify each column as categorical or quantitative.', 'If it is categorical, decide whether the categories have an order.', 'If it is quantitative, decide whether it was counted or measured.', 'Circle any identifier that uses digits but is not an amount.']) }),
+      check: Object.freeze({ prompt: 'Employee number 700184 contains only digits. Why should it be treated as categorical data?', answer: 'label', options: Object.freeze([['large','Because the value is a large number'],['label','Because it identifies a person and arithmetic with it has no meaning'],['whole','Because it has no decimal places']]), explanation: 'The employee number is a label. Its digits do not represent a quantity that can sensibly be added or averaged.' }),
+      practice: Object.freeze({ title: 'Classify Store Data', href: '?mode=game&mission=classify-data', instruction: 'Inspect Superstore fields and decide what each value means before choosing its data type.' }),
       sources: Object.freeze([Object.freeze({label:'OpenStax: Data, Sampling, and Variation',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling',licence:'CC BY 4.0'}),Object.freeze({label:'OpenStax: Levels of Measurement',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-3-frequency-frequency-tables-and-levels-of-measurement',licence:'CC BY 4.0'}),Object.freeze({label:'NIST Engineering Statistics Handbook',url:'https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc135.htm'})])
     }),
     Object.freeze({
-      id: 'rows-grain', number: '03', title: 'One row means one thing', studyMinutes: 5, playMinutes: 5,
-      objective: 'State a table’s grain precisely and use it to interpret row counts.',
-      audioSummary: 'The grain of a table is the precise meaning of one row. One row might represent one sale, one product within a sale, or one product at one branch at one moment. A row count only counts whatever the current grain represents. Joins can repeat or multiply rows, so declare the intended grain before joining and check it again afterwards. This prevents a correct row count from being reported as the wrong real-world quantity.',
-      opening: 'Before counting, joining or removing duplicates, define exactly what makes one legitimate row different from another.',
+      id: 'rows-grain', number: '03', title: '300 rows—but 300 of what?', studyMinutes: 5, playMinutes: 5,
+      objective: 'Describe exactly what one row represents and explain what a row count is actually counting.',
+      audioSummary: 'Before counting rows, ask what one row represents. A sale table may use one row for one completed sale. A sale-line table may use one row for one product within a sale. Data professionals call this the grain of the table. A count of rows counts things at that grain. Three sale-line rows mean three sale lines, not necessarily three sales or three customers. A join can repeat rows, so check the meaning of one row before and after joining tables.',
+      opening: 'A table contains 300 rows. Is that 300 customers, 300 sales or 300 products? The number alone cannot tell you.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Grain is the meaning of one row', paragraphs: Object.freeze([
-          'The grain of a table is a precise sentence describing one row. “One sale” may be enough for a sale header. “One product within one sale” is needed for a sale-line table. “One product at one branch at one observation time” may describe an inventory snapshot.',
-          'The sentence should include every entity, place and time component required to distinguish legitimate observations. If the sentence is vague, later counts and joins will also be vague.'
+        Object.freeze({ heading: 'The report says 300. What are the 300?', paragraphs: Object.freeze([
+          'Every table needs a sentence that begins “one row represents…” For a sale table, the answer may be one completed sale. For a sale-line table, it may be one product line within one sale.',
+          'Data professionals call this exact meaning the grain of the table. The name is less important than the habit: say what one row is before using a row count.'
         ]) }),
-        Object.freeze({ heading: 'COUNT counts the existing grain', paragraphs: Object.freeze([
-          'Counting rows answers “how many records exist at this table’s grain?” A sale-line table can have six rows for one sale because six different products were recorded. COUNT(*) returns six sale lines, not six customers or six sales.',
-          'To count another thing, state that thing explicitly and identify the key that represents it. Distinct sale IDs may count sales. Distinct customer IDs may count recorded customers. These answers can differ even when they come from the same table.'
+        Object.freeze({ heading: 'One basket can fill several rows', paragraphs: Object.freeze([
+          'Suppose one customer buys three different products and pays once. The sale table may contain one row for the whole purchase. The sale-line table may contain three rows—one for each product line. The payment table may contain one row for the payment attempt.',
+          'None of those row counts is wrong. Each table describes the event at a different grain. COUNT(*) simply counts the rows that exist in the table you are using.'
         ]) }),
-        Object.freeze({ heading: 'Joins can change the number of rows', paragraphs: Object.freeze([
-          'A join is safe only when you understand the grain on both sides. Joining one product row to many sale-line rows repeats the product attributes once for every matching line. That repetition is expected. Joining two tables that both contain many rows per product can multiply rows unexpectedly.',
-          'Always compare the intended output grain with the result after a join. Row growth is evidence to interpret, not automatically an error.'
+        Object.freeze({ heading: 'Why matching two tables can multiply the rows', paragraphs: Object.freeze([
+          'A join connects matching rows from two tables. If one product record matches many sale lines, its name and category will appear once beside every matching line. That repetition may be correct.',
+          'Unexpected trouble begins when both sides contain several matches and the join multiplies rows. Before joining, write the intended output sentence: “one result row should represent…” Then check whether it is still true afterwards.'
         ]) })
       ]),
-      figure: Object.freeze({ kind: 'row-grain', caption: 'One sale represented at three grains', note: 'The same event produces different legitimate row counts because each table records a different kind of thing.' }),
-      example: Object.freeze({ title: 'The same sale at two grains', headers: Object.freeze(['Table','Rows','One row represents']), rows: Object.freeze([
+      figure: Object.freeze({ kind: 'row-grain', caption: 'One purchase, three ways to organise the records', note: 'Different tables can describe the same event with different legitimate row counts.' }),
+      example: Object.freeze({ title: 'One purchase appears differently in three tables', headers: Object.freeze(['Table','Number of rows','One row represents']), rows: Object.freeze([
         Object.freeze(['sale','1','one completed sale']), Object.freeze(['sale_line','3','one product line within one sale']), Object.freeze(['payment','1','one payment attempt for the sale'])
       ]) }),
       rehearsal: Object.freeze({
@@ -120,32 +121,32 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         ]),
         closing: 'Every table in the mission asks the same two questions, and the second one only has an answer once the first does: what is one row, and therefore what does counting them tell you?'
       }),
-      workbook: Object.freeze({ title: 'Ten-minute grain test', prompt: 'Imagine a table recording attendance at a weekly class.', steps: Object.freeze(['Write a grain sentence for one learner enrolled in one class.', 'Write a different grain sentence for one learner attending one class session.', 'List the columns needed to distinguish each grain.', 'Explain why the second table can contain more rows.']) }),
-      check: Object.freeze({ prompt: 'A sale-line table has three rows for sale S-1041. What does COUNT(*) return?', answer: 'lines', options: Object.freeze([['sales','One sale'],['lines','Three sale-line records'],['products','Every product in the catalogue']]), explanation: 'COUNT(*) returns three because it counts rows at the sale-line grain.' }),
-      practice: Object.freeze({ title: 'What Does One Row Represent?', href: '?mode=game&mission=table-grain', instruction: 'Declare the grain of six tables before interpreting their row counts.' }),
+      workbook: Object.freeze({ title: 'Change the row, change the meaning', prompt: 'Imagine recording attendance at a weekly class.', steps: Object.freeze(['Write “one row represents one learner enrolled in one class.”', 'Now write a different sentence for attendance at one particular class session.', 'List the columns needed to distinguish the rows in each table.', 'Explain why the attendance table can contain more rows than the enrolment table.', 'Write what COUNT(*) would count in each table.']) }),
+      check: Object.freeze({ prompt: 'Sale S-1041 has three rows in a sale-line table. What does COUNT(*) return for those rows?', answer: 'lines', options: Object.freeze([['sales','One completed sale'],['lines','Three sale-line records'],['products','Every product sold by the company']]), explanation: 'COUNT(*) returns three because it counts the existing sale-line rows. It does not automatically count sales.' }),
+      practice: Object.freeze({ title: 'What Does One Row Represent?', href: '?mode=game&mission=table-grain', instruction: 'Inspect six tables, state what one row represents and only then interpret their row counts.' }),
       sources: Object.freeze([Object.freeze({label:'Statistics Canada: observations and variables',url:'https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch1/definitions/5214853-eng.htm'}),Object.freeze({label:'Australian Bureau of Statistics: data units and records',url:'https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/data'})])
     }),
     Object.freeze({
-      id: 'context-quality', number: '04', title: 'A value needs context', studyMinutes: 5, playMinutes: 5,
-      objective: 'Distinguish zero from missing information and judge whether a value, type and unit fit the field definition.',
-      audioSummary: 'A value is trustworthy only when its meaning, type, unit and missingness agree with the field definition. Zero is a known answer, while a blank or null means no value is held and needs an explanation. A missing value might be unknown, pending or not applicable, and those cases require different treatments. Units also belong to measurements: ten kilograms and ten centimetres cannot be compared simply because both cells contain the number ten.',
-      opening: 'A cell is trustworthy only when its value, meaning, type, unit and missingness agree with the variable it claims to record.',
+      id: 'context-quality', number: '04', title: 'Zero, blank or missing?', studyMinutes: 7, playMinutes: 5,
+      objective: 'Explain why zero, a blank and an invalid value mean different things, and why measurements need units.',
+      audioSummary: 'The number in a cell is only useful when we know what it means. Zero is a known answer, but a blank means the system holds no answer. The value might be unknown, expected later or not applicable at all. Those situations should not be treated in the same way. A measurement also needs a unit. Ten kilograms and ten centimetres both contain the number ten, but they describe different kinds of quantity. Good data checks meaning and context, not only whether a value fits into a column.',
+      opening: 'You see `0`, a blank cell and `10` in a table. None of them can be interpreted safely until you know what the columns mean.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Zero is an answer; missing is a lack of answer', paragraphs: Object.freeze([
-          'Zero can be a valid measured amount: no units were returned. A blank or NULL usually means the system does not hold a value, but it does not explain why. The value may be unknown, not applicable, pending or deliberately uncollected.',
-          'Replacing every missing value with zero invents evidence. It changes “we do not know” into “we know none occurred,” which can distort totals, averages, rates and decisions.'
+        Object.freeze({ heading: 'Did nothing happen—or do we simply not know?', paragraphs: Object.freeze([
+          'A returned-item count of zero means the system knows that no items were returned. A blank cell means the system does not currently hold a value. In databases, that missing value is often represented by NULL.',
+          'The reason may be unknown, expected later, deliberately uncollected or not applicable. Replacing every blank with zero changes “we do not know” into “we know none occurred.” That invents evidence and can distort totals, averages and decisions.'
         ]) }),
-        Object.freeze({ heading: 'Types describe allowed operations', paragraphs: Object.freeze([
-          'A data type constrains how a value is stored and handled. Dates should support calendar operations. Boolean fields should represent two governed states. Text may preserve identifiers that contain leading zeroes. A value can be technically storable yet conceptually wrong for the field.',
-          'Validation should therefore check both format and meaning. The text “unknown” may fit into a text column while violating a field that requires an ISO country code.'
+        Object.freeze({ heading: '“Unknown” fits in the box, but it may still be wrong', paragraphs: Object.freeze([
+          'A data type tells a system how to store and handle a value. Dates should work in calendar calculations. Text can preserve identifiers that begin with zero. A true-or-false field should contain only the states its definition allows.',
+          'Passing a format check is not enough. The text “unknown” fits inside a text column, but it is still invalid if that column requires a two-letter country code. Validation must check both form and meaning.'
         ]) }),
-        Object.freeze({ heading: 'Units belong to the value', paragraphs: Object.freeze([
-          'A measurement is incomplete without its unit. The number 10 could mean kilograms, litres, minutes or degrees. Compatible units can be converted when the original value and conversion rule remain traceable. Incompatible dimensions cannot be repaired by changing the label.',
-          'Ten centimetres cannot become ten kilograms. That is not a conversion problem; it is evidence of a mapping or recording error that should be quarantined and investigated.'
+        Object.freeze({ heading: 'Ten what? A number needs a unit', paragraphs: Object.freeze([
+          'The value 10 might mean 10 kilograms, 10 minutes or 10 degrees. The number is incomplete without its unit because the unit tells us what kind of quantity was measured.',
+          'Compatible units can be converted: 100 centimetres can become 1 metre. Incompatible quantities cannot. Ten centimetres cannot become ten kilograms by changing a label. That is evidence of a recording or mapping error that should be set aside and investigated.'
         ]) })
       ]),
-      example: Object.freeze({ title: 'Three cells that look simple', headers: Object.freeze(['Cell','Context','Meaning']), rows: Object.freeze([
-        Object.freeze(['0','returned_unit_count','known zero: no returns']), Object.freeze(['NULL','delivery_time','no value held; reason required']), Object.freeze(['28 cm','mass_kg','wrong dimension; not convertible'])
+      example: Object.freeze({ title: 'The cell is only the beginning', headers: Object.freeze(['Cell','Column','What it means']), rows: Object.freeze([
+        Object.freeze(['0','returned_unit_count','known answer: no units were returned']), Object.freeze(['NULL','delivery_time','no value is held; find out why']), Object.freeze(['28 cm','mass_kg','wrong kind of measurement; do not convert'])
       ]) }),
       rehearsal: Object.freeze({
         mission: 'missing-data',
@@ -176,44 +177,45 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         ]),
         closing: 'Two blank cells, identical on screen. One can never be filled and one merely was not, and only the operational record separates them. That is what this session means by context.'
       }),
-      workbook: Object.freeze({ title: 'Fifteen-minute quality review', prompt: 'Review five fields from a form, spreadsheet or app you know.', steps: Object.freeze(['Write the intended meaning and unit for each field.', 'Describe what zero would mean in each field.', 'Describe what a blank could mean.', 'Identify one value that could pass a format check but still be conceptually wrong.', 'Write the safest action: keep, correct with evidence, or quarantine.']) }),
-      check: Object.freeze({ prompt: 'A delivery-time field is blank because the parcel has not arrived yet. What is the best interpretation?', answer: 'pending', options: Object.freeze([['zero','Delivery took zero minutes'],['pending','The value is expected later'],['not-applicable','Delivery time can never apply to this parcel']]), explanation: 'The value is pending because the event needed to produce it has not happened yet.' }),
-      practice: Object.freeze({ title: 'Missing Values Are Not Zero', href: '?mode=game&mission=missing-data', instruction: 'Interpret six values using process evidence, then choose a traceable treatment.' }),
+      workbook: Object.freeze({ title: 'Give five values their context', prompt: 'Review five fields from a form, spreadsheet or app you know.', steps: Object.freeze(['Write what each field is meant to record.', 'Add the unit wherever the field contains a measurement.', 'Write what zero would mean in each field.', 'Write two possible reasons for a blank.', 'Find one value that could have the correct format but the wrong meaning.', 'Choose the safest response: keep it, correct it using evidence, or set it aside for investigation.']) }),
+      check: Object.freeze({ prompt: 'A delivery-time field is blank because the parcel has not arrived yet. What does the blank mean?', answer: 'pending', options: Object.freeze([['zero','The delivery took zero minutes'],['pending','The value is expected after the parcel arrives'],['not-applicable','A delivery time can never apply to this parcel']]), explanation: 'The value is pending because the event that will produce it—the parcel arriving—has not happened yet.' }),
+      practice: Object.freeze({ title: 'Missing Values Are Not Zero', href: '?mode=game&mission=missing-data', instruction: 'Use evidence from the real process to explain six missing values and choose a safe treatment.' }),
       sources: Object.freeze([Object.freeze({label:'UK Government Analysis Function: symbols in tables',url:'https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/'}),Object.freeze({label:'PostgreSQL: NULL comparison rules',url:'https://www.postgresql.org/docs/current/functions-comparison.html'})])
     }),
     Object.freeze({
-      id: 'question-to-decision', number: '05', title: 'From a question to a decision', studyMinutes: 12, playMinutes: 8,
-      objective: 'Turn a vague request into a decision, a testable analytical question and an agreed success measure.',
-      audioSummary: 'Analysis should begin with a decision, not a dashboard or a preferred answer. First identify who may act, what choice they face and when they need to decide. Then turn the request into a testable question by naming the population, outcome, comparison and time period. Check whether the available evidence can answer that question, choose a method that matches it and agree what result would matter before seeing the numbers. Communicate the finding, uncertainty and limitations separately from the recommendation. After action is taken, monitor what happened and use it to frame the next question.',
-      opening: '“Make a dashboard to prove we need more tills” sounds like work, but it already chooses the answer and never states the decision. Good analysis begins one step earlier.',
+      id: 'question-to-decision', number: '05', title: 'What decision are we helping with?', studyMinutes: 12, playMinutes: 8,
+      objective: 'Turn a vague request into a fair question that the available data can answer and a decision it can support.',
+      audioSummary: 'Good analysis begins with a decision, not with a chart or a preferred conclusion. First ask who must choose, what options are available and when the choice must be made. Then write a fair question by naming the people or events being studied, the outcome, the comparison and the time period. Check whether the available records actually contain the evidence needed. Agree what result would be useful before looking at the answer. Finally, keep the finding separate from the recommendation so everyone can see where evidence ends and judgement begins.',
+      opening: 'A manager says, “Make a dashboard proving we need more tills.” It sounds specific, but it asks the data to defend an answer chosen in advance.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Start with the decision, not the output', paragraphs: Object.freeze([
-          'A chart, query or model is an output. It is useful only when somebody can explain the choice it supports. Name the decision owner, the available actions, the deadline and the consequence of being wrong. “The regional operations manager will decide on Friday whether to run a four-week staffing trial” is a usable beginning.',
-          'Do not accept “prove” as an analytical objective. It asks the evidence to defend a conclusion chosen in advance. Reframe it as a comparison that could produce more than one honest answer, including no meaningful difference.'
+        Object.freeze({ heading: 'What will the manager actually decide?', paragraphs: Object.freeze([
+          'A dashboard, query or model is only an output. It becomes useful when it helps a named person make a real choice. Ask who will decide, what options they have, when they need the answer and what could happen if they are wrong.',
+          '“The regional operations manager will decide on Friday whether to run a four-week staffing trial” gives the work a purpose. “Prove we need more tills” does not. The word prove has already chosen the conclusion.'
         ]) }),
-        Object.freeze({ heading: 'Make the question testable', paragraphs: Object.freeze([
-          'A testable question names the population, outcome, comparison and period. For example: “Among Saturday checkouts at Northgate, how do transaction times differ between staffed and self-service tills after accounting for basket size?” Each phrase determines which rows and variables belong in the analysis.',
-          'Now inspect the records. Qubix stores scan start, scan end, payment completion, item count and till type. Those fields can compare recorded transaction stages. They cannot measure the time a shopper waited before scanning began, so the analysis must not silently rename transaction time as queue time.'
+        Object.freeze({ heading: 'Did the system record what we need?', paragraphs: Object.freeze([
+          'A useful analytical question names who or what is being studied, the outcome, the comparison and the time period. For example: “For Saturday checkouts at Northgate, how do scan-to-payment times differ between staffed and self-service tills for similar basket sizes?”',
+          'Now compare the question with the available data. Qubix records when scanning starts and payment finishes, the item count and the till type. It does not record when a shopper joins the queue. The analysis can compare transaction time, but it cannot honestly claim to measure waiting time before scanning.'
         ]) }),
-        Object.freeze({ heading: 'Agree what matters before seeing the result', paragraphs: Object.freeze([
-          'Choose the comparison and success measure before examining the answer. A median number of seconds per item may describe throughput; payment completion time may expose a different delay. The decision owner should agree what improvement is large enough to justify a trial and what adverse outcome would stop it.',
-          'A finding is not a decision. The analyst reports the result, uncertainty, data boundary and plausible alternatives. The decision owner weighs that evidence with cost, staffing and operational constraints. Monitoring then checks whether the chosen action produced the intended outcome.'
+        Object.freeze({ heading: 'Set the goal before seeing the answer', paragraphs: Object.freeze([
+          'Choose the comparison and success measure before calculating the answer. Otherwise it is tempting to select whichever number makes the preferred option look best. Agree how large an improvement would justify the trial and what harmful result would stop it.',
+          'A finding is not the same as a decision. The analyst explains what the records show, what remains uncertain and what the data could not measure. The manager combines that evidence with cost, staffing and practical constraints. After acting, the team checks what happened and learns from it.'
         ]) })
       ]),
-      figure: Object.freeze({ kind: 'decision-cycle', caption: 'Analysis is a decision cycle, not a one-way dashboard request', note: 'Quality checks belong throughout the cycle. Monitoring turns the result of one action into evidence for the next question.' }),
-      example: Object.freeze({ title: 'Repairing the till request', headers: Object.freeze(['Element','Weak request','Decision-ready version']), rows: Object.freeze([
+      figure: Object.freeze({ kind: 'decision-cycle', caption: 'A decision begins and ends the analysis', note: 'The result supports a choice. Monitoring what happens next creates evidence for the next question.' }),
+      example: Object.freeze({ title: 'Turn a biased request into an honest investigation', headers: Object.freeze(['Part','Weak request','Better version']), rows: Object.freeze([
         Object.freeze(['Purpose','Prove we need more tills','Decide whether to run a four-week Saturday staffing trial']),
         Object.freeze(['Question','Why are queues bad?','How do recorded transaction stages differ by till type and basket size at Northgate on Saturdays?']),
         Object.freeze(['Boundary','All waiting time','From scan start to payment completion; pre-scan queue time is not recorded']),
         Object.freeze(['Outcome','A dashboard','Finding, uncertainty, recommendation and an agreed monitoring measure'])
       ]) }),
-      workbook: Object.freeze({ title: 'Twenty-minute question repair', prompt: 'Take a request such as “show sales are down” or “find our best branch.”', steps: Object.freeze([
-        'Name the person who will decide and the actions genuinely available.',
-        'Rewrite the request so more than one answer could be supported.',
-        'State the population, outcome, comparison and time period.',
-        'List the evidence available and one thing it cannot measure.',
-        'Write the success measure before calculating the result.',
-        'Separate the eventual finding from the recommendation.'
+      workbook: Object.freeze({ title: 'Repair a data request', prompt: 'Choose a request such as “show that sales are down” or “find our best branch.”', steps: Object.freeze([
+        'Name the person who must make a decision.',
+        'Write the real options available to that person.',
+        'Remove any wording that assumes the answer in advance.',
+        'Name who or what will be studied, the outcome, comparison and time period.',
+        'List what the available records can measure and one thing they cannot.',
+        'Write what result would be useful before calculating it.',
+        'Keep the eventual finding separate from your recommendation.'
       ]) }),
       exercise: Object.freeze({
         id: 'repair-the-request', type: 'decision-path', minutes: 7,
@@ -244,12 +246,12 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         ]),
         why: 'The repaired brief begins with a real decision, asks only what the data can answer, fixes success before seeing the result and keeps the analytical finding separate from managerial judgement.'
       }),
-      check: Object.freeze({ prompt: 'A director asks you to “prove the new checkout process worked.” What is the best first move?', answer: 'reframe', options: Object.freeze([
-        Object.freeze(['chart','Choose a chart that shows the improvement clearly.']),
-        Object.freeze(['reframe','Clarify the decision, comparison, outcome, population and success measure.']),
-        Object.freeze(['average','Calculate the average before discussing the question.'])
-      ]), explanation: 'Reframing removes the assumed conclusion and defines what evidence would be relevant before the result is seen.' }),
-      practice: Object.freeze({ title: 'The Analyst’s Desk', href: '?mode=game&mission=analyst-desk', instruction: 'Judge which claims the evidence supports, where the boundary lies and what recommendation can honestly follow.' }),
+      check: Object.freeze({ prompt: 'A director asks you to “prove the new checkout process worked.” What should you do first?', answer: 'reframe', options: Object.freeze([
+        Object.freeze(['chart','Choose the chart that makes the improvement easiest to see.']),
+        Object.freeze(['reframe','Clarify the decision, fair comparison, outcome, group being studied and success measure.']),
+        Object.freeze(['average','Calculate an average before discussing what the question means.'])
+      ]), explanation: 'Reframing removes the assumed answer and defines what evidence would matter before anyone sees the result.' }),
+      practice: Object.freeze({ title: 'The Analyst’s Desk', href: '?mode=game&mission=analyst-desk', instruction: 'Decide what the evidence supports, what remains outside the data and which recommendation can honestly follow.' }),
       sources: Object.freeze([
         Object.freeze({label:'UK Government AQuA Book — analytical lifecycle',url:'https://www.gov.uk/guidance/the-aqua-book',licence:'Open Government Licence 3.0'}),
         Object.freeze({label:'National Academies — Data Science for Undergraduates',url:'https://nap.nationalacademies.org/catalog/25104/data-science-for-undergraduates-opportunities-and-options'})

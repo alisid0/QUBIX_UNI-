@@ -41,6 +41,7 @@ export function paramsForPath(pathname) {
   }
   if (parts[0] === 'wiki') {
     params.set('mode', 'wiki');
+    if (parts[1] === 'terms' && parts[2]) params.set('term', parts[2]);
     if (parts[1] === 'books' || parts[1] === 'world') params.set('section', parts[1]);
     if (parts[1] === 'phase' && parts[2]) params.set('phase', parts[2]);
     return params;
@@ -85,7 +86,9 @@ export function cleanPathForParams(input) {
     params.delete('mode');
     const section = params.get('section');
     const phase = params.get('phase');
-    if (section) { params.delete('section'); path = `/wiki/${section}`; }
+    const term = params.get('term');
+    if (term) { params.delete('term'); path = `/wiki/terms/${term}`; }
+    else if (section) { params.delete('section'); path = `/wiki/${section}`; }
     else if (phase !== null) { params.delete('phase'); path = `/wiki/phase/${phase}`; }
     else path = '/wiki';
   } else if (mode?.startsWith('dsa-')) {

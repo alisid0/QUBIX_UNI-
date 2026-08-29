@@ -14,6 +14,7 @@ import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { superstoreTopics } from '../src/factory/superstore-topics.js';
 import { registry as factoryBoards } from '../src/factory/index.js';
 import { cleanPathForHref } from '../src/lib/routes/clean-paths.js';
+import { learningKeywords } from '../src/lib/content/learning-keywords.js';
 
 const route = (url, area, title, visibility = 'public', indexable = visibility === 'public') => {
   const clean = ['public', 'preview'].includes(visibility) ? cleanPathForHref(url) : url;
@@ -76,6 +77,9 @@ export function buildSiteRoutes(libraryPages = []) {
 
     ...superstoreTopics.map(({ phase, title }) =>
       route(`/?mode=wiki&phase=${phase}`, 'Wiki', `Phase ${phase}: ${title}`)),
+
+    ...learningKeywords.map(({ slug, term }) =>
+      route(`/?mode=wiki&term=${slug}`, 'Wiki terms', term)),
 
     ...libraryPages.map(path =>
       route(path, 'Library', path.split('/').pop().replace(/\.html$/, '').replace(/-/g, ' '))),

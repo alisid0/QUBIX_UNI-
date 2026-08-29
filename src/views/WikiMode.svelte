@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { superstoreTopics, superstoreTopicCount } from '../factory/superstore-topics.js';
   import { cleanPathForParams, paramsForLocation } from '../lib/routes/clean-paths.js';
+  import { keywordFor, keywordPath } from '../lib/content/learning-keywords.js';
 
   const books = [
     { stage: 'Qubix Ebook 001', title: 'What Data Is and Why People Use It', author: 'Qubix University · Pre-Intern Academy', note: 'The first source-first title: event, record, context, evidence and decision inside Qubix Superstore.', access: 'AI_DRAFT', url: '/library/what-data-is.html' },
@@ -42,11 +43,15 @@
   let selectedPhase = null;
   let mobileNavOpen = false;
   let view = 'learn';
+  let selectedTerm = null;
+  let returnTo = '/learn/foundations';
 
-  function wikiUrl({ phase = null, section = null, search = '' } = {}) {
+  function wikiUrl({ phase = null, section = null, term = null, search = '', from = '' } = {}) {
     const params = new URLSearchParams({ mode: 'wiki' });
     if (phase !== null) params.set('phase', phase);
     if (section) params.set('section', section);
+    if (term) params.set('term', term);
+    if (term && from) params.set('from', from);
     if (search.trim()) params.set('q', search.trim());
     return cleanPathForParams(params);
   }
@@ -58,18 +63,28 @@
     const validPhase = phase !== null && superstoreTopics.some((item) => item.phase === phase);
     const section = params.get('section');
     const validSection = ['books', 'world'].includes(section);
+    const termValue = params.get('term');
+    const validTerm = termValue ? keywordFor(termValue) : null;
+    const fromValue = params.get('from') || '';
+    const validReturn = /^\/learn\/data-foundations\/chapter\/\d+\/session\/\d+$/.test(fromValue);
 
     selectedPhase = validPhase ? phase : null;
-    view = validPhase ? 'learn' : validSection ? section : 'learn';
-    query = validPhase || validSection ? '' : (params.get('q') || '');
+    selectedTerm = validTerm;
+    returnTo = validTerm && validReturn ? fromValue : '/learn/foundations';
+    view = validTerm ? 'term' : validPhase ? 'learn' : validSection ? section : 'learn';
+    query = validTerm || validPhase || validSection ? '' : (params.get('q') || '');
     mobileNavOpen = false;
 
     const hasInvalidRoute = (phaseValue !== null && (!validPhase || phaseValue !== String(phase)))
       || (section !== null && !validSection)
-      || (phaseValue !== null && section !== null)
-      || (params.has('q') && (validPhase || validSection));
+      || (termValue !== null && !validTerm)
+      || (params.has('from') && (!validTerm || !validReturn))
+      || ([phaseValue, section, termValue].filter(value => value !== null).length > 1)
+      || (params.has('q') && (validTerm || validPhase || validSection));
     if (normalise && hasInvalidRoute) {
-      const normalisedUrl = validPhase
+      const normalisedUrl = validTerm
+        ? wikiUrl({ term: validTerm.slug, from: validReturn ? fromValue : '' })
+        : validPhase
         ? wikiUrl({ phase })
         : validSection
           ? wikiUrl({ section })
@@ -99,7 +114,9 @@
   $: activePhase = selectedPhase === null ? null : superstoreTopics.find((phase) => phase.phase === selectedPhase);
   $: pageTitle = activePhase
     ? `${activePhase.title} | Qubix Data Science Wiki`
-    : view === 'books'
+    : selectedTerm
+      ? `${selectedTerm.term} | Qubix Data Science Wiki`
+      : view === 'books'
       ? 'Books and References | Qubix Data Science Wiki'
       : view === 'world'
         ? 'Qubix Superstore Data World | Qubix Data Science Wiki'
@@ -108,7 +125,9 @@
           : 'Qubix Data Science Wiki';
   $: pageDescription = activePhase
     ? `${activePhase.role}: ${activePhase.title}. Explore ${activePhase.topics.length} mapped topics and their Qubix Superstore practical.`
-    : view === 'books'
+    : selectedTerm
+      ? selectedTerm.definition
+      : view === 'books'
       ? 'Source-first Qubix ebooks and authoritative references for statistics, data engineering, machine learning and AI.'
       : view === 'world'
         ? 'Explore the synthetic Qubix Superstore data world that connects every Wiki concept to a stakeholder and consequence.'
@@ -116,6 +135,7 @@
 
   function choosePhase(phase) {
     selectedPhase = phase;
+    selectedTerm = null;
     query = '';
     view = 'learn';
     mobileNavOpen = false;
@@ -125,6 +145,7 @@
 
   function chooseView(nextView) {
     selectedPhase = null;
+    selectedTerm = null;
     query = '';
     view = nextView;
     mobileNavOpen = false;
@@ -134,12 +155,14 @@
 
   function updateSearchUrl() {
     selectedPhase = null;
+    selectedTerm = null;
     view = 'learn';
     writeUrl({ search: query }, 'replaceState');
   }
 
   function goHome() {
     selectedPhase = null;
+    selectedTerm = null;
     query = '';
     view = 'learn';
     mobileNavOpen = false;
@@ -188,7 +211,17 @@
   </aside>
 
   <main class="wiki-main">
-    {#if normalisedQuery}
+    {#if selectedTerm}
+      <article class="content term-page">
+        <a class="term-back" href={returnTo}>← Return to the lesson</a>
+        <div class="eyebrow">KEY TERM · DATA FOUNDATIONS</div>
+        <h1>{selectedTerm.term}</h1>
+        <p class="term-definition">{selectedTerm.definition}</p>
+        <section><span>WHY IT MATTERS</span><p>{selectedTerm.why}</p></section>
+        <section><span>SUPERSTORE EXAMPLE</span><p>{selectedTerm.example}</p></section>
+        <div class="related-terms"><b>Related terms</b>{#each selectedTerm.related as slug}<a href={keywordPath(slug, returnTo)}>{keywordFor(slug)?.term} →</a>{/each}</div>
+      </article>
+    {:else if normalisedQuery}
       <section class="content search-page">
         <div class="eyebrow">SEARCHING THE ENTIRE PATH</div>
         <h1>{matches.length} result{matches.length === 1 ? '' : 's'} for “{query}”</h1>
@@ -395,6 +428,17 @@
   .method-grid b { margin-top:auto; font:500 24px Georgia,serif; }
   .method-grid p { margin-top:9px; color:#beb5a7; font-size:14.5px; line-height:1.55; }
   .search-page, .phase-page, .content:not(.hero):not(.overview-section) { padding-top:60px; padding-bottom:90px; }
+  .term-page { max-width: 860px; }
+  .term-back { display:inline-block; margin-bottom:34px; color:var(--olive); font-size:13px; font-weight:850; text-decoration-thickness:2px; text-underline-offset:4px; }
+  .term-page h1 { margin-top:12px; font:500 clamp(44px,7vw,76px)/.98 Georgia,serif; letter-spacing:-.04em; }
+  .term-definition { max-width:25ch; margin-top:24px; font:500 clamp(23px,3.2vw,34px)/1.28 Georgia,serif; }
+  .term-page > section { display:grid; grid-template-columns:170px 1fr; gap:26px; margin-top:34px; padding:24px 0; border-top:1px solid var(--line); }
+  .term-page > section span { color:var(--clay); font-size:11.5px; font-weight:900; letter-spacing:.13em; }
+  .term-page > section p { color:#514b42; font-size:17px; line-height:1.7; }
+  .related-terms { display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin-top:26px; padding:18px; border:4px solid var(--ink); box-shadow:6px 6px 0 rgba(32,36,31,.13); background:var(--card); }
+  .related-terms b { width:100%; font:500 19px Georgia,serif; }
+  .related-terms a { padding:8px 11px; color:var(--olive); border:1px solid var(--line); font-size:13px; font-weight:800; text-decoration:none; }
+  .related-terms a:hover,.related-terms a:focus-visible { border-color:var(--olive); outline:2px solid var(--olive); outline-offset:2px; }
   .search-page h1, .content:not(.hero) > h1, .phase-heading h1 { font-size:clamp(36px,5vw,60px); }
   .results { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:38px; }
   .results button { min-height:130px; display:flex; flex-direction:column; align-items:flex-start; gap:8px; padding:17px; border:1px solid var(--line); border-radius:10px; background:var(--card); text-align:left; cursor:pointer; }
@@ -496,6 +540,7 @@
     .phase-heading > div b { font-size:28px; }
     .topic-list article { grid-template-columns:30px 1fr; }
     .topic-state { display:none; }
+    .term-page > section { grid-template-columns:1fr; gap:8px; }
   }
 
   /* R3 editorial reference system. The Wiki stays dense and searchable, but

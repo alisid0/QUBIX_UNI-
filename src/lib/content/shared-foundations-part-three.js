@@ -10,27 +10,31 @@
 export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
   id: 'SHARED-FOUNDATIONS-PART-THREE',
   status: 'AI_DRAFT · AUTHORING ONLY',
-  title: 'Quality and Evidence',
+  title: 'Data Quality and Evidence',
   subtitle: 'Part Three of Volume 0',
   totalMinutes: 45,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'absence', number: '01', title: 'An empty cell does not explain itself', studyMinutes: 10, playMinutes: 5,
+      id: 'absence', number: '01', title: 'A blank cell does not mean zero', studyMinutes: 10, playMinutes: 5,
       objective: 'Distinguish a recorded zero from the several different reasons a value can be absent.',
       opening: 'A stock count reads 0. Another reads nothing at all. One of those says the shelf was empty. The other says nobody looked, and the two must not be averaged together.',
+      keywords: Object.freeze(['missing-data', 'null', 'pending-data', 'not-applicable']),
       sections: Object.freeze([
-        Object.freeze({ heading: 'Zero is something somebody measured', paragraphs: Object.freeze([
-          'Zero is a reading. Somebody counted the shelf, the count came to none, and that fact is now on the record. A blank is not a reading at all: it says only that no measurement is available, and it does not say why. The two sit in the same column and look equally tidy, but they mean opposite things, because one describes the world and the other describes the record.',
-          'The distinction turns up in any measurement you care to take. A rain gauge reading 0 mm means it did not rain, while an empty cell means nobody went out to read the gauge. A balance of £0 means the account is empty, while a blank means the balance did not load. A test score of 0 means the paper was marked and nothing on it was right, while a blank means the student never sat the paper: average that blank in as a zero and the class average falls on a mark nobody earned.',
-          'Tools will not settle this for you, and they do not agree with each other. A SUM usually skips blanks, so a total over ten rows with three blanks is really a total over seven. An AVERAGE usually skips them too, and so divides by seven rather than ten. Divide that same sum by a row count of ten yourself and you get a third answer. All three look perfectly ordinary on the page, which is why this is the most common way a number becomes quietly wrong: the behaviour you get depends on the tool rather than on the question you asked.'
+        Object.freeze({ heading: 'Zero and missing data mean different things', paragraphs: Object.freeze([
+          'Imagine that a worker checks a shelf. If the shelf is empty, they record 0. If the shelf was never checked, the value is missing. Zero tells us something about the shelf. A missing value tells us something about the record: the system does not currently have an answer. In a database, an absent value is often stored as NULL, although a visually blank cell is not automatically the same thing.',
+          'The same distinction appears elsewhere. A rainfall value of 0 mm means the gauge was checked and no rain was recorded; a missing value means the reading was unavailable. A test score of 0 means the work was assessed and received no marks; a missing score might mean the student was absent or the result has not been entered. Replacing either missing value with zero would create a statement the evidence does not support.'
         ]) }),
-        Object.freeze({ heading: 'Absences have different causes', paragraphs: Object.freeze([
-          'Missing and unknown means a value exists in the world but was not captured: the scanner lost power before the count finished. Not applicable means no value could exist: a delivery date on an order that was cancelled before dispatch. Pending means the value is expected later. Not collected by design means a policy decided never to record it.',
-          'These four are not interchangeable. Two of them may be filled in later, one never will, and one should not be chased at all. Storing them all as an identical blank throws away the distinction, which is why a reason column beside the value is worth its space.'
+        Object.freeze({ heading: 'Why missing values affect calculations', paragraphs: Object.freeze([
+          'Suppose five sales values are £10, £20, missing, £30 and missing. The total of the three known values is £60. If we average only those known values, the answer is £20. If we replace both missing values with zero, the answer becomes £12.',
+          'Neither calculation is automatically correct. The correct treatment depends on why the values are missing. Different tools may also skip, include or replace absent values in different ways, so check which values a calculation actually used before accepting its result.'
         ]) }),
-        Object.freeze({ heading: 'The evidence is usually outside the cell', paragraphs: Object.freeze([
-          'You cannot tell which kind of absence you are looking at by staring at the cell, because every one of them looks the same. The answer lives in the operational record: a maintenance log, a cancellation flag, a feed that arrived truncated, a policy document.',
-          'Deciding what a blank means is therefore an act of investigation rather than a formatting choice, and the decision should be written down beside the data so the next person does not have to repeat it.'
+        Object.freeze({ heading: 'A value can be absent for several reasons', paragraphs: Object.freeze([
+          'Missing means a value should have been recorded but was not. Unknown means the value may exist, but nobody currently knows it. Pending means the value is expected later. Not applicable means the field does not apply to this record. Not collected means the organisation intentionally chose not to capture it.',
+          'These meanings are not interchangeable. A missing delivery date might require investigation. A pending delivery date might simply require waiting. A delivery date marked not applicable may never need a value. Keeping a reason or status beside the value prevents these different situations from collapsing into one unexplained blank.'
+        ]) }),
+        Object.freeze({ heading: 'Look for evidence beyond the cell', paragraphs: Object.freeze([
+          'You usually cannot discover the reason for an absent value by looking at the cell alone. You may need to check a cancellation status, a scanner or system log, the time a data feed arrived, a collection policy, or a separate reason column.',
+          'Handling missing data is therefore an investigation, not a formatting choice. Record the evidence and the decision beside the data so another analyst can understand what happened without repeating the investigation.'
         ]) })
       ]),
       example: Object.freeze({ title: 'Four blanks, four different answers', headers: Object.freeze(['Field', 'Evidence', 'Correct treatment']), rows: Object.freeze([
@@ -100,19 +104,20 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'types', number: '02', title: 'What kind of thing is this value?', studyMinutes: 5, playMinutes: 5,
+      id: 'types', number: '02', title: 'A postcode and a price can both contain numbers—so why treat them differently?', studyMinutes: 5, playMinutes: 5,
       objective: 'Classify a column by what it measures, and say which operations that permits.',
       opening: 'A postcode, a shoe size, a satisfaction rating and a temperature are all written with characters, and almost nothing you can do to one of them is legitimate for another.',
+      keywords: Object.freeze(['categorical-data', 'quantitative-data', 'ordinal-data', 'measurement-scale']),
       sections: Object.freeze([
-        Object.freeze({ heading: 'Categorical and quantitative', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'A branch number is a label, not an amount', paragraphs: Object.freeze([
           'A categorical value names which group something belongs to: a branch, a category, a payment type. A quantitative value records how much or how many, and arithmetic on it means something. The distinction is about what the value represents rather than about how it is stored, which is why a numeric-looking column is not automatically a number.',
           'Branch identifiers B-08 and B-17 could be stored as 8 and 17, and their average would be 12.5, which is not a branch. The database would not object. Only knowing what the column measures prevents it.'
         ]) }),
-        Object.freeze({ heading: 'Order, and whether the gaps are equal', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Poor, fair and good have an order—but no measured gaps', paragraphs: Object.freeze([
           'Some categories have a natural order and some do not. Nominal categories are names only, so payment type has no sequence. Ordinal categories can be ranked but the gaps between them are not measured: satisfaction rated poor, fair, good is ordered, yet the distance from poor to fair is not known to equal the distance from fair to good.',
           'This is why averaging a satisfaction rating is a claim, not a calculation. The median and the distribution say what is there; the mean quietly assumes the gaps are equal.'
         ]) }),
-        Object.freeze({ heading: 'Interval and ratio', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Why 20 °C is not twice as hot as 10 °C', paragraphs: Object.freeze([
           'Within quantitative values the question from chapter 02 returns: does zero mean none. An interval scale has equal gaps but an arbitrary zero, so differences are meaningful and multiples are not. A ratio scale has a true zero, so both are meaningful and it is correct to say one value is twice another.',
           'Units sold, revenue and distance are ratio scales. Calendar year and temperature in Celsius are interval scales. The type of a column is therefore a statement about which sentences you are allowed to write about it.'
         ]) })
@@ -147,19 +152,20 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'grain', number: '03', title: 'One row, one thing', studyMinutes: 5, playMinutes: 5,
+      id: 'grain', number: '03', title: 'Does one row mean one sale or one product?', studyMinutes: 5, playMinutes: 5,
       objective: 'State a table’s grain precisely enough that a row count answers a real question.',
       opening: 'Someone asks how many sales there were. You count the rows and answer three thousand. Whether that is right depends entirely on what one row of that table represents.',
+      keywords: Object.freeze(['grain', 'key', 'composite-key', 'duplicate']),
       sections: Object.freeze([
-        Object.freeze({ heading: 'Grain is the meaning of one row', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Count the rows only after naming what one row represents', paragraphs: Object.freeze([
           'The grain of a table is what a single row describes, stated with every part needed to tell it from every other row. One completed sale. One product line within one sale. One product at one branch at one observation time. Stating it takes a full sentence, and a sentence that is too short is the beginning of a wrong number.',
           'Counting rows counts things at the grain, whatever anybody wanted it to count. If the grain is product lines, the row count is a number of lines, and calling it a number of sales does not make it one.'
         ]) }),
-        Object.freeze({ heading: 'Keys make the grain enforceable', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Which columns make each row unique?', paragraphs: Object.freeze([
           'A key is the column, or the set of columns, whose values are unique at the declared grain. When one column is not enough, a composite key names the combination that is: a branch and a business date, or a sale and a line number. The key is the grain written in a form a database can check.',
           'If the declared key repeats, either the data is wrong or the grain was described wrongly. Both are worth knowing, and the query that finds them is the same one: group by the key and keep the groups that appear more than once.'
         ]) }),
-        Object.freeze({ heading: 'A duplicate is not always a mistake', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Two similar rows are not always duplicates', paragraphs: Object.freeze([
           'Two rows sharing a key at the declared grain are a violation. Two rows that look similar but differ in a column that is part of the grain are not duplicates at all: the same product at the same branch measured at two different times is two legitimate observations.',
           'So detection is not permission to delete. Find the repeated keys, then establish why they repeat and which record is authoritative, and preserve the evidence while you do it. Deleting first destroys the only proof of what happened.'
         ]) })
@@ -196,16 +202,17 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
       id: 'provenance', number: '04', title: 'Where did this number come from?', studyMinutes: 5, playMinutes: 5,
       objective: 'Trace a reported figure back to the record it came from and the steps that changed it.',
       opening: 'A report says the freezer ran at minus seventeen point eight. Somewhere behind that is a sensor, a reading, a conversion and a decision to publish. Any one of them can be the reason the number is wrong.',
+      keywords: Object.freeze(['provenance', 'entity', 'transformation', 'derivation']),
       sections: Object.freeze([
-        Object.freeze({ heading: 'Entity, activity and derivation', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Find the source record and every step that changed it', paragraphs: Object.freeze([
           'Provenance describes where a value came from in three parts. The entity is the source record, identified well enough to find again: a branch, a device and an observation time, not merely a number. The activity is the named, versioned processing that changed it. The derivation is the link that keeps the output connected to both.',
           'A figure with all three can be checked by somebody else. A figure with only its output value can be checked by nobody, however carefully it was calculated.'
         ]) }),
-        Object.freeze({ heading: 'Keep the source, add the result', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Keep the original value beside the result', paragraphs: Object.freeze([
           'Every transformation is a chance to lose the evidence. Overwriting a reading with its converted value saves a column and destroys the ability to tell a conversion error from a genuine measurement. Writing the converted value beside the original costs almost nothing and keeps the question answerable.',
           'The same applies to corrections. A corrected row should say what it was, what it became, when it changed and why, because the fact that a value was corrected is itself information about the process that produced it.'
         ]) }),
-        Object.freeze({ heading: 'Uncertainty is part of the value', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'How certain is the number?', paragraphs: Object.freeze([
           'Very few recorded numbers are exact. A sensor has a tolerance, a survey has a sample, a forecast has a range, and a figure quoted to four decimal places from a source accurate to one is a false claim made by formatting. Reporting a number without its uncertainty invites decisions the evidence does not support.',
           'Carrying uncertainty alongside a value is the last habit of this chapter, and it completes the first. A record is a representation of part of the world, and stating how closely it represents it is part of stating what it says.'
         ]) })

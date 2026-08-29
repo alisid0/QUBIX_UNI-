@@ -14,19 +14,20 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
   totalMinutes: 52,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'units', number: '01', title: 'A number needs a unit', studyMinutes: 6, playMinutes: 5,
+      id: 'units', number: '01', title: 'Four what? Every number needs a unit', studyMinutes: 6, playMinutes: 5,
       objective: 'State what a recorded number measures, in what unit, and what its zero means.',
       opening: 'A field holds 4. Four what? Four units on the shelf, four degrees, four pounds, four days late. The digit is the least informative part of the value.',
+      keywords: Object.freeze(['quantity', 'measurement', 'unit', 'conversion']),
       sections: Object.freeze([
-        Object.freeze({ heading: 'The quantity, the unit and the number', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'A freezer reading says 4—but 4 what?', paragraphs: Object.freeze([
           'Every measurement has three parts: the quantity being measured, the unit it is measured in, and the number of those units. Temperature measured in degrees Celsius with the number 4 is a different fact from temperature measured in degrees Fahrenheit with the number 4. The column name usually carries the quantity, and the unit is often left in somebody’s memory instead of in the data.',
           'This is why unit columns and suffixes exist. A field called weight is ambiguous; weight_kg is not. When a system stores the unit alongside the number, later work does not have to guess, and a value arriving in the wrong unit can be caught rather than silently averaged with the rest.'
         ]) }),
-        Object.freeze({ heading: 'What zero means', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Why 0 kg and 0 °C do not mean the same thing', paragraphs: Object.freeze([
           'Zero is not one idea. On a ratio scale, such as mass, length or a count of units sold, zero means none of the quantity is present, and it is meaningful to say one value is twice another. On an interval scale, such as degrees Celsius, zero is a chosen point on the scale rather than an absence, so 20 °C is not twice as hot as 10 °C.',
           'The practical consequence is about which arithmetic is allowed. Adding two temperatures in Celsius produces a number with no physical meaning; averaging them does. Knowing the scale a column sits on tells you what you may compute from it before you compute anything.'
         ]) }),
-        Object.freeze({ heading: 'Converting without losing the original', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Convert the value, but keep what arrived', paragraphs: Object.freeze([
           'Converting a unit is multiplying by a ratio equal to one. Three thousand grams becomes three kilograms because one kilogram divided by one thousand grams equals one, and multiplying by one changes the size of nothing. Temperature is the exception a learner meets first: Celsius from Fahrenheit needs a shift as well as a scale, because the two scales do not share a zero.',
           'Keep the value as it arrived and record the converted value beside it. A pipeline that overwrites the source leaves nobody able to check whether the conversion was right, and a wrong conversion looks exactly like a real measurement.'
         ]) })
@@ -60,19 +61,20 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'ratios', number: '02', title: 'Ratios, rates and percentages', studyMinutes: 7, playMinutes: 6,
+      id: 'ratios', number: '02', title: 'Two branches both report 12%, how are they still different?', studyMinutes: 7, playMinutes: 6,
       objective: 'Read any ratio by naming its numerator, its denominator and the population it covers.',
       opening: 'Two branches each report a 12% return rate. One sold forty items and returned five. The other sold twelve thousand and returned fourteen hundred. The percentages agree and the situations do not.',
+      keywords: Object.freeze(['ratio', 'denominator', 'rate', 'percentage']),
       sections: Object.freeze([
-        Object.freeze({ heading: 'A ratio is a division with a story', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Five returns out of 40 is not the same as 1,400 out of 12,000', paragraphs: Object.freeze([
           'A ratio compares two quantities by dividing one by the other. The number it produces is meaningless until both quantities are named. Returns divided by sales is a return rate. Returns divided by staff is something else entirely, and the arithmetic cannot tell them apart.',
           'The denominator is the part people forget to state and the part that decides what the number means. When a figure is disputed, the disagreement is almost always about the denominator rather than the division.'
         ]) }),
-        Object.freeze({ heading: 'Rates carry a unit too', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'Why “per day” and “per kilogram” change the meaning', paragraphs: Object.freeze([
           'A rate is a ratio where the denominator is a different quantity from the numerator, usually time or size. Sales per day, faults per thousand units, cost per kilogram. The unit of a rate is the unit of the top divided by the unit of the bottom, and writing it that way catches mistakes: pounds divided by kilograms is a price per kilogram, and can never be a total.',
           'Rates make different-sized things comparable, which is exactly why they are worth the care. A branch selling more in total may sell less per hour open, and the two statements are both true.'
         ]) }),
-        Object.freeze({ heading: 'Percentages hide their base', paragraphs: Object.freeze([
+        Object.freeze({ heading: 'A percentage hides the counts behind it', paragraphs: Object.freeze([
           'A percentage is a ratio multiplied by a hundred, so it inherits every ambiguity of the ratio and then hides the numbers that produced it. Five out of forty and fourteen hundred out of twelve thousand both round to about 12%, but one is a handful of returns and the other is a warehouse full.',
           'The habit that fixes this is to quote the count alongside the percentage, and to be suspicious of any percentage whose base is not stated. A percentage of a small base moves violently for reasons that have nothing to do with the thing being measured.'
         ]) })

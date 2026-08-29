@@ -8,6 +8,7 @@
   import ReaderExercise from '../lib/components/ReaderExercise.svelte';
   import SqlWorkshop from '../lib/components/SqlWorkshop.svelte';
   import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
+  import KeywordReading from '../lib/components/KeywordReading.svelte';
   import { readingAssistantFor } from '../lib/content/foundations-assistant.js';
   import { paramsForLocation } from '../lib/routes/clean-paths.js';
 
@@ -153,7 +154,7 @@
     <div class="hero-text">
       <p class="hero-eyebrow">CHAPTER {String(chapterNumber).padStart(2, '0')} · {formatTime(book.totalMinutes).toUpperCase()} · {book.sessions.length} BRIEFINGS</p>
       <h1>{book.title}</h1>
-      <p class="hero-sub">Each briefing is one complete packet: the idea, the evidence, your check, then the Superstore mission where you apply it.</p>
+      <p class="hero-sub">Each lesson begins with a familiar situation, explains why the idea matters, gives it a precise name and then lets you use it inside Qubix Superstore.</p>
       <a class="floor-link" href="?mode=game">Return to your Superstore shift <span aria-hidden="true">→</span></a>
     </div>
   </header>
@@ -186,14 +187,12 @@
 
         <section class="objective"><b>BY THE END, YOU CAN</b><p>{session.objective}</p></section>
         {#if session.audioSummary}<AudioBriefing text={session.audioSummary} />{/if}
-        <p class="opening">{session.opening}</p>
+        <section class="start-here">
+          <b>START HERE</b>
+          <p class="opening">{session.opening}</p>
+        </section>
 
-        {#each session.sections as section}
-          <section class="reading-section">
-            <h3>{section.heading}</h3>
-            {#each section.paragraphs as paragraph}<p>{paragraph}</p>{/each}
-          </section>
-        {/each}
+        <KeywordReading sections={session.sections} keywordIds={session.keywords || []} returnHref={`/learn/data-foundations/chapter/${chapterNumber}/session/${activeIndex + 1}`} />
 
         {#if session.workshopLab}<SqlWorkshop spec={session.workshopLab} />{/if}
 
@@ -521,7 +520,10 @@
   .objective { margin-top: 28px; padding: 20px 24px; border-left-color: var(--packet-green); background: #d8dfd3; }
   .objective b { color: var(--packet-green); font-size: 11.5px; }
   .objective p { max-width: 720px; font-weight: 400; font-size: 20px; }
-  .opening { color: var(--packet-ink); font-weight: 400; font-size: 20px; }
+  .start-here { margin-top: 30px; padding: 24px 26px; border: 4px solid var(--packet-ink); background: #fffdf7;
+                box-shadow: 7px 7px 0 rgba(32,36,31,.14); }
+  .start-here > b { color: var(--packet-orange); font: 900 11.5px var(--qx-font); letter-spacing: .12em; }
+  .start-here .opening { margin: 9px 0 0; color: var(--packet-ink); font-weight: 400; font-size: 20px; }
   .reading-section h3 { color: var(--packet-ink); font-weight: 400; font-size: 28px; }
   .reading-section p { color: var(--packet-soft); font-weight: 500; }
   .section-label span { color: var(--packet-orange); font-size: 11.5px; }

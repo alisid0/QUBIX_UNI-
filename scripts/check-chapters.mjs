@@ -13,6 +13,7 @@
 
 import { readFileSync } from 'node:fs';
 import { SHARED_FOUNDATIONS, volumeMinutes } from '../src/lib/content/shared-foundations.js';
+import { keywordFor } from '../src/lib/content/learning-keywords.js';
 
 let bad = 0;
 const ok = (label, pass, detail = '') => {
@@ -69,6 +70,22 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
 
     ok(`${where} cites over https`,
       (s.sources || []).every(src => /^https:\/\//.test(src.url) && src.label));
+
+    if (s.keywords?.length) {
+      const keywordIds = [...s.keywords];
+      const entries = keywordIds.map(keywordFor);
+      const prose = (s.sections || []).flatMap(section => section.paragraphs).join(' ').toLowerCase();
+      const absent = entries.filter(Boolean).filter(entry =>
+        !entry.aliases.some(alias => prose.includes(alias.toLowerCase())));
+      ok(`${where} uses no more than four distinct Wiki terms`,
+        keywordIds.length <= 4 && new Set(keywordIds).size === keywordIds.length,
+        keywordIds.join(', '));
+      ok(`${where} Wiki terms exist and occur in the reading`,
+        entries.every(Boolean) && absent.length === 0,
+        entries.some(entry => !entry)
+          ? `unknown: ${keywordIds.filter(id => !keywordFor(id)).join(', ')}`
+          : absent.length ? `not in prose: ${absent.map(entry => entry.slug).join(', ')}` : `${entries.length} linked terms`);
+    }
   }
   console.log('');
 }
