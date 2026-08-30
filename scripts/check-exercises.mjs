@@ -27,11 +27,43 @@ ok('exercise ids are unique', new Set(exercises.map(item => item.exercise.id)).s
 for (const { chapter, session, exercise } of exercises) {
   const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${exercise.id}`;
   ok(`${where} declares a supported type and time`,
-    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role', 'duplicate-check'].includes(exercise.type) && exercise.minutes >= 3,
+    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role', 'duplicate-check', 'evidence-trail'].includes(exercise.type) && exercise.minutes >= 3,
     `${exercise.type}, ${exercise.minutes} min`);
   // rate-compare runs its own rounds, so its work is in `cases`.
-  const work = exercise.items || exercise.cases || [];
+  const work = exercise.items || exercise.cases || exercise.steps || [];
   ok(`${where} has at least three pieces of work`, work.length >= 3, `${work.length} item(s)`);
+
+  if (exercise.type === 'evidence-trail') {
+    ok(`${where} every stage names a phase, a title and a detail`,
+      exercise.steps.every(s => s.phase && s.title && s.detail));
+    ok(`${where} every stage names an answer it offers`,
+      exercise.steps.every(s => s.options[s.correct] !== undefined));
+    ok(`${where} it names the figure being traced`,
+      Boolean(exercise.target?.name && exercise.target?.value));
+
+    // The trail runs source, filter, standardise, summarise, preserve. That
+    // order is the lesson: you cannot standardise before you have chosen a
+    // source, and preserving comes last or there is nothing to preserve.
+    const PHASES = ['Source', 'Filter', 'Standardise', 'Summarise', 'Preserve'];
+    ok(`${where} the stages run source to preserved result`,
+      exercise.steps.map(s => s.phase).join(',') === PHASES.join(','),
+      exercise.steps.map(s => s.phase).join(' → '));
+
+    // The point of the whole session: the original records survive. If the
+    // correct final answer ever became "replace" or "delete", the activity
+    // would be teaching the opposite of what it says.
+    const final = exercise.steps.at(-1);
+    ok(`${where} the last decision keeps the source records`,
+      /keep the source/i.test(final.options[final.correct]),
+      final.options[final.correct]);
+    ok(`${where} discarding the source is offered and wrong`,
+      final.options.some((o, i) => /replace|delete/i.test(o) && i !== final.correct));
+
+    const at = exercise.steps.map(s => s.correct);
+    const worst = Math.max(...at.map(p => at.filter(q => q === p).length));
+    ok(`${where} the answer is not always in the same place`,
+      worst <= Math.ceil(at.length / 2), at.join(''));
+  }
 
   if (exercise.type === 'duplicate-check') {
     ok(`${where} every pair shows exactly two rows`,

@@ -373,6 +373,51 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
         'Mark the steps you could actually verify, and the steps you are assuming.',
         'Write one sentence saying how precise you think the number really is.'
       ]) }),
+      exercise: Object.freeze({
+        id: 'trace-the-revenue', type: 'evidence-trail', minutes: 7,
+        title: 'Build the number’s trail',
+        instruction: 'A reported figure, and five decisions that made it. Each correct decision adds a stage to the trail underneath. A wrong one does not, so the trail always shows what has actually been established.',
+        target: Object.freeze({ label: 'Reported result', name: 'Weekly revenue', value: '£84,320' }),
+        // Answers at 1, 0, 2, 1, 0: no position is right more than twice.
+        steps: Object.freeze([
+          Object.freeze({
+            phase: 'Source', title: 'Checkout records', detail: 'status · currency · amount',
+            prompt: 'Which source holds the amounts paid at checkout?',
+            options: Object.freeze(['Staff rota', 'Checkout records', 'Freezer readings']),
+            correct: 1,
+            explanation: 'The trail starts where the amounts were first recorded, and that is the checkout. A rota says who was working and a freezer reading says how cold it was.'
+          }),
+          Object.freeze({
+            phase: 'Filter', title: 'Remove cancelled sales', detail: 'completed sales remain',
+            prompt: 'Which records come out before completed revenue is calculated?',
+            options: Object.freeze(['Cancelled sales', 'Every Saturday sale', 'Sales above £20']),
+            correct: 0,
+            explanation: 'A cancelled sale never became revenue, so it is removed. Removing Saturdays or large sales would answer a different question than the one asked.'
+          }),
+          Object.freeze({
+            phase: 'Standardise', title: 'Convert currencies', detail: 'all amounts in pounds',
+            prompt: 'Some sales were taken in other currencies. What makes the amounts comparable?',
+            options: Object.freeze(['Round every amount', 'Sort by product', 'Convert to one currency']),
+            correct: 2,
+            explanation: 'Amounts in different currencies cannot be added as they stand. They are converted to one currency first, and the rate used becomes part of the trail.'
+          }),
+          Object.freeze({
+            phase: 'Summarise', title: 'Group by week and add', detail: 'weekly revenue £84,320',
+            prompt: 'What turns thousands of sales into one figure for each week?',
+            options: Object.freeze(['Count the rows', 'Group by week and add the amounts', 'Average the sale IDs']),
+            correct: 1,
+            explanation: 'Grouping by week and adding the amounts gives the reported total. Counting rows would count sales rather than money, and a sale ID is a label, so averaging it means nothing.'
+          }),
+          Object.freeze({
+            phase: 'Preserve', title: 'Save result separately', detail: 'source records unchanged',
+            prompt: 'How should the reported figure be saved?',
+            options: Object.freeze(['Keep the source and save the result separately', 'Replace the source values', 'Delete the old records']),
+            correct: 0,
+            explanation: 'The result is saved beside the original records, not on top of them. Overwriting or deleting the source would leave a figure nobody could ever check or recalculate.'
+          })
+        ]),
+        why: 'Every stage between the checkout and the reported figure is now written down, and the original records still exist. That is what makes 84,320 a number somebody can check rather than a number they have to believe.'
+      }),
       check: Object.freeze({
         prompt: 'A pipeline converts Fahrenheit to Celsius and overwrites the original column. What has been lost?',
         answer: 'evidence',
