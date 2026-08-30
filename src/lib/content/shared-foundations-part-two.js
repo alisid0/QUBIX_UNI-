@@ -69,6 +69,8 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         Object.freeze({ heading: 'Five returns out of 40 is not the same as 1,400 out of 12,000', paragraphs: Object.freeze([
           'A ratio compares two quantities by dividing one by the other. The number it produces is meaningless until both quantities are named. Returns divided by sales is a return rate. Returns divided by staff is something else entirely, and the arithmetic cannot tell them apart.',
           'The denominator is the part people forget to state and the part that decides what the number means. When a figure is disputed, the disagreement is almost always about the denominator rather than the division.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch02-02/two-shops.webp', alt: 'A small single-door corner shop beside a much larger supermarket front. A small crate of produce stands outside the first, a much larger crate outside the second. All signs and labels are blank.', caption: 'Both report the same percentage. The shops are not the same size, and neither are the crates.' })
         ]) }),
         Object.freeze({ heading: 'Why “per day” and “per kilogram” change the meaning', paragraphs: Object.freeze([
           'A rate is a ratio where the denominator is a different quantity from the numerator, usually time or size. Sales per day, faults per thousand units, cost per kilogram. The unit of a rate is the unit of the top divided by the unit of the bottom, and writing it that way catches mistakes: pounds divided by kilograms is a price per kilogram, and can never be a total.',
@@ -140,6 +142,8 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         Object.freeze({ heading: 'The difference, written down', paragraphs: Object.freeze([
           'Absolute change is the later value minus the earlier one. It is written Δ, read "delta", and it keeps the unit of the thing being measured: 200 more units sold, three degrees colder, four days later. Because it keeps the unit, it can be added up and compared across periods without further thought.',
           'It answers "how much more", and it is the only one of the three that says anything about size. A 50% rise in a branch that sold two items is a rise of one item.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch02-03/same-shelf-two-days.webp', alt: 'The same shop shelf drawn twice side by side. The left shelf is full of bottles, the right holds only four of the same bottles. A blank card sits under each shelf.', caption: 'One shelf, two mornings. The gap between them is what every kind of change measures.' })
         ]) }),
         Object.freeze({ heading: 'Relative change needs a starting point', paragraphs: Object.freeze([
           'Relative change divides the absolute change by the earlier value, and is usually written as a percentage. It answers "how much more, compared with what there was", which makes branches of different sizes comparable. It also inherits the denominator problem from the previous session: the earlier value is the base, and a small base produces large percentages from small movements.',

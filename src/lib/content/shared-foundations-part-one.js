@@ -48,6 +48,8 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         Object.freeze({ heading: 'What does a row represent?', paragraphs: Object.freeze([
           'Suppose a table lists five customers. Each row contains details about one customer. That customer is the case recorded in the row. Data professionals often call a recorded case an observation.',
           'A different table may contain completed sales. In that table, each row contains details about one sale. The row is still a row; the kind of case recorded in it has changed.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-02/ledger-grid.webp', alt: 'A shop worker stands behind a counter with a large paper register open in front of her, its pages ruled into an empty grid of rows and columns.', caption: 'Rows across, columns down, and nothing written in yet.' })
         ]) }),
         Object.freeze({ heading: 'What does a column contain?', paragraphs: Object.freeze([
           'A column is intended to contain the same kind of detail for every row. A customer table might have columns for customer name, postcode, and registration date. A sales table might have columns for sale time, branch, and total paid.',
@@ -92,11 +94,15 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         Object.freeze({ heading: 'What one row represents', paragraphs: Object.freeze([
           'A table’s grain tells us what one row represents. A well-organised table uses the same grain throughout.',
           'One customer buys three products and pays once. The shop can record that purchase in more than one useful way.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-03/receipt-spike.webp', alt: 'A stack of blank paper receipts pushed down onto an upright metal spike on a shop counter.', caption: 'A morning of receipts. Counting the slips is not the same as counting the sales.' })
         ]) }),
         Object.freeze({ heading: 'The same purchase, recorded two ways', paragraphs: Object.freeze([
           'A purchase table keeps one row for the whole purchase. One row represents one completed purchase, and that is the grain of the purchase table.',
           'A purchased-items table keeps one row for each product on the receipt. One row represents one product line within a purchase, and that is the grain of the purchased-items table.',
           'Both tables describe the same checkout. They organise it at different levels of detail. Twelve rows in the second table can be seven purchases in the first.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-03/one-purchase-two-forms.webp', alt: 'One blank receipt beside a bottle, a loaf and a carton, with arrows leading down to two blank forms: one ruled as a single wide box, the other as three stacked boxes.', caption: 'One purchase. One row on the left, three on the right, and neither is wrong.' })
         ]) })
       ]),
       figure: Object.freeze({ kind: 'row-grain', caption: 'One purchase, two ways to record it', note: 'The same checkout as one purchase row, and as one row for each product line inside it.' }),
@@ -118,6 +124,8 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
           'The milk shelf was counted and no cartons remained. Its value is 0. Zero is a known count.',
           'The bread count was due at noon, but it was not entered. Its value is NULL. NULL does not mean that there is no bread. It means that the system does not have the count.',
           'Replacing NULL with 0 would change “we do not know” into “we know there are none.” Those statements are not the same, and calculations can produce misleading results if they are confused.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-04/inventory-shelves.webp', alt: 'A shop worker holds a clipboard with a blank three-row form, looking at the top shelf of a unit. The top shelf is bare, the middle shelf is full of loaves, and the bottom shelf holds four egg boxes.', caption: 'The bare shelf was counted. The full one has not been reached yet. On paper they can look the same.' })
         ]) }),
         Object.freeze({ heading: 'Not applicable is a third meaning', paragraphs: Object.freeze([
           'Sometimes an item is not expected on that shelf at all, so no count was ever due. That is a third situation, and it is not the same as a count that found none or a count that was missed.',
@@ -170,10 +178,14 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         Object.freeze({ heading: 'What data analysis is', paragraphs: Object.freeze([
           'Data analysis is the process of using recorded information to answer a specific question. It turns rows of data into evidence that someone can understand and use.',
           'Before working with the numbers, the request is written as a short analysis brief. The brief has four parts: purpose, question, boundary, and outcome.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-05/saturday-queue.webp', alt: 'Three supermarket checkout counters seen from the shop floor, each staffed and each with a queue of waiting customers behind it. The signs above the counters are blank.', caption: 'Saturday at Northgate. This is the thing the manager has to decide about.' })
         ]) }),
         Object.freeze({ heading: 'Purpose, and question', paragraphs: Object.freeze([
           'The purpose says why the analysis is being done. The shop needs to decide whether to test additional checkout counters on busy Saturdays. The purpose keeps the work focused on a real decision instead of producing a dashboard with no clear use.',
           'The question says what the shop needs to learn. During the busiest Saturday hours, how long do customers wait, and how often are all available checkout counters occupied? A clear question tells us which information the analysis must use.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-05/brief-cards.webp', alt: 'A pinboard holding one blank sheet at the top, connected down to a row of four blank cards. The first card is outlined in rust orange.', caption: 'The request at the top, and the four parts it has to become. Purpose is the first.' })
         ]) }),
         Object.freeze({ heading: 'Boundary, and what the records can support', paragraphs: Object.freeze([
           'The boundary says what the analysis covers. This one covers the Northgate shop, Saturdays from 12:00 to 16:00, during the previous eight weeks. A boundary prevents a result about one place and period from being presented as a result about every shop and every day.',
