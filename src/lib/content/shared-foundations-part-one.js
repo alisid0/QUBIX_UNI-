@@ -91,22 +91,22 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sources: Object.freeze([Object.freeze({label:'OpenStax: Data, Sampling, and Variation',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling',licence:'CC BY 4.0'}),Object.freeze({label:'OpenStax: Levels of Measurement',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-3-frequency-frequency-tables-and-levels-of-measurement',licence:'CC BY 4.0'}),Object.freeze({label:'NIST Engineering Statistics Handbook',url:'https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc135.htm'})])
     }),
     Object.freeze({
-      id: 'rows-grain', number: '03', title: '300 rows—but 300 of what?', studyMinutes: 5, playMinutes: 5,
+      id: 'rows-grain', number: '03', title: '300 rows. What do they show?', studyMinutes: 5, playMinutes: 5,
       objective: 'Describe exactly what one row represents and explain what a row count is actually counting.',
       audioSummary: 'Before counting rows, ask what one row represents. A sale table may use one row for one completed sale. A sale-line table may use one row for one product within a sale. Data professionals call this the grain of the table. A count of rows counts things at that grain. Three sale-line rows mean three sale lines, not necessarily three sales or three customers. A join can repeat rows, so check the meaning of one row before and after joining tables.',
       opening: 'A table contains 300 rows. Is that 300 customers, 300 sales or 300 products? The number alone cannot tell you.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'The report says 300. What are the 300?', paragraphs: Object.freeze([
-          'Every table needs a sentence that begins “one row represents…” For a sale table, the answer may be one completed sale. For a sale-line table, it may be one product line within one sale.',
-          'Data professionals call this exact meaning the grain of the table. The name is less important than the habit: say what one row is before using a row count.'
+        Object.freeze({ heading: 'Every table decides what one row means', paragraphs: Object.freeze([
+          'A sale table holds one row for each completed sale. A sale-line table holds one row for each product line inside a sale. The same shop, the same purchases, a different number of rows.',
+          'That is the table’s grain: what one row of it represents. The grain is settled when the table is designed, and every row in that table means the same thing. So 300 rows in a sale table is 300 sales, and 300 rows in a sale-line table is 300 product lines, which might be a hundred sales.'
         ]) }),
         Object.freeze({ heading: 'One basket can fill several rows', paragraphs: Object.freeze([
-          'Suppose one customer buys three different products and pays once. The sale table may contain one row for the whole purchase. The sale-line table may contain three rows—one for each product line. The payment table may contain one row for the payment attempt.',
+          'Suppose one customer buys three different products and pays once. The sale table may contain one row for the whole purchase. The sale-line table may contain three rows, one for each product line. The payment table may contain one row for the payment attempt.',
           'None of those row counts is wrong. Each table describes the event at a different grain. COUNT(*) simply counts the rows that exist in the table you are using.'
         ]) }),
         Object.freeze({ heading: 'Why matching two tables can multiply the rows', paragraphs: Object.freeze([
           'A join connects matching rows from two tables. If one product record matches many sale lines, its name and category will appear once beside every matching line. That repetition may be correct.',
-          'Unexpected trouble begins when both sides contain several matches and the join multiplies rows. Before joining, write the intended output sentence: “one result row should represent…” Then check whether it is still true afterwards.'
+          'Trouble starts when both sides have several matches, because then the join multiplies them. Three sale lines matched against two price records for the same product return six rows. The result has a grain nobody designed, and a row count taken from it answers no question anyone asked.'
         ]) })
       ]),
       figure: Object.freeze({ kind: 'row-grain', caption: 'One purchase, three ways to organise the records', note: 'Different tables can describe the same event with different legitimate row counts.' }),
