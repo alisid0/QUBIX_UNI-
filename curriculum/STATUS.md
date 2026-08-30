@@ -8,6 +8,7 @@ Last updated: 2026-08-30
 | Prerequisite map | Draft | Founder |
 | Main curriculum map | Draft | Founder |
 | Foundational mathematics shelf | Draft | Founder |
+| Phase One curriculum | `AI_DRAFT`, 2026-08-30. Six modules, 26 sessions, settled over three rounds of external review. `curriculum/11-PHASE-ONE-CURRICULUM.md` | Founder reading. Nothing written, nothing built, no live session changed |
 | Sequence reconciliation | Founder rulings of 2026-08-30 recorded in `curriculum/10-SEQUENCE-RECONCILIATION.md`. Four conflicts named between those rulings and the existing 379-topic catalogue | Founder decision on each conflict; nothing resolved |
 | Beginner path | 24 steps across five parts, live and guarded. 11 of 35 sessions off it with recorded reasons | Founder reading; remains `AI_DRAFT` |
 | Extended classical candidate library | Draft | Founder |
