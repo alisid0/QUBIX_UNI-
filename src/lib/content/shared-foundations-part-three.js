@@ -104,7 +104,7 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'types', number: '02', title: 'A postcode and a price can both contain numbers—so why treat them differently?', studyMinutes: 5, playMinutes: 5,
+      id: 'types', number: '02', title: 'A postcode and a price can both contain numbers. Why treat them differently?', studyMinutes: 5, playMinutes: 5,
       objective: 'Classify a column by what it measures, and say which operations that permits.',
       opening: 'A postcode, a shoe size, a satisfaction rating and a temperature are all written with characters, and almost nothing you can do to one of them is legitimate for another.',
       keywords: Object.freeze(['categorical-data', 'quantitative-data', 'ordinal-data', 'measurement-scale']),
