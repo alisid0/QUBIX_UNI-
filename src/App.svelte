@@ -179,6 +179,8 @@
         return import('./views/UomMission.svelte');
       } else if (mission === 'classify-data') {
         return import('./views/DataClassificationMission.svelte');
+      } else if (mission === 'read-the-table') {
+        return import('./views/ReadTheTableMission.svelte');
       } else if (mission === 'missing-data') {
         return import('./views/MissingDataMission.svelte');
       } else if (mission === 'table-grain') {

@@ -63,26 +63,27 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         Object.freeze(['customers','one customer','name, postcode, registration date']), Object.freeze(['sales','one completed sale','sale time, branch, total paid'])
       ]) }),
       rehearsal: Object.freeze({
-        mission: 'classify-data',
-        lead: 'One field from the mission at the end of this session. It is a first look at a question the next chapter answers properly: what kind of thing is this value, and what does that let you do with it?',
+        mission: 'read-the-table',
+        lead: 'One table from the mission at the end of this session. Say what a row contains before the mission asks you, because everything else in the table depends on that answer.',
         cases: Object.freeze([
           Object.freeze({
-            caseId: 'barcode',
+            caseId: 'products-row',
             facts: Object.freeze([
-              Object.freeze(['The field', 'barcode']),
-              Object.freeze(['What it is called', 'Product barcode']),
-              Object.freeze(['Three real values', '5012345678901 · 5098765432107 · 5011122233344'])
+              Object.freeze(['The table', 'products']),
+              Object.freeze(['Its columns', 'product_id · name · supplier · shelf']),
+              Object.freeze(['One of its rows', 'P-118 · Oat milk 1L · Northvale · A3']),
+              Object.freeze(['And another', 'P-121 · Tinned tomatoes · Northvale · C2'])
             ]),
-            question: 'Every value is thirteen digits. Does that make it a number?',
-            answer: 'No. It is an identifier that happens to be written in digits.',
-            why: 'A barcode identifies a product. The checkout uses it to find the product record and its current stored price. Adding two barcodes together, or averaging them, tells us nothing useful.'
+            question: 'Northvale appears in both rows. Is one row a supplier?',
+            answer: 'No. One row contains details about one product.',
+            why: 'A supplier can appear in as many rows as it supplies products, and a value that repeats down a column is doing exactly what a column is for. The row is one product; the column records which supplier each product came from.'
           })
         ]),
-        closing: 'The mission asks this of one field after another. The full explanation comes later, when digits and quantities get a session of their own.'
+        closing: 'The mission asks this of four tables. Each time, name the row first, then read what the column holds.'
       }),
       workbook: Object.freeze({ title: 'Read a small table properly', prompt: 'Use a receipt, timetable, fitness app or another small record you can see.', steps: Object.freeze(['Finish the sentence “one row contains details about…”', 'Choose five columns and write what kind of detail each one holds.', 'Name two of those columns as variables.', 'Find one column that does not hold its information consistently.', 'Write what a second table about the same shop would put in one row.']) }),
       check: Object.freeze({ prompt: 'A table has one row for each completed sale. What is recorded in one row?', answer: 'sale', options: Object.freeze([['customer','Details about one customer'],['sale','Details about one completed sale'],['product','Details about one product']]), explanation: 'The case recorded in each row is one completed sale, so one row contains the details of that sale.' }),
-      practice: Object.freeze({ title: 'Classify Store Data', href: '?mode=game&mission=classify-data', instruction: 'Inspect Superstore fields and decide what each value means before choosing its data type.' }),
+      practice: Object.freeze({ title: 'Read the Table', href: '?mode=game&mission=read-the-table', instruction: 'Four tables from the shop. Say what one row contains, and what one column contains.' }),
       sources: Object.freeze([Object.freeze({label:'OpenStax: Data, Sampling, and Variation',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling',licence:'CC BY 4.0'}),Object.freeze({label:'Statistics Canada: observations and variables',url:'https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch1/definitions/5214853-eng.htm'})])
     }),
     Object.freeze({

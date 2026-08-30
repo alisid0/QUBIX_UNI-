@@ -11,6 +11,7 @@
 
 import { CHECKOUT_MISSION } from './checkout-mission.js';
 import { CLASSIFICATION_MISSION } from './data-classification-mission.js';
+import { READ_THE_TABLE_MISSION } from './read-the-table-mission.js';
 import { MISSING_DATA_MISSION } from './missing-data-mission.js';
 import { TABLE_GRAIN_MISSION } from './table-grain-mission.js';
 import { DUPLICATE_RECORDS_MISSION } from './duplicate-records-mission.js';
@@ -37,9 +38,9 @@ export const MISSIONS = Object.freeze([
   { slug: 'checkout', mission: CHECKOUT_MISSION, xp: 40,
     teaches: 'Where a number comes from: observe, look up, derive.',
     reading: { chapter: 1, session: 1, label: 'Data is a record, not reality' } },
-  { slug: 'classify-data', mission: CLASSIFICATION_MISSION, xp: 50,
-    teaches: 'What kind of thing a value is, and what that permits.',
-    reading: { chapter: 1, session: 2, label: 'Observations and variables' } },
+  { slug: 'read-the-table', mission: READ_THE_TABLE_MISSION, xp: 50,
+    teaches: 'What one row contains, and what one column records across every row.',
+    reading: { chapter: 1, session: 2, label: 'Rows and columns' } },
   { slug: 'table-grain', mission: TABLE_GRAIN_MISSION, xp: 70,
     teaches: 'What one row represents, stated precisely enough to count.',
     reading: { chapter: 1, session: 3, label: 'One row means one thing' } },
@@ -55,6 +56,10 @@ export const MISSIONS = Object.freeze([
   { slug: 'rate-desk', mission: RATE_DESK_MISSION, xp: 150,
     teaches: 'Naming the denominator under a figure before comparing anything with it.',
     reading: { chapter: 2, session: 2, label: 'Ratios, rates and percentages' } },
+  // Still the mission after ch03.02, where data types are actually taught.
+  { slug: 'classify-data', mission: CLASSIFICATION_MISSION, xp: 50,
+    teaches: 'What kind of thing a value is, and what that permits.',
+    reading: { chapter: 3, session: 2, label: 'A postcode and a price' } },
   { slug: 'duplicate-records', mission: DUPLICATE_RECORDS_MISSION, xp: 70,
     teaches: 'Which columns make a row unique, and what a duplicate is.',
     reading: { chapter: 3, session: 3, label: 'One row, one thing' } },

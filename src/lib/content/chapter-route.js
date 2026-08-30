@@ -29,8 +29,8 @@ export const CHAPTER_ONE_ROUTE = Object.freeze([
   Object.freeze({ step: 3, kind: 'briefing', id: 'observations-variables',
     title: 'Rows and columns',
     result: 'Describe one row, one column, an observation and a variable.' }),
-  Object.freeze({ step: 4, kind: 'mission', id: 'read-the-table', mission: 'classify-data',
-    title: 'Read the Table', built: false,
+  Object.freeze({ step: 4, kind: 'mission', id: 'read-the-table', mission: 'read-the-table',
+    title: 'Read the Table', built: true,
     result: 'Complete "one row contains details about…" and name one variable.',
     replaces: 'The 24-field Classify Store Data mission, which teaches data types a chapter early.' }),
 

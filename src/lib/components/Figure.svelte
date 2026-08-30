@@ -24,6 +24,11 @@
   import GrainCollapse from './GrainCollapse.svelte';
   import BaseRateAlarm from './BaseRateAlarm.svelte';
   import OutlierPull from './OutlierPull.svelte';
+  import RowColumnTable from './RowColumnTable.svelte';
+  import { tableById } from '../game/read-the-table-mission.js';
+
+  // Session 2's figure is the mission's own sales table.
+  const SALES = tableById('sales');
 
   export let spec;
 
@@ -220,17 +225,12 @@
   {:else if spec.kind === 'row-column'}
     <div class="row-col" role="img" aria-label="A table of four sales. One highlighted row holds every detail of sale S-1043 in Leeds: seven items totalling 41 pounds 10. One highlighted column holds the basket total of all four sales. The row is one case; the column is one question asked of every case.">
       <div class="rc-table-wrap">
-        <table class="rc-table">
-          <thead>
-            <tr><th>sale_id</th><th>branch</th><th>items</th><th class="c">basket_total</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>S-1041</td><td>Camden</td><td>3</td><td class="c">£18.70</td></tr>
-            <tr><td>S-1042</td><td>Camden</td><td>1</td><td class="c">£6.25</td></tr>
-            <tr class="r"><td>S-1043</td><td>Leeds</td><td>7</td><td class="c both">£41.10</td></tr>
-            <tr><td>S-1044</td><td>Leeds</td><td>2</td><td class="c">£9.80</td></tr>
-          </tbody>
-        </table>
+        <!-- The same component the Read the Table mission operates, with the
+             same sales rows, so the figure and the mission cannot drift. -->
+        <RowColumnTable
+          headers={SALES.headers} rows={SALES.rows}
+          highlightRow={SALES.row.index} highlightColumn={SALES.column.index}
+          caption="Four completed sales." />
       </div>
       <div class="rc-keys">
         <div class="rc-key row"><span>ONE ROW</span><b>One completed sale</b><small>Everything in the band belongs to sale S-1043. Change the table and a row might be one customer, or one product, instead.</small></div>
