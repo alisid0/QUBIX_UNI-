@@ -272,7 +272,7 @@
     <aside>
       <section class="decision-card">
         <p class="eyebrow">YOUR DECISION</p>
-        <h2>What becomes evidence?</h2>
+        <h2>What gets recorded?</h2>
         <p>Separate the scan event, governed product record and calculated line total.</p>
         <a href="?mode=game&mission=shared-book&chapter=1&session=1">Open the briefing →</a>
       </section>

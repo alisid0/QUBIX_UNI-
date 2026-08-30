@@ -7,7 +7,6 @@ the drawings belong to.
 |---|---|---|
 | `ch01-01/` | four comic frames | the purchase, and the record made of it |
 | `ch01-02/` | `ledger-grid` | a paper register ruled into an empty grid |
-| `ch01-03/` | `receipt-spike` | a morning of blank receipts on a spike |
 | `ch01-03/` | `one-purchase-two-forms` | one receipt above two differently ruled forms |
 | `ch01-04/` | `inventory-shelves` | a bare shelf, a full one, and a count half done |
 | `ch01-05/` | `saturday-queue` | three counters, all of them queued |
@@ -56,6 +55,11 @@ frame empty.
 `AI_DRAFT` as art. The chapter 1 and 2 sessions these sit in were approved as
 text on 2026-08-30 and recorded in `curriculum/APPROVED-CHAPTER-ONE.json`; that
 approval covers wording, not these drawings, and no art approval is recorded.
+
+One drawing has been withdrawn. `ch01-03/receipt-spike` argued against its own
+session: in ordinary retail a spike of receipts does count completed sales, so
+an image captioned to the contrary taught the wrong thing. It is not in the
+prepare script and its source is kept only in `art-source/`.
 
 Two known defects, both cosmetic and both worth a regeneration:
 `ch01-04/inventory-shelves` has smiling faces on the loaves and

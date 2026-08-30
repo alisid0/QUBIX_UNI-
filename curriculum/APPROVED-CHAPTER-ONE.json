@@ -22,6 +22,9 @@
     "files": {
       "src/lib/content/shared-foundations-part-one.js": "ff973906f6ce58ce1083abc88c2525999f722d22b85bd31efc9f6c53e1710989",
       "src/lib/content/shared-foundations-part-three.js": "ea0967cff9f598caa55c7b357c7a9608c18ebb10c3fd052c7388ceb4916a4ef2"
-    }
+    },
+    "supersededOn": "2026-08-30",
+    "supersededBy": "qubix-chapter-one-completion-spec.html. The text approval recorded here stood for about four hours. The spec revokes the FOUNDER APPROVED header until its own gate is signed, retitles sessions 2 and 3, withdraws the receipt-spike illustration, and corrects a logic error this approval did not catch: session 5 asked for customer waiting time, and its exercise marked that question correct, when queue arrival is not recorded. The digests below are now stale by design and describe what was approved, not what is deployed.",
+    "status": "SUPERSEDED · chapter is back in review"
   }
 }

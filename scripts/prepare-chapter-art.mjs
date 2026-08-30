@@ -35,8 +35,9 @@ const TOLERANCE = 20;    // how far from the ground a pixel must sit to count
 const ART = [
   { stamp: '18_41_40', dir: 'ch01-02', id: 'ledger-grid',
     what: 'A paper register open on the counter, ruled into an empty grid' },
-  { stamp: '18_41_56', dir: 'ch01-03', id: 'receipt-spike',
-    what: 'A spike of blank receipts on the counter' },
+  // 18_41_56, the receipt spike, is deliberately not here. In ordinary retail a
+  // spike of receipts does count completed sales, so the drawing argued against
+  // the session it was illustrating. Withdrawn by the completion spec.
   { stamp: '18_42_11', dir: 'ch01-03', id: 'one-purchase-two-forms',
     what: 'One receipt above two differently ruled forms' },
   { stamp: '18_42_26', dir: 'ch01-04', id: 'inventory-shelves',

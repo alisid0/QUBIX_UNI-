@@ -1,6 +1,6 @@
 export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
   id: 'SHARED-FOUNDATIONS-PART-ONE',
-  status: 'FOUNDER APPROVED · 2026-08-30 · EDITORIAL REVIEW LEDGER 001-006',
+  status: 'IN FINAL REVIEW · text approved 2026-08-30 · chapter not signed off',
   title: 'How Data Represents the World',
   subtitle: 'Part One of Volume 0',
   totalMinutes: 44,
@@ -40,7 +40,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sources: Object.freeze([Object.freeze({label:'W3C PROV Overview',url:'https://www.w3.org/TR/prov-overview/'})])
     }),
     Object.freeze({
-      id: 'observations-variables', number: '02', title: 'What is this table describing?', studyMinutes: 7, playMinutes: 5,
+      id: 'observations-variables', number: '02', title: 'Rows and columns', studyMinutes: 7, playMinutes: 5,
       objective: 'Say what one row of a table represents and what one column contains, using the words observation and variable.',
       audioSummary: 'A table organises information into rows and columns. Each row contains details about one case. In a customer table that case is one customer; in a sales table it is one completed sale. A recorded case is called an observation. A column is intended to contain the same kind of detail for every row, and a characteristic recorded across many cases is called a variable. Customer postcode is a variable, and so is sale total. Real tables can be messy, so a column does not always hold its information consistently.',
       opening: 'A table organises information into rows and columns.',
@@ -86,16 +86,14 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sources: Object.freeze([Object.freeze({label:'OpenStax: Data, Sampling, and Variation',url:'https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling',licence:'CC BY 4.0'}),Object.freeze({label:'Statistics Canada: observations and variables',url:'https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch1/definitions/5214853-eng.htm'})])
     }),
     Object.freeze({
-      id: 'rows-grain', number: '03', title: 'Twelve rows, seven sales', studyMinutes: 5, playMinutes: 5,
+      id: 'rows-grain', number: '03', title: 'What one row represents', studyMinutes: 5, playMinutes: 5,
       objective: 'Say what one row of a table represents, and explain why counting rows is not automatically counting sales.',
       audioSummary: 'Twelve checkout rows come from one branch on one morning, and some receipt numbers repeat. A table’s grain tells us what one row represents, and a well-organised table uses the same grain throughout. One customer buying three products and paying once can be recorded in more than one useful way. A purchase table keeps one row for the whole purchase. A purchased-items table keeps one row for each product line inside it. Both describe the same checkout at different levels of detail. Before using a table, find out what one row represents.',
-      opening: 'Twelve checkout rows appear from one branch on one morning. Some receipt numbers repeat. Before calculating anything, look closely: what repeats, and what changes?',
+      opening: 'One customer buys three products and pays once. The shop can record that purchase in more than one useful way, and the number of rows is different in each.',
       sections: Object.freeze([
         Object.freeze({ heading: 'What one row represents', paragraphs: Object.freeze([
           'A table’s grain tells us what one row represents. A well-organised table uses the same grain throughout.',
           'One customer buys three products and pays once. The shop can record that purchase in more than one useful way.'
-        ]), images: Object.freeze([
-          Object.freeze({ src: '/media/ch01-03/receipt-spike.webp', alt: 'A stack of blank paper receipts pushed down onto an upright metal spike on a shop counter.', caption: 'A morning of receipts. Counting the slips is not the same as counting the sales.' })
         ]) }),
         Object.freeze({ heading: 'The same purchase, recorded two ways', paragraphs: Object.freeze([
           'A purchase table keeps one row for the whole purchase. One row represents one completed purchase, and that is the grain of the purchase table.',
@@ -172,7 +170,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
     Object.freeze({
       id: 'question-to-decision', number: '05', title: 'From a request to an analysis', studyMinutes: 12, playMinutes: 8,
       objective: 'Say what data analysis is, and turn a request into a brief with a purpose, a question, a boundary and an outcome.',
-      audioSummary: 'The manager of the Northgate shop is considering whether more checkout counters are needed on Saturdays. Data analysis is the process of using recorded information to answer a specific question. It turns rows of data into evidence somebody can understand and use. Before working with the numbers, the request is written as a short analysis brief with four parts. The purpose says why the work is being done. The question says what the shop needs to learn. The boundary says what the analysis covers. The outcome says what it will produce. Each part exists to keep the work tied to a real decision.',
+      audioSummary: 'The manager of the Northgate shop is considering whether more checkout counters are needed on Saturdays. Data analysis is the process of using recorded information to answer a specific question. It turns rows of data into evidence somebody can understand and use. Before working with the numbers, the request is written as a short analysis brief with four parts. The purpose says why the work is being done. The question says what the shop needs to learn. The boundary says what the analysis covers, and the outcome says what it will produce. One thing the records do not hold is the moment a customer joined the queue, so this analysis can describe how busy the counters were, and cannot say how long anybody waited.',
       opening: 'The manager of the Northgate shop is considering whether more checkout counters are needed on Saturdays. The request is: “Prepare an analysis to help us decide whether Northgate needs more checkout counters on Saturdays.”',
       sections: Object.freeze([
         Object.freeze({ heading: 'What data analysis is', paragraphs: Object.freeze([
@@ -183,22 +181,23 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         ]) }),
         Object.freeze({ heading: 'Purpose, and question', paragraphs: Object.freeze([
           'The purpose says why the analysis is being done. The shop needs to decide whether to test additional checkout counters on busy Saturdays. The purpose keeps the work focused on a real decision instead of producing a dashboard with no clear use.',
-          'The question says what the shop needs to learn. During the busiest Saturday hours, how long do customers wait, and how often are all available checkout counters occupied? A clear question tells us which information the analysis must use.'
+          'The question says what the shop needs to learn. Between 12:00 and 16:00 on Saturdays, how often are all open counters occupied, and how long do transactions take for different basket sizes? A clear question tells us which information the analysis must use.'
         ]), images: Object.freeze([
           Object.freeze({ src: '/media/ch01-05/brief-cards.webp', alt: 'A pinboard holding one blank sheet at the top, connected down to a row of four blank cards. The first card is outlined in rust orange.', caption: 'The request at the top, and the four parts it has to become. Purpose is the first.' })
         ]) }),
         Object.freeze({ heading: 'Boundary, and what the records can support', paragraphs: Object.freeze([
           'The boundary says what the analysis covers. This one covers the Northgate shop, Saturdays from 12:00 to 16:00, during the previous eight weeks. A boundary prevents a result about one place and period from being presented as a result about every shop and every day.',
-          'To answer the question, the records must show when a customer joined the queue, when service began, when payment finished, and how many checkout counters were open. If queue arrival time was not recorded, waiting time cannot be calculated from the existing data. The shop would need to collect it, or ask a narrower question.'
+          'The records show when scanning started, when payment finished, how many items were in the basket, and how many counters were open. They do not show when a customer joined the queue.',
+          'So waiting time cannot be calculated from what exists. That is not a small gap, and the honest response is to say so rather than to answer a different question quietly. To measure waiting time, the shop would have to record queue arrival during the trial itself.'
         ]) }),
         Object.freeze({ heading: 'Outcome', paragraphs: Object.freeze([
-          'The outcome says what the analysis will produce. A short report will show when queues form, how long customers wait, how fully the existing counters are used, and what the available data cannot tell us.',
+          'The outcome says what the analysis will produce. A short report on how fully the counters are used and how long transactions take, and a clear statement that customer waiting time was not recorded.',
           'The manager can use that evidence when deciding whether to test additional counters.'
         ]) })
       ]),
       example: Object.freeze({ title: 'The Northgate brief, in four parts', headers: Object.freeze(['Part','What it answers','Northgate']), rows: Object.freeze([
         Object.freeze(['Purpose','Why is the analysis being done?','To decide whether to test more checkout counters on busy Saturdays']),
-        Object.freeze(['Question','What does the shop need to learn?','How long customers wait, and how often every counter is occupied']),
+        Object.freeze(['Question','What does the shop need to learn?','How often every open counter is occupied, and how long transactions take']),
         Object.freeze(['Boundary','What will the analysis cover?','Northgate, Saturdays 12:00 to 16:00, the previous eight weeks']),
         Object.freeze(['Outcome','What will the analysis produce?','A short report, including what the data cannot tell us'])
       ]) }),
@@ -220,18 +219,18 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
             Object.freeze(['decide','To help the shop decide whether to test more checkout counters on busy Saturdays.']),
             Object.freeze(['dashboard','To build a checkout dashboard with as many measures as possible.'])
           ]), why: 'It names the real decision without choosing the answer in advance.', retry: 'One option decides the conclusion before the work starts. Another produces something with no stated use.' }),
-          Object.freeze({ id: 'question', stage: 'QUESTION', prompt: 'What does the shop need to learn?', answer: 'waiting', options: Object.freeze([
-            Object.freeze(['faster','How much faster queues will be once two counters are added.']),
-            Object.freeze(['waiting','During the busiest Saturday hours, how long customers wait and how often every counter is occupied.']),
+          Object.freeze({ id: 'question', stage: 'QUESTION', prompt: 'What does the shop need to learn?', answer: 'occupancy', options: Object.freeze([
+            Object.freeze(['waited','During the busiest Saturday hours, how long did customers wait in the queue before being served?']),
+            Object.freeze(['occupancy','Between 12:00 and 16:00 on Saturdays, how often is every open counter occupied, and how long do transactions take?']),
             Object.freeze(['national','Why self-service counters are slower across every Qubix shop.'])
-          ]), why: 'It asks about the shop and the hours in question, and it can be answered with what the records hold.', retry: 'One option asks about something that has not happened yet. One asks about every shop rather than this one.' }),
+          ]), why: 'It asks about this shop in those hours, and every part of it can be answered from fields the records actually hold.', retry: 'Waiting starts when somebody joins the queue, and nothing records that moment. A question the data cannot answer is not made better by being the question you wanted.' }),
           Object.freeze({ id: 'boundary', stage: 'BOUNDARY', prompt: 'What will the analysis cover?', answer: 'scoped', options: Object.freeze([
             Object.freeze(['everything','Every Qubix shop, every day, for as long as records exist.']),
             Object.freeze(['scoped','The Northgate shop, Saturdays from 12:00 to 16:00, during the previous eight weeks.']),
             Object.freeze(['none','No boundary, so the finding applies as widely as possible.'])
           ]), why: 'A boundary stops a result about one shop and one period being read as a result about all of them.', retry: 'The purpose named one shop and one busy period. The boundary should match it.' }),
           Object.freeze({ id: 'outcome', stage: 'OUTCOME', prompt: 'What will the analysis produce?', answer: 'report', options: Object.freeze([
-            Object.freeze(['report','A short report showing when queues form, how long customers wait, and what the data cannot tell us.']),
+            Object.freeze(['report','A short report on counter occupancy and transaction duration, and a clear statement that waiting time was not recorded.']),
             Object.freeze(['answer','A single sentence saying yes or no.']),
             Object.freeze(['extract','The raw records, so the manager can work it out.'])
           ]), why: 'It gives the manager evidence to decide with, and it is honest about what the records leave out.', retry: 'One option hides the reasoning. One hands the whole job back to the manager.' })
