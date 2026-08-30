@@ -234,7 +234,7 @@
       </div>
       <div class="rc-keys">
         <div class="rc-key row"><span>ONE ROW</span><b>One completed sale</b><small>Everything in the band belongs to sale S-1043. Change the table and a row might be one customer, or one product, instead.</small></div>
-        <div class="rc-key col"><span>ONE COLUMN</span><b>One question, asked of every sale</b><small>How much was paid? The column puts that question to all four rows and keeps the four answers.</small></div>
+        <div class="rc-key col"><span>ONE COLUMN</span><b>The total paid for each sale</b><small>The column contains the total paid for each sale, one value in every row.</small></div>
       </div>
     </div>
   {:else if spec.kind === 'data-types'}

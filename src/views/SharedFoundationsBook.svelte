@@ -11,7 +11,8 @@
   import KeywordReading from '../lib/components/KeywordReading.svelte';
   import { readingAssistantFor } from '../lib/content/foundations-assistant.js';
   import { paramsForLocation } from '../lib/routes/clean-paths.js';
-  import { stepFor, nextStep, previousStep, PATH_LENGTH } from '../lib/content/beginner-path.js';
+  import { stepFor, nextStep, previousStep } from '../lib/content/beginner-path.js';
+  import { routeForChapter, routeProgress } from '../lib/content/chapter-route.js';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
@@ -47,8 +48,13 @@
     window.location.href = `/learn/data-foundations/chapter/${step.chapter}/session/${step.session}`;
   }
   $: exerciseCount = book.sessions.filter(item => item.exercise).length;
-  $: totalItems = book.sessions.length * 2 + exerciseCount;
-  $: completedItems = progress.study.length + progress.exercises.length + progress.practice.length;
+  // Chapter one is mapped to a declared ten-step route. Chapters that have not
+  // been mapped yet keep the old derived count until they are.
+  $: mapped = routeForChapter(chapterNumber).length > 0;
+  $: route = mapped ? routeProgress(progress, book.sessions) : null;
+  $: totalItems = route ? route.total : book.sessions.length * 2 + exerciseCount;
+  $: completedItems = route ? route.count
+    : progress.study.length + progress.exercises.length + progress.practice.length;
   $: progressPercent = Math.round((completedItems / totalItems) * 100);
   $: partComplete = progress.study.length === book.sessions.length
     && progress.exercises.length === exerciseCount
@@ -186,7 +192,7 @@
           </button>
         {/each}
       </nav>
-      <div class="progress-copy"><b>{completedItems} of {totalItems} steps complete</b><span>This chapter includes one additional applied exercise between reading and mission work.</span>{#if completedItems || Object.keys(progress.notes).length}<button class:confirm={resetting} on:click={resetProgress}>{resetting ? 'Confirm reset' : 'Reset saved progress'}</button>{/if}</div>
+      <div class="progress-copy"><b>{completedItems} of {totalItems} steps complete</b><span>{mapped ? 'Five briefings and five missions. An applied exercise sits inside its briefing.' : 'This chapter includes one additional applied exercise between reading and mission work.'}</span>{#if completedItems || Object.keys(progress.notes).length}<button class:confirm={resetting} on:click={resetProgress}>{resetting ? 'Confirm reset' : 'Reset saved progress'}</button>{/if}</div>
     </aside>
 
     <main>
@@ -301,13 +307,6 @@
 
         <section class="sources"><b>Sources and licence notes</b>{#each session.sources as source}<a href={source.url} target="_blank" rel="noreferrer">{source.label}{#if source.licence}<small>{source.licence}</small>{/if}<span>↗</span></a>{/each}</section>
 
-        {#if here}
-          <div class="path-place">
-            <span class="pp-step">Step {here.step} of {PATH_LENGTH}</span>
-            <span class="pp-part">Part {here.part} · {here.partTitle}</span>
-            <div class="pp-bar"><i style={`width:${(here.step / PATH_LENGTH) * 100}%`}></i></div>
-          </div>
-        {/if}
 
         <footer class="chapter-nav">
           {#if here && backward}
@@ -321,7 +320,7 @@
               {onward.firstOfPart ? `Begin part ${onward.part} →` : 'Next step →'}
             </button>
           {:else if here}
-            <span class="pp-done">That is the whole path. Twenty-four steps.</span>
+            <span class="pp-done">That is the end of the path.</span>
           {:else if activeIndex < book.sessions.length - 1}
             <button class="next" on:click={() => openSession(activeIndex + 1)}>Next session →</button>
           {:else}<a class="next" href="?mode=game&mission=foundations">Return to Foundations →</a>{/if}
@@ -471,13 +470,7 @@
   .sources b { color: #756c5c; font: 850 11.5px var(--qx-font); }
   .sources a { display:inline-flex;align-items:center;gap:5px;color: #8c4c2e; font: 750 11.5px var(--qx-font); }
   .sources a small { padding:3px 5px;border:1px solid #9c998d;color:#4f6151;font:850 11px var(--qx-font);letter-spacing:.04em;text-decoration:none; }
-  .path-place { margin: 26px 0 0; padding: 12px 0 0; border-top: 2px solid #241f16; }
-  .pp-step { font: 900 11.5px var(--qx-font); letter-spacing: .1em; color: #8c4c2e; }
-  .pp-part { margin-left: 10px; font: 650 12.5px var(--qx-font); color: #6d6558; }
-  .pp-bar { height: 6px; margin-top: 8px; background: #ded6c6; }
-  .pp-bar i { display: block; height: 100%; background: #a85a34; transition: width .25s ease; }
   .pp-done { font: 700 13px var(--qx-font); color: #3c6427; align-self: center; }
-  @media (prefers-reduced-motion: reduce) { .pp-bar i { transition: none; } }
 
   .chapter-nav { padding: 24px 0 38px; display: flex; justify-content: space-between; gap: 12px; }
   .chapter-nav button, .chapter-nav a { min-height: 42px; padding: 11px 16px; border: 1px solid #d8d0be; border-radius: 8px; background: #fff; color: #241f16; font: 850 12px var(--qx-font); text-decoration: none; cursor: pointer; }

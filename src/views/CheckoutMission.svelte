@@ -273,7 +273,7 @@
       <section class="decision-card">
         <p class="eyebrow">YOUR DECISION</p>
         <h2>What gets recorded?</h2>
-        <p>Separate the scan event, governed product record and calculated line total.</p>
+        <p>Separate the scan event, the saved product details and the calculated line total.</p>
         <a href="?mode=game&mission=shared-book&chapter=1&session=1">Open the briefing →</a>
       </section>
 
@@ -285,10 +285,10 @@
       </section>
 
       <section class="data-card">
-        <p class="eyebrow">LIVE DATA LINEAGE</p>
+        <p class="eyebrow">HOW THE VALUE WAS CREATED</p>
         <div class="lineage">
           <div class:active={latestOutcome}><span>1</span><p><b>Observe</b>Barcode scan event</p></div>
-          <div class:active={latestOutcome}><span>2</span><p><b>Look up</b>Product master record</p></div>
+          <div class:active={latestOutcome}><span>2</span><p><b>Look up</b>Saved product details</p></div>
           <div class:active={latestOutcome}><span>3</span><p><b>Derive</b>Quantity × unit price</p></div>
         </div>
         {#if latestOutcome}

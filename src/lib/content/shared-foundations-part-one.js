@@ -1,6 +1,6 @@
 export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
   id: 'SHARED-FOUNDATIONS-PART-ONE',
-  status: 'IN FINAL REVIEW · text approved 2026-08-30 · chapter not signed off',
+  status: 'IN FINAL REVIEW · chapter not signed off',
   title: 'How Data Represents the World',
   subtitle: 'Part One of Volume 0',
   totalMinutes: 44,
@@ -8,7 +8,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
     Object.freeze({
       id: 'representation', number: '01', title: 'A sale is not its record', studyMinutes: 8, playMinutes: 5,
       objective: 'Explain the difference between something that happened and the data recorded about it, and say where each recorded value came from.',
-      audioSummary: 'You buy three items and leave with a receipt. The purchase happened in the shop. The receipt records part of it: the items, the quantities, the prices, the time and the total. A shop holds far more data than it holds goods, because one product carries a barcode, a name, a supplier, a price, a stock count and a sales history. The till keeps the details it needs for the purchase and not every detail about the shop at that moment. A value enters a record in one of three ways. It is observed at the event, retrieved from stored information, or calculated from other values.',
+      audioSummary: 'You buy three items and leave with a receipt. The purchase happened in the shop. The receipt records part of it: the items, the quantities, the prices, the time and the total. A shop holds far more data than it holds goods, because one product carries a barcode, a name, a supplier, a price, a stock count and a sales history. The checkout keeps the details it needs for the purchase and not every detail about the shop at that moment. A value enters a record in one of three ways. It is observed at the event, retrieved from stored information, or calculated from other values.',
       opening: 'You buy three items and leave the shop with a receipt. The purchase happened in the shop. The receipt is a record of part of that purchase: the items, quantities, prices, time, and total. Every detail written on it is data.',
       sections: Object.freeze([
         Object.freeze({ heading: 'A shop holds more data than it holds goods', paragraphs: Object.freeze([
@@ -17,17 +17,17 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
           Object.freeze({ src: '/media/ch01-01/frame-1-aisle.webp', alt: 'A shopper reaches for a bottle on a supermarket shelf, a basket in the other hand, while a cashier waits at a counter behind them.', caption: 'Goods on the shelf. Data about every one of them.' })
         ]) }),
         Object.freeze({ heading: 'A row records what happened, not the story behind what happened', paragraphs: Object.freeze([
-          'The till keeps the details it needs for the purchase: which items were scanned, how many were bought, when the sale happened, the stored price, and the total. It does not record every detail about the shop at that moment.',
+          'The checkout counter keeps the details it needs for the purchase: which items were scanned, how many were bought, when the sale happened, the stored price, and the total. It does not record every detail about the shop at that moment.',
           'Other systems may record shelf stock, weather, or whether a freezer door was open. One row contains the details that one system collected; it is not the complete story.'
         ]), images: Object.freeze([
-          Object.freeze({ src: '/media/ch01-01/frame-2-counter.webp', alt: 'The shopper places three items on the checkout counter while the cashier reaches for the first one.', caption: 'This is the event. The row comes afterwards, and keeps the part the till needed.' })
+          Object.freeze({ src: '/media/ch01-01/frame-2-counter.webp', alt: 'The shopper places three items on the checkout counter while the cashier reaches for the first one.', caption: 'This is the event. The row comes afterwards, and keeps the part the checkout needed.' })
         ]) }),
         Object.freeze({ heading: 'Observed, stored, and calculated values', paragraphs: Object.freeze([
-          'The scanner observes the barcode when the item passes the till. The till looks up the product name and unit price that were already stored. It then calculates the line total from the quantity and unit price. A calculated value is also called a derived value.',
+          'The scanner observes the barcode when the item passes the checkout. The checkout looks up the product name and unit price that were already stored. It then calculates the line total from the quantity and unit price. A calculated value is also called a derived value.',
           'These are three ways a value can enter a record: observed at the event, retrieved from stored information, or calculated from other values.'
         ]), images: Object.freeze([
           Object.freeze({ src: '/media/ch01-01/frame-3-scan.webp', alt: 'A hand holds a bottle just above a scanner plate set into the counter, its blank label panel facing the viewer.', caption: 'Observed: the code comes from the world, at the moment it happens.' }),
-          Object.freeze({ src: '/media/ch01-01/frame-4-till.webp', alt: 'A checkout till with a blank screen on a stalk, a keypad, and a blank receipt curling from the printer slot.', caption: 'Looked up and calculated: the price was already stored, the total was worked out.' })
+          Object.freeze({ src: '/media/ch01-01/frame-4-till.webp', alt: 'A checkout counter with a blank screen on a stalk, a keypad, and a blank receipt curling from the printer slot.', caption: 'Looked up and calculated: the price was already stored, the total was worked out.' })
         ]) })
       ]),
       figure: Object.freeze({ kind: 'record-chain', caption: 'One purchase, three steps into data', note: 'The scan is observed, the price is looked up and the total is calculated. Each step can fail in a different way.' }),
@@ -78,7 +78,7 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
             why: 'A barcode identifies a product. The checkout uses it to find the product record and its current stored price. Adding two barcodes together, or averaging them, tells us nothing useful.'
           })
         ]),
-        closing: 'The mission asks this twenty-four times over. The full explanation comes later, when digits and quantities get a session of their own.'
+        closing: 'The mission asks this of one field after another. The full explanation comes later, when digits and quantities get a session of their own.'
       }),
       workbook: Object.freeze({ title: 'Read a small table properly', prompt: 'Use a receipt, timetable, fitness app or another small record you can see.', steps: Object.freeze(['Finish the sentence “one row contains details about…”', 'Choose five columns and write what kind of detail each one holds.', 'Name two of those columns as variables.', 'Find one column that does not hold its information consistently.', 'Write what a second table about the same shop would put in one row.']) }),
       check: Object.freeze({ prompt: 'A table has one row for each completed sale. What is recorded in one row?', answer: 'sale', options: Object.freeze([['customer','Details about one customer'],['sale','Details about one completed sale'],['product','Details about one product']]), explanation: 'The case recorded in each row is one completed sale, so one row contains the details of that sale.' }),
@@ -188,10 +188,10 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         Object.freeze({ heading: 'Boundary, and what the records can support', paragraphs: Object.freeze([
           'The boundary says what the analysis covers. This one covers the Northgate shop, Saturdays from 12:00 to 16:00, during the previous eight weeks. A boundary prevents a result about one place and period from being presented as a result about every shop and every day.',
           'The records show when scanning started, when payment finished, how many items were in the basket, and how many counters were open. They do not show when a customer joined the queue.',
-          'So waiting time cannot be calculated from what exists. That is not a small gap, and the honest response is to say so rather than to answer a different question quietly. To measure waiting time, the shop would have to record queue arrival during the trial itself.'
+          'So waiting time cannot be calculated from what exists. The analysis says that plainly instead of answering a different question in its place. To measure waiting time, the shop would have to record queue arrival during the trial itself.'
         ]) }),
         Object.freeze({ heading: 'Outcome', paragraphs: Object.freeze([
-          'The outcome says what the analysis will produce. A short report on how fully the counters are used and how long transactions take, and a clear statement that customer waiting time was not recorded.',
+          'The outcome says what the analysis will produce. It is a short report on how fully the counters are used and how long transactions take, and it states that customer waiting time was not recorded.',
           'The manager can use that evidence when deciding whether to test additional counters.'
         ]) })
       ]),
