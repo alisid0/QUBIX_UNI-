@@ -227,6 +227,77 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
         'Those underlined parts are your candidate key: write it down.',
         'Find two rows that look alike, and say which part of the key tells them apart.'
       ]) }),
+      exercise: Object.freeze({
+        id: 'same-record-twice', type: 'duplicate-check', minutes: 7,
+        title: 'Is this the same record twice?',
+        instruction: 'Four pairs of rows, one at a time. Each pair says what its table’s rows represent and which columns identify them. Compare those columns before anything else: two rows looking alike is not the same as two rows being the same record.',
+        // Answers at 0, 1, 0, 2. The three things a learner must tell apart are
+        // a repeat that is allowed, a real duplicate, and an extract that
+        // cannot settle the question either way.
+        cases: Object.freeze([
+          Object.freeze({
+            table: 'purchased_items', grain: 'one product line in one sale', key: 'sale_id + line_no',
+            columns: Object.freeze([
+              Object.freeze({ name: 'sale_id', key: true }),
+              Object.freeze({ name: 'line_no', key: true }),
+              Object.freeze({ name: 'product' })
+            ]),
+            rows: Object.freeze([
+              Object.freeze(['S081', '1', 'Oat milk']),
+              Object.freeze(['S081', '2', 'Bread'])
+            ]),
+            correct: 0,
+            term: 'A repeat that is allowed',
+            explanation: 'The sale ID repeats because one sale can hold several product lines. The line numbers differ, and it takes both columns together to identify a row here.'
+          }),
+          Object.freeze({
+            table: 'purchased_items', grain: 'one product line in one sale', key: 'sale_id + line_no',
+            columns: Object.freeze([
+              Object.freeze({ name: 'sale_id', key: true }),
+              Object.freeze({ name: 'line_no', key: true }),
+              Object.freeze({ name: 'product' })
+            ]),
+            rows: Object.freeze([
+              Object.freeze(['S081', '2', 'Bread']),
+              Object.freeze(['S081', '2', 'Bread'])
+            ]),
+            correct: 1,
+            term: 'A duplicate',
+            explanation: 'Both identifying columns match, so this is the same product line written down twice. Counting these rows would count one purchase of bread as two.'
+          }),
+          Object.freeze({
+            table: 'sales', grain: 'one completed sale', key: 'sale_id',
+            columns: Object.freeze([
+              Object.freeze({ name: 'sale_id', key: true }),
+              Object.freeze({ name: 'customer_id' }),
+              Object.freeze({ name: 'total' })
+            ]),
+            rows: Object.freeze([
+              Object.freeze(['S091', 'C14', '£24.80']),
+              Object.freeze(['S092', 'C14', '£24.80'])
+            ]),
+            correct: 0,
+            term: 'A repeat that is allowed',
+            explanation: 'The customer and the total happen to match, which is an ordinary thing when one shopper buys the same basket twice. The sale IDs differ, so these are two sales.'
+          }),
+          Object.freeze({
+            table: 'purchase_export', grain: 'one purchased product line', key: 'not included in this extract',
+            columns: Object.freeze([
+              Object.freeze({ name: 'product' }),
+              Object.freeze({ name: 'unit_price' }),
+              Object.freeze({ name: 'quantity' })
+            ]),
+            rows: Object.freeze([
+              Object.freeze(['Bread', '£1.60', '1']),
+              Object.freeze(['Bread', '£1.60', '1'])
+            ]),
+            correct: 2,
+            term: 'Not enough evidence',
+            explanation: 'The sale ID and line number are not in this extract. These rows could be one purchase written twice, or two people buying the same loaf. Nothing on screen decides it.'
+          })
+        ]),
+        why: 'Identical-looking rows were allowed twice, a real duplicate once, and once the extract simply could not say. The identifying columns are what separate them, and when those columns are missing the honest answer is that you do not know.'
+      }),
       check: Object.freeze({
         prompt: 'inventory_snapshot holds branch B-17 and product QX-CER-001 twice, at 08:00 and at 12:00. Is that a duplicate?',
         answer: 'no',

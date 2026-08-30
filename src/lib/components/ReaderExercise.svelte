@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import RateCompare from './RateCompare.svelte';
   import ValueRole from './ValueRole.svelte';
+  import DuplicateCheck from './DuplicateCheck.svelte';
 
   export let exercise;
   export let completed = false;
@@ -24,7 +25,7 @@
     correct = false;
   }
 
-  $: runsItself = ['rate-compare', 'value-role'].includes(exercise?.type);
+  $: runsItself = ['rate-compare', 'value-role', 'duplicate-check'].includes(exercise?.type);
 
   $: ready = runsItself ? false
     : exercise?.type === 'sequence'
@@ -94,6 +95,8 @@
     <RateCompare cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
   {:else if exercise.type === 'value-role'}
     <ValueRole cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
+  {:else if exercise.type === 'duplicate-check'}
+    <DuplicateCheck cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
   {:else if exercise.type === 'classify'}
     <div class="exercise-items">
       {#each exercise.items as item, index}

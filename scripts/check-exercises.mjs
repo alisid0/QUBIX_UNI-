@@ -27,11 +27,44 @@ ok('exercise ids are unique', new Set(exercises.map(item => item.exercise.id)).s
 for (const { chapter, session, exercise } of exercises) {
   const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${exercise.id}`;
   ok(`${where} declares a supported type and time`,
-    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role'].includes(exercise.type) && exercise.minutes >= 3,
+    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role', 'duplicate-check'].includes(exercise.type) && exercise.minutes >= 3,
     `${exercise.type}, ${exercise.minutes} min`);
   // rate-compare runs its own rounds, so its work is in `cases`.
   const work = exercise.items || exercise.cases || [];
   ok(`${where} has at least three pieces of work`, work.length >= 3, `${work.length} item(s)`);
+
+  if (exercise.type === 'duplicate-check') {
+    ok(`${where} every pair shows exactly two rows`,
+      exercise.cases.every(c => c.rows.length === 2));
+    ok(`${where} every row has a value for every column`,
+      exercise.cases.every(c => c.rows.every(r => r.length === c.columns.length)));
+    // The method is comparing the identifying columns, so every pair must name
+    // its grain and its key, including the one whose key is absent.
+    ok(`${where} every pair names its grain and its identifying columns`,
+      exercise.cases.every(c => c.table && c.grain && c.key));
+
+    // The three answers a learner has to be able to reach. If the activity
+    // never uses one of them, it is not teaching the distinction it claims to.
+    const used = new Set(exercise.cases.map(c => c.correct));
+    ok(`${where} all three verdicts are reachable`, used.size === 3,
+      `verdicts used: ${[...used].sort().join(', ')}`);
+
+    // "Not enough evidence" must be the answer only where the key is genuinely
+    // missing, otherwise it teaches shrugging rather than judgement.
+    ok(`${where} not-enough-evidence is used only where the key is absent`,
+      exercise.cases.every(c => c.correct !== 2 || /not included|missing|absent/i.test(c.key)));
+    ok(`${where} a duplicate verdict has both key columns matching`,
+      exercise.cases.filter(c => c.correct === 1).every(c =>
+        c.columns.every((col, i) => !col.key || c.rows[0][i] === c.rows[1][i])));
+    ok(`${where} a two-different-records verdict has a key column that differs`,
+      exercise.cases.filter(c => c.correct === 0).every(c =>
+        c.columns.some((col, i) => col.key && c.rows[0][i] !== c.rows[1][i])));
+
+    const at = exercise.cases.map(c => c.correct);
+    const worst = Math.max(...at.map(p => at.filter(q => q === p).length));
+    ok(`${where} the answer is not always in the same place`,
+      worst <= Math.ceil(at.length / 2), at.join(''));
+  }
 
   if (exercise.type === 'value-role') {
     ok(`${where} every value names an answer it offers`,
