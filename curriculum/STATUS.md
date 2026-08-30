@@ -1,6 +1,6 @@
 # Curriculum Status
 
-Last updated: 2026-08-29
+Last updated: 2026-08-30
 
 | Artifact | Status | Next authority |
 |---|---|---|
@@ -8,6 +8,8 @@ Last updated: 2026-08-29
 | Prerequisite map | Draft | Founder |
 | Main curriculum map | Draft | Founder |
 | Foundational mathematics shelf | Draft | Founder |
+| Sequence reconciliation | Founder rulings of 2026-08-30 recorded in `curriculum/10-SEQUENCE-RECONCILIATION.md`. Four conflicts named between those rulings and the existing 379-topic catalogue | Founder decision on each conflict; nothing resolved |
+| Beginner path | 24 steps across five parts, live and guarded. 11 of 35 sessions off it with recorded reasons | Founder reading; remains `AI_DRAFT` |
 | Extended classical candidate library | Draft | Founder |
 | Strata migration finalization review | AI_DRAFT, authoring-only | Founder decisions across 100 audited records |
 | Data Science, Machine Learning and AI roadmap | Draft skeleton plus 150+ topic reference atlas | Founder review |
