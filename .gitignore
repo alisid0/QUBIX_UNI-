@@ -23,6 +23,7 @@ STATE.json
 # Room art: PNG originals are the source, WebP is what ships.
 public/rooms/*.png
 public/props/*.png
+public/media/ch01-01/*.png
 
 # The generated quarter. Rebuild with npm run data.
 # The README is documentation and stays tracked; the CSVs do not.
