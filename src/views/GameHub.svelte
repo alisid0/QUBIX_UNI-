@@ -8,14 +8,46 @@
   let confirming = false;
   const lockedSlug = new URLSearchParams(window.location.search).get('locked');
   const lockedMission = MISSIONS.find(m => m.slug === lockedSlug);
-  const ROOMS = [
-    { id: 'goods-in', image: 'goods-in', name: 'Goods In', missions: '05', note: 'Units + measurement', slug: 'units-measurement' },
-    { id: 'stock-room', image: 'stock-room', name: 'Stock Room', missions: '03–04 · 07', note: 'Grain · missing values · duplicates', slug: 'table-grain' },
-    { id: 'data-office', image: 'data-office', name: 'Data Office', missions: '11–14', note: 'SQL · joins · verification · Python', slug: 'sql-console' },
-    { id: 'checkout', image: 'tills', name: 'Checkout', missions: '01', note: 'Process a Sale', slug: 'checkout' },
-    { id: 'aisles', image: 'aisles', name: 'Aisles', missions: '02', note: 'Classify Store Data', slug: 'classify-data' },
-    { id: 'board-room', image: 'boardroom', name: 'Board Room', missions: '15–16', note: 'Decision desk · handover review', slug: 'analyst-desk' }
+  // Which missions live in which room. The numbers and the names underneath are
+  // read from the roster rather than written here: this list used to carry both
+  // by hand, and it still said "Aisles · 02 · Classify Store Data" after that
+  // mission had moved to chapter 3 and Read the Table had taken its place.
+  // A room with one mission shows that mission's title. A room with several
+  // shows a short theme, written by hand because four full titles do not fit on
+  // a card. check-room-map refuses a theme that names a mission living
+  // somewhere else, which is exactly how this went stale.
+  const ROOM_PLAN = [
+    { id: 'goods-in', image: 'goods-in', name: 'Goods In', slugs: ['units-measurement', 'uom'],
+      theme: 'Units and measurement' },
+    // Duplicate records live at the customer desk on the floor map, not here.
+    { id: 'stock-room', image: 'stock-room', name: 'Stock Room', slugs: ['table-grain', 'missing-data'],
+      theme: 'Grain and missing values' },
+    { id: 'data-office', image: 'data-office', name: 'Data Office', slugs: ['sql-console', 'join-grain', 'result-checkpoint', 'python-trace'],
+      theme: 'SQL · joins · verification · Python' },
+    { id: 'checkout', image: 'tills', name: 'Checkout', slugs: ['checkout'] },
+    { id: 'aisles', image: 'aisles', name: 'Aisles', slugs: ['read-the-table', 'classify-data'],
+      theme: 'Rows and columns · data types' },
+    { id: 'board-room', image: 'boardroom', name: 'Board Room', slugs: ['analyst-desk', 'handover-pack'],
+      theme: 'Decision desk · handover review' }
   ];
+
+  const numberOf = slug => String(MISSIONS.findIndex(m => m.slug === slug) + 1).padStart(2, '0');
+
+  // A run of consecutive numbers reads as a range; anything else is listed.
+  const numbersFor = slugs => {
+    const ns = slugs.map(numberOf).sort();
+    if (ns.length > 2 && Number(ns.at(-1)) - Number(ns[0]) === ns.length - 1) return `${ns[0]}–${ns.at(-1)}`;
+    return ns.join(' · ');
+  };
+
+  const ROOMS = ROOM_PLAN.map(room => ({
+    ...room,
+    slug: room.slugs[0],
+    missions: numbersFor(room.slugs),
+    note: room.theme
+      || MISSIONS.find(m => m.slug === room.slugs[0])?.mission.title
+      || room.name
+  }));
 
   const refresh = () => { state = load(); };
   onMount(() => {

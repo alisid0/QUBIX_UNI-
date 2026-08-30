@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import RateCompare from './RateCompare.svelte';
 
   export let exercise;
   export let completed = false;
@@ -22,7 +23,10 @@
     correct = false;
   }
 
-  $: ready = exercise?.type === 'sequence'
+  $: runsItself = exercise?.type === 'rate-compare';
+
+  $: ready = runsItself ? false
+    : exercise?.type === 'sequence'
     ? order.length === exercise.items.length
     : exercise?.type === 'distribution-build'
       ? exercise.items.every(item => String(responses[`${item.id}-frequency`] ?? '').trim() !== ''
@@ -85,7 +89,9 @@
   </div>
   <p class="instruction">{exercise.instruction}</p>
 
-  {#if exercise.type === 'classify'}
+  {#if exercise.type === 'rate-compare'}
+    <RateCompare cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
+  {:else if exercise.type === 'classify'}
     <div class="exercise-items">
       {#each exercise.items as item, index}
         <article class:wrong={checked && !isRight(item)} class:right={checked && isRight(item)}>
@@ -192,7 +198,11 @@
     </div>
   {/if}
 
-  {#if completed && !checked}
+  {#if runsItself && completed}
+    <div class="exercise-feedback success"><b>Exercise saved ✓</b><span>This applied step is part of your chapter progress.</span></div>
+  {:else if runsItself}
+    <!-- rate-compare reports its own progress and finishes itself. -->
+  {:else if completed && !checked}
     <div class="exercise-feedback success"><b>Exercise saved ✓</b><span>This applied step is part of your chapter progress.</span></div>
   {:else if checked && !correct}
     <button class="exercise-action retry" on:click={retry}>Try again</button>

@@ -76,15 +76,15 @@ export const ROOMS = Object.freeze([
     id: 'aisles', name: 'Aisles', wing: 'shop', x: 3, y: 2, w: 3, h: 2,
     blurb: 'Every product the store sells, and the tables that keep track of them.',
     spots: Object.freeze([
-      Object.freeze({ slug: 'read-the-table', x: 46, y: 38, at: 'the stock table' })
+      Object.freeze({ slug: 'read-the-table', x: 46, y: 38, at: 'the stock table' }),
+      Object.freeze({ slug: 'classify-data', x: 62, y: 44, at: 'the shelf labels' })
     ])
   }),
   Object.freeze({
     id: 'tills', name: 'Tills', wing: 'shop', x: 0, y: 4, w: 6, h: 2,
     blurb: 'Where the data starts. Every row in every table begins as something that happened here.',
     spots: Object.freeze([
-      Object.freeze({ slug: 'checkout', x: 17, y: 45, at: 'lane one' }),
-      Object.freeze({ slug: 'classify-data', x: 37, y: 43, at: 'lane two' })
+      Object.freeze({ slug: 'checkout', x: 17, y: 45, at: 'lane one' })
     ])
   }),
 
