@@ -3,6 +3,7 @@
   import RateCompare from './RateCompare.svelte';
   import ValueRole from './ValueRole.svelte';
   import DuplicateCheck from './DuplicateCheck.svelte';
+  import EvidenceTrail from './EvidenceTrail.svelte';
 
   export let exercise;
   export let completed = false;
@@ -25,7 +26,7 @@
     correct = false;
   }
 
-  $: runsItself = ['rate-compare', 'value-role', 'duplicate-check'].includes(exercise?.type);
+  $: runsItself = ['rate-compare', 'value-role', 'duplicate-check', 'evidence-trail'].includes(exercise?.type);
 
   $: ready = runsItself ? false
     : exercise?.type === 'sequence'
@@ -97,6 +98,9 @@
     <ValueRole cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
   {:else if exercise.type === 'duplicate-check'}
     <DuplicateCheck cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
+  {:else if exercise.type === 'evidence-trail'}
+    <EvidenceTrail steps={exercise.steps} target={exercise.target} {completed}
+      on:complete={() => dispatch('complete')} />
   {:else if exercise.type === 'classify'}
     <div class="exercise-items">
       {#each exercise.items as item, index}
