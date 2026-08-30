@@ -65,7 +65,8 @@
     "check:path": "node scripts/check-chapter-one-path.mjs",
     "check:rooms": "node scripts/check-room-map.mjs",
     "check:rates-ui": "node scripts/check-rate-compare-ui.mjs",
-    "check:value-role-ui": "node scripts/check-value-role-ui.mjs"
+    "check:value-role-ui": "node scripts/check-value-role-ui.mjs",
+    "check:duplicate-ui": "node scripts/check-duplicate-ui.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
