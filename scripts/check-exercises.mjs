@@ -27,10 +27,26 @@ ok('exercise ids are unique', new Set(exercises.map(item => item.exercise.id)).s
 for (const { chapter, session, exercise } of exercises) {
   const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${exercise.id}`;
   ok(`${where} declares a supported type and time`,
-    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build'].includes(exercise.type) && exercise.minutes >= 3,
+    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare'].includes(exercise.type) && exercise.minutes >= 3,
     `${exercise.type}, ${exercise.minutes} min`);
-  ok(`${where} has at least three pieces of work`, (exercise.items || []).length >= 3,
-    `${exercise.items?.length || 0} item(s)`);
+  // rate-compare runs its own rounds, so its work is in `cases`.
+  const work = exercise.items || exercise.cases || [];
+  ok(`${where} has at least three pieces of work`, work.length >= 3, `${work.length} item(s)`);
+
+  if (exercise.type === 'rate-compare') {
+    ok(`${where} every comparison names a real answer`,
+      exercise.cases.every(c => c.correct === 2 || c.branches[c.correct]),
+      exercise.cases.map(c => c.correct).join(', '));
+    // Two branches and an "equal" option means three positions. If the answer
+    // sits in the same one every time, the activity is a button, not a choice.
+    const spread = new Set(exercise.cases.map(c => c.correct));
+    ok(`${where} the answer is not always in the same place`, spread.size >= 2,
+      `positions used: ${[...spread].sort().join(', ')}`);
+    ok(`${where} every comparison hides its rate behind a decision`,
+      exercise.cases.every(c => c.branches.every(b => b.rate && b.numerator && b.denominator)));
+    ok(`${where} feedback names both sides`,
+      exercise.cases.every(c => c.feedback && c.feedback.length > 40));
+  }
 
   if (exercise.type === 'classify') {
     const values = exercise.options.map(option => option[0]);

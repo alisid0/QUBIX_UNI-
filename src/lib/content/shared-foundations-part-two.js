@@ -117,6 +117,43 @@ export const SHARED_FOUNDATIONS_PART_TWO = Object.freeze({
         'Mark any percentage whose base is not stated anywhere.',
         'Rewrite one of them as a plain sentence with both counts in it.'
       ]) }),
+      exercise: Object.freeze({
+        id: 'compare-the-rates', type: 'rate-compare', minutes: 6,
+        title: 'Compare the rates',
+        instruction: 'Three pairs, one at a time. Each rate stays hidden until you have decided, because the decision is the point: two counts and two totals are on screen, and the question is which is proportionally larger.',
+        // Three answers in three different places: the first branch, the second
+        // branch, and neither. A learner who guesses the same button cannot pass.
+        cases: Object.freeze([
+          Object.freeze({
+            prompt: 'Which branch has the higher return rate?',
+            branches: Object.freeze([
+              Object.freeze({ name: 'Northgate', numerator: '5', numeratorLabel: 'returned', denominator: '40', denominatorLabel: 'sold', rate: '12.5%', rateCopy: '12.5 returned per 100 sold', width: 12.5 }),
+              Object.freeze({ name: 'Riverside', numerator: '1,400', numeratorLabel: 'returned', denominator: '12,000', denominatorLabel: 'sold', rate: '11.7%', rateCopy: 'about 11.7 returned per 100 sold', width: 11.7 })
+            ]),
+            correct: 0,
+            feedback: 'Northgate is slightly higher: 12.5% compared with 11.7%. Rounded to whole percentages, both are about 12%, which is how two different situations end up reported as the same number.'
+          }),
+          Object.freeze({
+            prompt: 'Which depot has the higher late-delivery rate?',
+            branches: Object.freeze([
+              Object.freeze({ name: 'East Depot', numerator: '18', numeratorLabel: 'late', denominator: '300', denominatorLabel: 'deliveries', rate: '6%', rateCopy: '6 late per 100 deliveries', width: 6 }),
+              Object.freeze({ name: 'West Depot', numerator: '8', numeratorLabel: 'late', denominator: '80', denominatorLabel: 'deliveries', rate: '10%', rateCopy: '10 late per 100 deliveries', width: 10 })
+            ]),
+            correct: 1,
+            feedback: 'West Depot is higher: 10% compared with 6%. It has fewer late deliveries than East Depot and a worse rate, because it made far fewer deliveries.'
+          }),
+          Object.freeze({
+            prompt: 'Which dock has the higher damage rate?',
+            branches: Object.freeze([
+              Object.freeze({ name: 'Dock A', numerator: '12', numeratorLabel: 'damaged', denominator: '200', denominatorLabel: 'inspected', rate: '6%', rateCopy: '6 damaged per 100 inspected', width: 6 }),
+              Object.freeze({ name: 'Dock B', numerator: '30', numeratorLabel: 'damaged', denominator: '500', denominatorLabel: 'inspected', rate: '6%', rateCopy: '6 damaged per 100 inspected', width: 6 })
+            ]),
+            correct: 2,
+            feedback: 'The rates are equal at 6%. Dock B has more damaged boxes because it inspected more boxes, which is the whole reason a count on its own settles nothing.'
+          })
+        ]),
+        why: 'A rate is a count measured against the total it came from. Three comparisons, three different answers: the smaller count was higher once, lower once, and level once.'
+      }),
       check: Object.freeze({
         prompt: 'A dashboard shows "conversion 40%" for a new page with no other figures. What should you ask first?',
         answer: 'base',
