@@ -22,12 +22,38 @@ const ok = (label, pass, detail = '') => {
 
 const browser = await chromium.launch();
 
+/**
+ * Arrive the way a learner arrives.
+ *
+ * Missions unlock in order, so on a genuinely empty browser step 4 is shut and
+ * the page renders a locked notice with no options on it. That is correct, and
+ * an earlier version of this file did not know it: it passed locally only
+ * because that browser still held progress from a previous run, and reported
+ * a keyboard pass for a mission it had never opened. So the prerequisite is
+ * seeded explicitly, which is the state of somebody who has finished step 2.
+ */
+const arrive = async page => {
+  await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(() => {
+    const KEY = 'qx.superstore.progress.v1';
+    const state = JSON.parse(localStorage.getItem(KEY) || '{}');
+    state.completed = [...new Set([...(state.completed || []), 'checkout'])];
+    state.started = state.started || new Date().toISOString();
+    localStorage.setItem(KEY, JSON.stringify(state));
+  });
+  await page.goto(URL, { waitUntil: 'domcontentloaded' });
+  const locked = await page.$('[data-locked], .locked');
+  if (locked || page.url().includes('locked=')) {
+    throw new Error('step 4 is still locked after finishing step 2');
+  }
+};
+
 /* ── 1 · finish it with the keyboard alone ───────────────────────────────── */
 {
   const page = await browser.newPage({ viewport: { width: 1180, height: 900 } });
   const errors = [];
   page.on('pageerror', e => errors.push(String(e).slice(0, 120)));
-  await page.goto(URL, { waitUntil: 'domcontentloaded' });
+  await arrive(page);
   await page.waitForSelector('.option, .done-card', { timeout: 20000 });
 
   let decisions = 0;
@@ -73,7 +99,7 @@ const browser = await chromium.launch();
 /* ── 2 · 390px does not scroll sideways ──────────────────────────────────── */
 {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3 });
-  await page.goto(URL, { waitUntil: 'domcontentloaded' });
+  await arrive(page);
   await page.waitForSelector('.option', { timeout: 20000 });
   const overflow = await page.evaluate(() =>
     document.documentElement.scrollWidth > window.innerWidth + 2);
@@ -100,7 +126,7 @@ const browser = await chromium.launch();
 /* ── 3 · finishing it survives a reload ──────────────────────────────────── */
 {
   const page = await browser.newPage({ viewport: { width: 1180, height: 900 } });
-  await page.goto(URL, { waitUntil: 'domcontentloaded' });
+  await arrive(page);
   await page.waitForSelector('.option', { timeout: 20000 });
 
   // Complete it directly through the same store the mission writes to.

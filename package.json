@@ -61,7 +61,8 @@
     "check:dsa": "node scripts/check-dsa-preview.mjs",
     "check:route": "node scripts/check-route-steps.mjs",
     "check:read-the-table": "node scripts/check-read-the-table.mjs",
-    "check:read-the-table-ui": "node scripts/check-read-the-table-ui.mjs"
+    "check:read-the-table-ui": "node scripts/check-read-the-table-ui.mjs",
+    "check:path": "node scripts/check-chapter-one-path.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

@@ -13,6 +13,7 @@
   import { paramsForLocation } from '../lib/routes/clean-paths.js';
   import { stepFor, nextStep, previousStep } from '../lib/content/beginner-path.js';
   import { routeForChapter, routeProgress } from '../lib/content/chapter-route.js';
+  import { load as loadMissionProgress } from '../lib/game/progress.js';
 
   // Which chapter of Volume 0 to read. The contents page links here with both
   // numbers; asking for a chapter that is not written yet falls back to the
@@ -51,7 +52,9 @@
   // Chapter one is mapped to a declared ten-step route. Chapters that have not
   // been mapped yet keep the old derived count until they are.
   $: mapped = routeForChapter(chapterNumber).length > 0;
-  $: route = mapped ? routeProgress(progress, book.sessions) : null;
+  // Missions record their own completion, separately from this page's tick box.
+  let missionsDone = [];
+  $: route = mapped ? routeProgress(progress, book.sessions, missionsDone) : null;
   $: totalItems = route ? route.total : book.sessions.length * 2 + exerciseCount;
   $: completedItems = route ? route.count
     : progress.study.length + progress.exercises.length + progress.practice.length;
@@ -68,6 +71,13 @@
       }
     } catch (error) {
       console.warn('Could not restore book progress.', error);
+    }
+    // Read separately: a learner can have finished missions without ever having
+    // ticked anything on this page, and their route would then read as empty.
+    try {
+      missionsDone = loadMissionProgress().completed || [];
+    } catch (error) {
+      console.warn('Could not restore mission progress.', error);
     }
     hydrated = true;
   });

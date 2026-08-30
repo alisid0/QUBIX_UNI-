@@ -77,7 +77,7 @@ export const stepForMission = slug =>
  * done, which is the same rule the page already enforced; the exercise simply
  * stops being counted separately. A mission counts when it is marked complete.
  */
-export const routeProgress = (progress, sessions) => {
+export const routeProgress = (progress, sessions, missionsDone = []) => {
   const done = new Set();
   for (const step of CHAPTER_ONE_ROUTE) {
     if (step.kind === 'briefing') {
@@ -86,9 +86,11 @@ export const routeProgress = (progress, sessions) => {
       if (progress.study.includes(step.id) && exerciseReady) done.add(step.step);
       continue;
     }
-    // Practice is recorded against the session that sends the learner to the
-    // mission, so the mission step is found through its own slug rather than
-    // by assuming it sits directly after its briefing.
+    // A mission step is done if the learner said so in the briefing, or if the
+    // mission itself recorded a completion. Those are two different stores, and
+    // for a while only the first one counted: you could finish the mission and
+    // watch the route still call step 4 outstanding.
+    if (missionsDone.includes(step.mission)) { done.add(step.step); continue; }
     const owner = sessions.find(s => s.practice?.href?.includes(`mission=${step.mission}`));
     if (owner && progress.practice.includes(owner.id)) done.add(step.step);
   }
