@@ -3,6 +3,8 @@
 
   import { recordCompletion } from '../lib/game/progress.js';
   import MissionMasthead from '../lib/components/game/MissionMasthead.svelte';
+  import DragMatch from '../lib/components/DragMatch.svelte';
+  import { matchRound, whyNot } from '../lib/game/classify-match.js';
   import { cleanPathForParams, paramsForLocation } from '../lib/routes/clean-paths.js';
   const stepOrder = ['primary', 'subtype', 'scale'];
   const requestedVariation = paramsForLocation(window.location).get('variation');
@@ -25,6 +27,10 @@
   $: activeDecisions = completedVariations.includes(variation.id) ? 0 : completed.length * stepOrder.length + stepIndex + (correct ? 1 : 0);
   $: overallProgress = Math.round(((completedVariations.length * variables.length * stepOrder.length + activeDecisions) / (CLASSIFICATION_MISSION.variations.length * variables.length * stepOrder.length)) * 100);
   $: variationComplete = completed.length === variables.length;
+  // The step-by-step round asks about one field at a time. This asks for all six
+  // at once, which is a different thing to be able to do: holding the whole set
+  // of categories in mind rather than answering one question about one field.
+  $: round = matchRound(variation.id);
   $: courseComplete = completedVariations.length === CLASSIFICATION_MISSION.variations.length;
 
   function choose(value) {
@@ -123,6 +129,20 @@
               <div role="row"><b role="cell">{item.name}</b><span role="cell">{item.primary} · {item.subtype} · {item.scale}</span></div>
             {/each}
           </div>
+
+          {#if round}
+            {#key variation.id}
+              <div class="match-round">
+                <DragMatch
+                  items={round.items}
+                  targets={round.targets}
+                  explain={whyNot}
+                  instruction="Pick a field, then choose its group. You can drag them instead if you would rather."
+                />
+              </div>
+            {/key}
+          {/if}
+
           {#if courseComplete}<div class="mastery">✓ Data-types foundation complete</div>{:else}<button class="continue next-variation" on:click={openNextVariation}>Start next variation →</button>{/if}
           <button class="restart" on:click={resetVariation}>Run this variation again</button>
         </div>
@@ -163,6 +183,8 @@
 </section>
 
 <style>
+  .match-round { margin: 22px 0 4px; text-align: left; }
+
   :global(.qubix-university){height:auto!important;overflow:visible!important}
   :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}
   :global(html),:global(body),:global(#app){height:auto!important;min-height:100%;overflow:visible!important;background:#171510}:global(body){position:static}.mission-shell{min-height:100vh;max-width:none;padding:18px clamp(14px,3vw,36px) 30px;background:radial-gradient(circle at 42% 0,#3f3428,#171510 58%);overflow:auto;color:#f2eee5}header{max-width:1260px;margin:0 auto 14px;display:flex;align-items:center;justify-content:space-between;gap:18px}.identity{display:flex;align-items:center;gap:13px}.role{display:grid;place-items:center;width:48px;height:48px;border-radius:13px;background:#a85a34;color:white;font:900 12px/1.15 var(--qx-font);text-align:center}.identity p{margin:0 0 3px;color:#bcb19e;font:800 12px var(--qx-font);letter-spacing:.1em}.identity h1{margin:0;color:white;font:700 27px Georgia,serif}nav{display:flex;gap:15px}nav a,footer a{color:#e2c7b7;font:800 14.5px var(--qx-font);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px}.progress{max-width:1260px;height:5px;margin:0 auto 13px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden}.progress span{display:block;height:100%;background:#73c44a;transition:width .35s ease}.variation-picker{max-width:1260px;margin:0 auto 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.variation-picker button{min-height:48px;padding:7px 10px;border:1px solid rgba(255,255,255,.14);border-radius:11px;background:rgba(255,255,255,.07);color:#c8bfb0;display:flex;align-items:center;gap:9px;cursor:pointer;text-align:left}.variation-picker button span{display:grid;place-items:center;flex:0 0 25px;height:25px;border-radius:50%;background:#63584a;color:white;font:900 13px var(--qx-font)}.variation-picker button b{font:800 13px var(--qx-font)}.variation-picker button.active{border-color:#d19775;background:#4e3b2d;color:white}.variation-picker button.active span{background:#a85a34}.variation-picker button.done:not(.active){border-color:#66864f;color:#dcebd1}.variation-picker button.done span{background:#5a9838}.variation-picker button:focus-visible{outline:3px solid #d19775;outline-offset:2px}
