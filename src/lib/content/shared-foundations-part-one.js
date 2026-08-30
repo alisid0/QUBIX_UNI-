@@ -13,15 +13,22 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
       sections: Object.freeze([
         Object.freeze({ heading: 'A shop holds more data than it holds food', paragraphs: Object.freeze([
           'Look around a shop and you are looking at data. The inventory count for every shelf is data. The temperature inside the freezer is data. The electricity the store used last night is data. The number of people who came through the door this morning is data, and so is the number who left again without buying anything.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-01/frame-1-aisle.webp', alt: 'A shopper reaches for a bottle on a supermarket shelf, a basket in the other hand, while a cashier waits at a counter behind them.', caption: 'Every shelf, every reading, every count. All of it is already data.' })
         ]) }),
         Object.freeze({ heading: 'A row records what happened, not why', paragraphs: Object.freeze([
           'The sale row says two bottles at £3.40. It does not say this was the last brand left on the shelf. The footfall count says four hundred and twelve people came through the door. It does not say it rained all morning. The freezer reading says minus sixteen. It does not say the door had been propped open.',
           'The checkout (the till) was built to take payment, and it keeps what payment needs.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-01/frame-2-counter.webp', alt: 'The shopper places three items on the checkout counter while the cashier reaches for the first one.', caption: 'This is the event. The row comes afterwards, and keeps only part of it.' })
         ]) }),
         Object.freeze({ heading: 'The scan, the saved price and the calculated total', paragraphs: Object.freeze([
           'Some values are observed when the event happens. A barcode is scanned or a sensor takes a reading. Some values already exist as stored reference information. A product already has a name, category and approved unit price.',
           'Other values are calculated. If two bottles cost £3.40 each, the system derives a line total of £6.80. “Derived” simply means calculated from other values.',
           'The distinction helps when something looks wrong. Check what was observed, what was looked up and what was calculated. A wrong record does not change the past; correcting it improves our description of the past and should preserve evidence of what changed.'
+        ]), images: Object.freeze([
+          Object.freeze({ src: '/media/ch01-01/frame-3-scan.webp', alt: 'A hand holds a bottle just above a scanner plate set into the counter, its blank label panel facing the viewer.', caption: 'Observed: the code comes from the world, at the moment it happens.' }),
+          Object.freeze({ src: '/media/ch01-01/frame-4-till.webp', alt: 'A checkout till with a blank screen on a stalk, a keypad, and a blank receipt curling from the printer slot.', caption: 'Looked up and calculated: the price was already stored, the total was worked out.' })
         ]) })
       ]),
       figure: Object.freeze({ kind: 'record-chain', caption: 'One purchase, three steps into data', note: 'The scan is observed, the price is looked up and the total is calculated. Each step can fail in a different way.' }),

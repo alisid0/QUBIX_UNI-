@@ -68,10 +68,41 @@
     {#each section.paragraphs as paragraph}
       <p>{#each paragraph as piece}{#if piece.keyword}<a class="keyword" href={keywordPath(piece.keyword.slug, returnHref)} title={`${piece.keyword.term}: ${piece.keyword.short}`}>{piece.text}<span aria-hidden="true">↗</span></a>{:else}{piece.text}{/if}{/each}</p>
     {/each}
+    {#if section.images?.length}
+      <div class="section-art" class:pair={section.images.length > 1}>
+        {#each section.images as art}
+          <figure>
+            <img src={art.src} alt={art.alt} width="720" height="1280" loading="lazy" decoding="async" />
+            {#if art.caption}<figcaption>{art.caption}</figcaption>{/if}
+          </figure>
+        {/each}
+      </div>
+    {/if}
   </section>
 {/each}
 
 <style>
+  /* Drawn frames are 9:16, so at the full width of a reading column one would
+     stand about 1,400px tall and push the text off the screen. They are sized
+     by height instead and sit centred, which is also why two of them fit side
+     by side when a section carries a pair. */
+  .section-art { display: flex; justify-content: center; gap: 14px; margin: 22px 0 6px; }
+  .section-art figure { margin: 0; flex: 0 1 auto; max-width: 100%; }
+  .section-art img {
+    display: block; width: auto; height: auto; max-height: 420px; max-width: 100%;
+    border: 2px solid #241f16; background: #f1ede4;
+  }
+  .section-art.pair img { max-height: 340px; }
+  .section-art figcaption {
+    margin-top: 7px; max-width: 26ch;
+    color: #6d6558; font: 600 12.5px/1.45 var(--qx-font);
+  }
+  @media (max-width: 620px) {
+    .section-art { flex-direction: column; align-items: center; }
+    .section-art img, .section-art.pair img { max-height: 360px; }
+    .section-art figcaption { max-width: none; text-align: center; }
+  }
+
   .key-terms { margin: 22px 0 32px; border: 4px solid #241f16; background: #f7f3e9; box-shadow: 7px 7px 0 rgba(36,31,22,.14); }
   .terms-heading { padding: 16px 18px; display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; align-items: baseline; border-bottom: 1px solid #cfc6b4; }
   .terms-heading span { color: #8c4c2e; font: 900 11px var(--qx-font); letter-spacing: .14em; }

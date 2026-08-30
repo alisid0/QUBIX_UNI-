@@ -11,7 +11,7 @@
 //
 //   npm run check:chapters
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { SHARED_FOUNDATIONS, volumeMinutes } from '../src/lib/content/shared-foundations.js';
 import { keywordFor } from '../src/lib/content/learning-keywords.js';
 
@@ -75,6 +75,17 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
       !sec.paragraphs?.length || sec.paragraphs.every(p => !String(p).trim()));
     ok(`${where} sections carry prose`, empty.length === 0,
       empty.length ? `${empty.length} empty section(s)` : `${(s.sections || []).length} sections`);
+
+    // Illustrations sit inside a section now, so a broken path or a missing alt
+    // would ship quietly: nothing else reads them and the page still renders.
+    for (const sec of s.sections || []) {
+      for (const art of sec.images || []) {
+        const file = 'public' + art.src;
+        ok(`${where} illustration exists: ${art.src}`, existsSync(file));
+        ok(`${where} illustration describes itself`, Boolean(art.alt) && art.alt.length > 25,
+          art.alt ? `${art.alt.length} chars`: 'no alt text');
+      }
+    }
 
     ok(`${where} cites over https`,
       (s.sources || []).every(src => /^https:\/\//.test(src.url) && src.label));
