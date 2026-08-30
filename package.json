@@ -18,6 +18,7 @@
     "app:test": "npm --prefix current-app run test:security",
     "deploy": "node scripts/deploy.mjs",
     "build:book": "node scripts/build-book.mjs",
+    "book:draft": "node scripts/build-draft-book.mjs",
     "check:book": "node scripts/check-book-maths.mjs",
     "build:spine": "node scripts/build-spine.mjs",
     "build:library": "npm run build:book && npm run build:spine && node scripts/publish-library.mjs",
