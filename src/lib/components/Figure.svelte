@@ -267,13 +267,12 @@
       <div class="result"><b>Line total</b><code>2 × £3.40 = £6.80</code></div>
     </div>
   {:else if spec.kind === 'row-grain'}
-    <div class="grain-map" role="img" aria-label="One completed sale has one sale row, three sale-line rows and one payment row.">
-      <div class="grain-event"><span>ONE REAL EVENT</span><b>Sale S-1041</b><small>3 products · 1 payment</small></div>
+    <div class="grain-map" role="img" aria-label="One purchase of three products, recorded as one row in a purchase table and as three rows in a purchased-items table.">
+      <div class="grain-event"><span>ONE REAL EVENT</span><b>One purchase</b><small>3 products · paid once</small></div>
       <div class="grain-arrow" aria-hidden="true">↓</div>
       <div class="grain-tables">
-        <div><span>SALE TABLE</span><b>1 row</b><small>one completed sale</small><i></i></div>
-        <div><span>SALE_LINE TABLE</span><b>3 rows</b><small>one product line in the sale</small><i></i><i></i><i></i></div>
-        <div><span>PAYMENT TABLE</span><b>1 row</b><small>one payment attempt</small><i></i></div>
+        <div><span>PURCHASE TABLE</span><b>1 row</b><small>one completed purchase</small><i></i></div>
+        <div><span>PURCHASED-ITEMS TABLE</span><b>3 rows</b><small>one product line within a purchase</small><i></i><i></i><i></i></div>
       </div>
     </div>
   {:else if spec.kind === 'decision-cycle'}
@@ -443,10 +442,10 @@
   .grain-event b { font: 700 19px Georgia, serif; }
   .grain-event small, .grain-tables small { color: #625a49; font: 650 11.5px/1.35 var(--qx-font); }
   .grain-arrow { color: #241f16; font: 900 23px var(--qx-font); line-height: 34px; }
-  .grain-tables { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  .grain-tables > div { min-width: 0; padding: 13px; display: grid; grid-template-columns: 1fr auto; gap: 4px 8px;
+  .grain-tables { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .grain-tables > div { min-width: 0; padding: 13px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 4px 6px;
                        border: 1px solid #cbbfa6; border-radius: 9px; background: #fff; }
-  .grain-tables span, .grain-tables small { grid-column: 1 / -1; }
+  .grain-tables span, .grain-tables small, .grain-tables b { flex: 0 0 100%; }
   .grain-tables b { font: 800 16px var(--qx-font); }
   .grain-tables i { display: block; width: 23px; height: 9px; margin: 2px 0; border-radius: 2px; background: #c98c5e; }
 

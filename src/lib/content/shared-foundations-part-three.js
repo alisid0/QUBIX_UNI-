@@ -106,9 +106,14 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
     Object.freeze({
       id: 'types', number: '02', title: 'A postcode and a price can both contain numbers. Why treat them differently?', studyMinutes: 5, playMinutes: 5,
       objective: 'Classify a column by what it measures, and say which operations that permits.',
-      opening: 'A postcode, a shoe size, a satisfaction rating and a temperature are all written with characters, and almost nothing you can do to one of them is legitimate for another.',
+      opening: 'A barcode is written entirely with digits. It does not measure anything.',
       keywords: Object.freeze(['categorical-data', 'quantitative-data', 'ordinal-data', 'measurement-scale']),
       sections: Object.freeze([
+        Object.freeze({ heading: 'Digits do not always represent a quantity', paragraphs: Object.freeze([
+          'A barcode may be written entirely with digits, but it does not measure how many products there are or how much they cost. It identifies a product. The checkout uses that identifier to find the product record and its current stored price.',
+          'Adding two barcodes or calculating their average tells us nothing useful. A quantity behaves differently: quantities such as item count, weight, and price can be compared or used in calculations.',
+          'This is why data types matter. A data type describes what kind of value has been recorded, and helps determine what we can sensibly do with it.'
+        ]) }),
         Object.freeze({ heading: 'A branch number is a label, not an amount', paragraphs: Object.freeze([
           'A categorical value names which group something belongs to: a branch, a category, a payment type. A quantitative value records how much or how many, and arithmetic on it means something. The distinction is about what the value represents rather than about how it is stored, which is why a numeric-looking column is not automatically a number.',
           'Branch identifiers B-08 and B-17 could be stored as 8 and 17, and their average would be 12.5, which is not a branch. The database would not object. Only knowing what the column measures prevents it.'

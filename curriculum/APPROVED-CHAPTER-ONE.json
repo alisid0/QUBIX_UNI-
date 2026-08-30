@@ -1,0 +1,27 @@
+{
+  "CHAPTER-ONE-2026-08-30": {
+    "approvedBy": "founder",
+    "approvedOn": "2026-08-30",
+    "source": "Editorial review ledger, reviews 001 to 006, drafts A to F. Founder and external reviewer.",
+    "scope": "Learner-facing wording of chapter one, sessions 01 to 05, and the data-type opening moved into ch03.02 by review 003. Sequence placement, session length under the Phase One design, and public release of later chapters are excluded.",
+    "applied": {
+      "001": "ch01.03 opening replaced. Twelve visible checkout rows with repeating receipt numbers, before any calculation.",
+      "002": "ch01.01 rebuilt on one three-item purchase. Food to goods, the second heading restored, the riddle about changing the past removed, and the unrelated systems no longer implied to owe each other information.",
+      "003": "ch01.02 split. Rows, columns, observations and variables stay; data types leave for ch03.02, which now opens on the barcode.",
+      "004": "ch01.03 body rebuilt around grain and one purchase in two tables. COUNT(*), the join section, the three-table example, the rehearsal and the attendance workbook removed as unprepared.",
+      "005": "ch01.04 rebuilt on a grocery inventory at noon. Zero against NULL, with not-applicable named as a third meaning. Units left to ch02.01.",
+      "006": "ch01.05 rebuilt as From a request to an analysis. Neutral request, data analysis defined before its four-part brief, checkout counters rather than tills, and trial design, success thresholds and monitoring deferred."
+    },
+    "conflictResolved": "Reviews 001 and 004 both rebuilt ch01.03 incompatibly. 001 is scoped to the opening and matches the frozen Phase One title, so its title and opening stand with the body and removals from 004.",
+    "openAfterApproval": [
+      "ch01.05 is approved as a session while phase-one.js still retires it. One of the two is now wrong.",
+      "ch01.02 teaches rows and columns but still ends on the classify-data mission, which is about data types.",
+      "Draft D asked for two purchase illustrations and draft F for a four-card brief illustration. Neither exists; the existing row-grain figure carries ch01.03 for now.",
+      "The heading in ch01.04 keeps its em dash at the founder's explicit instruction, against the standing no-em-dash rule."
+    ],
+    "files": {
+      "src/lib/content/shared-foundations-part-one.js": "ff973906f6ce58ce1083abc88c2525999f722d22b85bd31efc9f6c53e1710989",
+      "src/lib/content/shared-foundations-part-three.js": "ea0967cff9f598caa55c7b357c7a9608c18ebb10c3fd052c7388ceb4916a4ef2"
+    }
+  }
+}
