@@ -1,6 +1,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import RateCompare from './RateCompare.svelte';
+  import ValueRole from './ValueRole.svelte';
 
   export let exercise;
   export let completed = false;
@@ -23,7 +24,7 @@
     correct = false;
   }
 
-  $: runsItself = exercise?.type === 'rate-compare';
+  $: runsItself = ['rate-compare', 'value-role'].includes(exercise?.type);
 
   $: ready = runsItself ? false
     : exercise?.type === 'sequence'
@@ -91,6 +92,8 @@
 
   {#if exercise.type === 'rate-compare'}
     <RateCompare cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
+  {:else if exercise.type === 'value-role'}
+    <ValueRole cases={exercise.cases} {completed} on:complete={() => dispatch('complete')} />
   {:else if exercise.type === 'classify'}
     <div class="exercise-items">
       {#each exercise.items as item, index}
