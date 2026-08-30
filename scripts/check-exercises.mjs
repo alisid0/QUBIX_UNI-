@@ -27,11 +27,27 @@ ok('exercise ids are unique', new Set(exercises.map(item => item.exercise.id)).s
 for (const { chapter, session, exercise } of exercises) {
   const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${exercise.id}`;
   ok(`${where} declares a supported type and time`,
-    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare'].includes(exercise.type) && exercise.minutes >= 3,
+    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role'].includes(exercise.type) && exercise.minutes >= 3,
     `${exercise.type}, ${exercise.minutes} min`);
   // rate-compare runs its own rounds, so its work is in `cases`.
   const work = exercise.items || exercise.cases || [];
   ok(`${where} has at least three pieces of work`, work.length >= 3, `${work.length} item(s)`);
+
+  if (exercise.type === 'value-role') {
+    ok(`${where} every value names an answer it offers`,
+      exercise.cases.every(c => c.options[c.correct] !== undefined));
+    // The role is chosen first and the formal term is the reveal. A choice that
+    // already contains the term would hand the learner the answer.
+    const TERMS = ['nominal', 'ordinal', 'discrete', 'continuous'];
+    ok(`${where} no choice gives away the term it teaches`,
+      exercise.cases.every(c => c.options.every(o => !TERMS.some(t => o.toLowerCase().includes(t)))));
+    ok(`${where} every value is named afterwards`,
+      exercise.cases.every(c => c.term && c.explanation));
+    const at = exercise.cases.map(c => c.correct);
+    const worst = Math.max(...at.map(p => at.filter(q => q === p).length));
+    ok(`${where} the answer is not always in the same place`,
+      worst <= Math.ceil(at.length / 2), at.join(''));
+  }
 
   if (exercise.type === 'rate-compare') {
     ok(`${where} every comparison names a real answer`,

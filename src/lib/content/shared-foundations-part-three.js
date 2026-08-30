@@ -139,6 +139,47 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
         'For each, write one operation that would be wrong.',
         'Find a column stored as a number that is really a name.'
       ]) }),
+      exercise: Object.freeze({
+        id: 'read-the-value', type: 'value-role', minutes: 6,
+        title: 'Read the value in context',
+        instruction: 'Four values from four records, one at a time. Say what job each one does. The name for that job comes afterwards, once you have worked out what the value is for.',
+        // Answers at 1, 0, 2, 1: no position is right more than twice.
+        cases: Object.freeze([
+          Object.freeze({
+            context: 'Product record', field: 'barcode', value: '5012345678900',
+            prompt: 'What job does this barcode do?',
+            options: Object.freeze(['Measures an amount', 'Identifies the product', 'Places products in order']),
+            correct: 1,
+            term: 'Nominal label',
+            explanation: 'It is used to find or match a product. Adding two barcodes, or averaging them, would not describe anything about the products.'
+          }),
+          Object.freeze({
+            context: 'Customer survey', field: 'satisfaction', value: 'Good',
+            prompt: 'What does “Good” do in this survey?',
+            options: Object.freeze(['Places responses in order', 'Identifies a customer', 'Measures an exact distance']),
+            correct: 0,
+            term: 'Ordinal label',
+            explanation: 'Poor, fair and good have an order, but the gaps between them are not measured distances, so the step from poor to fair need not equal the step from fair to good.'
+          }),
+          Object.freeze({
+            context: 'Sales record', field: 'items_in_basket', value: '7',
+            prompt: 'What kind of value is basket size?',
+            options: Object.freeze(['Identifies the sale', 'Measures an amount on a sliding scale', 'Counts whole items']),
+            correct: 2,
+            term: 'Discrete quantity',
+            explanation: 'It counts whole items, so totals, differences and averages are all useful. There is no such thing as 7.4 items in a basket.'
+          }),
+          Object.freeze({
+            context: 'Delivery record', field: 'delivery_minutes', value: '18.4',
+            prompt: 'What kind of value is delivery time?',
+            options: Object.freeze(['Identifies the delivery', 'Measures an amount', 'Counts whole events']),
+            correct: 1,
+            term: 'Continuous quantity',
+            explanation: 'Time is measured rather than counted, and it can fall between whole numbers: 18.4 minutes is a real reading.'
+          })
+        ]),
+        why: 'Each value was read for what it does before it was given a name. What you may do with a value follows from its job, not from whether it happens to be written in digits.'
+      }),
       check: Object.freeze({
         prompt: 'Store satisfaction is recorded as poor, fair, good, excellent. A report shows the mean as 2.7. What is wrong?',
         answer: 'gaps',
