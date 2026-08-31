@@ -5,6 +5,7 @@
   import DuplicateCheck from './DuplicateCheck.svelte';
   import EvidenceTrail from './EvidenceTrail.svelte';
   import ReceiptBuild from './ReceiptBuild.svelte';
+  import QueryStage from './QueryStage.svelte';
 
   export let exercise;
   export let completed = false;
@@ -27,7 +28,7 @@
     correct = false;
   }
 
-  $: runsItself = ['rate-compare', 'value-role', 'duplicate-check', 'evidence-trail', 'value-origin'].includes(exercise?.type);
+  $: runsItself = ['rate-compare', 'value-role', 'duplicate-check', 'evidence-trail', 'value-origin', 'query-stage'].includes(exercise?.type);
 
   $: ready = runsItself ? false
     : exercise?.type === 'sequence'
@@ -105,6 +106,8 @@
   {:else if exercise.type === 'value-origin'}
     <ReceiptBuild values={exercise.values} origins={exercise.origins} product={exercise.product}
       {completed} on:complete={() => dispatch('complete')} />
+  {:else if exercise.type === 'query-stage'}
+    <QueryStage stages={exercise.stages} {completed} on:complete={() => dispatch('complete')} />
   {:else if exercise.type === 'classify'}
     <div class="exercise-items">
       {#each exercise.items as item, index}
