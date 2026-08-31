@@ -125,6 +125,11 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
           'Chapter 04 gave a specific form of this. A figure from a small group will move for reasons that have nothing to do with the thing measured, and saying so is part of reporting the figure.'
         ]) })
       ]),
+      figure: Object.freeze({
+        kind: 'decision-cycle',
+        caption: 'Where a finding sits in the work',
+        note: 'The finding is one stage of seven. What it means and what to do about it come after it and are separate from it, which is the whole distinction this session draws.'
+      }),
       example: Object.freeze({ title: 'One result, three sentences', headers: Object.freeze(['Kind', 'Statement']), rows: Object.freeze([
         Object.freeze(['Finding', 'Returns per 1,000 sales rose from 11 to 15 at B-17 between March and May 2026.']),
         Object.freeze(['Interpretation', 'The rise begins in the week the new packaging arrived, which is one plausible explanation.']),
