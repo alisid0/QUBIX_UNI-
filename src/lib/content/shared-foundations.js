@@ -28,12 +28,22 @@ import { expansionFor } from './shared-foundations-expansion.js';
 const expandBook = (chapter, book) => {
   const sessions = Object.freeze(book.sessions.map(session => {
     const expansion = expansionFor(chapter, session.id);
-    if (!expansion) return session;
-    const { sourceAdditions = [], ...fields } = expansion;
+    const { sourceAdditions = [], ...fields } = expansion || {};
+    const merged = expansion ? { ...session, ...fields } : session;
+
+    // An applied exercise is time a learner actually spends, so the session's
+    // declared time has to include it. This used to add the minutes only when
+    // the exercise arrived through the expansion file, which meant every
+    // exercise written directly on a session was invisible: seven sessions
+    // told a learner ten minutes for sixteen minutes of work.
+    //
+    // Added from the merged session so it counts once whichever way it came.
+    const exerciseMinutes = merged.exercise?.minutes || 0;
+
+    if (!expansion && !exerciseMinutes) return session;
     return Object.freeze({
-      ...session,
-      ...fields,
-      studyMinutes: session.studyMinutes + (fields.exercise?.minutes || 0),
+      ...merged,
+      studyMinutes: session.studyMinutes + exerciseMinutes,
       sources: Object.freeze([...(session.sources || []), ...sourceAdditions])
     });
   }));

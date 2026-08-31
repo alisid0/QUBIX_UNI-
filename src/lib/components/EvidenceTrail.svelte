@@ -27,21 +27,26 @@
   let answered = false;
   let correct = false;
   let built = 0;        // stages on the trail so far
-  let busy = false;
 
   $: current = steps[round];
   $: last = round === steps.length - 1;
   $: trail = steps.slice(0, built);
 
+  // A second press cannot get in. The early return below reads the settled flag
+  // that this same handler set, so the second press is rejected by the first
+  // one having already happened, and the buttons are disabled from the next
+  // render onward.
+  //
+  // A no-op flag used to sit here, set true and false again inside one
+  // synchronous handler. It read like protection and blocked nothing.
+
   function pick(index) {
-    if (busy || answered || completed || !current) return;
-    busy = true;
+    if (answered || completed || !current) return;
     picked = index;
     answered = true;
     correct = index === current.correct;
     // The trail only ever grows on a correct decision.
     if (correct) built = round + 1;
-    busy = false;
   }
 
   function next() {

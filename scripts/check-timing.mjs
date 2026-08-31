@@ -12,6 +12,7 @@
 //
 // The model, stated so it can be argued with:
 //   reading   words / 220 wpm, times 2.4 for studying rather than skimming
+//   exercise  its own declared minutes, because a learner really spends them
 //   doing     the mission's own words, plus 15 seconds a decision, shared
 //             between the sessions that link to it
 //
@@ -70,8 +71,14 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
     const play = slug && missionMinutes.has(slug)
       ? Math.max(5, Math.round(missionMinutes.get(slug) / links.get(slug))) : 10;
 
+    // The applied exercise is time the learner spends, so it belongs in the
+    // measured total. Leaving it out was the hole that let seven sessions
+    // declare ten minutes for sixteen minutes of work while this guard passed:
+    // it compared reading words against a declared time that also excluded it,
+    // so both sides were wrong by the same amount and agreed.
+    const exercise = s.exercise?.minutes || 0;
     const declared = s.studyMinutes + s.playMinutes;
-    const measured = study + play;
+    const measured = study + play + exercise;
     declaredTotal += declared; measuredTotal += measured;
     chapterDeclared += declared;
 
