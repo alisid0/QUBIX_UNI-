@@ -283,7 +283,7 @@
       {#if matchNotice}<p class="notice" role="status">{matchNotice}</p>{/if}
 
       <div class="actions">
-        <button type="button" class="primary" disabled={!identityReady} on:click={startMatched}>Find a matched room</button>
+        <button type="button" class="primary" disabled={!identityReady || ageBand !== '18+'} on:click={startMatched}>Find a matched room</button>
         <button type="button" disabled={!identityReady} on:click={startFriends}>Invite friends</button>
         <button type="button" disabled={!identityReady} on:click={startSeminar}>Start a bot seminar</button>
       </div>
