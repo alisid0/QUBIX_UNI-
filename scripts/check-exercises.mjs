@@ -27,11 +27,31 @@ ok('exercise ids are unique', new Set(exercises.map(item => item.exercise.id)).s
 for (const { chapter, session, exercise } of exercises) {
   const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${exercise.id}`;
   ok(`${where} declares a supported type and time`,
-    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role', 'duplicate-check', 'evidence-trail'].includes(exercise.type) && exercise.minutes >= 3,
+    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role', 'duplicate-check', 'evidence-trail', 'value-origin'].includes(exercise.type) && exercise.minutes >= 3,
     `${exercise.type}, ${exercise.minutes} min`);
   // rate-compare runs its own rounds, so its work is in `cases`.
-  const work = exercise.items || exercise.cases || exercise.steps || [];
+  const work = exercise.items || exercise.cases || exercise.steps || exercise.values || [];
   ok(`${where} has at least three pieces of work`, work.length >= 3, `${work.length} item(s)`);
+
+  if (exercise.type === 'value-origin') {
+    ok(`${where} every value names an origin that exists`,
+      exercise.values.every(v => exercise.origins[v.origin]));
+    ok(`${where} every value explains itself`,
+      exercise.values.every(v => v.field && v.value && v.why));
+    // The session teaches three origins. If the activity only ever uses two,
+    // it is not the lesson it claims to be.
+    const used = new Set(exercise.values.map(v => v.origin));
+    ok(`${where} all three origins are used`, used.size === exercise.origins.length,
+      `${used.size} of ${exercise.origins.length}`);
+    // Exactly one value may be calculated from the others, and it must not be
+    // one the checkout could have read or stored.
+    ok(`${where} the calculated value is the total, not an input`,
+      exercise.values.filter(v => v.origin === 2).every(v => /total/.test(v.field)));
+    const at = exercise.values.map(v => v.origin);
+    const worst = Math.max(...at.map(p => at.filter(q => q === p).length));
+    ok(`${where} the answer is not always in the same place`,
+      worst <= Math.ceil(at.length / 2), at.join(''));
+  }
 
   if (exercise.type === 'evidence-trail') {
     ok(`${where} every stage names a phase, a title and a detail`,
