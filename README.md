@@ -62,6 +62,7 @@ than used, and wrong once it did not.
 | `?mode=review` | the Approver, a review questionnaire, answers kept in the browser only |
 | `?mode=factory` | the Factory, **local development only**, never built into production |
 | `/showcase` | a curated presentation route for learners, universities, training teams and partners |
+| `/showcase/demo` | a timed 30-minute presenter console linking the end-to-end learner journey |
 
 Nine boards are live: three on variables, four built from Factory selections
 (*What a Button Does*, *A Number In, A Number Out*, *Area on the Grid*,

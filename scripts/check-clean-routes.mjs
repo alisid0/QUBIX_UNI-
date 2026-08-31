@@ -25,6 +25,7 @@ for (const [name, viewport] of [
   for (const [path, expectedPath, titlePart] of [
     ['/wiki', '/wiki', 'Wiki'],
     ['/showcase', '/showcase', 'Showcase'],
+    ['/showcase/demo', '/showcase/demo', '30-Minute'],
     ['/academy/missions/checkout', '/academy/missions/checkout', 'Process a Sale'],
     ['/learn/data-foundations/chapter/1/session/2', '/learn/data-foundations/chapter/1/session/2', 'How Data Represents'],
     ['/superstore/rooms/data-office', '/superstore/rooms/data-office', 'Superstore'],

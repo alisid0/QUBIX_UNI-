@@ -24,7 +24,7 @@ const showcase = readFileSync(new URL('../src/views/Showcase.svelte', import.met
 check(showcase.includes('/academy/missions/data-visualization?showcase=1'), 'showcase links to the chart clinic demo');
 check(showcase.includes('Potential learners') && showcase.includes('Universities') && showcase.includes('Training teams'), 'showcase speaks to each requested audience');
 const app = readFileSync(new URL('../src/App.svelte', import.meta.url), 'utf8');
-check(app.includes("['read-the-table', 'data-visualization', 'analyst-desk'].includes(mission)"), 'presentation bypass is limited to curated showcase missions');
+check(app.includes("['read-the-table', 'distribution-desk', 'sql-console', 'data-visualization', 'analyst-desk'].includes(mission)"), 'presentation bypass is limited to curated showcase missions');
 
 const showcaseParams = paramsForPath('/showcase');
 check(showcaseParams.get('mode') === 'showcase', 'clean showcase path resolves');

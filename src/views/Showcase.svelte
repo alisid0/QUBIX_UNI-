@@ -35,7 +35,7 @@
       <p class="eyebrow">QUBIX UNIVERSITY · GUIDED SHOWCASE</p>
       <h1>From a messy question to a result you can defend.</h1>
       <p class="lede">Qubix teaches the judgement around the tools: what the data means, what can go wrong, which method fits, and what the evidence honestly supports.</p>
-      <div class="hero-actions"><a class="primary" href="#highlights">See the strongest experiences</a><a href="/learn/foundations">View the full pathway</a></div>
+      <div class="hero-actions"><a class="primary" href="/showcase/demo">Run the 30-minute demo</a><a href="#highlights">Browse individual highlights</a><a href="/learn/foundations">View the full pathway</a></div>
     </div>
     <aside aria-label="Current Qubix University learning system">
       <p class="eyebrow">THE SYSTEM TODAY</p>

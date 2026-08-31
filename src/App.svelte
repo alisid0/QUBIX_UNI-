@@ -38,6 +38,7 @@
   let DsaIntroductionPreview = null;
   let DsaArrayGrowthPreview = null;
   let Showcase = null;
+  let ShowcaseDemo = null;
 
   const params = paramsForLocation(window.location);
   const cleanLocation = cleanPathForParams(params);
@@ -67,6 +68,7 @@
   const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview';
   const showDsaArrayGrowthPreview = params.get('mode') === 'dsa-array-growth-preview';
   const showShowcase = params.get('mode') === 'showcase';
+  const showShowcaseDemo = params.get('mode') === 'showcase-demo';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');
@@ -97,6 +99,9 @@
   }
   if (showShowcase) {
     import('./views/Showcase.svelte').then(m => { Showcase = m.default; });
+  }
+  if (showShowcaseDemo) {
+    import('./views/ShowcaseDemo.svelte').then(m => { ShowcaseDemo = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -135,7 +140,7 @@
       // every mission directly reachable so layout and interaction QA does not
       // require completing the whole course before each review.
       const showcasePreview = params.get('showcase') === '1'
-        && ['read-the-table', 'data-visualization', 'analyst-desk'].includes(mission);
+        && ['read-the-table', 'distribution-desk', 'sql-console', 'data-visualization', 'analyst-desk'].includes(mission);
       if (import.meta.env.PROD && rostered && !showcasePreview && !missionIsOpen(load(), mission)) {
         window.history.replaceState(null, '', `?mode=game&locked=${encodeURIComponent(mission)}`);
         mission = null;
@@ -234,6 +239,8 @@
     <svelte:component this={DsaArrayGrowthPreview} />
   {:else if showShowcase}
     <svelte:component this={Showcase} />
+  {:else if showShowcaseDemo}
+    <svelte:component this={ShowcaseDemo} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}
