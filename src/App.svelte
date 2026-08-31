@@ -39,6 +39,7 @@
   let DsaArrayGrowthPreview = null;
   let Showcase = null;
   let ShowcaseDemo = null;
+  let StudyRooms = null;
 
   const params = paramsForLocation(window.location);
   const cleanLocation = cleanPathForParams(params);
@@ -69,6 +70,7 @@
   const showDsaArrayGrowthPreview = params.get('mode') === 'dsa-array-growth-preview';
   const showShowcase = params.get('mode') === 'showcase';
   const showShowcaseDemo = params.get('mode') === 'showcase-demo';
+  const showStudyRooms = params.get('mode') === 'study';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');
@@ -102,6 +104,9 @@
   }
   if (showShowcaseDemo) {
     import('./views/ShowcaseDemo.svelte').then(m => { ShowcaseDemo = m.default; });
+  }
+  if (showStudyRooms) {
+    import('./views/StudyRooms.svelte').then(m => { StudyRooms = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -241,6 +246,8 @@
     <svelte:component this={Showcase} />
   {:else if showShowcaseDemo}
     <svelte:component this={ShowcaseDemo} />
+  {:else if showStudyRooms}
+    <svelte:component this={StudyRooms} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}

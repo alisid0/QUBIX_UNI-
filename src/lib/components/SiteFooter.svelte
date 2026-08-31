@@ -24,6 +24,7 @@
   // library sat here as well as in the landing page's own row, which is the same
   // destination offered twice on one screen.
   const ELSEWHERE = [
+    ['/study', 'Study rooms'],
     ['/library/big-sheet-of-graphs.html', 'The Big Sheet of Graphs'],
     ['/library/functions.html', 'Calculus From The Ground Up']
   ];
@@ -56,6 +57,7 @@
   <nav aria-label="Elsewhere">
     <h2>Elsewhere</h2>
     <ul>
+      <li><a href="/study">Study rooms</a></li>
       <li><a href="?mode=game">The academy</a></li>
       <li><a href="?mode=game&mission=campaign">Story mode</a></li>
       <li><a href="?mode=game&mission=foundations">Foundations</a></li>

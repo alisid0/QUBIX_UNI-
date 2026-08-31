@@ -34,7 +34,8 @@ const everything = markup.map(v => v.source).join('\n');
 
 /* ── routes a learner is meant to reach ──────────────────────────────────── */
 const LEARNER_ROUTES = [
-  { query: '?lab=sql', what: 'the data console', definedIn: 'DataConsole.svelte' }
+  { query: '?lab=sql', what: 'the data console', definedIn: 'DataConsole.svelte' },
+  { query: '/study', what: 'study rooms', definedIn: 'StudyRooms.svelte' }
 ];
 
 for (const route of LEARNER_ROUTES) {

@@ -310,7 +310,12 @@
         </section>
 
         <section class="practice">
-          <div><span>FOUNDATIONAL PRACTICE</span><h3>{session.practice.title}</h3><p>{session.practice.instruction}</p></div>
+          <div>
+            <span>FOUNDATIONAL PRACTICE</span>
+            <h3>{session.practice.title}</h3>
+            <p>{session.practice.instruction}</p>
+            <p class="study-seat"><a href={`/study?atom=${`ch${String(chapterNumber).padStart(2, '0')}-${session.id}`}&intent=learn`}>Or study this atom for 40 minutes with a chair →</a></p>
+          </div>
           <a href={session.practice.href}>Open focused mission →</a>
           <button class:complete={progress.practice.includes(session.id)} on:click={completePractice}>{progress.practice.includes(session.id) ? 'Practice saved ✓' : 'I completed the practice'}</button>
         </section>
@@ -472,6 +477,8 @@
   .practice span { color: #e4a17b; font: 900 11.5px var(--qx-font); letter-spacing: .1em; }
   .practice h3 { margin: 7px 0 5px; font: 700 24px Georgia, serif; }
   .practice p { margin: 0; max-width: 56ch; color: #c8c0b2; font: 650 12px/1.5 var(--qx-font); }
+  .practice .study-seat { margin-top: 10px; }
+  .practice .study-seat a { display: inline; min-width: 0; min-height: 0; padding: 0; background: none; border: 0; color: #e4a17b; font: 700 13px var(--qx-font); text-decoration: underline; }
   .practice a, .practice button { min-width: 170px; min-height: 42px; padding: 10px 13px; display: grid; place-items: center; border: 1px solid #5a5145; border-radius: 8px; color: #fff; font: 850 11.5px var(--qx-font); text-decoration: none; }
   .practice a { align-self: end; background: #8c4c2e; }
   .practice button { grid-column: 2; border-color: #777064; background: transparent; cursor: pointer; }
