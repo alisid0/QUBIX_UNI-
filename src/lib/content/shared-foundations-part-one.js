@@ -35,6 +35,31 @@ export const SHARED_FOUNDATIONS_PART_ONE = Object.freeze({
         Object.freeze(['Observes a scan','5012345678900','the barcode scanner']), Object.freeze(['Looks up the price','£3.40','the stored product record']), Object.freeze(['Calculates the total','2 × £3.40 = £6.80','quantity multiplied by unit price'])
       ]) }),
       workbook: Object.freeze({ title: 'Describe an everyday event', prompt: 'Choose something familiar: making tea, taking a bus or buying lunch.', steps: Object.freeze(['Write one sentence describing what happens in the real world.', 'List three details a system might record.', 'List two real details the system would probably leave out.', 'Label each recorded value as observed, stored or calculated.']) }),
+      exercise: Object.freeze({
+        id: 'where-each-value-came-from', type: 'value-origin', minutes: 6,
+        title: 'Follow one product through the checkout',
+        instruction: 'Five values from one purchase, one at a time. Say where each came from, and the receipt line fills in as you go.',
+        product: Object.freeze({ name: 'Oat milk 1L', line: '2 × £1.85 = £3.70' }),
+        origins: Object.freeze([
+          Object.freeze({ label: 'Observed at the checkout', short: 'observed' }),
+          Object.freeze({ label: 'Looked up from stored details', short: 'looked up' }),
+          Object.freeze({ label: 'Calculated from other values', short: 'calculated' })
+        ]),
+        // Origins at 0, 1, 1, 0, 2: no answer sits in one place more than twice.
+        values: Object.freeze([
+          Object.freeze({ field: 'barcode', value: '5012345678900', origin: 0,
+            why: 'The scanner read it off the bottle as it passed. Nothing in the shop knew this number until the item was scanned.' }),
+          Object.freeze({ field: 'product_name', value: 'Oat milk 1L', origin: 1,
+            why: 'The checkout did not read the name off the bottle. It used the barcode to find the product record, and the name was already in it.' }),
+          Object.freeze({ field: 'unit_price', value: '£1.85', origin: 1,
+            why: 'The price came from the same stored record. That is why changing a price changes it everywhere at once, without anybody relabelling the shelves.' }),
+          Object.freeze({ field: 'quantity', value: '2', origin: 0,
+            why: 'Two bottles were scanned, so the checkout observed this as the purchase happened.' }),
+          Object.freeze({ field: 'line_total', value: '£3.70', origin: 2,
+            why: 'Nothing read or stored £3.70. The checkout multiplied the quantity by the unit price, which means a wrong total can come from either of them.' })
+        ]),
+        why: 'Two values were read at the till, two were already stored, and one was worked out. When a total looks wrong, those three are the three places to look, and they fail in different ways.'
+      }),
       check: Object.freeze({ prompt: 'A checkout records quantity 2 and looks up a unit price of £3.40. It then produces £6.80. What kind of value is £6.80?', answer: 'derived', options: Object.freeze([['observation','Observed directly when the event happened'],['master','Already stored as product information'],['derived','Calculated from the quantity and price']]), explanation: '£6.80 is derived because the system calculates it by multiplying two recorded values.' }),
       practice: Object.freeze({ title: 'Process a Sale', href: '?mode=game&mission=checkout', instruction: 'Process one basket and identify what the checkout observes, looks up and calculates.' }),
       sources: Object.freeze([Object.freeze({label:'W3C PROV Overview',url:'https://www.w3.org/TR/prov-overview/'})])
