@@ -27,11 +27,36 @@ ok('exercise ids are unique', new Set(exercises.map(item => item.exercise.id)).s
 for (const { chapter, session, exercise } of exercises) {
   const where = `ch${String(chapter).padStart(2, '0')}.${session.number} ${exercise.id}`;
   ok(`${where} declares a supported type and time`,
-    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role', 'duplicate-check', 'evidence-trail', 'value-origin'].includes(exercise.type) && exercise.minutes >= 3,
+    ['classify', 'numeric', 'sequence', 'decision-path', 'distribution-build', 'five-number-build', 'rate-compare', 'value-role', 'duplicate-check', 'evidence-trail', 'value-origin', 'query-stage'].includes(exercise.type) && exercise.minutes >= 3,
     `${exercise.type}, ${exercise.minutes} min`);
   // rate-compare runs its own rounds, so its work is in `cases`.
-  const work = exercise.items || exercise.cases || exercise.steps || exercise.values || [];
+  const work = exercise.items || exercise.cases || exercise.steps || exercise.values || exercise.stages || [];
   ok(`${where} has at least three pieces of work`, work.length >= 3, `${work.length} item(s)`);
+
+  if (exercise.type === 'query-stage') {
+    ok(`${where} every step names an answer it offers`,
+      exercise.stages.every(st => st.options[st.correct] !== undefined));
+    ok(`${where} every step explains itself`, exercise.stages.every(st => st.why));
+
+    // The activity alternates two kinds of step: one that changes the query and
+    // one that asks what a row now represents. Without the second kind it is a
+    // clause quiz, and the chapter is about the grain rather than the syntax.
+    const clauses = exercise.stages.filter(st => st.apply);
+    const grains = exercise.stages.filter(st => !st.apply);
+    ok(`${where} it asks about the grain as well as the clause`,
+      clauses.length >= 2 && grains.length >= 2,
+      `${clauses.length} clause, ${grains.length} grain`);
+
+    // Filtering must be applied before grouping. That order is the chapter.
+    const applied = clauses.map(st => Object.keys(st.apply)[0]);
+    ok(`${where} the filter is applied before the grouping`,
+      applied.indexOf('where') < applied.indexOf('groupBy'), applied.join(' → '));
+
+    const at = exercise.stages.map(st => st.correct);
+    const worst = Math.max(...at.map(p => at.filter(q => q === p).length));
+    ok(`${where} the answer is not always in the same place`,
+      worst <= Math.ceil(at.length / 2), at.join(''));
+  }
 
   if (exercise.type === 'value-origin') {
     ok(`${where} every value names an origin that exists`,

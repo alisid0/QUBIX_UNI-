@@ -169,6 +169,45 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
         'Decide which filters apply to rows and which to groups.',
         'Say what your count is counting, at the new grain.'
       ]) }),
+      exercise: Object.freeze({
+        id: 'watch-the-rows-change', type: 'query-stage', minutes: 7,
+        title: 'Watch the rows change',
+        instruction: 'Twelve sales, and two clauses applied one at a time. Every row on screen is computed by the same query engine the SQL console runs, so what you see here is what the console would return.',
+        // Clause steps change the query and the table moves. Grain steps change
+        // nothing and ask what a row now represents, which is the point the
+        // whole chapter turns on. Answers at 0, 1, 2, 0.
+        stages: Object.freeze([
+          Object.freeze({
+            prompt: 'Which clause keeps only the baskets over £20?',
+            options: Object.freeze(['WHERE basket_total > 20', 'GROUP BY branch_id', 'SELECT basket_total']),
+            correct: 0,
+            apply: Object.freeze({ where: 'over20' }),
+            why: 'WHERE decides which rows stay. Twelve became six, and nothing else about the table changed.'
+          }),
+          Object.freeze({
+            prompt: 'Six rows now instead of twelve. What does one row represent?',
+            options: Object.freeze(['One branch', 'One completed sale', 'One day of trading']),
+            correct: 1,
+            apply: null,
+            why: 'Filtering removed rows. It did not change what a row is, so each of the six is still one completed sale, exactly as before.'
+          }),
+          Object.freeze({
+            prompt: 'Which clause gives one row for each branch?',
+            options: Object.freeze(['ORDER BY branch_id', "WHERE branch_id = 'B-17'", 'GROUP BY branch_id']),
+            correct: 2,
+            apply: Object.freeze({ groupBy: 'branch' }),
+            why: 'Six rows collapse into three. ORDER BY would have rearranged the same six, and WHERE would have removed more of them.'
+          }),
+          Object.freeze({
+            prompt: 'Three rows now. What does one row represent?',
+            options: Object.freeze(['One branch', 'One completed sale', 'One basket over £20']),
+            correct: 0,
+            apply: null,
+            why: 'The grain moved. A row is one branch now, so counting these rows counts branches, and the number of sales has become a column inside them.'
+          })
+        ]),
+        why: 'One clause changed which rows survived and left them meaning what they always meant. The other changed what a row is. Only the second one moves the grain, and only the second one changes what a row count is counting.'
+      }),
       check: Object.freeze({
         prompt: 'You group sales by branch and want only branches with more than 100 sales. Where does that condition belong?',
         answer: 'after',
