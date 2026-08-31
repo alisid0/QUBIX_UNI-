@@ -137,6 +137,15 @@
 </div>
 
 <style>
+  :global(.qubix-university) { height: auto !important; overflow: visible !important; }
+  :global(html), :global(body), :global(#app) {
+    height: auto !important;
+    min-height: 100%;
+    overflow: visible !important;
+    background: #f7f3e9;
+  }
+  :global(body) { position: static; }
+
   .game-shell { min-height: 100vh; background: #f7f3e9; padding-bottom: 44px; }
   main { max-width: 780px; margin: 0 auto; padding: 22px 20px 0; display: grid; gap: 18px; }
 
@@ -156,6 +165,7 @@
   .pips li.finished { border-color: #3e9e2a; background: #e7f1e2; color: #2c6b1c; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
+  .brief, .table-card, .ask, .done-card { min-width: 0; }
   .table-card, .ask, .done-card { padding: 20px; border: 3px solid #241f16; background: #fffdf7;
                                   box-shadow: 6px 6px 0 rgba(32, 36, 31, .12); }
   .table-card { padding: 14px; }
