@@ -23,18 +23,23 @@
   let answered = false;
   let correct = false;
   let done = 0;
-  let busy = false;
 
   $: current = cases[round];
   $: last = round === cases.length - 1;
 
+  // A second press cannot get in. The early return below reads the settled flag
+  // that this same handler set, so the second press is rejected by the first
+  // one having already happened, and the buttons are disabled from the next
+  // render onward.
+  //
+  // A no-op flag used to sit here, set true and false again inside one
+  // synchronous handler. It read like protection and blocked nothing.
+
   function pick(index) {
-    if (busy || answered || completed || !current) return;
-    busy = true;
+    if (answered || completed || !current) return;
     picked = index;
     answered = true;
     correct = index === current.correct;
-    busy = false;
   }
 
   function next() {

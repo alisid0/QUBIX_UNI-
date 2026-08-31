@@ -28,7 +28,6 @@
   let answered = false;
   let correct = false;
   let query = { where: null, groupBy: null, having: null };
-  let busy = false;
 
   $: current = stages[round];
   $: last = round === stages.length - 1;
@@ -38,9 +37,16 @@
 
   let before = null;   // row count before the last applied clause
 
+  // A second press cannot get in. The early return below reads the settled flag
+  // that this same handler set, so the second press is rejected by the first
+  // one having already happened, and the buttons are disabled from the next
+  // render onward.
+  //
+  // A no-op flag used to sit here, set true and false again inside one
+  // synchronous handler. It read like protection and blocked nothing.
+
   function pick(index) {
-    if (busy || answered || completed || !current) return;
-    busy = true;
+    if (answered || completed || !current) return;
     picked = index;
     answered = true;
     correct = index === current.correct;
@@ -50,7 +56,6 @@
       before = result.rows.length;
       query = { ...query, ...current.apply };
     }
-    busy = false;
   }
 
   function next() {

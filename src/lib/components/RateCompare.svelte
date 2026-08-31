@@ -23,7 +23,6 @@
   let revealed = false;   // rates are hidden until a decision is made
   let correct = false;
   let done = [];
-  let busy = false;       // a settled round ignores further presses
 
   $: current = cases[round];
   $: finished = done.length === cases.length;
@@ -31,13 +30,19 @@
     ? [...current.branches.map((b, i) => [i, b.name]), [2, 'The rates are equal']]
     : [];
 
+  // A second press cannot get in. The early return below reads the settled flag
+  // that this same handler set, so the second press is rejected by the first
+  // one having already happened, and the buttons are disabled from the next
+  // render onward.
+  //
+  // A no-op flag used to sit here, set true and false again inside one
+  // synchronous handler. It read like protection and blocked nothing.
+
   function pick(index) {
-    if (busy || revealed || completed || !current) return;
-    busy = true;
+    if (revealed || completed || !current) return;
     picked = index;
     revealed = true;
     correct = index === current.correct;
-    busy = false;
   }
 
   function next() {
