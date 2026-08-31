@@ -11,6 +11,8 @@
     { "source": "/learn/:path*", "destination": "/index.html" },
     { "source": "/superstore", "destination": "/index.html" },
     { "source": "/superstore/:path*", "destination": "/index.html" },
+    { "source": "/study", "destination": "/index.html" },
+    { "source": "/study/:path*", "destination": "/index.html" },
     { "source": "/wiki", "destination": "/index.html" },
     { "source": "/wiki/:path*", "destination": "/index.html" },
     { "source": "/dsa/:path*", "destination": "/index.html" },

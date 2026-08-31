@@ -76,6 +76,11 @@ Progress is written to `localStorage` under `qubix-university-progress-v1` befor
 and independently of sign-in. It never leaves the device unless the learner signs
 in. Clearing site data removes it.
 
+Study-room identity, bands, rooms and recaps are also device-only, under
+`qx.study.*`. Chat text is not sent to a model vendor. Export and delete are
+offered in the notebook. This is a validation prototype; it is not an account
+and it is not a feed.
+
 ## Who else receives it
 
 | Processor | What reaches them | Note |

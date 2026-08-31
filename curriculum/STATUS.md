@@ -1,6 +1,6 @@
 # Curriculum Status
 
-Last updated: 2026-08-30
+Last updated: 2026-08-31
 
 | Artifact | Status | Next authority |
 |---|---|---|
@@ -74,6 +74,11 @@ then audit scale, units, denominators, source, period and colour dependence.
 The mission is source-informed by Government Analysis Function chart guidance
 and W3C accessibility guidance. It remains `AI_DRAFT`; publishing it for learner
 testing does not mark the curriculum content `APPROVED` or `RELEASED`.
+
+**Matched study rooms, 2026-08-31.** Validation prototype at `/study`. A session
+layer on existing Volume 0 atoms: four intents, a local chair, invite links and
+a private recap notebook. Not a social network, not a vendor chatbot, and not a
+curriculum status change. See `docs/STUDY-ROOMS.md`.
 
 The standalone Strata Migration Factory is available only at
 `?mode=strata-factory` in development. It is not registered in the present

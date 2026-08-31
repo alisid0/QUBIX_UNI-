@@ -59,6 +59,11 @@ export function paramsForPath(pathname) {
     if (mode) params.set('mode', mode);
     return params;
   }
+  if (parts[0] === 'study') {
+    params.set('mode', 'study');
+    if (parts[1] === 'rooms' && parts[2]) params.set('room', parts[2]);
+    return params;
+  }
   if (parts.join('/') === 'tools/data-console') params.set('lab', 'sql');
   if (parts.join('/') === 'pilot/variables-and-rates') params.set('prototype', 'variables-and-rates');
   return params;
@@ -106,6 +111,10 @@ export function cleanPathForParams(input) {
       'dsa-array-insertion-preview': '/dsa/arrays/insertion',
       'dsa-array-growth-preview': '/dsa/arrays/growth'
     }[mode] || null;
+  } else if (mode === 'study') {
+    params.delete('mode');
+    const room = params.get('room'); params.delete('room');
+    path = room ? `/study/rooms/${room}` : '/study';
   } else if (mode === 'game') {
     params.delete('mode'); params.delete('mission');
     if (!mission) path = '/academy';

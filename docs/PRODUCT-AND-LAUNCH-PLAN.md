@@ -1,7 +1,7 @@
 # Qubix product and launch plan
 
 Status: founder direction recorded; implementation remains gated by the checklist below
-Last updated: 2026-08-12
+Last updated: 2026-08-31
 
 This is the authoritative product-level plan for Qubix. Curriculum records remain
 the authority for the status, provenance and release of individual learning
@@ -91,6 +91,11 @@ The first Data Science Wiki information architecture is available locally at
 379-topic catalogue, Superstore data world and reference shelf. It does not
 change any board status, and it must receive founder review before replacing the
 current public home page or being deployed.
+
+Matched study rooms are a separate session layer at `/study`. They reuse Volume 0
+topic atoms and a local facilitator. They are a validation prototype, not a
+social network, and they must not connect inherited Strata Supabase resources.
+See [`docs/STUDY-ROOMS.md`](./STUDY-ROOMS.md).
 
 ## 4. Content delivery without app updates
 

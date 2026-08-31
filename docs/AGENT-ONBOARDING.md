@@ -60,7 +60,8 @@ The staging workspace must review only the active BB. At present that is BB1; BB
 
 Production routing is intentional:
 
-- `/` — curriculum staging/dummy mode;
+- `/` — data-science foundation landing (production);
+- `/study` — matched study-room validation prototype (session layer, not curriculum);
 - `/?prototype=variables-and-rates` — learner preview;
 - `/?prototype=change-lab` — legacy compatibility alias;
 - `/?mode=review` — force review mode during local development.

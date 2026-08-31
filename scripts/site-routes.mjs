@@ -60,6 +60,7 @@ export function buildSiteRoutes(libraryPages = []) {
     route('/?mode=showcase', 'Core', 'Qubix University Showcase'),
     route('/?mode=showcase-demo', 'Core', '30-Minute Qubix Demo'),
     route('/?mode=game', 'Core', 'Academy mission hub'),
+    route('/?mode=study', 'Study rooms', 'Study rooms'),
     route('/?mode=wiki', 'Wiki', 'Data Science Wiki'),
     route('/?mode=wiki&section=books', 'Wiki', 'Reference books'),
     route('/?mode=wiki&section=world', 'Wiki', 'Superstore data world'),
@@ -172,5 +173,5 @@ export const ROUTED_MISSION_SLUGS = Object.freeze([
 export const ROUTED_MODES = Object.freeze([
   'assets', 'dsa-array-growth-preview', 'dsa-array-insertion-preview',
   'dsa-introduction-preview', 'dsa-sequence-preview', 'exercises', 'factory',
-  'game', 'learner', 'parts', 'review', 'showcase', 'showcase-demo', 'strata-factory', 'wiki'
+  'game', 'learner', 'parts', 'review', 'showcase', 'showcase-demo', 'strata-factory', 'study', 'wiki'
 ]);

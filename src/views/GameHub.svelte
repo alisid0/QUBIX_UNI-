@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { MISSIONS, RANKS, TOTAL_XP, load, reset, statusOf, xpOf, rankOf, nextRankOf } from '../lib/game/progress.js';
+  import { atomIdForSession } from '../lib/study/atoms.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
 
@@ -108,6 +109,7 @@
       <div class="next-actions">
         <a class="primary" href={`?mode=game&mission=${nextUp.slug}`}>{done ? 'Continue mission' : 'Begin mission'} <span aria-hidden="true">→</span></a>
         <a href={`?mode=game&mission=shared-book&chapter=${nextUp.reading.chapter}&session=${nextUp.reading.session}`}>Open briefing</a>
+        <a href={`/study?atom=${atomIdForSession(nextUp.reading.chapter, nextUp.reading.session)}&intent=learn`}>Study this atom</a>
       </div>
     </section>
   {/if}

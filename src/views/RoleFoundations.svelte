@@ -137,6 +137,7 @@
         and work toward SQL, Python, statistics and clear communication.</span>
       <div class="hero-actions">
         <a class="clock-in" href="?mode=game&mission=shared-book&chapter=1&session=1">Begin your first briefing</a>
+        <a class="quiet-action" href="/study">Take a 40-minute study seat</a>
         <a class="quiet-action" href="#training-floor">See how it works</a>
       </div>
       <p class="free">Free · No account needed · Progress saves on this device</p>
@@ -225,6 +226,7 @@
       <!-- Only what the nav above does not already carry. Play, Library, Wiki
            and Mathematics live there, and repeating them here put the same four
            destinations on one screen twice. -->
+      <a href="/study">Study rooms · 40 minutes at your level</a>
       <a href="?mode=game&mission=store">The Superstore floor · every mission in its room</a>
       <a href="?mode=game&mission=campaign">Story mode · the connected draft</a>
     </div>
