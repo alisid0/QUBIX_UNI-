@@ -29,6 +29,8 @@ check(app.includes("['read-the-table', 'data-visualization', 'analyst-desk'].inc
 const showcaseParams = paramsForPath('/showcase');
 check(showcaseParams.get('mode') === 'showcase', 'clean showcase path resolves');
 check(cleanPathForParams(new URLSearchParams({ mode: 'showcase' })) === '/showcase', 'showcase query alias rewrites cleanly');
+const hosting = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+check(hosting.rewrites.some(rule => rule.source === '/showcase' && rule.destination === '/index.html'), 'hosting serves direct showcase visits');
 
 console.log(failed ? '\n  data visualisation checks failed\n' : '\n  data visualisation and showcase checks pass\n');
 process.exit(failed ? 1 : 0);
