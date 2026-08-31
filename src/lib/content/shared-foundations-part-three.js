@@ -127,6 +127,11 @@ export const SHARED_FOUNDATIONS_PART_THREE = Object.freeze({
           'Units sold, revenue and distance are ratio scales. Calendar year and temperature in Celsius are interval scales. The type of a column is therefore a statement about which sentences you are allowed to write about it.'
         ]) })
       ]),
+      figure: Object.freeze({
+        kind: 'data-types',
+        caption: 'Choose the type from the meaning',
+        note: 'First ask whether the value is a label or an amount. Then ask whether order, counting or measurement makes sense of it.'
+      }),
       example: Object.freeze({ title: 'Four columns, four permissions', headers: Object.freeze(['Column', 'Kind', 'What you may not do']), rows: Object.freeze([
         Object.freeze(['branch_id', 'nominal', 'average it, or say one is larger']),
         Object.freeze(['satisfaction', 'ordinal', 'assume the gaps between ratings are equal']),
