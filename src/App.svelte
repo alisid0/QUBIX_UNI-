@@ -37,6 +37,7 @@
   let DsaArrayInsertionPreview = null;
   let DsaIntroductionPreview = null;
   let DsaArrayGrowthPreview = null;
+  let Showcase = null;
 
   const params = paramsForLocation(window.location);
   const cleanLocation = cleanPathForParams(params);
@@ -65,6 +66,7 @@
   const showDsaArrayInsertionPreview = params.get('mode') === 'dsa-array-insertion-preview';
   const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview';
   const showDsaArrayGrowthPreview = params.get('mode') === 'dsa-array-growth-preview';
+  const showShowcase = params.get('mode') === 'showcase';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');
@@ -92,6 +94,9 @@
   }
   if (showDsaArrayGrowthPreview) {
     import('./views/DsaArrayGrowthPreview.svelte').then(m => { DsaArrayGrowthPreview = m.default; });
+  }
+  if (showShowcase) {
+    import('./views/Showcase.svelte').then(m => { Showcase = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -129,7 +134,9 @@
       // Production keeps the learning sequence honest. Local authoring needs
       // every mission directly reachable so layout and interaction QA does not
       // require completing the whole course before each review.
-      if (import.meta.env.PROD && rostered && !missionIsOpen(load(), mission)) {
+      const showcasePreview = params.get('showcase') === '1'
+        && ['read-the-table', 'data-visualization', 'analyst-desk'].includes(mission);
+      if (import.meta.env.PROD && rostered && !showcasePreview && !missionIsOpen(load(), mission)) {
         window.history.replaceState(null, '', `?mode=game&locked=${encodeURIComponent(mission)}`);
         mission = null;
       }
@@ -143,6 +150,8 @@
         return import('./views/RateDeskMission.svelte');
       } else if (mission === 'python-trace') {
         return import('./views/PythonTraceMission.svelte');
+      } else if (mission === 'data-visualization') {
+        return import('./views/DataVisualizationMission.svelte');
       } else if (mission === 'distribution-desk') {
         return import('./views/DistributionDeskMission.svelte');
       } else if (mission === 'sampling-desk') {
@@ -223,6 +232,8 @@
     <svelte:component this={DsaIntroductionPreview} />
   {:else if showDsaArrayGrowthPreview}
     <svelte:component this={DsaArrayGrowthPreview} />
+  {:else if showShowcase}
+    <svelte:component this={Showcase} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}

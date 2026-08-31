@@ -61,6 +61,7 @@ than used, and wrong once it did not.
 | `/` | the course: Home, then the boards |
 | `?mode=review` | the Approver, a review questionnaire, answers kept in the browser only |
 | `?mode=factory` | the Factory, **local development only**, never built into production |
+| `/showcase` | a curated presentation route for learners, universities, training teams and partners |
 
 Nine boards are live: three on variables, four built from Factory selections
 (*What a Button Does*, *A Number In, A Number Out*, *Area on the Grid*,

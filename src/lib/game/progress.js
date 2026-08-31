@@ -22,6 +22,7 @@ import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
 import { SQL_CONSOLE_MISSION } from './sql-console-mission.js';
 import { DISTRIBUTION_DESK_MISSION } from './distribution-desk-mission.js';
 import { PYTHON_TRACE_MISSION } from './python-trace-mission.js';
+import { DATA_VISUALIZATION_MISSION } from './data-visualization-mission.js';
 import { RATE_DESK_MISSION } from './rate-desk-mission.js';
 import { SAMPLING_DESK_MISSION } from './sampling-desk-mission.js';
 import { RESULT_CHECKPOINT_MISSION } from './result-checkpoint-mission.js';
@@ -90,6 +91,9 @@ export const MISSIONS = Object.freeze([
   { slug: 'python-trace', mission: PYTHON_TRACE_MISSION, xp: 170,
     teaches: 'Predicting what a program leaves in each name, then stepping through to see it happen.',
     reading: { chapter: 6, session: 1, label: 'Telling a machine what to do' } },
+  { slug: 'data-visualization', mission: DATA_VISUALIZATION_MISSION, xp: 180,
+    teaches: 'Choosing a chart from the question, then auditing its scale, labels and accessibility.',
+    reading: { chapter: 7, session: 2, label: 'A chart that does not flatter' } },
   { slug: 'analyst-desk', mission: ANALYST_DESK_MISSION, xp: 200,
     teaches: 'Turning an unclear question into a unit, evidence, a chart and a defensible sentence.',
     reading: { chapter: 7, session: 3, label: 'Separating what you found from what you think' } },

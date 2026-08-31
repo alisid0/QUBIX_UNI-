@@ -18,6 +18,7 @@
 
   const LINKS = [
     { id: 'play', label: 'Play', href: '?mode=game' },
+    { id: 'showcase', label: 'Showcase', href: '?mode=showcase' },
     { id: 'read', label: 'Read', href: '?mode=game&mission=shared-book&chapter=1&session=1' },
     { id: 'library', label: 'Library', href: '/library/index.html' },
     { id: 'wiki', label: 'Wiki', href: '?mode=wiki' },

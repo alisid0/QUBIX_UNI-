@@ -100,7 +100,7 @@ export const SHARED_FOUNDATIONS_PART_SEVEN = Object.freeze({
         ]),
         explanation: 'A bar communicates through length. Cutting the axis makes a bar of 99 twice the length of one at 97, so the picture asserts a difference the numbers do not support.'
       }),
-      practice: Object.freeze({ title: 'The Big Sheet of Graphs', href: '/library/big-sheet-of-graphs.html', instruction: 'Look at the equal-scaling and distorted-scaling plates: the axes are the claim.' }),
+      practice: Object.freeze({ title: 'The Chart Clinic', href: '?mode=game&mission=data-visualization', instruction: 'Choose a chart from the question, then audit its axes, units, labels and use of colour.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Government Analysis Function — data visualisation and charts', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/' }),
         Object.freeze({ label: 'Government Analysis Function — releasing statistics in spreadsheets', url: 'https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/' })

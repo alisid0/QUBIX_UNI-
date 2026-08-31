@@ -13,6 +13,9 @@ export function paramsForPath(pathname) {
   const params = new URLSearchParams();
 
   if (!parts.length) return params;
+  if (parts[0] === 'showcase') {
+    params.set('mode', 'showcase'); return params;
+  }
   if (parts[0] === 'academy') {
     params.set('mode', 'game');
     if (parts[1] === 'missions' && parts[2]) {
@@ -80,6 +83,8 @@ export function cleanPathForParams(input) {
 
   if (params.get('lab') === 'sql') {
     params.delete('lab'); path = '/tools/data-console';
+  } else if (mode === 'showcase') {
+    params.delete('mode'); path = '/showcase';
   } else if (['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || mode === 'learner') {
     params.delete('prototype'); params.delete('mode'); path = '/pilot/variables-and-rates';
   } else if (mode === 'wiki') {
