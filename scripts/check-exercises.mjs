@@ -225,6 +225,16 @@ for (const [chapter, id, slug] of missionTargets) {
 }
 
 const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+
+// The homepage said seven chapters while eight were published, so Chance and
+// Inference was live, in the sitemap, and absent from the count a visitor read.
+const WORDS = ['zero','one','two','three','four','five','six','seven','eight','nine','ten'];
+const chapters = SHARED_FOUNDATIONS.length;
+ok('the homepage publishes the live chapter count',
+  new RegExp(`${WORDS[chapters]} short chapters`, 'i').test(index)
+  && !new RegExp(`${WORDS[chapters - 1]} short chapters`, 'i').test(index),
+  `${chapters} chapters published`);
+
 ok('the loading screen publishes the live mission count',
   index.includes(`${MISSIONS.length} practical missions`) && !/thirteen practical missions/i.test(index),
   `${MISSIONS.length} missions`);

@@ -28,9 +28,11 @@
   // wherever you are, every subject is one click away, and you can see the whole
   // syllabus without opening anything. Chapter titles are sentences, so they are
   // shortened to the subject each one is actually about.
+  // Chapter 8 was published, in the sitemap, and missing from here, so a learner
+  // could finish Explaining and never learn that Chance and Inference existed.
   const SUBJECTS = [
     [1, 'Data'], [2, 'Numbers'], [3, 'Quality'], [4, 'Statistics'],
-    [5, 'SQL'], [6, 'Python'], [7, 'Explaining']
+    [5, 'SQL'], [6, 'Python'], [7, 'Explaining'], [8, 'Chance']
   ];
 </script>
 

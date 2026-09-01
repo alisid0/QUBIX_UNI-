@@ -170,5 +170,5 @@ export const ROUTED_MISSION_SLUGS = Object.freeze([
 export const ROUTED_MODES = Object.freeze([
   'assets', 'dsa-array-growth-preview', 'dsa-array-insertion-preview',
   'dsa-introduction-preview', 'dsa-sequence-preview', 'exercises', 'factory',
-  'game', 'learner', 'parts', 'review', 'strata-factory', 'wiki'
+  'game', 'learner', 'parts', 'review', 'start', 'strata-factory', 'wiki'
 ]);

@@ -39,3 +39,6 @@ public/data/
 # Source art from the image tool. The prepared .webp under public/media is what
 # ships; these originals stay local, matching public/rooms/ and public/props/.
 art-source/
+
+# Throwaway driver scripts written while checking a page by hand.
+.*.mjs

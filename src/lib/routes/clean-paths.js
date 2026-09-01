@@ -13,6 +13,9 @@ export function paramsForPath(pathname) {
   const params = new URLSearchParams();
 
   if (!parts.length) return params;
+  // The learning floor. One segment, no state in the path: where a learner is
+  // comes from their own progress, not from the URL.
+  if (parts[0] === 'start') { params.set('mode', 'start'); return params; }
   if (parts[0] === 'academy') {
     params.set('mode', 'game');
     if (parts[1] === 'missions' && parts[2]) {
@@ -80,6 +83,8 @@ export function cleanPathForParams(input) {
 
   if (params.get('lab') === 'sql') {
     params.delete('lab'); path = '/tools/data-console';
+  } else if (mode === 'start') {
+    path = '/start';
   } else if (['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || mode === 'learner') {
     params.delete('prototype'); params.delete('mode'); path = '/pilot/variables-and-rates';
   } else if (mode === 'wiki') {
