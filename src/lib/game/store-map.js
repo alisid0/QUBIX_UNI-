@@ -116,6 +116,7 @@ export const ROOMS = Object.freeze([
     id: 'boardroom', name: 'Boardroom', wing: 'offices', x: 7, y: 2, w: 6, h: 2,
     blurb: 'Somebody asks an unclear question and expects a defensible answer.',
     spots: Object.freeze([
+      Object.freeze({ slug: 'data-visualization', x: 20, y: 54, at: 'the presentation wall' }),
       Object.freeze({ slug: 'analyst-desk', x: 35, y: 54, at: 'the meeting table' }),
       Object.freeze({ slug: 'handover-pack', x: 68, y: 54, at: 'the handover review seat' })
     ])

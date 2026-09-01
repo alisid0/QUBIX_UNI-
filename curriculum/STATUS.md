@@ -67,6 +67,14 @@ skeleton is recorded in `05-DATA-SCIENCE-ROADMAP.md`. Only
 `STAT-DATA-001` has been drafted. It is excluded from the learner generator;
 no variant is selected and no approval or release status has changed.
 
+**Data visualisation mission, 2026-08-31.** On founder direction, Chapter 07.02
+now leads to a dedicated learner practice, *The Chart Clinic*. It asks learners
+to choose bar, line, histogram and scatter charts from the analytical question,
+then audit scale, units, denominators, source, period and colour dependence.
+The mission is source-informed by Government Analysis Function chart guidance
+and W3C accessibility guidance. It remains `AI_DRAFT`; publishing it for learner
+testing does not mark the curriculum content `APPROVED` or `RELEASED`.
+
 The standalone Strata Migration Factory is available only at
 `?mode=strata-factory` in development. It is not registered in the present
 Factory, is not a learner board and is excluded from the learner generator.

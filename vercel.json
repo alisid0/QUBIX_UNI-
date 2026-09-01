@@ -4,6 +4,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/showcase", "destination": "/index.html" },
+    { "source": "/showcase/:path*", "destination": "/index.html" },
     { "source": "/academy", "destination": "/index.html" },
     { "source": "/academy/:path*", "destination": "/index.html" },
     { "source": "/learn/:path*", "destination": "/index.html" },

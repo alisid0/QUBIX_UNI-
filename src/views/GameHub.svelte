@@ -27,8 +27,8 @@
     { id: 'checkout', image: 'tills', name: 'Checkout', slugs: ['checkout'] },
     { id: 'aisles', image: 'aisles', name: 'Aisles', slugs: ['read-the-table', 'classify-data'],
       theme: 'Rows and columns · data types' },
-    { id: 'board-room', image: 'boardroom', name: 'Board Room', slugs: ['analyst-desk', 'handover-pack'],
-      theme: 'Decision desk · handover review' }
+    { id: 'board-room', image: 'boardroom', name: 'Board Room', slugs: ['data-visualization', 'analyst-desk', 'handover-pack'],
+      theme: 'Chart clinic · decision desk · handover' }
   ];
 
   const numberOf = slug => String(MISSIONS.findIndex(m => m.slug === slug) + 1).padStart(2, '0');

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://qubix.university/</loc></url>
+  <url><loc>https://qubix.university/showcase</loc></url>
+  <url><loc>https://qubix.university/showcase/demo</loc></url>
   <url><loc>https://qubix.university/academy</loc></url>
   <url><loc>https://qubix.university/wiki</loc></url>
   <url><loc>https://qubix.university/wiki/books</loc></url>
@@ -71,6 +73,7 @@
   <url><loc>https://qubix.university/academy/missions/join-grain</loc></url>
   <url><loc>https://qubix.university/academy/missions/result-checkpoint</loc></url>
   <url><loc>https://qubix.university/academy/missions/python-trace</loc></url>
+  <url><loc>https://qubix.university/academy/missions/data-visualization</loc></url>
   <url><loc>https://qubix.university/academy/missions/analyst-desk</loc></url>
   <url><loc>https://qubix.university/academy/missions/handover-pack</loc></url>
   <url><loc>https://qubix.university/superstore</loc></url>

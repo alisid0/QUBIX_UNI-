@@ -18,9 +18,11 @@
 // Two things the supporting documents got wrong, recorded here rather than
 // inherited:
 //
-//   The topic index lists "The Chart Clinic" among 21 core missions and the
-//   flow brief marks it Live. It does not exist in this repository at all, so
-//   A2's play is not-built.
+//   The topic index listed "The Chart Clinic" among 21 core missions and the
+//   flow brief marked it Live while nothing of the sort existed here. It was
+//   built on 2026-09-01 as the data-visualization mission, so A2 is a complete
+//   pair now. The guard is what makes that safe to change: the slug is resolved
+//   against the roster rather than trusted.
 //
 //   Two door steps name a chapter title where a session title was meant
 //   ("Numbers, Ratios and Change" and "Chance and Inference" are chapters).
@@ -184,8 +186,7 @@ export const ANALYST_FLOOR = Object.freeze({
     // missions. It does not exist here, so it is shown disabled.
     pair('a2', 2, 'Honest charts',
       read('r-7-2', 'A chart that does not flatter', 7, 2),
-      unbuilt('p-chart-clinic', 'The Chart Clinic',
-        'Listed as live in both supporting documents. Absent from this repository.')),
+      play('p-chart-clinic', 'The Chart Clinic', 'data-visualization')),
     pair('a3', 3, 'Finding versus advice',
       read('r-7-3', 'Separating what you found from what you think', 7, 3),
       play('p-analyst-desk', 'Analyst Decision Desk', 'analyst-desk')),
