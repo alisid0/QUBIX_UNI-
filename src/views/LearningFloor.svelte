@@ -32,7 +32,10 @@
   let done = [];
   let selectedDoor = 'concepts';
   let hydrated = false;
-  let openFloor = false;
+  // The floor is the page. Hiding it behind a button was why the structure
+  // from the map never appeared: a learner saw five stage headings and had to
+  // ask for the thing they came to see.
+  let openFloor = true;
 
   onMount(() => {
     done = completedAssetIds();
@@ -172,6 +175,9 @@
           </div>
 
           {#if openFloor}
+            <div class="cols" aria-hidden="true">
+              <span>Idea</span><span>Read</span><span></span><span>Play</span>
+            </div>
             <ul class="pairs">
               {#each stage.pairs as pair}
                 <li class="pair-line" class:current={pair.current}>
@@ -278,7 +284,7 @@
     --ink: #241f16; --paper: #f7f3e9; --card: #fffdf7; --deep: #ede5d5;
     --clay: #a85a34; --clay-soft: #f6e6db; --green: #3e9e2a; --green-soft: #e7f1e2;
     --line: #d6d0c4; --muted: #78716c; --off: #e9e6e0;
-    max-width: 1080px; margin: 0 auto; padding: 26px 20px 72px;
+    max-width: 1240px; margin: 0 auto; padding: 26px 24px 72px;
     display: grid; gap: 36px; color: var(--ink);
   }
 
@@ -365,12 +371,26 @@
   .stage-tally { font: 800 16px ui-monospace, Consolas, monospace; }
   .stage-tally i { color: var(--muted); font-style: normal; font-size: 13px; }
 
-  .pairs { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
-  .pair-line { display: grid; grid-template-columns: 132px 1fr; gap: 12px; align-items: center;
-               padding: 8px; border-radius: 14px; }
+  /* The column heads and the rail are what make this read as one structure
+     rather than a stack of unrelated rows. Straight from the map. */
+  .cols { display: grid; grid-template-columns: 132px 1fr auto 1fr; gap: 12px;
+          margin: 16px 0 6px; padding: 0 8px; }
+  .cols span { color: var(--muted); font: 800 11px var(--qx-font, system-ui);
+               letter-spacing: .14em; text-transform: uppercase; }
+
+  .pairs { position: relative; list-style: none; margin: 0; padding: 0; display: grid; gap: 10px;
+           border: 1px solid var(--line); border-radius: 18px; background: var(--paper);
+           padding: 10px; }
+  /* One continuous line behind the sequence circles, so the steps read as a
+     route rather than as separate cards. */
+  .pairs::before { content: ''; position: absolute; top: 34px; bottom: 34px; left: 76px;
+                   width: 2px; background: var(--line); }
+  .pair-line { position: relative; display: grid; grid-template-columns: 132px 1fr; gap: 12px;
+               align-items: center; padding: 8px; border-radius: 14px; }
   .pair-line.current { background: var(--clay-soft); }
   .gutter { display: grid; justify-items: center; gap: 4px; text-align: center; }
-  .seq { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+  .seq { position: relative; z-index: 1; display: grid; place-items: center;
+         width: 32px; height: 32px; border-radius: 50%;
          border: 1px solid var(--line); background: var(--card); color: var(--muted);
          font: 800 12px ui-monospace, Consolas, monospace; }
   .seq-done { border-color: var(--green); background: var(--green-soft); color: #2c6b1c; }
@@ -403,6 +423,8 @@
     /* Read stays above Play, so the order survives the stack. */
     .pair-row { grid-template-columns: 1fr; }
     .arrow { transform: rotate(90deg); justify-self: center; }
+    .pairs::before { display: none; }
+    .cols { display: none; }
     .pair-line { grid-template-columns: 1fr; }
     .gutter { grid-auto-flow: column; justify-items: start; justify-content: start;
               align-items: center; gap: 9px; text-align: left; }
