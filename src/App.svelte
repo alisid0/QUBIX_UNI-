@@ -257,7 +257,7 @@
   {:else if showReviewMode}
     <svelte:component this={ReviewMode} />
   {:else if showLearningFloor}
-    <svelte:component this={LearningFloor} />
+    <svelte:component this={LearningFloor} stage={params.get('stage')} />
   {:else if showWikiMode}
     <WikiMode />
   {:else if explicitLearnerPreview || $view === 'lesson'}

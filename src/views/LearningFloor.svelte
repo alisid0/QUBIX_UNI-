@@ -59,11 +59,46 @@
     stageState(ANALYST_FLOOR, done)
   ];
 
+  // One stage on its own page, or all five on the floor. The whole floor is
+  // the map; a stage is the unit somebody actually works through, and 27 pairs
+  // on one scroll is a lot to hold. Same component either way: a stage page is
+  // the floor with one stage in it and its own header.
+  export let stage = null;
+
+  $: shown = stage ? stages.filter(s => s.id === stage) : stages;
+  $: one = stage ? shown[0] : null;
+  $: unknownStage = Boolean(stage) && !one;
+
+  /* The step this page is asking for: the stage's own when you are on a stage
+     page, the floor's when you are on the floor. */
+  $: here = (() => {
+    if (!one) return next;
+    const pair = one.current;
+    if (!pair) return null;
+    const asset = pair.readState === 'todo' ? pair.read
+      : pair.playState === 'todo' ? pair.play
+        : null;
+    return asset ? { stage: one, pair, asset, kind: asset.kind } : null;
+  })();
+
+  /* What a stage contains, said the way the header says it. */
+  const shape = st => {
+    const halves = st.pairs.flatMap(p => [
+      { kind: 'read', ok: p.readState !== 'not-built' },
+      { kind: 'play', ok: p.playState !== 'not-built' }
+    ]).filter(h => h.ok);
+    return {
+      live: halves.length,
+      reads: halves.filter(h => h.kind === 'read').length,
+      plays: halves.filter(h => h.kind === 'play').length
+    };
+  };
+
   const stateWord = { done: 'Done', todo: 'To do' };
 </script>
 
 <svelte:head>
-  <title>Start · Qubix University</title>
+  <title>{one ? `${one.title} · Qubix University` : 'The whole floor · Qubix University'}</title>
   <meta name="description" content="Read the idea, play the consequence. Your next step on the Qubix learning floor." />
 </svelte:head>
 
@@ -77,38 +112,65 @@
        the floor below the fold on every viewport smaller than a large desktop.
        The floor already shows where the learner is, so showing it twice cost
        the thing they came for. Now: a line, a strip, the door, the map. -->
+  <nav class="stage-nav" aria-label="Floor">
+    <a class="stage-link" class:here={!stage} href="/">The whole floor</a>
+    {#each stages as st}
+      <a class="stage-link" class:here={stage === st.id} href={`/floor/${st.id}`}>{st.title}</a>
+    {/each}
+  </nav>
+
   <header class="masthead">
     <div class="mast-text">
-      <p class="eyebrow">Qubix University</p>
-      <h1>The whole floor</h1>
-      <p class="mast-lede">Read the idea, then play the consequence. Twenty-seven
-        steps across five stages, ending on one standard.</p>
+      <p class="eyebrow">{unknownStage ? 'Qubix University' : one ? 'Qubix University · one stage' : 'Qubix University'}</p>
+      <h1>{unknownStage ? 'No such stage' : one ? one.title : 'The whole floor'}</h1>
+      <p class="mast-lede">{unknownStage
+        ? 'The address names a stage this floor does not have.'
+        : one ? one.lede
+          : 'Read the idea, then play the consequence. Twenty-seven steps across five stages, ending on one standard.'}</p>
     </div>
 
-    <div class="tally" role="status">
-      <b>{overall.done} of {overall.total}</b>
-      <span>live steps done</span>
-      <span class="bar"><i style={`width:${overall.percent}%`}></i></span>
-      <span class="quiet">Material that is not built yet is never counted here.</span>
-    </div>
+    {#if unknownStage}
+      <span></span>
+    {:else if one}
+      {@const sh = shape(one)}
+      <div class="shape" role="status">
+        <b>{sh.live} live steps</b>
+        <span>{sh.reads} reads · {sh.plays} plays</span>
+        <span class="bar"><i style={`width:${one.percent}%`}></i></span>
+        <span class="quiet">{one.done} of {one.total} done on this stage.</span>
+      </div>
+    {:else}
+      <div class="tally" role="status">
+        <b>{overall.done} of {overall.total}</b>
+        <span>live steps done</span>
+        <span class="bar"><i style={`width:${overall.percent}%`}></i></span>
+        <span class="quiet">Material that is not built yet is never counted here.</span>
+      </div>
+    {/if}
   </header>
 
-  {#if !hydrated}
+  {#if unknownStage}
+    <p class="resume done-all">There is no stage called “{stage}” on this floor.
+      <a href="/">Open the whole floor</a> and pick one.</p>
+  {:else if !hydrated}
     <p class="resume settling">Finding where you got to…</p>
-  {:else if next}
-    <a class="resume" href={next.asset.href}>
+  {:else if here}
+    <a class="resume" href={here.asset.href}>
       <span class="resume-tag">{done.length === 0 ? 'Start here' : 'Your next step'}</span>
       <span class="resume-what">
-        <b>{next.asset.label}</b>
-        <span>{next.kind === 'read' ? 'Read' : 'Play'} · {next.stage.title} ·
-          step {next.pair.sequence} · {next.pair.idea}</span>
+        <b>{here.asset.label}</b>
+        <span>{here.kind === 'read' ? 'Read' : 'Play'} · {here.stage.title} ·
+          step {here.pair.sequence} · {here.pair.idea}</span>
       </span>
       <span class="chev" aria-hidden="true">›</span>
     </a>
   {:else}
-    <p class="resume done-all">Every live step on the floor is done. New material
-      joins the floor as it is written.</p>
+    <p class="resume done-all">{one
+      ? `Every live step on ${one.title} is done.`
+      : 'Every live step on the floor is done.'} New material joins the floor as it is written.</p>
   {/if}
+
+  {#if !stage}
 
   <!-- The door reorders the map, so it is chosen above the map rather than
        five thousand pixels below it. -->
@@ -125,30 +187,33 @@
     <span class="door-pick-note">All three are required before the Analyst floor.
       The door changes the order you meet them in, and nothing else.</span>
   </div>
+  {/if}
 
   <section class="route" aria-label="The whole floor">
     <ol class="stages">
-      {#each stages as stage, i}
-        <li class="stage" class:complete={stage.complete}>
-          <div class="stage-head">
-            <span class="stage-no">{i + 1}</span>
-            <span class="stage-text">
-              <h3>{stage.title}</h3>
-              <span class="lede">{stage.lede}</span>
-              {#if ['concepts', 'python', 'sql'].includes(stage.id)}
-                <span class="door-note">{stage.id === selectedDoor
-                  ? 'Your first door. The order changes; the standard does not.'
-                  : 'Required before the Analyst floor, at your own pace.'}</span>
-              {/if}
-            </span>
-            <span class="stage-tally">{stage.done}<i>/{stage.total}</i></span>
-          </div>
+      {#each shown as st, i}
+        <li class="stage" class:complete={st.complete} class:solo={Boolean(stage)}>
+          {#if !stage}
+            <div class="stage-head">
+              <span class="stage-no">{i + 1}</span>
+              <span class="stage-text">
+                <h3><a href={`/floor/${st.id}`}>{st.title}</a></h3>
+                <span class="lede">{st.lede}</span>
+                {#if ['concepts', 'python', 'sql'].includes(st.id)}
+                  <span class="door-note">{st.id === selectedDoor
+                    ? 'Your first door. The order changes; the standard does not.'
+                    : 'Required before the Analyst floor, at your own pace.'}</span>
+                {/if}
+              </span>
+              <span class="stage-tally">{st.done}<i>/{st.total}</i></span>
+            </div>
+          {/if}
 
           <div class="cols" aria-hidden="true">
             <span>Idea</span><span>Read</span><span></span><span>Play</span>
           </div>
           <ul class="pairs">
-            {#each stage.pairs as pair}
+            {#each st.pairs as pair}
               <li class="pair-line" class:current={pair.current}>
                 <span class="gutter">
                   <span class="seq" class:seq-done={pair.finished}>{pair.sequence}</span>
@@ -211,11 +276,11 @@
             {/each}
           </ul>
 
-          {#if stage.exitOutcome}
-            <p class="exit"><b>To leave this floor</b>{stage.exitOutcome}</p>
+          {#if st.exitOutcome}
+            <p class="exit"><b>To leave this floor</b>{st.exitOutcome}</p>
           {/if}
-          {#if stage.standard}
-            <ul class="standard">{#each stage.standard as line}<li>{line}</li>{/each}</ul>
+          {#if st.standard}
+            <ul class="standard">{#each st.standard as line}<li>{line}</li>{/each}</ul>
           {/if}
         </li>
       {/each}
@@ -239,6 +304,7 @@
   .floor {
     --ink: #241f16; --paper: #f7f3e9; --card: #fffdf7; --deep: #ede5d5;
     --clay: #a85a34; --clay-soft: #f6e6db; --green: #3e9e2a; --green-soft: #e7f1e2;
+    --play: #e8631f; --play-line: #f0b492;
     --line: #d6d0c4; --muted: #78716c; --off: #e9e6e0;
     max-width: 1240px; margin: 0 auto; padding: 22px 24px 72px;
     display: grid; gap: 18px; color: var(--ink);
@@ -262,7 +328,7 @@
   .badge { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
            background: var(--ink); color: var(--card); flex: none; }
   .asset.small .badge { width: 30px; height: 30px; }
-  .asset.play .badge { background: var(--clay); }
+  .asset.play .badge { background: var(--play); }
 
   .asset-text { display: grid; gap: 1px; min-width: 0; }
   .kind { color: var(--muted); font: 800 11px var(--qx-font, system-ui);
@@ -272,7 +338,7 @@
   .state { color: var(--muted); font: 650 12.5px var(--qx-font, system-ui); }
   .chev { color: var(--muted); font-size: 21px; line-height: 1; }
 
-  .asset.play { border-color: #e3c3ac; background: #fffaf6; }
+  .asset.play { border-color: var(--play-line); background: #fffaf6; }
   .asset.is-done { border-color: var(--green); background: var(--green-soft); }
   .asset.is-done .state { color: #2c6b1c; }
   a.asset { transition: transform .15s ease, border-color .15s ease; }
@@ -292,6 +358,28 @@
   .bar { flex: 1 1 150px; min-width: 110px; height: 8px; border-radius: 5px;
          background: var(--off); overflow: hidden; }
   .bar i { display: block; height: 100%; background: var(--green); }
+
+  /* ── one line of floor navigation, above everything ────────────── */
+  .stage-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+  .stage-link { padding: 7px 13px; border-radius: 999px; text-decoration: none;
+                border: 1px solid transparent; color: var(--muted);
+                font: 750 12.5px var(--qx-font, system-ui); }
+  .stage-link:hover { border-color: var(--line); color: var(--ink); }
+  .stage-link.here { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .stage-link:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+
+  /* What a stage holds, rather than how far through it you are. On a stage you
+     have only just opened, the shape is the more useful of the two. */
+  .shape { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; align-content: end; }
+  .shape b { font: 800 17px var(--qx-font, system-ui); }
+  .shape span { color: var(--muted); font: 650 13.5px var(--qx-font, system-ui); }
+  .shape .quiet { flex-basis: 100%; font-size: 12px; }
+
+  .stage-head h3 a { color: inherit; text-decoration: none;
+                     border-bottom: 1.5px solid var(--line); }
+  .stage-head h3 a:hover { border-color: var(--clay); color: var(--clay); }
+  .stage-head h3 a:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
+  .resume a { color: var(--clay); }
 
   /* ── the masthead: one line, not a landing page ──────── */
   .masthead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 380px);
@@ -334,6 +422,9 @@
   /* ── the floor ─────────────────────────────────────────────────── */
   .stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   .stage { padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
+  /* A stage on its own page is the page, not a card sitting on one. */
+  .stage.solo { padding: 0; border: 0; background: none; }
+  .stage.solo .cols { margin-top: 0; }
   .stage.complete { border-color: var(--green); background: #f4faf1; }
   .stage-head { display: grid; grid-template-columns: 36px 1fr auto; gap: 13px; align-items: start; }
   .stage-no { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;

@@ -58,6 +58,11 @@ export function buildSiteRoutes(libraryPages = []) {
   const routes = [
     route('/', 'Core', 'Qubix University'),
     route('/?mode=start', 'Core', 'Start · your next step'),
+    route('/?mode=start&stage=shared-data-truths', 'Core', 'Shared Data Truths · one stage of the floor'),
+    route('/?mode=start&stage=concepts', 'Core', 'Concepts first · one stage of the floor'),
+    route('/?mode=start&stage=python', 'Core', 'Python first · one stage of the floor'),
+    route('/?mode=start&stage=sql', 'Core', 'SQL first · one stage of the floor'),
+    route('/?mode=start&stage=analyst', 'Core', 'The Analyst floor · one stage of the floor'),
     route('/?mode=showcase', 'Core', 'Qubix University Showcase'),
     route('/?mode=showcase-demo', 'Core', '30-Minute Qubix Demo'),
     route('/?mode=game', 'Core', 'Academy mission hub'),

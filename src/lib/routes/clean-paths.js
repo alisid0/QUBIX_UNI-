@@ -16,6 +16,11 @@ export function paramsForPath(pathname) {
   // The learning floor. One segment, no state in the path: where a learner is
   // comes from their own progress, not from the URL.
   if (parts[0] === 'start') { params.set('mode', 'start'); return params; }
+  // One stage of the floor on its own page. The whole floor is 27 pairs and a
+  // long scroll; a stage is the unit a learner is actually working through.
+  if (parts[0] === 'floor' && parts[1]) {
+    params.set('mode', 'start'); params.set('stage', parts[1]); return params;
+  }
   if (parts[0] === 'showcase') {
     params.set('mode', parts[1] === 'demo' ? 'showcase-demo' : 'showcase'); return params;
   }
@@ -87,7 +92,10 @@ export function cleanPathForParams(input) {
   if (params.get('lab') === 'sql') {
     params.delete('lab'); path = '/tools/data-console';
   } else if (mode === 'start') {
-    params.delete('mode'); path = '/start';
+    const stage = params.get('stage');
+    params.delete('mode');
+    if (stage) { params.delete('stage'); path = `/floor/${stage}`; }
+    else path = '/start';
   } else if (mode === 'showcase') {
     params.delete('mode'); path = '/showcase';
   } else if (mode === 'showcase-demo') {
