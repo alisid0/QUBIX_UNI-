@@ -72,9 +72,10 @@
   <meta name="description" content="Read the idea, play the consequence. Your next step on the Qubix learning floor." />
 </svelte:head>
 
+<div class="floor-page">
 <SiteNav />
 
-<main class="floor">
+<div class="floor">
   <!-- What to do next, before the floor. -->
   <section class="now" aria-labelledby="now-heading">
     <p class="eyebrow">Your next step</p>
@@ -90,7 +91,7 @@
           <a class="asset read" class:is-done={next.pair.readState === 'done'} href={next.pair.read.href}>
             <span class="badge" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor"
-                d="M5 4h14v2H5zm0 5h14v2H5zm0 5h9v2H5z"/></svg>
+                d="M12 6.2C10.5 5 8.6 4.5 6 4.5c-.9 0-1.7.1-2.4.2A.8.8 0 0 0 3 5.5v11.7c0 .5.5.9 1 .8.6-.1 1.3-.2 2-.2 2.3 0 4 .5 5.3 1.5.4.3 1 .3 1.4 0 1.3-1 3-1.5 5.3-1.5.7 0 1.4.1 2 .2.5.1 1-.3 1-.8V5.5a.8.8 0 0 0-.6-.8c-.7-.1-1.5-.2-2.4-.2-2.6 0-4.5.5-6 1.7zm0 2v8.5c-1.4-.8-3.1-1.2-5-1.2-.6 0-1.2 0-1.8.1V6.3c.6 0 1.2-.1 1.8-.1 2.1 0 3.7.5 5 1.4z"/></svg>
             </span>
             <span class="asset-text">
               <span class="kind">Read</span>
@@ -106,7 +107,7 @@
             <a class="asset play" class:is-done={next.pair.playState === 'done'}
                class:waiting={next.pair.readState !== 'done'} href={next.pair.play.href}>
               <span class="badge" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8 5l11 7-11 7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M7 8h10a5 5 0 0 1 4.9 4l1 5a2.2 2.2 0 0 1-4 1.6L16.6 16H7.4l-2.3 2.6a2.2 2.2 0 0 1-4-1.6l1-5A5 5 0 0 1 7 8zm-.6 3v1.4H5v1.2h1.4V15h1.2v-1.4H9v-1.2H7.6V11zm9 .4a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
               </span>
               <span class="asset-text">
                 <span class="kind">Play</span>
@@ -122,7 +123,7 @@
             <div class="asset play blocked" aria-disabled="true">
               <span class="badge" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor"
-                  d="M17 9V7a5 5 0 0 0-10 0v2H5v11h14V9zM9 7a3 3 0 0 1 6 0v2H9z"/></svg>
+                  d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
               </span>
               <span class="asset-text">
                 <span class="kind">Play</span>
@@ -191,7 +192,7 @@
                       <a class="asset read small" class:is-done={pair.readState === 'done'} href={pair.read.href}>
                         <span class="badge" aria-hidden="true">
                           <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor"
-                            d="M5 4h14v2H5zm0 5h14v2H5zm0 5h9v2H5z"/></svg>
+                            d="M12 6.2C10.5 5 8.6 4.5 6 4.5c-.9 0-1.7.1-2.4.2A.8.8 0 0 0 3 5.5v11.7c0 .5.5.9 1 .8.6-.1 1.3-.2 2-.2 2.3 0 4 .5 5.3 1.5.4.3 1 .3 1.4 0 1.3-1 3-1.5 5.3-1.5.7 0 1.4.1 2 .2.5.1 1-.3 1-.8V5.5a.8.8 0 0 0-.6-.8c-.7-.1-1.5-.2-2.4-.2-2.6 0-4.5.5-6 1.7zm0 2v8.5c-1.4-.8-3.1-1.2-5-1.2-.6 0-1.2 0-1.8.1V6.3c.6 0 1.2-.1 1.8-.1 2.1 0 3.7.5 5 1.4z"/></svg>
                         </span>
                         <span class="asset-text">
                           <span class="kind">Read</span><b>{pair.read.label}</b>
@@ -203,7 +204,7 @@
                       <span class="asset read small blocked" aria-disabled="true">
                         <span class="badge" aria-hidden="true">
                           <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor"
-                            d="M17 9V7a5 5 0 0 0-10 0v2H5v11h14V9zM9 7a3 3 0 0 1 6 0v2H9z"/></svg>
+                            d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
                         </span>
                         <span class="asset-text">
                           <span class="kind">Read</span><b>{pair.read.label} — not written</b>
@@ -217,7 +218,7 @@
                     {#if isAvailable(pair.play)}
                       <a class="asset play small" class:is-done={pair.playState === 'done'} href={pair.play.href}>
                         <span class="badge" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M8 5l11 7-11 7z"/></svg>
+                          <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M7 8h10a5 5 0 0 1 4.9 4l1 5a2.2 2.2 0 0 1-4 1.6L16.6 16H7.4l-2.3 2.6a2.2 2.2 0 0 1-4-1.6l1-5A5 5 0 0 1 7 8zm-.6 3v1.4H5v1.2h1.4V15h1.2v-1.4H9v-1.2H7.6V11zm9 .4a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
                         </span>
                         <span class="asset-text">
                           <span class="kind">Play</span><b>{pair.play.label}</b>
@@ -229,7 +230,7 @@
                       <span class="asset play small blocked" aria-disabled="true">
                         <span class="badge" aria-hidden="true">
                           <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor"
-                            d="M17 9V7a5 5 0 0 0-10 0v2H5v11h14V9zM9 7a3 3 0 0 1 6 0v2H9z"/></svg>
+                            d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
                         </span>
                         <span class="asset-text">
                           <span class="kind">Play</span><b>{pair.play.label} — not built</b>
@@ -271,11 +272,16 @@
       {/each}
     </div>
   </section>
-</main>
+</div>
 
 <SiteFooter />
+</div>
 
 <style>
+  /* The scroller. Without it the floor is clipped at viewport height by the
+     shell, which is fixed and hidden from the original full-screen build. */
+  .floor-page { height: 100%; overflow-y: auto; overscroll-behavior: contain; }
+
   /* Prototype shapes, Qubix colours. Rounded cards, circular badges, pills and
      chevrons come from the map; the hues are the ones the rest of the site
      already uses, because check-palette refuses a new family and a floor that
