@@ -32,11 +32,6 @@
   let done = [];
   let selectedDoor = 'concepts';
   let hydrated = false;
-  // The floor is the page. Hiding it behind a button was why the structure
-  // from the map never appeared: a learner saw five stage headings and had to
-  // ask for the thing they came to see.
-  let openFloor = true;
-
   onMount(() => {
     done = completedAssetIds();
     try {
@@ -76,84 +71,19 @@
 <SiteNav />
 
 <div class="floor">
-  <!-- What to do next, before the floor. -->
-  <section class="now" aria-labelledby="now-heading">
-    {#if hydrated && done.length === 0}
-      <p class="eyebrow">Welcome</p>
-      <h1 id="now-heading">Learn data science on the shop floor.</h1>
-      <p class="pitch">Read the idea, then make the decision yourself and watch what it does.
-        Start from zero and work through to SQL, Python and defensible analysis.</p>
-      <ul class="claims">
-        <li>Data is a record, not reality.</li>
-        <li>Every idea has a consequence you can play.</li>
-        <li>Nothing is counted until you have done it.</li>
-      </ul>
-    {:else}
-      <p class="eyebrow">Your next step</p>
-      <h1 id="now-heading">Read the idea. Play the consequence.</h1>
-    {/if}
-
-    {#if !hydrated}
-      <p class="settling">Finding where you got to…</p>
-    {:else if next}
-      <div class="now-card">
-        <p class="now-where">
-          {done.length === 0 ? 'Start here · ' : ''}{next.stage.title} · step {next.pair.sequence} · {next.pair.idea}
-        </p>
-
-        <div class="pair-row big">
-          <a class="asset read" class:is-done={next.pair.readState === 'done'} href={next.pair.read.href}>
-            <span class="badge" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor"
-                d="M12 6.2C10.5 5 8.6 4.5 6 4.5c-.9 0-1.7.1-2.4.2A.8.8 0 0 0 3 5.5v11.7c0 .5.5.9 1 .8.6-.1 1.3-.2 2-.2 2.3 0 4 .5 5.3 1.5.4.3 1 .3 1.4 0 1.3-1 3-1.5 5.3-1.5.7 0 1.4.1 2 .2.5.1 1-.3 1-.8V5.5a.8.8 0 0 0-.6-.8c-.7-.1-1.5-.2-2.4-.2-2.6 0-4.5.5-6 1.7zm0 2v8.5c-1.4-.8-3.1-1.2-5-1.2-.6 0-1.2 0-1.8.1V6.3c.6 0 1.2-.1 1.8-.1 2.1 0 3.7.5 5 1.4z"/></svg>
-            </span>
-            <span class="asset-text">
-              <span class="kind">Read</span>
-              <b>{next.pair.read.label}</b>
-              <span class="state">{next.pair.readState === 'done' ? 'Done · read it again' : 'Start here'}</span>
-            </span>
-            <span class="chev" aria-hidden="true">›</span>
-          </a>
-
-          <span class="arrow" aria-hidden="true">→</span>
-
-          {#if isAvailable(next.pair.play)}
-            <a class="asset play" class:is-done={next.pair.playState === 'done'}
-               class:waiting={next.pair.readState !== 'done'} href={next.pair.play.href}>
-              <span class="badge" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M7 8h10a5 5 0 0 1 4.9 4l1 5a2.2 2.2 0 0 1-4 1.6L16.6 16H7.4l-2.3 2.6a2.2 2.2 0 0 1-4-1.6l1-5A5 5 0 0 1 7 8zm-.6 3v1.4H5v1.2h1.4V15h1.2v-1.4H9v-1.2H7.6V11zm9 .4a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
-              </span>
-              <span class="asset-text">
-                <span class="kind">Play</span>
-                <b>{next.pair.play.label}</b>
-                <span class="state">
-                  {next.pair.playState === 'done' ? 'Done · play it again'
-                    : next.pair.readState === 'done' ? 'Now the consequence' : 'After the reading'}
-                </span>
-              </span>
-              <span class="chev" aria-hidden="true">›</span>
-            </a>
-          {:else}
-            <div class="asset play blocked" aria-disabled="true">
-              <span class="badge" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor"
-                  d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
-              </span>
-              <span class="asset-text">
-                <span class="kind">Play</span>
-                <b>{next.pair.play.label} — not built</b>
-                <span class="state">The reading stands on its own.</span>
-              </span>
-            </div>
-          {/if}
-        </div>
-      </div>
-    {:else}
-      <div class="now-card done-all">
-        <p class="now-where">Every live step on the floor is done.</p>
-        <p class="settling">New material joins the floor as it is written. Nothing below is waiting for you.</p>
-      </div>
-    {/if}
+  <!-- The map is the page.
+       What used to stand in front of it was a pitch, a claims list and a
+       full-size second copy of the current pair, which pushed the first row of
+       the floor below the fold on every viewport smaller than a large desktop.
+       The floor already shows where the learner is, so showing it twice cost
+       the thing they came for. Now: a line, a strip, the door, the map. -->
+  <header class="masthead">
+    <div class="mast-text">
+      <p class="eyebrow">Qubix University</p>
+      <h1>The whole floor</h1>
+      <p class="mast-lede">Read the idea, then play the consequence. Twenty-seven
+        steps across five stages, ending on one standard.</p>
+    </div>
 
     <div class="tally" role="status">
       <b>{overall.done} of {overall.total}</b>
@@ -161,17 +91,42 @@
       <span class="bar"><i style={`width:${overall.percent}%`}></i></span>
       <span class="quiet">Material that is not built yet is never counted here.</span>
     </div>
-  </section>
+  </header>
 
-  <!-- The floor itself, in the prototype's rhythm. -->
-  <section class="route" aria-labelledby="route-heading">
-    <div class="route-head">
-      <h2 id="route-heading">The whole floor</h2>
-      <button class="pill" aria-expanded={openFloor} on:click={() => (openFloor = !openFloor)}>
-        {openFloor ? 'Hide the floor' : 'See the whole floor'}
-      </button>
+  {#if !hydrated}
+    <p class="resume settling">Finding where you got to…</p>
+  {:else if next}
+    <a class="resume" href={next.asset.href}>
+      <span class="resume-tag">{done.length === 0 ? 'Start here' : 'Your next step'}</span>
+      <span class="resume-what">
+        <b>{next.asset.label}</b>
+        <span>{next.kind === 'read' ? 'Read' : 'Play'} · {next.stage.title} ·
+          step {next.pair.sequence} · {next.pair.idea}</span>
+      </span>
+      <span class="chev" aria-hidden="true">›</span>
+    </a>
+  {:else}
+    <p class="resume done-all">Every live step on the floor is done. New material
+      joins the floor as it is written.</p>
+  {/if}
+
+  <!-- The door reorders the map, so it is chosen above the map rather than
+       five thousand pixels below it. -->
+  <div class="door-pick">
+    <span class="door-pick-label">Your first door</span>
+    <div class="door-pills" role="group" aria-label="Your first door">
+      {#each DOORS as d}
+        <button class="door-pill" class:chosen={d.id === selectedDoor}
+                aria-pressed={d.id === selectedDoor} on:click={() => chooseDoor(d.id)}>
+          {d.title}
+        </button>
+      {/each}
     </div>
+    <span class="door-pick-note">All three are required before the Analyst floor.
+      The door changes the order you meet them in, and nothing else.</span>
+  </div>
 
+  <section class="route" aria-label="The whole floor">
     <ol class="stages">
       {#each stages as stage, i}
         <li class="stage" class:complete={stage.complete}>
@@ -189,103 +144,84 @@
             <span class="stage-tally">{stage.done}<i>/{stage.total}</i></span>
           </div>
 
-          {#if openFloor}
-            <div class="cols" aria-hidden="true">
-              <span>Idea</span><span>Read</span><span></span><span>Play</span>
-            </div>
-            <ul class="pairs">
-              {#each stage.pairs as pair}
-                <li class="pair-line" class:current={pair.current}>
-                  <span class="gutter">
-                    <span class="seq" class:seq-done={pair.finished}>{pair.sequence}</span>
-                    <span class="idea">{pair.idea}</span>
-                  </span>
+          <div class="cols" aria-hidden="true">
+            <span>Idea</span><span>Read</span><span></span><span>Play</span>
+          </div>
+          <ul class="pairs">
+            {#each stage.pairs as pair}
+              <li class="pair-line" class:current={pair.current}>
+                <span class="gutter">
+                  <span class="seq" class:seq-done={pair.finished}>{pair.sequence}</span>
+                  <span class="idea">{pair.idea}</span>
+                </span>
 
-                  <div class="pair-row">
-                    {#if isAvailable(pair.read)}
-                      <a class="asset read small" class:is-done={pair.readState === 'done'} href={pair.read.href}>
-                        <span class="badge" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor"
-                            d="M12 6.2C10.5 5 8.6 4.5 6 4.5c-.9 0-1.7.1-2.4.2A.8.8 0 0 0 3 5.5v11.7c0 .5.5.9 1 .8.6-.1 1.3-.2 2-.2 2.3 0 4 .5 5.3 1.5.4.3 1 .3 1.4 0 1.3-1 3-1.5 5.3-1.5.7 0 1.4.1 2 .2.5.1 1-.3 1-.8V5.5a.8.8 0 0 0-.6-.8c-.7-.1-1.5-.2-2.4-.2-2.6 0-4.5.5-6 1.7zm0 2v8.5c-1.4-.8-3.1-1.2-5-1.2-.6 0-1.2 0-1.8.1V6.3c.6 0 1.2-.1 1.8-.1 2.1 0 3.7.5 5 1.4z"/></svg>
-                        </span>
-                        <span class="asset-text">
-                          <span class="kind">Read</span><b>{pair.read.label}</b>
-                          <span class="state">{stateWord[pair.readState]}</span>
-                        </span>
-                        <span class="chev" aria-hidden="true">›</span>
-                      </a>
-                    {:else}
-                      <span class="asset read small blocked" aria-disabled="true">
-                        <span class="badge" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor"
-                            d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
-                        </span>
-                        <span class="asset-text">
-                          <span class="kind">Read</span><b>{pair.read.label} — not written</b>
-                          <span class="state">Excluded from your progress</span>
-                        </span>
+                <div class="pair-row">
+                  {#if isAvailable(pair.read)}
+                    <a class="asset read small" class:is-done={pair.readState === 'done'} href={pair.read.href}>
+                      <span class="badge" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor"
+                          d="M12 6.2C10.5 5 8.6 4.5 6 4.5c-.9 0-1.7.1-2.4.2A.8.8 0 0 0 3 5.5v11.7c0 .5.5.9 1 .8.6-.1 1.3-.2 2-.2 2.3 0 4 .5 5.3 1.5.4.3 1 .3 1.4 0 1.3-1 3-1.5 5.3-1.5.7 0 1.4.1 2 .2.5.1 1-.3 1-.8V5.5a.8.8 0 0 0-.6-.8c-.7-.1-1.5-.2-2.4-.2-2.6 0-4.5.5-6 1.7zm0 2v8.5c-1.4-.8-3.1-1.2-5-1.2-.6 0-1.2 0-1.8.1V6.3c.6 0 1.2-.1 1.8-.1 2.1 0 3.7.5 5 1.4z"/></svg>
                       </span>
-                    {/if}
-
-                    <span class="arrow" aria-hidden="true">→</span>
-
-                    {#if isAvailable(pair.play)}
-                      <a class="asset play small" class:is-done={pair.playState === 'done'} href={pair.play.href}>
-                        <span class="badge" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M7 8h10a5 5 0 0 1 4.9 4l1 5a2.2 2.2 0 0 1-4 1.6L16.6 16H7.4l-2.3 2.6a2.2 2.2 0 0 1-4-1.6l1-5A5 5 0 0 1 7 8zm-.6 3v1.4H5v1.2h1.4V15h1.2v-1.4H9v-1.2H7.6V11zm9 .4a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
-                        </span>
-                        <span class="asset-text">
-                          <span class="kind">Play</span><b>{pair.play.label}</b>
-                          <span class="state">{stateWord[pair.playState]}</span>
-                        </span>
-                        <span class="chev" aria-hidden="true">›</span>
-                      </a>
-                    {:else}
-                      <span class="asset play small blocked" aria-disabled="true">
-                        <span class="badge" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor"
-                            d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
-                        </span>
-                        <span class="asset-text">
-                          <span class="kind">Play</span><b>{pair.play.label} — not built</b>
-                          <span class="state">Excluded from your progress</span>
-                        </span>
+                      <span class="asset-text">
+                        <span class="kind">Read</span><b>{pair.read.label}</b>
+                        <span class="state">{stateWord[pair.readState]}</span>
                       </span>
-                    {/if}
-                  </div>
-                </li>
-              {/each}
-            </ul>
+                      <span class="chev" aria-hidden="true">›</span>
+                    </a>
+                  {:else}
+                    <span class="asset read small blocked" aria-disabled="true">
+                      <span class="badge" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor"
+                          d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
+                      </span>
+                      <span class="asset-text">
+                        <span class="kind">Read</span><b>{pair.read.label} — not written</b>
+                        <span class="state">Excluded from your progress</span>
+                      </span>
+                    </span>
+                  {/if}
 
-            {#if stage.exitOutcome}
-              <p class="exit"><b>To leave this floor</b>{stage.exitOutcome}</p>
-            {/if}
-            {#if stage.standard}
-              <ul class="standard">{#each stage.standard as line}<li>{line}</li>{/each}</ul>
-            {/if}
+                  <span class="arrow" aria-hidden="true">→</span>
+
+                  {#if isAvailable(pair.play)}
+                    <a class="asset play small" class:is-done={pair.playState === 'done'} href={pair.play.href}>
+                      <span class="badge" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M7 8h10a5 5 0 0 1 4.9 4l1 5a2.2 2.2 0 0 1-4 1.6L16.6 16H7.4l-2.3 2.6a2.2 2.2 0 0 1-4-1.6l1-5A5 5 0 0 1 7 8zm-.6 3v1.4H5v1.2h1.4V15h1.2v-1.4H9v-1.2H7.6V11zm9 .4a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+                      </span>
+                      <span class="asset-text">
+                        <span class="kind">Play</span><b>{pair.play.label}</b>
+                        <span class="state">{stateWord[pair.playState]}</span>
+                      </span>
+                      <span class="chev" aria-hidden="true">›</span>
+                    </a>
+                  {:else}
+                    <span class="asset play small blocked" aria-disabled="true">
+                      <span class="badge" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor"
+                          d="M16.5 9.5V7.8a4.5 4.5 0 0 0-9 0v1.7H6v9.5h12V9.5zM9.3 7.8a2.7 2.7 0 0 1 5.4 0v1.7H9.3z"/></svg>
+                      </span>
+                      <span class="asset-text">
+                        <span class="kind">Play</span><b>{pair.play.label} — not built</b>
+                        <span class="state">Excluded from your progress</span>
+                      </span>
+                    </span>
+                  {/if}
+                </div>
+              </li>
+            {/each}
+          </ul>
+
+          {#if stage.exitOutcome}
+            <p class="exit"><b>To leave this floor</b>{stage.exitOutcome}</p>
+          {/if}
+          {#if stage.standard}
+            <ul class="standard">{#each stage.standard as line}<li>{line}</li>{/each}</ul>
           {/if}
         </li>
       {/each}
     </ol>
   </section>
 
-  <section class="doors" aria-labelledby="doors-heading">
-    <h2 id="doors-heading">Your first door</h2>
-    <p class="doors-lede">All three foundations are required before the Analyst floor. The door you
-      pick changes the order you meet them in, and nothing else.</p>
-    <div class="door-cards" role="group" aria-labelledby="doors-heading">
-      {#each DOORS as d}
-        {@const s = stageState(d, done)}
-        <button class="door" class:chosen={d.id === selectedDoor}
-                aria-pressed={d.id === selectedDoor} on:click={() => chooseDoor(d.id)}>
-          <span class="door-kind">{d.id === selectedDoor ? 'Your door' : 'Choose'}</span>
-          <b>{d.title}</b>
-          <span class="door-lede">{d.lede}</span>
-          <span class="door-tally">{s.done}/{s.total} done</span>
-        </button>
-      {/each}
-    </div>
-  </section>
 </div>
 
 <SiteFooter />
@@ -304,29 +240,16 @@
     --ink: #241f16; --paper: #f7f3e9; --card: #fffdf7; --deep: #ede5d5;
     --clay: #a85a34; --clay-soft: #f6e6db; --green: #3e9e2a; --green-soft: #e7f1e2;
     --line: #d6d0c4; --muted: #78716c; --off: #e9e6e0;
-    max-width: 1240px; margin: 0 auto; padding: 26px 24px 72px;
-    display: grid; gap: 36px; color: var(--ink);
+    max-width: 1240px; margin: 0 auto; padding: 22px 24px 72px;
+    display: grid; gap: 18px; color: var(--ink);
   }
 
-  .eyebrow { margin: 0 0 8px; color: var(--clay); font: 800 11px var(--qx-font, system-ui);
+  .eyebrow { margin: 0 0 5px; color: var(--clay); font: 800 11px var(--qx-font, system-ui);
              letter-spacing: .14em; text-transform: uppercase; }
-  h1 { margin: 0; font: 800 clamp(30px, 5vw, 46px)/1.05 Georgia, serif;
-       letter-spacing: -.02em; max-width: 17ch; }
+  h1 { margin: 0; font: 800 clamp(27px, 3.4vw, 36px)/1.08 Georgia, serif;
+       letter-spacing: -.02em; }
   .settling { color: var(--muted); font: 650 14.5px/1.55 var(--qx-font, system-ui); }
-  .pitch { margin: 14px 0 0; max-width: 58ch; color: #4a4436;
-           font: 650 16.5px/1.6 var(--qx-font, system-ui); }
-  .claims { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
-  .claims li { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px;
-               background: var(--card); color: var(--ink);
-               font: 700 13px var(--qx-font, system-ui); }
-
   /* ── the card, the one shape the whole floor is made of ────────── */
-  .now-card { margin-top: 22px; padding: 20px; border: 1px solid var(--line);
-              border-radius: 22px; background: var(--deep); }
-  .now-card.done-all { display: grid; gap: 6px; }
-  .now-where { margin: 0 0 14px; color: var(--muted);
-               font: 700 12.5px var(--qx-font, system-ui); letter-spacing: .03em; }
-
   .pair-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
   .arrow { align-self: center; color: var(--muted); font-size: 19px; font-weight: 700; }
 
@@ -350,7 +273,6 @@
   .chev { color: var(--muted); font-size: 21px; line-height: 1; }
 
   .asset.play { border-color: #e3c3ac; background: #fffaf6; }
-  .asset.play.waiting .badge { background: var(--clay-soft); color: var(--clay); }
   .asset.is-done { border-color: var(--green); background: var(--green-soft); }
   .asset.is-done .state { color: #2c6b1c; }
   a.asset { transition: transform .15s ease, border-color .15s ease; }
@@ -363,7 +285,7 @@
   .asset.blocked .badge { background: #cfcac1; color: var(--card); }
   .asset.blocked b { font-weight: 700; }
 
-  .tally { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
+  .tally { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; align-content: end; }
   .tally b { font: 800 17px var(--qx-font, system-ui); }
   .tally span { color: var(--muted); font: 650 13.5px var(--qx-font, system-ui); }
   .tally .quiet { flex-basis: 100%; font-size: 12px; }
@@ -371,19 +293,46 @@
          background: var(--off); overflow: hidden; }
   .bar i { display: block; height: 100%; background: var(--green); }
 
-  /* ── pills ─────────────────────────────────────────────────────── */
-  .pill { min-height: 44px; padding: 0 20px; border: 1px solid var(--ink); border-radius: 999px;
-          background: var(--card); color: var(--ink); cursor: pointer;
-          font: 800 13.5px var(--qx-font, system-ui); }
-  .pill:hover { background: var(--ink); color: var(--card); }
-  .pill:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+  /* ── the masthead: one line, not a landing page ──────── */
+  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 380px);
+              gap: 20px 32px; align-items: end; }
+  .mast-lede { margin: 8px 0 0; max-width: 48ch; color: #4a4436;
+               font: 650 14.5px/1.55 var(--qx-font, system-ui); }
+
+  /* ── where the learner is, in one row ────────────── */
+  .resume { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px;
+            align-items: center; padding: 13px 18px; border-radius: 16px;
+            border: 1px solid var(--clay); background: var(--clay-soft);
+            color: var(--ink); text-decoration: none; }
+  .resume-tag { padding: 5px 11px; border-radius: 999px; background: var(--clay);
+                color: #fff; font: 800 11px var(--qx-font, system-ui);
+                letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+  .resume-what { display: grid; gap: 1px; min-width: 0; }
+  .resume-what b { font: 800 16px/1.25 var(--qx-font, system-ui); overflow-wrap: anywhere; }
+  .resume-what span { color: #6b5747; font: 650 12.5px var(--qx-font, system-ui); }
+  a.resume { transition: border-color .15s ease, background .15s ease; }
+  a.resume:hover { background: #f0d9c9; border-color: var(--ink); }
+  a.resume:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .resume.settling, .resume.done-all { margin: 0; border-style: dashed;
+    border-color: var(--line); background: var(--card); }
+
+  /* ── the door, above the map it reorders ──────────── */
+  .door-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 9px 14px; }
+  .door-pick-label { font: 800 12px var(--qx-font, system-ui);
+                     letter-spacing: .12em; text-transform: uppercase; }
+  .door-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .door-pill { min-height: 38px; padding: 0 16px; cursor: pointer;
+               border: 1px solid var(--line); border-radius: 999px;
+               background: var(--card); color: var(--ink);
+               font: 700 13px var(--qx-font, system-ui); }
+  .door-pill.chosen { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .door-pill:hover:not(.chosen) { border-color: var(--ink); }
+  .door-pill:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+  .door-pick-note { flex-basis: 100%; max-width: 74ch; color: var(--muted);
+                    font: 650 12.5px/1.5 var(--qx-font, system-ui); }
 
   /* ── the floor ─────────────────────────────────────────────────── */
-  .route-head { display: flex; align-items: center; justify-content: space-between;
-                gap: 14px; flex-wrap: wrap; }
-  .route-head h2, .doors h2 { margin: 0; font: 800 23px Georgia, serif; }
-
-  .stages { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+  .stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   .stage { padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
   .stage.complete { border-color: var(--green); background: #f4faf1; }
   .stage-head { display: grid; grid-template-columns: 36px 1fr auto; gap: 13px; align-items: start; }
@@ -428,22 +377,11 @@
             letter-spacing: .1em; text-transform: uppercase; }
   .standard { margin: 12px 0 0; padding-left: 20px; font: 650 13.5px/1.75 var(--qx-font, system-ui); }
 
-  /* ── doors ─────────────────────────────────────────────────────── */
-  .doors-lede { margin: 6px 0 16px; max-width: 62ch; color: var(--muted);
-                font: 650 14.5px/1.6 var(--qx-font, system-ui); }
-  .door-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; }
-  .door { display: grid; gap: 5px; padding: 18px; text-align: left; cursor: pointer;
-          border: 1px solid var(--line); border-radius: 20px; background: var(--card); color: var(--ink); }
-  .door.chosen { border-color: var(--ink); background: var(--ink); color: var(--paper); }
-  .door-kind { color: var(--clay); font: 800 11px var(--qx-font, system-ui);
-               letter-spacing: .13em; text-transform: uppercase; }
-  .door.chosen .door-kind { color: #e0b79c; }
-  .door b { font: 800 18px var(--qx-font, system-ui); }
-  .door-lede { color: var(--muted); font: 650 13px/1.45 var(--qx-font, system-ui); }
-  .door.chosen .door-lede { color: #cdc2ae; }
-  .door-tally { color: var(--muted); font: 800 12px ui-monospace, Consolas, monospace; }
-  .door.chosen .door-tally { color: #9ec98d; }
-  .door:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+  @media (max-width: 900px) {
+    .masthead { grid-template-columns: 1fr; align-items: start; }
+    .resume { grid-template-columns: minmax(0, 1fr) auto; }
+    .resume-tag { grid-column: 1 / -1; justify-self: start; }
+  }
 
   @media (max-width: 800px) {
     /* Read stays above Play, so the order survives the stack. */
