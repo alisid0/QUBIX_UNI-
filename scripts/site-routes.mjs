@@ -57,6 +57,7 @@ const ASSET_PREVIEWS = Object.freeze([
 export function buildSiteRoutes(libraryPages = []) {
   const routes = [
     route('/', 'Core', 'Qubix University'),
+    route('/?mode=start', 'Core', 'Start · your next step'),
     route('/?mode=showcase', 'Core', 'Qubix University Showcase'),
     route('/?mode=showcase-demo', 'Core', '30-Minute Qubix Demo'),
     route('/?mode=game', 'Core', 'Academy mission hub'),

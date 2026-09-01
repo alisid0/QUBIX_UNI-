@@ -87,7 +87,7 @@ export function cleanPathForParams(input) {
   if (params.get('lab') === 'sql') {
     params.delete('lab'); path = '/tools/data-console';
   } else if (mode === 'start') {
-    path = '/start';
+    params.delete('mode'); path = '/start';
   } else if (mode === 'showcase') {
     params.delete('mode'); path = '/showcase';
   } else if (mode === 'showcase-demo') {

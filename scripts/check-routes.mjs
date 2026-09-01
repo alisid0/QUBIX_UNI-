@@ -50,4 +50,22 @@ check(canonicalRoutes.every(item => {
 }), 'every clean application path round-trips through the router', `${canonicalRoutes.length} routes`);
 
 console.log(failed ? '\n  route inventory is incomplete\n' : '\n  every finite application route is classified\n');
+// A route the router understands but Vercel does not rewrite is a 404 in
+// production and nowhere else: Vite serves the SPA for any path, so a missing
+// rewrite passes every local check and fails only once deployed. /start did
+// exactly that.
+const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+const rewritten = new Set((vercel.rewrites || [])
+  .map(r => r.source.replace('/:path*', '').replace(/\/$/, '')));
+const roots = new Set(inventory
+  .map(r => r.url)
+  // Clean paths only. The inventory also holds ?mode= aliases, which the SPA
+  // serves from / and which need no rewrite of their own.
+  .filter(u => typeof u === 'string' && u.startsWith('/') && u !== '/' && !u.includes('?'))
+  .map(u => '/' + u.split('/').filter(Boolean)[0]));
+const unserved = [...roots].filter(r => !rewritten.has(r));
+check(unserved.length === 0,
+  'every routed path root has a production rewrite',
+  unserved.length ? unserved.join(', ') + ' would 404 on Vercel' : `${roots.size} roots served`);
+
 process.exit(failed ? 1 : 0);
