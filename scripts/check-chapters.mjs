@@ -162,5 +162,14 @@ ok('the volume total is the sum of its chapters',
   volumeMinutes === SHARED_FOUNDATIONS.reduce((n, c) => n + c.book.totalMinutes, 0),
   `${Math.floor(volumeMinutes / 60)} h ${volumeMinutes % 60} min`);
 
+// The navigation strip is written by hand and fell a chapter behind: eight were
+// published and seven were listed, so Chance and Inference was live and
+// unreachable from the bar a learner navigates by.
+const nav = readFileSync(new URL('../src/lib/components/SiteNav.svelte', import.meta.url), 'utf8');
+const listed = [...nav.matchAll(/\[(\d+), '[^']+'\]/g)].map(m => Number(m[1]));
+ok('the navigation lists every published chapter',
+  SHARED_FOUNDATIONS.every(c => listed.includes(c.chapter)) && listed.length === SHARED_FOUNDATIONS.length,
+  `nav lists ${listed.length}, volume has ${SHARED_FOUNDATIONS.length}`);
+
 console.log(`\n${bad ? `${bad} check(s) FAILED` : `all checks pass, ${SHARED_FOUNDATIONS.reduce((n, c) => n + c.book.sessions.length, 0)} sessions`}`);
 process.exit(bad ? 1 : 0);

@@ -50,6 +50,8 @@
   const explicitLearnerPreview = ['variables-and-rates', 'change-lab'].includes(params.get('prototype')) || params.get('mode') === 'learner';
   const explicitReviewMode = params.get('mode') === 'review';
   const showWikiMode = params.get('mode') === 'wiki';
+  // The learning floor: what to do next, ahead of the whole curriculum.
+  const showLearningFloor = params.get('mode') === 'start';
   const showDataConsole = params.get('lab') === 'sql';
   // Factory and other authoring tools stay workshop-only. They are drafts, not
   // curriculum, and must not be reachable in a production build.
@@ -75,6 +77,10 @@
   // instead of the course. Founder decision of 2026-08-10 to put the pilot live.
   const showReviewMode = explicitReviewMode;
 
+  let LearningFloor = null;
+  if (showLearningFloor) {
+    import('./views/LearningFloor.svelte').then(m => { LearningFloor = m.default; });
+  }
   if (showFactoryMode) {
     import('./views/FactoryMode.svelte').then(m => { FactoryMode = m.default; });
   }
@@ -227,6 +233,8 @@
     <svelte:component this={GameMission} />
   {:else if showReviewMode}
     <svelte:component this={ReviewMode} />
+  {:else if showLearningFloor}
+    <svelte:component this={LearningFloor} />
   {:else if showWikiMode}
     <WikiMode />
   {:else if explicitLearnerPreview || $view === 'lesson'}
