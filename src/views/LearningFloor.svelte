@@ -103,30 +103,18 @@
 </svelte:head>
 
 <div class="floor-page">
-<SiteNav />
+<SiteNav subjects={Boolean(stage)} />
 
-<div class="floor">
-  <!-- The map is the page.
-       What used to stand in front of it was a pitch, a claims list and a
-       full-size second copy of the current pair, which pushed the first row of
-       the floor below the fold on every viewport smaller than a large desktop.
-       The floor already shows where the learner is, so showing it twice cost
-       the thing they came for. Now: a line, a strip, the door, the map. -->
-  <nav class="stage-nav" aria-label="Floor">
-    <a class="stage-link" class:here={!stage} href="/">The whole floor</a>
-    {#each stages as st}
-      <a class="stage-link" class:here={stage === st.id} href={`/floor/${st.id}`}>{st.title}</a>
-    {/each}
-  </nav>
-
+<div class="floor" class:whole={!stage}>
+  {#if stage}
   <header class="masthead">
     <div class="mast-text">
       <p class="eyebrow">{unknownStage ? 'Qubix University' : one ? 'Qubix University · one stage' : 'No experience needed · start where you are'}</p>
-      <h1>{unknownStage ? 'No such stage' : one ? one.title : 'Choose a way in. Learn the whole craft.'}</h1>
+      <h1>{unknownStage ? 'No such stage' : one ? one.title : 'Read it. Then prove it.'}</h1>
       <p class="mast-lede">{unknownStage
         ? 'The address names a stage this floor does not have.'
         : one ? one.lede
-          : 'Begin with concepts, Python or SQL. Every route pairs a short explanation with practical work, and every route leads to the same analyst standard.'}</p>
+          : 'Choose Concepts, Python or SQL as your first door. The order changes; the complete foundation does not.'}</p>
     </div>
 
     {#if unknownStage}
@@ -168,6 +156,7 @@
     <p class="resume done-all">{one
       ? `Every live step on ${one.title} is done.`
       : 'Every live step on the floor is done.'} New material joins the floor as it is written.</p>
+  {/if}
   {/if}
 
   {#if !stage}
@@ -366,16 +355,6 @@
          background: var(--off); overflow: hidden; }
   .bar i { display: block; height: 100%; background: var(--green); }
 
-  /* ── one line of floor navigation, above everything ────────────── */
-  .stage-nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 5px;
-               border: 1px solid var(--line); border-radius: 999px; background: rgba(255,253,247,.72); }
-  .stage-link { padding: 7px 13px; border-radius: 999px; text-decoration: none;
-                border: 1px solid transparent; color: var(--muted);
-                font: 750 12.5px var(--qx-font, system-ui); }
-  .stage-link:hover { border-color: var(--line); color: var(--ink); }
-  .stage-link.here { border-color: var(--ink); background: var(--ink); color: var(--paper); }
-  .stage-link:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
-
   /* What a stage holds, rather than how far through it you are. On a stage you
      have only just opened, the shape is the more useful of the two. */
   .shape { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; align-content: end; }
@@ -502,8 +481,6 @@
 
   @media (max-width: 760px) {
     .floor { padding-inline: 14px; }
-    .stage-nav { flex-wrap: nowrap; overflow-x: auto; border-radius: 14px; }
-    .stage-link { flex: none; }
     .masthead { padding: 25px 20px; }
     .door-intro { grid-template-columns: 1fr; }
     .door-cards { grid-template-columns: 1fr; }
@@ -529,5 +506,161 @@
   @media (forced-colors: active) {
     .asset.blocked { border: 2px dashed CanvasText; }
     .asset.is-done, .seq-done { outline: 2px solid CanvasText; }
+  }
+
+  /* Approved homepage direction B · Learning ledger.
+     This is a presentation decision only. It does not change the status of
+     any lesson, mission or curriculum record shown on the floor. */
+  .floor-page { background: #e8e0d1; }
+  .floor {
+    --paper: #f4efe4;
+    --card: #fffdf7;
+    --deep: #e5ddcd;
+    --line: #c9c0ae;
+    padding-top: 18px;
+    gap: 18px;
+  }
+
+  .masthead {
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 285px);
+    padding: 27px 31px;
+    border: 5px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    box-shadow: 9px 9px 0 rgba(36,31,22,.15);
+  }
+  .masthead h1 { font-weight: 400; }
+  .mast-lede { max-width: 720px; font-family: Georgia, serif; font-size: 17px; font-weight: 400; }
+  .tally, .shape {
+    padding: 16px 18px;
+    border-left: 4px solid var(--green);
+    background: var(--green-soft);
+  }
+  .tally .bar, .shape .bar { flex-basis: 100%; height: 7px; background: rgba(36,31,22,.13); }
+
+  .resume {
+    min-height: 68px;
+    padding: 0;
+    grid-template-columns: 112px minmax(0, 1fr) auto;
+    gap: 0;
+    border: 3px solid var(--ink);
+    border-radius: 0;
+    background: var(--card);
+    box-shadow: 7px 7px 0 var(--ink);
+  }
+  .resume-tag {
+    align-self: stretch;
+    display: grid;
+    place-items: center;
+    padding: 10px;
+    border-radius: 0;
+    background: var(--clay);
+    text-align: center;
+  }
+  .resume-what { padding: 15px 18px; }
+  .resume-what b { font-family: Georgia, serif; font-size: 20px; font-weight: 700; }
+  .resume > .chev { padding: 0 22px; color: var(--ink); }
+  a.resume:hover { background: var(--card); border-color: var(--clay); box-shadow: 7px 7px 0 var(--clay); }
+
+  .door-pick {
+    gap: 15px;
+    padding: 23px;
+    border: 4px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+  }
+  .door-intro { grid-template-columns: minmax(0, 1fr) minmax(250px, .7fr); }
+  .door-intro h2 { font-size: clamp(25px, 3vw, 34px); font-weight: 400; }
+  .door-cards { gap: 10px; }
+  .door-card {
+    grid-template-columns: 58px 1fr auto;
+    align-items: center;
+    min-height: 154px;
+    padding: 14px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .door-card:hover { transform: translateY(-2px); box-shadow: 5px 5px 0 rgba(36,31,22,.15); }
+  .door-card.chosen { padding: 13px; border: 3px solid var(--clay); background: var(--clay-soft); box-shadow: 5px 5px 0 rgba(36,31,22,.15); }
+  .door-symbol { width: 50px; min-width: 50px; height: 50px; border-radius: 0; }
+  .door-copy b { font-family: Georgia, serif; font-size: 18px; }
+  .door-action {
+    grid-column: 1 / -1;
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+
+  .stage {
+    padding: 21px;
+    border: 4px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    box-shadow: 7px 7px 0 rgba(36,31,22,.14);
+  }
+  .stage + .stage { margin-top: 7px; }
+  .stage-head h3 { font-family: Georgia, serif; font-size: 21px; }
+  .stage-no { border-radius: 0; }
+  .pairs { border-radius: 0; background: var(--deep); }
+  .pair-line { border-radius: 0; }
+  .asset, .asset.small { border: 2px solid var(--ink); border-radius: 0; box-shadow: 3px 3px 0 rgba(36,31,22,.09); }
+  .asset.play { border-color: var(--clay); background: #fff8f2; }
+  .asset.is-done { border-color: var(--green); background: var(--green-soft); }
+  .badge, .asset.small .badge { border-radius: 0; }
+
+  @media (max-width: 900px) {
+    .masthead { grid-template-columns: 1fr; }
+    .resume { grid-template-columns: 104px minmax(0, 1fr) auto; }
+    .resume-tag { grid-column: auto; justify-self: stretch; }
+  }
+
+  @media (max-width: 760px) {
+    .masthead { border-width: 4px; padding: 23px 19px; box-shadow: 6px 6px 0 rgba(36,31,22,.15); }
+    .resume { grid-template-columns: 1fr; box-shadow: 5px 5px 0 var(--ink); }
+    .resume-tag { min-height: 38px; }
+    .resume > .chev { padding: 0 18px 14px; text-align: right; }
+    .door-pick { padding: 19px 14px; }
+    .door-intro { grid-template-columns: 1fr; }
+    .door-card { grid-template-columns: 52px 1fr; }
+    .stage { padding: 16px 12px; border-width: 3px; box-shadow: 5px 5px 0 rgba(36,31,22,.14); }
+  }
+
+  /* Softer controls sit on top of the square ledger system. Restricting the
+     shape to current state and actions keeps it meaningful. */
+  .resume-tag {
+    align-self: center;
+    min-height: 36px;
+    margin: 0 13px;
+    padding-inline: 15px;
+    border-radius: 999px;
+  }
+
+  .door-card.chosen .door-action {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--clay);
+    color: #fff;
+  }
+  .door-card {
+    padding-inline: 24px;
+    border-radius: 28px;
+  }
+  .door-card.chosen { padding-inline: 23px; }
+  .door-symbol {
+    width: 50px;
+    border-radius: 16px;
+  }
+  .door-action { padding-inline: 8px; }
+
+  .asset, .asset.small {
+    padding-inline: 18px;
+    border-radius: 999px;
+  }
+  .badge, .asset.small .badge { border-radius: 50%; }
+
+  @media (max-width: 760px) {
+    .resume-tag { justify-self: start; margin: 12px 14px 0; }
   }
 </style>
