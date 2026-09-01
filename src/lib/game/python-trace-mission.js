@@ -12,8 +12,9 @@
 // code and watch the values move, and the two can never disagree.
 //
 // The subset is deliberately small: assignment, arithmetic, comparison, if,
-// for-over-a-list, and a print. That is exactly what chapter 06 teaches, and
-// nothing here needs more.
+// for-over-a-list, and a print, plus def/return/raise and calls, which 06.03
+// needs for the function workshop. Everything chapter 06 teaches and nothing
+// more; anything beyond this belongs in a real runtime, not in here.
 
 /* --------------------------------------------------------------- render -- */
 
@@ -28,8 +29,13 @@ export function exprText(e) {
   if (e.gt) return `${exprText(e.gt[0])} > ${exprText(e.gt[1])}`;
   if (e.lt) return `${exprText(e.lt[0])} < ${exprText(e.lt[1])}`;
   if (e.isNone) return `${exprText(e.isNone)} is None`;
+  if (e.isZero) return `${exprText(e.isZero)} == 0`;
+  if (e.sub) return e.sub.map(exprText).join(' - ');
   if (e.field) return `${exprText(e.field[0])}["${e.field[1]}"]`;
   if (e.len) return `len(${exprText(e.len)})`;
+  if (e.call) return `${e.call}(${(e.args || []).map(exprText).join(', ')})`;
+  if (e.div) return e.div.map(exprText).join(' / ');
+  if (e.round) return `round(${exprText(e.round[0])}${e.round[1] ? `, ${e.round[1]}` : ''})`;
   return String(e);
 }
 
@@ -49,6 +55,13 @@ export function sourceOf(program, indent = 0) {
         lines.push({ text: `${pad}else:`, node: st });
         lines.push(...sourceOf(st.else, indent + 1));
       }
+    } else if (st.def) {
+      lines.push({ text: `${pad}def ${st.def}(${st.params.join(', ')}):`, node: st });
+      lines.push(...sourceOf(st.body, indent + 1));
+    } else if (st.return !== undefined) {
+      lines.push({ text: `${pad}return ${exprText(st.return)}`, node: st });
+    } else if (st.raise) {
+      lines.push({ text: `${pad}raise ValueError(${lit(st.raise)})`, node: st });
     } else if (st.print) lines.push({ text: `${pad}print(${exprText(st.print)})`, node: st });
   }
   return lines;
@@ -57,10 +70,33 @@ export function sourceOf(program, indent = 0) {
 /* -------------------------------------------------------------- execute -- */
 
 class PyTypeError extends Error {}
+/** A ValueError the program raised on purpose. */
+class PyValueError extends Error {}
 
 function value(e, env) {
   if (e === null || typeof e !== 'object') return e;
   if (e.var !== undefined) return env[e.var];
+  // A call to a function defined earlier in the same program. Functions live in
+  // the environment like any other name, which is the point chapter 06.03 makes.
+  if (e.call) {
+    const fn = env[e.call];
+    if (!fn || !fn.__fn) throw new PyTypeError(`'${pyType(fn)}' object is not callable`);
+    const local = { ...env };
+    fn.params.forEach((p, i) => { local[p] = value(e.args[i], env); });
+    return callBody(fn.body, local);
+  }
+  if (e.round) {
+    const [n, places] = [value(e.round[0], env), e.round[1] ?? 0];
+    if (n === null) throw new PyTypeError("type NoneType doesn't define __round__ method");
+    const f = 10 ** places;
+    return Math.round(n * f) / f;
+  }
+  if (e.div) {
+    const [a, b] = e.div.map(x => value(x, env));
+    if (a === null || b === null) throw new PyTypeError(`unsupported operand type(s) for /: '${pyType(a)}' and '${pyType(b)}'`);
+    if (b === 0) throw new PyValueError('division by zero');
+    return a / b;
+  }
   if (e.field) {
     const row = value(e.field[0], env);
     return row === undefined || row === null ? null : row[e.field[1]];
@@ -76,10 +112,51 @@ function value(e, env) {
   if (e.gt) { const [a, b] = e.gt.map(x => value(x, env)); return cmp(a, b, '>'); }
   if (e.lt) { const [a, b] = e.lt.map(x => value(x, env)); return cmp(a, b, '<'); }
   if (e.isNone) return value(e.isNone, env) === null;
+  if (e.isZero) return value(e.isZero, env) === 0;
+  if (e.sub) {
+    const [a, b] = e.sub.map(x => value(x, env));
+    if (a === null || b === null) throw new PyTypeError(`unsupported operand type(s) for -: '${pyType(a)}' and '${pyType(b)}'`);
+    return a - b;
+  }
   return e;
 }
 
-const pyType = v => (v === null ? 'NoneType' : typeof v === 'string' ? 'str' : Number.isInteger(v) ? 'int' : 'float');
+/**
+ * Runs a function body and returns what it returns.
+ *
+ * A function that falls off the end returns None, exactly as Python does, and
+ * that is not a detail: "it returned None" versus "it returned 0" is the whole
+ * argument of 06.03, so the runner has to get it right rather than default to
+ * something tidier.
+ */
+const NO_RETURN = Symbol('fell off the end');
+
+function walk(body, local) {
+  for (const st of body) {
+    if (st.set !== undefined) local[st.set] = value(st.value, local);
+    else if (st.return !== undefined) return value(st.return, local);
+    else if (st.raise) throw new PyValueError(st.raise);
+    else if (st.if) {
+      const branch = value(st.if, local) ? st.then : st.else;
+      if (branch) {
+        const r = walk(branch, local);
+        // Only a real `return` stops the walk. Falling out of an if is not
+        // returning, and conflating the two would hide the exact bug this
+        // mission is about.
+        if (r !== NO_RETURN) return r;
+      }
+    }
+  }
+  return NO_RETURN;
+}
+
+function callBody(body, local) {
+  const r = walk(body, local);
+  return r === NO_RETURN ? null : r;
+}
+
+const pyType = v => (v === null ? 'NoneType' : typeof v === 'string' ? 'str'
+  : v && v.__fn ? 'function' : Number.isInteger(v) ? 'int' : 'float');
 
 function cmp(a, b, op) {
   if (a === null || b === null) throw new PyTypeError(`'${op}' not supported between instances of '${pyType(a)}' and '${pyType(b)}'`);
@@ -116,6 +193,9 @@ export function runProgram(program, data = {}) {
         step(`${exprText(st.if)} → ${took}`, st);
         if (took) exec(st.then);
         else if (st.else) exec(st.else);
+      } else if (st.def) {
+        env[st.def] = { __fn: true, params: st.params, body: st.body };
+        step(`def ${st.def}`, st);
       } else if (st.print) {
         const v = value(st.print, env);
         output.push(lit(v));
@@ -126,9 +206,9 @@ export function runProgram(program, data = {}) {
 
   try { exec(program); }
   catch (e) {
-    if (!(e instanceof PyTypeError)) throw e;
-    error = `TypeError: ${e.message}`;
-    step(error, null);
+    if (e instanceof PyTypeError) { error = `TypeError: ${e.message}`; step(error, null); }
+    else if (e instanceof PyValueError) { error = `ValueError: ${e.message}`; step(error, null); }
+    else throw e;
   }
   return { trace, output, error, env };
 }

@@ -166,6 +166,8 @@
         return import('./views/RateDeskMission.svelte');
       } else if (mission === 'python-trace') {
         return import('./views/PythonTraceMission.svelte');
+      } else if (mission === 'function-workshop') {
+        return import('./views/FunctionWorkshopMission.svelte');
       } else if (mission === 'data-visualization') {
         return import('./views/DataVisualizationMission.svelte');
       } else if (mission === 'distribution-desk') {

@@ -99,6 +99,9 @@ export const ROOMS = Object.freeze([
       Object.freeze({ slug: 'region-grain', x: 36, y: 70, at: 'the regional reporting desk' }),
       Object.freeze({ slug: 'zone-price', x: 66, y: 72, at: 'the pricing desk' }),
       Object.freeze({ slug: 'python-trace', x: 79, y: 50, at: 'the dual-monitor desk' }),
+      // Next to python-trace: one reads a program, the other packages a rule as
+      // a function somebody else will call.
+      Object.freeze({ slug: 'function-workshop', x: 66, y: 26, at: 'the utilities bench' }),
       Object.freeze({ slug: 'result-checkpoint', x: 50, y: 76, at: 'the release terminal' })
     ])
   }),

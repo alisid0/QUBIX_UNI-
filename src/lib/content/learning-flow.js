@@ -142,7 +142,7 @@ export const DOORS = Object.freeze([
         play('p-python-trace', 'Read the Program', 'python-trace')),
       pair('p3', 3, 'Functions',
         read('r-6-3', 'Giving a piece of work a name', 6, 3),
-        unbuilt('p-functions', 'Function Workshop', 'Named in the flow brief. Not built.')),
+        play('p-functions', 'The Function Workshop', 'function-workshop')),
       pair('p4', 4, 'Tables in code',
         read('r-6-4', 'Collections, and a table in code', 6, 4),
         unbuilt('p-pandas', 'Pandas Superstore Lab', 'Named in the flow brief. Not built.')),
