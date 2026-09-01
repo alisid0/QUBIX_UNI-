@@ -121,12 +121,12 @@
 
   <header class="masthead">
     <div class="mast-text">
-      <p class="eyebrow">{unknownStage ? 'Qubix University' : one ? 'Qubix University · one stage' : 'Qubix University'}</p>
-      <h1>{unknownStage ? 'No such stage' : one ? one.title : 'The whole floor'}</h1>
+      <p class="eyebrow">{unknownStage ? 'Qubix University' : one ? 'Qubix University · one stage' : 'No experience needed · start where you are'}</p>
+      <h1>{unknownStage ? 'No such stage' : one ? one.title : 'Choose a way in. Learn the whole craft.'}</h1>
       <p class="mast-lede">{unknownStage
         ? 'The address names a stage this floor does not have.'
         : one ? one.lede
-          : 'Read the idea, then play the consequence. Twenty-seven steps across five stages, ending on one standard.'}</p>
+          : 'Begin with concepts, Python or SQL. Every route pairs a short explanation with practical work, and every route leads to the same analyst standard.'}</p>
     </div>
 
     {#if unknownStage}
@@ -174,19 +174,24 @@
 
   <!-- The door reorders the map, so it is chosen above the map rather than
        five thousand pixels below it. -->
-  <div class="door-pick">
-    <span class="door-pick-label">Your first door</span>
-    <div class="door-pills" role="group" aria-label="Your first door">
+  <section class="door-pick" aria-labelledby="door-heading">
+    <div class="door-intro">
+      <span class="door-pick-label">Choose your first door</span>
+      <h2 id="door-heading">What sounds most interesting today?</h2>
+      <p>Pick the route that feels easiest to enter. You can change it at any time; your progress stays with you.</p>
+    </div>
+    <div class="door-cards" role="group" aria-label="Choose your first learning door">
       {#each DOORS as d}
-        <button class="door-pill" class:chosen={d.id === selectedDoor}
+        <button class="door-card" class:chosen={d.id === selectedDoor}
                 aria-pressed={d.id === selectedDoor} on:click={() => chooseDoor(d.id)}>
-          {d.title}
+          <span class="door-symbol" aria-hidden="true">{d.id === 'concepts' ? 'IDEA' : d.id === 'python' ? 'PY' : 'SQL'}</span>
+          <span class="door-copy"><b>{d.title}</b><em>{d.lede}</em></span>
+          <span class="door-action">{d.id === selectedDoor ? 'Selected · shown first' : `Choose ${d.id === 'concepts' ? 'concepts' : d.id}`}</span>
         </button>
       {/each}
     </div>
-    <span class="door-pick-note">All three are required before the Analyst floor.
-      The door changes the order you meet them in, and nothing else.</span>
-  </div>
+    <span class="door-pick-note">All three doors are part of the complete foundation. This choice only changes which one you meet first.</span>
+  </section>
   {/if}
 
   <section class="route" aria-label="The whole floor">
@@ -295,7 +300,8 @@
 <style>
   /* The scroller. Without it the floor is clipped at viewport height by the
      shell, which is fixed and hidden from the original full-screen build. */
-  .floor-page { height: 100%; overflow-y: auto; overscroll-behavior: contain; }
+  .floor-page { height: 100%; overflow-y: auto; overscroll-behavior: contain;
+                background: radial-gradient(circle at 12% 0, #fffaf1 0, transparent 31%), #eee8dc; }
 
   /* Prototype shapes, Qubix colours. Rounded cards, circular badges, pills and
      chevrons come from the map; the hues are the ones the rest of the site
@@ -306,14 +312,14 @@
     --clay: #a85a34; --clay-soft: #f6e6db; --green: #3e9e2a; --green-soft: #e7f1e2;
     --play: #e8631f; --play-line: #f0b492;
     --line: #d6d0c4; --muted: #78716c; --off: #e9e6e0;
-    max-width: 1240px; margin: 0 auto; padding: 22px 24px 72px;
-    display: grid; gap: 18px; color: var(--ink);
+    max-width: 1240px; margin: 0 auto; padding: 24px 24px 78px;
+    display: grid; gap: 22px; color: var(--ink);
   }
 
   .eyebrow { margin: 0 0 5px; color: var(--clay); font: 800 11px var(--qx-font, system-ui);
              letter-spacing: .14em; text-transform: uppercase; }
-  h1 { margin: 0; font: 800 clamp(27px, 3.4vw, 36px)/1.08 Georgia, serif;
-       letter-spacing: -.02em; }
+  h1 { max-width: 760px; margin: 0; font: 700 clamp(34px, 5vw, 54px)/1.01 Georgia, serif;
+       letter-spacing: -.035em; text-wrap: balance; }
   .settling { color: var(--muted); font: 650 14.5px/1.55 var(--qx-font, system-ui); }
   /* ── the card, the one shape the whole floor is made of ────────── */
   .pair-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
@@ -321,7 +327,8 @@
 
   .asset { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center;
            padding: 16px 18px; border-radius: 16px; text-decoration: none;
-           border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+           border: 1px solid var(--line); background: var(--card); color: var(--ink);
+           box-shadow: 0 2px 0 rgba(36,31,22,.06); }
   .asset.small { padding: 11px 14px; border-radius: 13px; gap: 10px; }
 
   /* The badge carries what the prototype used a second hue for. */
@@ -341,8 +348,8 @@
   .asset.play { border-color: var(--play-line); background: #fffaf6; }
   .asset.is-done { border-color: var(--green); background: var(--green-soft); }
   .asset.is-done .state { color: #2c6b1c; }
-  a.asset { transition: transform .15s ease, border-color .15s ease; }
-  a.asset:hover { transform: translateY(-2px); border-color: var(--ink); }
+  a.asset { transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  a.asset:hover { transform: translateY(-3px); border-color: var(--ink); box-shadow: 0 9px 20px rgba(36,31,22,.1); }
   a.asset:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
 
   /* Unavailable: dashed, quiet, a padlock, and said in words. */
@@ -360,7 +367,8 @@
   .bar i { display: block; height: 100%; background: var(--green); }
 
   /* ── one line of floor navigation, above everything ────────────── */
-  .stage-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+  .stage-nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 5px;
+               border: 1px solid var(--line); border-radius: 999px; background: rgba(255,253,247,.72); }
   .stage-link { padding: 7px 13px; border-radius: 999px; text-decoration: none;
                 border: 1px solid transparent; color: var(--muted);
                 font: 750 12.5px var(--qx-font, system-ui); }
@@ -382,16 +390,19 @@
   .resume a { color: var(--clay); }
 
   /* ── the masthead: one line, not a landing page ──────── */
-  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 380px);
-              gap: 20px 32px; align-items: end; }
-  .mast-lede { margin: 8px 0 0; max-width: 48ch; color: #4a4436;
-               font: 650 14.5px/1.55 var(--qx-font, system-ui); }
+  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 350px);
+              gap: 25px 42px; align-items: end; padding: 30px clamp(22px,4vw,42px);
+              border: 1px solid var(--line); border-radius: 24px;
+              background: linear-gradient(125deg, rgba(255,253,247,.98), rgba(246,230,219,.72));
+              box-shadow: 0 12px 30px rgba(36,31,22,.075); }
+  .mast-lede { margin: 12px 0 0; max-width: 62ch; color: #4a4436;
+               font: 600 15.5px/1.62 var(--qx-font, system-ui); }
 
   /* ── where the learner is, in one row ────────────── */
   .resume { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px;
-            align-items: center; padding: 13px 18px; border-radius: 16px;
+            align-items: center; min-height: 64px; padding: 14px 19px; border-radius: 16px;
             border: 1px solid var(--clay); background: var(--clay-soft);
-            color: var(--ink); text-decoration: none; }
+            color: var(--ink); text-decoration: none; box-shadow: 0 5px 0 rgba(168,90,52,.11); }
   .resume-tag { padding: 5px 11px; border-radius: 999px; background: var(--clay);
                 color: #fff; font: 800 11px var(--qx-font, system-ui);
                 letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
@@ -404,24 +415,39 @@
   .resume.settling, .resume.done-all { margin: 0; border-style: dashed;
     border-color: var(--line); background: var(--card); }
 
-  /* ── the door, above the map it reorders ──────────── */
-  .door-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 9px 14px; }
-  .door-pick-label { font: 800 12px var(--qx-font, system-ui);
-                     letter-spacing: .12em; text-transform: uppercase; }
-  .door-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-  .door-pill { min-height: 38px; padding: 0 16px; cursor: pointer;
-               border: 1px solid var(--line); border-radius: 999px;
-               background: var(--card); color: var(--ink);
-               font: 700 13px var(--qx-font, system-ui); }
-  .door-pill.chosen { border-color: var(--ink); background: var(--ink); color: var(--paper); }
-  .door-pill:hover:not(.chosen) { border-color: var(--ink); }
-  .door-pill:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
-  .door-pick-note { flex-basis: 100%; max-width: 74ch; color: var(--muted);
-                    font: 650 12.5px/1.5 var(--qx-font, system-ui); }
+  /* ── the door, now a real invitation rather than three small pills ───── */
+  .door-pick { display: grid; gap: 18px; padding: 25px; border: 1px solid var(--line);
+               border-radius: 22px; background: rgba(255,253,247,.72); }
+  .door-intro { display: grid; grid-template-columns: minmax(0,1fr) minmax(260px,.72fr);
+                gap: 6px 30px; align-items: end; }
+  .door-pick-label { grid-column: 1/-1; color: var(--clay); font: 850 11px var(--qx-font, system-ui);
+                     letter-spacing: .14em; text-transform: uppercase; }
+  .door-intro h2 { margin: 0; font: 700 clamp(24px,3vw,32px)/1.08 Georgia,serif; letter-spacing: -.02em; }
+  .door-intro p { margin: 0; color: var(--muted); font: 600 14px/1.55 var(--qx-font,system-ui); }
+  .door-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 11px; }
+  .door-card { display: grid; grid-template-columns: auto 1fr; gap: 13px; align-items: start;
+               min-width: 0; min-height: 154px; padding: 17px; cursor: pointer; text-align: left;
+               border: 1px solid var(--line); border-radius: 16px; background: var(--card); color: var(--ink);
+               box-shadow: 0 3px 0 rgba(36,31,22,.065); transition: transform .16s ease,border-color .16s ease,box-shadow .16s ease; }
+  .door-card:hover { transform: translateY(-4px); border-color: var(--clay); box-shadow: 0 11px 22px rgba(36,31,22,.11); }
+  .door-card.chosen { border: 2px solid var(--clay); padding: 16px; background: var(--clay-soft); }
+  .door-symbol { display: grid; place-items: center; min-width: 49px; height: 38px; padding: 0 7px;
+                 border-radius: 10px; background: var(--ink); color: var(--card);
+                 font: 900 11px var(--qx-font,system-ui); letter-spacing: .08em; }
+  .door-card.chosen .door-symbol { background: var(--clay); }
+  .door-copy { display: grid; gap: 6px; min-width: 0; }
+  .door-copy b { font: 800 16px/1.2 var(--qx-font,system-ui); }
+  .door-copy em { color: var(--muted); font: 600 12.5px/1.45 var(--qx-font,system-ui); font-style: normal; }
+  .door-action { grid-column: 1/-1; align-self: end; display: flex; justify-content: space-between;
+                 color: var(--clay); font: 850 11.5px var(--qx-font,system-ui); }
+  .door-action:after { content: '→'; }
+  .door-card:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
+  .door-pick-note { color: var(--muted); font: 650 12.5px/1.5 var(--qx-font, system-ui); }
 
   /* ── the floor ─────────────────────────────────────────────────── */
   .stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-  .stage { padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
+  .stage { padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--card);
+           box-shadow: 0 4px 0 rgba(36,31,22,.055); }
   /* A stage on its own page is the page, not a card sitting on one. */
   .stage.solo { padding: 0; border: 0; background: none; }
   .stage.solo .cols { margin-top: 0; }
@@ -474,6 +500,16 @@
     .resume-tag { grid-column: 1 / -1; justify-self: start; }
   }
 
+  @media (max-width: 760px) {
+    .floor { padding-inline: 14px; }
+    .stage-nav { flex-wrap: nowrap; overflow-x: auto; border-radius: 14px; }
+    .stage-link { flex: none; }
+    .masthead { padding: 25px 20px; }
+    .door-intro { grid-template-columns: 1fr; }
+    .door-cards { grid-template-columns: 1fr; }
+    .door-card { min-height: 130px; }
+  }
+
   @media (max-width: 800px) {
     /* Read stays above Play, so the order survives the stack. */
     .pair-row { grid-template-columns: 1fr; }
@@ -486,8 +522,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    a.asset { transition: none; }
-    a.asset:hover { transform: none; }
+    a.asset, .door-card { transition: none; }
+    a.asset:hover, .door-card:hover { transform: none; }
   }
 
   @media (forced-colors: active) {

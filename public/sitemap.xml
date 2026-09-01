@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://qubix.university/</loc></url>
   <url><loc>https://qubix.university/start</loc></url>
+  <url><loc>https://qubix.university/floor/shared-data-truths</loc></url>
+  <url><loc>https://qubix.university/floor/concepts</loc></url>
+  <url><loc>https://qubix.university/floor/python</loc></url>
+  <url><loc>https://qubix.university/floor/sql</loc></url>
+  <url><loc>https://qubix.university/floor/analyst</loc></url>
   <url><loc>https://qubix.university/showcase</loc></url>
   <url><loc>https://qubix.university/showcase/demo</loc></url>
   <url><loc>https://qubix.university/academy</loc></url>
