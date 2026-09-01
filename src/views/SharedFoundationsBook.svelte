@@ -156,9 +156,6 @@
     resetting = false;
   }
 
-  const sessionComplete = item => progress.study.includes(item.id)
-    && (!item.exercise || progress.exercises.includes(item.id))
-    && progress.practice.includes(item.id);
 </script>
 
 <svelte:head>
@@ -169,7 +166,7 @@
 <div class="reader qx-shell">
   <div class="sticky-head">
   <header class="topbar">
-    <a class="back" href="?mode=game&mission=foundations">← Foundations</a>
+    <a class="back" href="/">← The floor</a>
     <div class="mode-centre">
       <div class="identity"><b>QUBIX UNIVERSITY</b><span>{book.status}</span></div>
       <LearningModeSwitch compact current="read" readHref={`?mode=game&mission=shared-book&chapter=${chapterNumber}&session=${activeIndex + 1}`} doHref={session.practice.href} />
@@ -187,23 +184,10 @@
       <p class="hero-eyebrow">CHAPTER {String(chapterNumber).padStart(2, '0')} · {formatTime(book.totalMinutes).toUpperCase()} · {book.sessions.length} BRIEFINGS</p>
       <h1>{book.title}</h1>
       <p class="hero-sub">Each lesson begins with a familiar situation, explains why the idea matters, gives it a precise name and then lets you use it inside Qubix Superstore.</p>
-      <a class="floor-link" href="?mode=game">Return to your Superstore shift <span aria-hidden="true">→</span></a>
+      <a class="floor-link" href="/">See this chapter on the floor <span aria-hidden="true">→</span></a>
     </div>
   </header>
   <div class="layout">
-    <aside class="toc">
-      <div class="time"><small>CHAPTER ROUTE</small><b>{completedItems} / {totalItems} steps</b><small>Read, apply and practise stay paired</small></div>
-      <nav aria-label="Book sessions">
-        {#each book.sessions as item, index}
-          <button class:active={activeIndex === index} on:click={() => openSession(index)}>
-            <span>{item.number}</span>
-            <div><small>{activeIndex === index ? 'OPEN' : sessionComplete(item) ? 'COMPLETE' : 'BRIEFING'} · {formatTime(item.studyMinutes + item.playMinutes)}</small><b>{item.title}</b></div>
-            <em class:done={sessionComplete(item)}>{sessionComplete(item) ? '✓' : '○'}</em>
-          </button>
-        {/each}
-      </nav>
-      <div class="progress-copy"><b>{completedItems} of {totalItems} steps complete</b><span>{mapped ? 'Five briefings and five missions. An applied exercise sits inside its briefing.' : 'This chapter includes one additional applied exercise between reading and mission work.'}</span>{#if completedItems || Object.keys(progress.notes).length}<button class:confirm={resetting} on:click={resetProgress}>{resetting ? 'Confirm reset' : 'Reset saved progress'}</button>{/if}</div>
-    </aside>
 
     <main>
       {#if partComplete}
@@ -333,8 +317,17 @@
             <span class="pp-done">That is the end of the path.</span>
           {:else if activeIndex < book.sessions.length - 1}
             <button class="next" on:click={() => openSession(activeIndex + 1)}>Next session →</button>
-          {:else}<a class="next" href="?mode=game&mission=foundations">Return to Foundations →</a>{/if}
+          {:else}<a class="next" href="/">Back to the floor →</a>{/if}
         </footer>
+
+        {#if completedItems || Object.keys(progress.notes).length}
+          <p class="reset-row">
+            <button class:confirm={resetting} on:click={resetProgress}>
+              {resetting ? 'Confirm reset' : 'Reset saved progress'}
+            </button>
+            <span>Clears this chapter's saved reading and notes on this device.</span>
+          </p>
+        {/if}
       </article>
     </main>
   </div>
@@ -380,28 +373,17 @@
   .overall i { width: 90px; height: 6px; overflow: hidden; border-radius: 99px; background: #d8d0be; }
   .overall em { display: block; height: 100%; border-radius: inherit; background: #5f7355; transition: width .25s ease; }
 
-  .layout { width: min(100%, 1240px); margin: 0 auto; padding: 28px clamp(14px, 3vw, 34px) 54px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 22px; align-items: start; }
-  .toc { min-width: 0; position: sticky; top: 88px; padding: 21px; border: 1px solid #d8d0be; border-radius: 16px; background: #fff; }
-  .time { margin: 17px 0; padding: 13px 14px; display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; border-left: 4px solid #5f7355; background: #eef1e9; }
-  .time small { color: #756c5c; font: 800 11px var(--qx-font); letter-spacing: .08em; }
-  .time small:last-child { grid-column: 1 / -1; }
-  .time b { color: #4e6548; font: 900 15px var(--qx-font); }
-  .toc nav { display: grid; gap: 7px; }
-  .toc nav button { width: 100%; min-height: 62px; padding: 9px; display: grid; grid-template-columns: 30px 1fr 18px; align-items: center; gap: 9px; border: 1px solid #ded7c8; border-radius: 10px; background: #fbf9f4; color: #241f16; text-align: left; cursor: pointer; }
-  .toc nav button:hover { border-color: #a99d88; }
-  .toc nav button.active { border: 2px solid #5f7355; background: #f4f6f1; }
-  .toc nav button > span { display: grid; place-items: center; height: 30px; border-radius: 7px; background: #ece7dc; font: 900 11.5px var(--qx-font); }
-  .toc nav button.active > span { background: #5f7355; color: #fff; }
-  .toc nav button div { display: grid; gap: 3px; }
-  .toc nav button b { font: 850 12px var(--qx-font); }
-  .toc nav button small { color: #756c5c; font: 650 11px var(--qx-font); }
-  .toc nav button em { color: #9c927f; font: 900 13px var(--qx-font); font-style: normal; }
-  .toc nav button em.done { color: #5f7355; }
-  .progress-copy { margin-top: 16px; display: grid; gap: 5px; }
-  .progress-copy b { font: 850 12px var(--qx-font); }
-  .progress-copy span { color: #756c5c; font: 650 11.5px/1.45 var(--qx-font); }
-  .progress-copy button { justify-self: start; margin-top: 5px; padding: 6px 0; border: 0; border-bottom: 1px solid currentColor; background: none; color: #8c4c2e; font: 800 11px var(--qx-font); cursor: pointer; }
-  .progress-copy button.confirm { color: #b43f2d; }
+  /* One column. The chapter-route panel used to sit to the left of this: a
+     five-item jump list under a counter that said ten. The floor is where the
+     route lives now, so the reader is the reading. */
+  .layout { width: min(100%, 980px); margin: 0 auto; padding: 28px clamp(14px, 3vw, 34px) 54px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; align-items: start; }
+
+  .reset-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 22px 0 0; }
+  .reset-row span { color: #6f675a; font: 650 12.5px var(--qx-font); }
+  .reset-row button { min-height: 38px; padding: 0 15px; border: 1px solid #d8d0be; border-radius: 999px;
+                      background: #fff; color: #241f16; cursor: pointer; font: 750 12.5px var(--qx-font); }
+  .reset-row button:hover { border-color: #241f16; }
+  .reset-row button.confirm { border-color: #b3402e; background: #b3402e; color: #fff; }
 
   .layout > main { min-width: 0; }
   article { overflow: hidden; border: 1px solid #d8d0be; border-radius: 18px; background: #fff; box-shadow: 0 18px 50px rgba(70, 57, 38, .08); }
@@ -495,17 +477,12 @@
     .mode-centre { grid-column: 1 / -1; grid-row: 2; width: 100%; }
     .identity { display: none; }
     .layout { grid-template-columns: 1fr; }
-    .toc { position: static; }
-    .toc nav { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 600px) {
     .topbar { padding: 10px 12px; }
     .overall i { width: 56px; }
     .layout { padding: 12px 8px 30px; gap: 10px; }
-    .toc { padding: 16px; border-radius: 12px; }
-    .toc nav { width: 100%; min-width: 0; display: flex; overflow-x: auto; padding-bottom: 4px; }
-    .toc nav button { flex: 0 0 215px; }
     article { border-radius: 12px; }
     .chapter-head { padding-top: 30px; align-items: flex-start; flex-direction: column; }
     .chapter-head h2 { font-size: 34px; }
@@ -540,27 +517,6 @@
                 padding-bottom: 2px; font: 800 12px var(--qx-font); text-decoration: none; }
 
   .layout { display: block; width: min(100%, 1120px); padding: 0 clamp(18px, 5vw, 56px) 72px; }
-  .toc { position: static; padding: 0; border: 0; border-radius: 0; background: transparent; }
-  .time { margin: 0 0 18px; padding: 13px 0; grid-template-columns: 1fr auto; border: 0; border-top: 3px solid var(--packet-green); background: transparent; }
-  .time small, .time b { color: var(--packet-soft); }
-  .time b { font-size: 12px; }
-  .toc nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-  .toc nav button { position: relative; min-height: 174px; padding: 20px; display: grid; grid-template-columns: 1fr auto;
-                    align-content: start; align-items: start; gap: 22px 10px; border: 1px solid #9c998d; border-radius: 0;
-                    background: rgba(247,243,233,.62); color: var(--packet-ink); }
-  .toc nav button:hover { border-color: var(--packet-orange); }
-  .toc nav button.active { border: 5px solid var(--packet-ink); background: var(--packet-paper);
-                           box-shadow: 8px 8px 0 rgba(32,36,31,.16); }
-  .toc nav button > span { display: block; height: auto; border-radius: 0; background: transparent;
-                           color: var(--packet-orange); font: 400 27px Georgia, serif; }
-  .toc nav button.active > span { background: transparent; color: var(--packet-orange); }
-  .toc nav button div { grid-column: 1 / -1; display: flex; flex-direction: column-reverse; gap: 7px; }
-  .toc nav button b { color: var(--packet-ink); font: 400 19px/1.2 Georgia, serif; }
-  .toc nav button small { color: var(--packet-soft); font: 800 11px var(--qx-font); letter-spacing: .1em; }
-  .toc nav button em { color: var(--packet-rule); }
-  .progress-copy { margin: 22px 0 56px; display: flex; align-items: center; gap: 10px 22px; flex-wrap: wrap; }
-  .progress-copy b { font-size: 11px; }.progress-copy span { color: var(--packet-soft); font-size: 11px; }
-  .progress-copy button { margin: 0 0 0 auto; color: var(--packet-orange); }
 
   .layout > main { min-width: 0; }
   .layout > main > article { overflow: hidden; border: 6px solid var(--packet-ink); border-radius: 0;
@@ -601,7 +557,6 @@
 
   @media (max-width: 860px) {
     .chapter-hero { padding-bottom: 30px; }
-    .toc nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .chapter-head { grid-template-columns: 50px minmax(0, 1fr); }
     .chapter-head > .packet-state { grid-column: 2; }
   }
@@ -610,10 +565,6 @@
     .chapter-hero h1 { font-size: 43px; }
     .hero-sub { font-size: 14px; }
     .layout { padding: 0 16px 48px; }
-    .toc nav { width: auto; display: grid; grid-template-columns: 1fr; overflow: visible; padding: 0; }
-    .toc nav button { min-height: 136px; width: 100%; flex: none; }
-    .progress-copy { margin-bottom: 42px; }
-    .progress-copy button { margin-left: 0; }
     .layout > main > article { border-width: 5px; box-shadow: 8px 8px 0 rgba(32,36,31,.16); }
     .chapter-head { grid-template-columns: 1fr; gap: 8px; padding-top: 30px; }
     .packet-number { font-size: 27px; }
