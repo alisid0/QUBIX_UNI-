@@ -78,14 +78,28 @@
 <div class="floor">
   <!-- What to do next, before the floor. -->
   <section class="now" aria-labelledby="now-heading">
-    <p class="eyebrow">Your next step</p>
-    <h1 id="now-heading">Read the idea. Play the consequence.</h1>
+    {#if hydrated && done.length === 0}
+      <p class="eyebrow">Welcome</p>
+      <h1 id="now-heading">Learn data science on the shop floor.</h1>
+      <p class="pitch">Read the idea, then make the decision yourself and watch what it does.
+        Start from zero and work through to SQL, Python and defensible analysis.</p>
+      <ul class="claims">
+        <li>Data is a record, not reality.</li>
+        <li>Every idea has a consequence you can play.</li>
+        <li>Nothing is counted until you have done it.</li>
+      </ul>
+    {:else}
+      <p class="eyebrow">Your next step</p>
+      <h1 id="now-heading">Read the idea. Play the consequence.</h1>
+    {/if}
 
     {#if !hydrated}
       <p class="settling">Finding where you got to…</p>
     {:else if next}
       <div class="now-card">
-        <p class="now-where">{next.stage.title} · step {next.pair.sequence} · {next.pair.idea}</p>
+        <p class="now-where">
+          {done.length === 0 ? 'Start here · ' : ''}{next.stage.title} · step {next.pair.sequence} · {next.pair.idea}
+        </p>
 
         <div class="pair-row big">
           <a class="asset read" class:is-done={next.pair.readState === 'done'} href={next.pair.read.href}>
@@ -299,6 +313,12 @@
   h1 { margin: 0; font: 800 clamp(30px, 5vw, 46px)/1.05 Georgia, serif;
        letter-spacing: -.02em; max-width: 17ch; }
   .settling { color: var(--muted); font: 650 14.5px/1.55 var(--qx-font, system-ui); }
+  .pitch { margin: 14px 0 0; max-width: 58ch; color: #4a4436;
+           font: 650 16.5px/1.6 var(--qx-font, system-ui); }
+  .claims { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+  .claims li { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px;
+               background: var(--card); color: var(--ink);
+               font: 700 13px var(--qx-font, system-ui); }
 
   /* ── the card, the one shape the whole floor is made of ────────── */
   .now-card { margin-top: 22px; padding: 20px; border: 1px solid var(--line);

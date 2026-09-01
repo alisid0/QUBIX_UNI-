@@ -53,7 +53,13 @@
   const explicitReviewMode = params.get('mode') === 'review';
   const showWikiMode = params.get('mode') === 'wiki';
   // The learning floor: what to do next, ahead of the whole curriculum.
-  const showLearningFloor = params.get('mode') === 'start';
+  // The bare path is the learning floor, in every environment, so what is
+  // tested is what ships. It used to be the foundations landing, which sold the
+  // course and then offered nine Superstore rooms as the way in. The rooms were
+  // a second navigation competing with the pairs, and the pair is the way to
+  // the play. The old landing keeps its own route at /learn/foundations.
+  const bareLanding = !params.has('mode') && !params.has('prototype') && !params.has('lab');
+  const showLearningFloor = params.get('mode') === 'start' || bareLanding;
   const showDataConsole = params.get('lab') === 'sql';
   // Factory and other authoring tools stay workshop-only. They are drafts, not
   // curriculum, and must not be reachable in a production build.
@@ -73,8 +79,7 @@
   const showShowcaseDemo = params.get('mode') === 'showcase-demo';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
-  const productionFoundationLanding = import.meta.env.PROD && !params.has('mode') && !params.has('prototype') && !params.has('lab');
-  const showGameMission = params.get('mode') === 'game' || productionFoundationLanding;
+  const showGameMission = params.get('mode') === 'game';
   // The Approver is now reached only by asking for it. It used to be what
   // production served by default, from when the deployed site existed to be
   // reviewed rather than used, so anyone opening the site got a review form
