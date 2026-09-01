@@ -74,7 +74,8 @@
     "check:value-origin-ui": "node scripts/check-value-origin-ui.mjs",
     "audit:visuals": "node scripts/audit-visuals.mjs",
     "check:flow": "node scripts/check-learning-flow.mjs",
-    "audit:pairs": "node scripts/audit-learning-pairs.mjs"
+    "audit:pairs": "node scripts/audit-learning-pairs.mjs",
+    "audit:masterplan": "node scripts/audit-masterplan-coverage.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
