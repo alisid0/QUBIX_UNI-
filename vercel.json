@@ -9,6 +9,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/signin",
+      "destination": "/index.html"
+    },
+    {
       "source": "/updates",
       "destination": "/index.html"
     },

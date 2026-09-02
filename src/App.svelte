@@ -44,6 +44,7 @@
   // founder explicitly asked to use it on Qubix. Its content stays behind a
   // server-verified access key; merely knowing the URL grants no authority.
   let QubixBuilder = null;
+  let SignIn = null;
 
   const params = paramsForLocation(window.location);
   const cleanLocation = cleanPathForParams(params);
@@ -84,6 +85,7 @@
   const showShowcaseDemo = params.get('mode') === 'showcase-demo';
   const showLearningUpdates = params.get('mode') === 'updates';
   const showQubixBuilder = params.get('mode') === 'builder';
+  const showSignIn = params.get('mode') === 'signin';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const showGameMission = params.get('mode') === 'game';
@@ -126,6 +128,9 @@
   }
   if (showQubixBuilder) {
     import('./views/QubixBuilder.svelte').then(m => { QubixBuilder = m.default; });
+  }
+  if (showSignIn) {
+    import('./views/SignIn.svelte').then(m => { SignIn = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -271,6 +276,8 @@
     <svelte:component this={LearningUpdates} />
   {:else if showQubixBuilder}
     <svelte:component this={QubixBuilder} />
+  {:else if showSignIn}
+    <svelte:component this={SignIn} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}

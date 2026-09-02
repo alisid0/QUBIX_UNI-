@@ -12,12 +12,20 @@ follows the learner between devices, written to `learner_progress`.
 
 | Piece | Where |
 |---|---|
-| Sign in, create account, reset password, Google | `src/lib/components/AuthButton.svelte` |
+| Sign in, create account, reset, recovery, Google | `src/views/SignIn.svelte` at `/signin` |
+| Account menu, sign out, unsubscribe, delete | `src/lib/components/AuthButton.svelte` |
 | Mounted for every hub screen | `src/lib/components/SiteNav.svelte` |
 | Browser client, PKCE, session persistence | `src/lib/supabase.js` |
 | Progress sync on session change | `src/lib/stores/progress.js` |
-| Tables, row-level security, deletion | `supabase/qubix/000{1,2,3}_*.sql` |
+| Marketing consent read and write | `src/lib/marketing.js` |
+| Policy version gate | `src/lib/legal.js` |
+| Tables, row-level security, deletion | `supabase/qubix/000{1,2,3,4}_*.sql` |
 | Build guard | `scripts/check-auth.mjs` (`npm run check:auth`) |
+
+The form lives on `/signin` only. The navigation holds a link, not a second
+copy, and `check-auth.mjs` fails the build if a password field reappears in the
+navigation component: two copies is how a reset flow ends up fixed on one of
+them.
 
 The 13+ statement appears before an account is created. It is a founder
 decision of 2026-08-12, it is not verification, and it is deliberately not
@@ -48,6 +56,7 @@ In *SQL Editor*, run these three files in order, whole and unedited:
 supabase/qubix/0001_account_deletion_requests.sql
 supabase/qubix/0002_learning_progress.sql
 supabase/qubix/0003_fulfil_account_deletion.sql
+supabase/qubix/0004_marketing_consent.sql
 ```
 
 They create `learner_progress` and `account_deletion_requests`, enable row-level
@@ -126,6 +135,61 @@ Then on the deployment: sign in with a new email, confirm from the message,
 sign out, sign in again, reset the password from the link, and delete the
 account. Deletion should leave nothing behind in `learner_progress` and one
 `fulfilled` row in `account_deletion_requests`.
+
+## Promotional email
+
+`PRODUCT-AND-LAUNCH-PLAN.md` sets the requirement: "Authentication is not
+marketing consent. Newsletters require a separate, optional, unchecked consent,
+consent timestamp, source, policy version and an unsubscribe route." The
+`marketing_consent` table and `src/lib/marketing.js` are that requirement,
+built.
+
+### It is switched off, deliberately
+
+`PRIVACY_POLICY_VERSION` in `src/lib/legal.js` is `null`, so the opt-in does not
+render and `grantConsent` refuses. Consent has to be *informed*, and a checkbox
+on a site with no published privacy policy collects a tick rather than a
+consent: the learner has not been told who processes their address, why, for how
+long, or how to stop it.
+
+To switch it on:
+
+1. publish the privacy policy at `/privacy`
+2. set `PRIVACY_POLICY_VERSION` to the date it was published
+3. run `npm run check:auth`
+
+Step 3 fails if step 2 happened without step 1. The ordering is enforced by the
+build rather than by remembering.
+
+### What the design commits to
+
+- **Freely given.** The opt-in is never a condition of creating an account. The
+  build asserts that account creation is refused for a missing age statement and
+  never for a missing opt-in.
+- **A positive act.** Both boxes start unticked and carry no default `checked`.
+- **Specific.** Adults only, per the founder decision of 2026-09-03. A second
+  18+ statement appears when the box is ticked, and the database refuses a
+  granted consent without it. This is a declaration, not verification, the same
+  standing as the 13+ statement.
+- **Withdrawable.** One press in the account menu, no confirmation in the way.
+  Withdrawal is an update that stamps `withdrawn_at`, never a delete: erasing
+  the row erases the evidence that they asked to stop, and the next import adds
+  them straight back. There is no delete grant on the table.
+
+### Before anything is actually sent
+
+- **Pick a provider and keep it apart from transactional mail.** Promotional
+  complaints landing on the same sending reputation is how password resets start
+  going to spam. Different sender, ideally a different subdomain.
+- **Suppression outlives deletion.** A deleted account cascades its consent row
+  away, which is correct for erasure but means a stale export could re-add
+  someone who unsubscribed. Before sending at any volume, keep a hashed-email
+  suppression list, justified as necessary for honouring the unsubscribe, and
+  check exports against it.
+- **Every message needs a working unsubscribe link**, not only the in-app
+  toggle. PECR requires it in the message itself.
+- **Under-18s are excluded at the point of consent, not at send time.** If that
+  ever changes, the exclusion has to move into the export as well.
 
 ## Known limits before a public launch
 

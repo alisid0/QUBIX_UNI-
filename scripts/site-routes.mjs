@@ -67,6 +67,9 @@ export function buildSiteRoutes(libraryPages = []) {
     route('/?mode=showcase-demo', 'Core', '30-Minute Qubix Demo'),
     route('/?mode=updates', 'Core', 'Learning updates'),
     route('/?mode=builder', 'Founder tools', 'Qubix Builder', 'preview', false),
+    // Reachable and linked from every page, but kept out of the sitemap: an
+    // account form is not curriculum and has nothing to offer a search result.
+    route('/?mode=signin', 'Core', 'Sign in', 'preview', false),
     route('/?mode=game', 'Core', 'Academy mission hub'),
     route('/?mode=wiki', 'Wiki', 'Data Science Wiki'),
     route('/?mode=wiki&section=books', 'Wiki', 'Reference books'),
@@ -180,6 +183,6 @@ export const ROUTED_MISSION_SLUGS = Object.freeze([
 export const ROUTED_MODES = Object.freeze([
   'assets', 'builder', 'dsa-array-growth-preview', 'dsa-array-insertion-preview',
   'dsa-introduction-preview', 'dsa-sequence-preview', 'exercises', 'factory',
-  'game', 'learner', 'parts', 'review', 'showcase', 'showcase-demo', 'start',
-  'strata-factory', 'updates', 'wiki'
+  'game', 'learner', 'parts', 'review', 'showcase', 'showcase-demo', 'signin',
+  'start', 'strata-factory', 'updates', 'wiki'
 ]);
