@@ -1,4 +1,6 @@
 <script>
+  import AuthButton from './AuthButton.svelte';
+
   // One navigation, used by every hub-level screen.
   //
   // Before this, each view invented its own header links: the academy offered
@@ -49,6 +51,12 @@
       </li>
     {/each}
   </ul>
+  <!-- Sign-in lives here rather than on the landing page. Until now the only
+       mount was Home.svelte, which stopped being the front door when the
+       learning floor took over "/", so no learner could reach an account at
+       all. The nav is on every hub screen, so this is the one place that
+       follows a learner wherever they realise progress is worth saving. -->
+  <div class="account-slot"><AuthButton /></div>
 </nav>
 {/if}
 
@@ -80,6 +88,11 @@
   a:hover { color: var(--nav-ink, #241f16); }
   a.on { color: var(--nav-ink, #241f16); border-bottom-color: var(--nav-accent, #5f7355); }
   a:focus-visible { outline: 2px solid var(--nav-accent, #5f7355); outline-offset: 3px; }
+
+  /* Pushed to the far end so the nav reads as links first and an account
+     second. align-self keeps the control off the shared baseline, which the
+     text links need and a bordered button does not. */
+  .account-slot { margin-left: auto; align-self: center; }
 
   /* The subject strip. Scrolls sideways on a narrow screen rather than wrapping
      into three ragged rows, so it stays one readable line of subjects. */
