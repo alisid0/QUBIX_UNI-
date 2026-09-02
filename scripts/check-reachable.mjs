@@ -53,16 +53,18 @@ if (dataConsole) {
 }
 
 /* ── a mounted view must be one production actually serves ───────────────────
-   Home.svelte is not it. Production renders RoleFoundations at the root, so a
-   component that only exists on Home is invisible to everybody who visits. */
-const landingIsRoleFoundations = /productionFoundationLanding \? 'foundations'/.test(app)
-  && /mission === 'foundations'[\s\S]{0,90}RoleFoundations/.test(app);
-check(landingIsRoleFoundations,
-  'the production landing is still RoleFoundations, as this guard assumes');
+   The bare path now renders LearningFloor in every environment. An assistant
+   mounted only on the legacy Home or foundations page is invisible at the
+   actual front door. */
+const landingIsLearningFloor = /const bareLanding =/.test(app)
+  && /const showLearningFloor =[^;]*bareLanding/.test(app)
+  && /showLearningFloor[\s\S]{0,100}LearningFloor/.test(app);
+check(landingIsLearningFloor,
+  'the production landing is still LearningFloor, as this guard assumes');
 
-const landing = markup.find(v => v.name === 'RoleFoundations.svelte');
+const landing = markup.find(v => v.name === 'LearningFloor.svelte');
 check(Boolean(landing?.source.includes('WorkshopAssistant')),
-  'Ask Qubix is on the page production actually serves, not only on Home');
+  'Ask Qubix is on the page production actually serves, not only on a legacy landing');
 
 /* ── every mission the roster names has a route ──────────────────────────── */
 const routed = new Set([...app.matchAll(/mission === '([a-z-]+)'/g)].map(m => m[1]));

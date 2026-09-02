@@ -2,8 +2,8 @@ import { SHARED_FOUNDATIONS } from './shared-foundations.js';
 import { SQL_READING_ASSISTANTS } from './sql-assistant.js';
 
 // A transparent, browser-only index for the complete foundations reader. It
-// gives every reading session a useful assistant without sending learner text
-// to a third party or pretending that retrieval is a generative model.
+// gives every reading session a useful local assistant and supplies grounded
+// passages to the optional server-side generative tutor.
 const STOP_WORDS = new Set('a an and are as at be because by can did do does for from has have how i if in into is it its me my of on one or our should so than that the their then there these they this to was what when where which who why will with you your'.split(' '));
 
 function tokens(text) {

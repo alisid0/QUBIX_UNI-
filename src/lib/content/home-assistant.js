@@ -12,6 +12,8 @@
 // Every number below is derived from the course rather than typed, because a
 // front page that overstates what exists is the one place it matters most. If a
 // chapter is added, the assistant says so without anybody remembering to edit it.
+// Prepared answers and local retrieval remain the safe fallback. Open-ended
+// questions may use the server-side grounded model when it is configured.
 
 import { SHARED_FOUNDATIONS } from './shared-foundations.js';
 import { FOUNDATIONS_KNOWLEDGE_COUNT, searchFoundationsKnowledge } from './foundations-assistant.js';
@@ -66,8 +68,9 @@ export const HOME_ASSISTANT = Object.freeze({
   terminology: `A Volume is a whole course; Volume 0 is the shared foundations `
     + `everybody starts with. A Chapter groups sessions on one idea. A Session is one `
     + `sitting: a short reading with a worked example. A Mission is the playable half, `
-    + `where you do the thing rather than read about it. Ask Qubix is this window, and `
-    + `it only ever quotes Qubix material back at you.`,
+    + `where you do the thing rather than read about it. Ask Qubix is this window. `
+    + `Its prepared answers stay in your browser; its live tutor receives only your `
+    + `question, the lesson context and matching Qubix passages.`,
 
   labels: { explain: 'What is Qubix?', terms: 'What the words mean' },
 
@@ -131,10 +134,10 @@ export const HOME_ASSISTANT = Object.freeze({
     },
     {
       terms: ['ai', 'chatgpt', 'model', 'llm', 'language model'],
-      response: `This window is not a language model and does not call one. It matches what `
-        + `you type against Qubix's own material and shows you the passage it came from, `
-        + `which is why it will say it does not know rather than invent an answer. Nothing `
-        + `you type leaves your browser.`
+      response: `Open-ended questions can use Qubix's controlled AI tutor. The model runs `
+        + `through a Qubix server endpoint and receives the current lesson plus matching `
+        + `Qubix passages. It has no public-web tool and is told to refuse work outside data `
+        + `science. Prepared hints, quizzes and the local course search still work without AI.`
     }
   ],
 

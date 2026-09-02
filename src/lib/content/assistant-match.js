@@ -19,7 +19,8 @@
 //   3. A question is not an answer. "where do I start?" is a request for help.
 //
 // Deliberately small and readable. There is no model here and there should not
-// be one: the assistant states in its own UI that nothing leaves the browser.
+// be one: the deterministic fallback must remain independently testable even
+// when the optional server-side grounded tutor is enabled.
 
 const NEGATORS = new Set([
   'not', 'no', 'never', 'without', 'isnt', 'arent', 'wasnt', 'werent',

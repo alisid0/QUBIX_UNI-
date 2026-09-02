@@ -26,6 +26,8 @@
   import { completedAssetIds, stageState, nextStep } from '../lib/content/learning-progress.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
+  import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
+  import { HOME_ASSISTANT } from '../lib/content/home-assistant.js';
 
   const DOOR_KEY = 'qubix.learning-floor.door.v1';
 
@@ -283,6 +285,7 @@
 
 </div>
 
+<WorkshopAssistant spec={HOME_ASSISTANT} />
 <SiteFooter />
 </div>
 

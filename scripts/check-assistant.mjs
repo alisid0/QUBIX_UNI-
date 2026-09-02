@@ -135,7 +135,12 @@ check(/\{#if spec\.hints\?\.length\}/.test(assistantSource),
 check(!/lower\.includes\(/.test(assistantSource),
   'the component matches through assistant-match, not bare substring');
 const indexSource = `${fs.readFileSync(new URL('../src/lib/content/sql-knowledge-index.js', import.meta.url), 'utf8')}\n${fs.readFileSync(new URL('../src/lib/content/foundations-assistant.js', import.meta.url), 'utf8')}`;
-check(!/\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource/.test(`${assistantSource}\n${indexSource}`), 'local assistant makes no network request');
+check(/fetch\('\/api\/tutor'/.test(assistantSource),
+  'open learner questions use the same-origin tutor endpoint');
+check(!/https?:\/\/|XMLHttpRequest|WebSocket|EventSource/.test(assistantSource),
+  'the browser assistant cannot call an external model or service directly');
+check(!/\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource/.test(indexSource),
+  'the deterministic local course index still makes no network request');
 
 if (failed) process.exit(1);
 console.log('\nall checks pass, Ask Qubix remains lesson-aware, reviewable and hint-first');

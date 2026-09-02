@@ -96,6 +96,10 @@ linked local checkout.
 See [Infrastructure Inheritance](./docs/INFRASTRUCTURE.md) for hosting, DNS, the
 deployment incident of 2026-08-10, and the Supabase boundaries.
 
+The learner tutor and private founder copilot are documented in
+[Qubix AI tutors](./docs/AI-TUTORS.md), including their server-only production
+environment variables and authority boundaries.
+
 ## Private collaboration
 
 See [AI Collaborator Access Checklist](./docs/AI-ACCESS-CHECKLIST.md).

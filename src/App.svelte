@@ -39,6 +39,10 @@
   let DsaArrayGrowthPreview = null;
   let Showcase = null;
   let ShowcaseDemo = null;
+  // The founder's AI construction copilot is a production route because the
+  // founder explicitly asked to use it on Qubix. Its content stays behind a
+  // server-verified access key; merely knowing the URL grants no authority.
+  let QubixBuilder = null;
 
   const params = paramsForLocation(window.location);
   const cleanLocation = cleanPathForParams(params);
@@ -77,6 +81,7 @@
   const showDsaArrayGrowthPreview = params.get('mode') === 'dsa-array-growth-preview';
   const showShowcase = params.get('mode') === 'showcase';
   const showShowcaseDemo = params.get('mode') === 'showcase-demo';
+  const showQubixBuilder = params.get('mode') === 'builder';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const showGameMission = params.get('mode') === 'game';
@@ -113,6 +118,9 @@
   }
   if (showShowcaseDemo) {
     import('./views/ShowcaseDemo.svelte').then(m => { ShowcaseDemo = m.default; });
+  }
+  if (showQubixBuilder) {
+    import('./views/QubixBuilder.svelte').then(m => { QubixBuilder = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -254,6 +262,8 @@
     <svelte:component this={Showcase} />
   {:else if showShowcaseDemo}
     <svelte:component this={ShowcaseDemo} />
+  {:else if showQubixBuilder}
+    <svelte:component this={QubixBuilder} />
   {:else if showGameMission}
     <svelte:component this={GameMission} />
   {:else if showReviewMode}
