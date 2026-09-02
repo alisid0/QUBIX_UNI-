@@ -5,12 +5,19 @@ const LIMITS = Object.freeze({ learner: 24, builder: 48 });
 const requests = new Map();
 
 const DATA_TERMS = [
-  'ai', 'array', 'average', 'chart', 'classif', 'column', 'correlation', 'data',
-  'database', 'dataset', 'distribution', 'excel', 'experiment', 'feature',
-  'gradient', 'hypothesis', 'join', 'linear', 'machine learning', 'mean',
-  'median', 'metric', 'missing', 'model', 'numpy', 'outlier', 'pandas',
-  'probability', 'python', 'query', 'regression', 'rmse', 'row', 'sample',
-  'sql', 'statistic', 'table', 'variable', 'visual'
+  'ai', 'algorithm', 'algebra', 'analysis', 'analytics', 'api', 'arithmetic',
+  'array', 'average', 'calculus', 'chart', 'classification', 'clustering',
+  'code', 'column', 'computer science', 'confidence interval', 'correlation',
+  'data', 'database', 'dataset', 'derivative', 'distribution', 'equation',
+  'etl', 'excel', 'experiment', 'feature', 'forecast', 'fraction', 'function',
+  'geometry', 'gradient', 'graph', 'hypothesis', 'index', 'integral', 'join',
+  'linear algebra', 'lookup', 'machine learning', 'math', 'maths', 'mathematics',
+  'matrix', 'mean', 'median', 'metric', 'missing value', 'model', 'numpy',
+  'optimisation', 'optimization', 'outlier', 'pandas', 'percentage', 'pipeline',
+  'probability', 'programming', 'python', 'query', 'ratio', 'record',
+  'regression', 'rmse', 'row', 'sample', 'schema', 'spreadsheet', 'sql',
+  'statistic', 'statistics', 'table', 'trigonometry', 'variable', 'vector',
+  'visualisation', 'visualization', 'vlookup', 'warehouse', 'xlookup'
 ];
 
 const BUILDER_TERMS = [
@@ -26,7 +33,7 @@ const FOLLOW_UP_TERMS = [
 ];
 
 const REFUSALS = Object.freeze({
-  learner: 'I can only help with data science and the Qubix lesson you are studying. Ask me about the data, method, example, or reasoning in this lesson.',
+  learner: 'I can help with maths, statistics, data science, SQL, Python, databases, spreadsheets, machine learning, AI, and the Qubix lesson you are studying. Ask me about a concept, method, example, or piece of reasoning in one of those areas.',
   builder: 'Qubix Builder is limited to constructing and reviewing Qubix: its curriculum, learning design, data-science content, product experience, and release decisions.'
 });
 
@@ -38,7 +45,10 @@ const compact = (value, limit) => String(value || '')
 export function questionIsInScope(mode, question, context = '', sources = []) {
   const text = compact(question, 4000).toLowerCase();
   const terms = mode === 'builder' ? BUILDER_TERMS : DATA_TERMS;
-  if (terms.some(term => text.includes(term))) return true;
+  if (terms.some(term => {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(^|[^a-z0-9])${escaped}(?=$|[^a-z0-9])`, 'i').test(text);
+  })) return true;
 
   // A short follow-up such as “why?” is useful only when the page supplied a
   // real Qubix lesson and retrieved evidence. Context alone must not turn an
@@ -76,10 +86,16 @@ most important founder decision. Do not answer unrelated personal or general
 knowledge requests.`.trim();
 
   return `
-You are Ask Qubix, a patient data-science tutor inside Qubix University.
-Answer only data-science questions and questions about the current Qubix lesson.
-Use only the supplied Qubix context and sources as factual course authority.
-If those materials are insufficient, say what is missing instead of inventing.
+You are Ask Qubix, a patient maths and data-science tutor inside Qubix University.
+Answer questions about mathematics, statistics, probability, data science, SQL,
+databases, spreadsheets, Python, programming foundations, machine learning, AI,
+and the current Qubix lesson. A question does not need to match the current
+lesson exactly when it is clearly within these subjects. Interpret an ambiguous
+technical word, such as "lookup", in its data or computing sense; briefly state
+that interpretation and invite clarification when another meaning is plausible.
+Use supplied Qubix context and sources as the authority for claims about the
+course. If the materials do not cover an otherwise in-scope concept, give a
+concise standard explanation and say that no matching Qubix reading was found.
 
 Your two purposes are:
 1. Help the learner reason through the question. Use plain language, then the

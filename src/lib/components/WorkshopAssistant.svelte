@@ -147,7 +147,16 @@
             {/if}
           </div>
         {/each}
-        {#if thinking}<div class="message thinking"><small>QUBIX</small><p>Checking the Qubix material…</p></div>{/if}
+        {#if thinking}
+          <div class="message thinking" aria-label="Qubix is preparing an answer">
+            <small>QUBIX <span>THINKING</span></small>
+            <div class="thinking-card">
+              <b>Checking the Qubix material</b>
+              <span class="thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="thinking-track" aria-hidden="true"><i></i></span>
+            </div>
+          </div>
+        {/if}
       </div>
 
       <div class="actions" aria-label="Tutor actions">
@@ -191,15 +200,18 @@
   .prototype-note{display:flex;align-items:center;gap:7px;padding:8px 14px;border-bottom:1px solid var(--qx-border-2);color:var(--qx-text-dim);font:850 11px/1 var(--qx-font);letter-spacing:.08em}.prototype-note span{width:7px;height:7px;background:var(--qx-green);border-radius:50%}
   .purpose-note{margin:0;padding:8px 14px;border-bottom:1px solid var(--qx-border-2);background:var(--qx-surface);color:var(--qx-text-dim);font:650 11px/1.35 var(--qx-font)}.purpose-note b{color:var(--qx-text);font-weight:900;letter-spacing:.05em}.purpose-note i{padding:0 3px;color:var(--qx-accent-text);font-style:normal}
   .messages{min-height:0;padding:13px 14px;overflow-y:auto;background:var(--qx-bg)}
-  .message{max-width:88%;margin-bottom:12px}.message small{display:block;margin:0 0 4px;color:var(--qx-accent-text);font:900 11px/1 var(--qx-font);letter-spacing:.08em}.message p{margin:0;padding:10px 12px;border:1px solid var(--qx-border-2);border-radius:2px 10px 10px;background:var(--qx-surface);color:var(--qx-text);font:650 13px/1.48 var(--qx-font)}
+  .message{max-width:88%;margin-bottom:12px;animation:message-arrive .24s cubic-bezier(.2,.75,.25,1) both}.message small{display:block;margin:0 0 4px;color:var(--qx-accent-text);font:900 11px/1 var(--qx-font);letter-spacing:.08em}.message small span{margin-left:5px;color:var(--qx-text-faint);font-size:11px}.message p{margin:0;padding:10px 12px;border:1px solid var(--qx-border-2);border-radius:2px 10px 10px;background:var(--qx-surface);color:var(--qx-text);font:650 13px/1.48 var(--qx-font)}
   .message.learner{margin-left:auto}.message.learner small{text-align:right;color:var(--qx-green-text)}.message.learner p{border-color:var(--qx-green);border-radius:10px 2px 10px;background:var(--qx-green-soft)}
-  .message.thinking p{color:var(--qx-text-dim);font-style:italic}
+  .thinking-card{position:relative;display:flex;align-items:center;gap:9px;min-height:43px;padding:10px 12px 13px;overflow:hidden;border:1px solid var(--qx-border-2);border-radius:2px 10px 10px;background:var(--qx-surface);color:var(--qx-text-dim)}.thinking-card b{font:700 12px/1.3 var(--qx-font)}.thinking-dots{display:flex;gap:3px}.thinking-dots i{width:4px;height:4px;border-radius:50%;background:var(--qx-accent);animation:thinking-dot 1s ease-in-out infinite}.thinking-dots i:nth-child(2){animation-delay:.14s}.thinking-dots i:nth-child(3){animation-delay:.28s}.thinking-track{position:absolute;left:12px;right:12px;bottom:7px;height:2px;overflow:hidden;background:var(--qx-border-2)}.thinking-track i{display:block;width:42%;height:100%;background:var(--qx-accent);animation:thinking-track 1.25s ease-in-out infinite}
   .sources{display:grid;gap:7px;margin-top:8px}.sources article{padding:10px;border:1px solid var(--qx-border-2);border-left:4px solid var(--qx-accent);background:var(--qx-surface)}.sources span{display:block;color:var(--qx-accent-text);font:900 11px/1.25 var(--qx-font);letter-spacing:.05em}.sources p{padding:0;margin:6px 0;border:0;border-radius:0;background:transparent;color:var(--qx-text-2);font:650 12px/1.45 var(--qx-font)}.sources a{display:flex;align-items:flex-end;justify-content:space-between;gap:7px;color:var(--qx-text);font:850 11.5px/1.35 var(--qx-font);text-decoration-thickness:1px;text-underline-offset:3px}.sources i{flex:0 0 auto;font-style:normal}
   .actions{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;border-top:1px solid var(--qx-border-2);background:var(--qx-surface)}
   .actions button{flex:0 0 auto;min-height:34px;padding:7px 9px;border:1px solid var(--qx-border-2);border-radius:2px;background:var(--qx-surface-2);color:var(--qx-text);font:800 11px/1.2 var(--qx-font);cursor:pointer}.actions button:hover{border-color:var(--qx-accent);color:var(--qx-accent-text)}
   form{padding:10px 12px 12px;border-top:1px solid var(--qx-border-2);background:var(--qx-surface)}form label{display:block;margin-bottom:6px;color:var(--qx-text-dim);font:800 11px/1 var(--qx-font);letter-spacing:.05em}form>div{display:grid;grid-template-columns:1fr 42px;gap:7px}input{min-width:0;height:42px;padding:0 11px;border:2px solid #20241f;border-radius:2px;background:var(--qx-bg);color:var(--qx-text);font:650 13px var(--qx-font)}form button{border:2px solid #20241f;background:var(--qx-accent);color:#fff;font:900 19px var(--qx-font);cursor:pointer}form button:disabled{opacity:.4;cursor:default}
   .ai-privacy{margin:7px 0 0;color:var(--qx-text-faint);font:650 11px/1.35 var(--qx-font)}
   button:focus-visible,input:focus-visible{outline:3px solid var(--qx-accent);outline-offset:2px}
+  @keyframes message-arrive{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes thinking-dot{0%,60%,100%{opacity:.28;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+  @keyframes thinking-track{0%{transform:translateX(-115%)}55%,100%{transform:translateX(260%)}}
   @media(max-width:600px){.assistant-shell{right:10px;bottom:12px}.launcher{min-height:48px}.assistant-panel{position:fixed;left:0;right:0;bottom:0;width:100%;height:min(76vh,650px);border-width:3px 0 0;border-radius:0;box-shadow:0 -7px 0 #20241f}.assistant-shell.open .launcher{display:none}.messages{padding:12px}.message{max-width:93%}.actions{padding:9px 10px}form{padding:9px 10px calc(11px + env(safe-area-inset-bottom))}}
-  @media(prefers-reduced-motion:reduce){.launcher{transition:none}}
+  @media(prefers-reduced-motion:reduce){.launcher{transition:none}.message,.thinking-dots i,.thinking-track i{animation:none}.thinking-dots i{opacity:.65}.thinking-track i{width:100%}}
 </style>

@@ -16,6 +16,12 @@ const check = (condition, label) => {
 
 check(questionIsInScope('learner', 'Why does the median resist an outlier?'),
   'learner gate admits a data-science question');
+check(questionIsInScope('learner', 'What is a lookup?'),
+  'learner gate admits a database lookup question without lesson context');
+check(questionIsInScope('learner', 'How does a derivative measure change?'),
+  'learner gate admits a mathematics question');
+check(questionIsInScope('learner', 'How do I join two tables in SQL?'),
+  'learner gate admits a SQL question');
 check(!questionIsInScope('learner', 'Write me a recipe for lasagne'),
   'learner gate refuses an unrelated request');
 check(questionIsInScope('learner', 'why?', 'A Qubix lesson about table grain', [{ excerpt: 'One row is one sale line.' }]),
@@ -36,8 +42,9 @@ const sources = cleanSources(new Array(8).fill(null).map((_, index) => ({
 check(sources.length === 4, 'only four grounded passages can enter one request');
 check(buildTutorInput('builder', 'Audit probability', 'Master plan', sources).includes('AI_DRAFT'),
   'builder input carries the curriculum authority boundary');
-check(/only data-science questions/i.test(instructionsFor('learner')),
-  'learner instructions state the subject boundary');
+check(/mathematics, statistics, probability, data science/i.test(instructionsFor('learner'))
+  && /does not need to match the current\s+lesson exactly/i.test(instructionsFor('learner')),
+  'learner instructions state the broad subject boundary without requiring an exact lesson match');
 check(/two purposes/i.test(instructionsFor('learner'))
   && /Think of it like/i.test(instructionsFor('learner'))
   && /Read next:/i.test(instructionsFor('learner')),
