@@ -13,7 +13,7 @@
   let log;
   let thinking = false;
   let aiState = 'unknown';
-  let aiModel = 'GPT-5.6 Terra';
+  let aiModel = 'GPT-5 nano';
 
   $: if (spec?.key && spec.key !== lastKey) {
     lastKey = spec.key;
@@ -127,6 +127,8 @@
 
       <div class="prototype-note"><span></span>{aiState === 'live' ? `LIVE ${aiModel.toUpperCase()} · GROUNDED IN QUBIX` : aiState === 'local' ? 'LOCAL QUBIX FALLBACK · LIVE AI NOT CONNECTED' : aiState === 'guard' ? 'QUBIX SCOPE GATE · OFF-TOPIC REQUEST REFUSED' : 'GROUNDED QUBIX TUTOR · LOCAL FALLBACK READY'}</div>
 
+      <p class="purpose-note"><b>EXPLAIN</b> with a useful analogy <i>·</i> <b>GUIDE</b> you to the Qubix reading</p>
+
       <div class="messages" bind:this={log} role="log" aria-live="polite" aria-label="Conversation" aria-busy={thinking}>
         {#each messages as message}
           <div class:learner={message.from === 'user'} class="message">
@@ -182,11 +184,12 @@
   .launcher b,.bot b{margin-top:11px;font:900 11px ui-monospace,monospace}
   .launcher em{font:900 12px/1 var(--qx-font);font-style:normal;letter-spacing:.08em}
   .launcher:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 #20241f}.launcher:active{transform:translate(3px,3px);box-shadow:2px 2px 0 #20241f}
-  .assistant-panel{position:absolute;right:0;bottom:68px;display:grid;grid-template-rows:auto auto minmax(150px,1fr) auto auto;width:min(410px,calc(100vw - 28px));height:min(650px,calc(100vh - 112px));overflow:hidden;border:3px solid #20241f;border-radius:5px;background:var(--qx-overlay);box-shadow:8px 8px 0 #20241f}
+  .assistant-panel{position:absolute;right:0;bottom:68px;display:grid;grid-template-rows:auto auto auto minmax(150px,1fr) auto auto;width:min(410px,calc(100vw - 28px));height:min(650px,calc(100vh - 112px));overflow:hidden;border:3px solid #20241f;border-radius:5px;background:var(--qx-overlay);box-shadow:8px 8px 0 #20241f}
   header{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:13px 14px;border-bottom:2px solid #20241f;background:var(--qx-overlay-2)}
   header small,header strong{display:block}header small{margin-bottom:3px;color:var(--qx-accent-text);font:900 11px/1 var(--qx-font);letter-spacing:.09em}header strong{font:750 16px/1.2 Georgia,serif}
   .bot{width:38px;height:38px}.close{align-self:start;width:34px;height:34px;padding:0;border:2px solid #20241f;background:var(--qx-surface);color:var(--qx-text);font:800 24px/1 var(--qx-font);cursor:pointer}
   .prototype-note{display:flex;align-items:center;gap:7px;padding:8px 14px;border-bottom:1px solid var(--qx-border-2);color:var(--qx-text-dim);font:850 11px/1 var(--qx-font);letter-spacing:.08em}.prototype-note span{width:7px;height:7px;background:var(--qx-green);border-radius:50%}
+  .purpose-note{margin:0;padding:8px 14px;border-bottom:1px solid var(--qx-border-2);background:var(--qx-surface);color:var(--qx-text-dim);font:650 11px/1.35 var(--qx-font)}.purpose-note b{color:var(--qx-text);font-weight:900;letter-spacing:.05em}.purpose-note i{padding:0 3px;color:var(--qx-accent-text);font-style:normal}
   .messages{min-height:0;padding:13px 14px;overflow-y:auto;background:var(--qx-bg)}
   .message{max-width:88%;margin-bottom:12px}.message small{display:block;margin:0 0 4px;color:var(--qx-accent-text);font:900 11px/1 var(--qx-font);letter-spacing:.08em}.message p{margin:0;padding:10px 12px;border:1px solid var(--qx-border-2);border-radius:2px 10px 10px;background:var(--qx-surface);color:var(--qx-text);font:650 13px/1.48 var(--qx-font)}
   .message.learner{margin-left:auto}.message.learner small{text-align:right;color:var(--qx-green-text)}.message.learner p{border-color:var(--qx-green);border-radius:10px 2px 10px;background:var(--qx-green-soft)}

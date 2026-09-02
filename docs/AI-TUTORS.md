@@ -41,7 +41,7 @@ Configure these as encrypted production environment variables in the dedicated
 
 ```text
 OPENAI_API_KEY=<OpenAI project API key>
-OPENAI_TUTOR_MODEL=gpt-5.6-terra
+OPENAI_TUTOR_MODEL=gpt-5-nano
 QUBIX_BUILDER_KEY=<long unique founder passphrase>
 ```
 
@@ -72,7 +72,9 @@ adversarial evaluations and usage monitoring.
 
 ## Model
 
-The default is `gpt-5.6-terra`, selected for the balance of reasoning quality
-and cost. It can be changed without rebuilding by updating
-`OPENAI_TUTOR_MODEL` and redeploying. Any model change must pass the same Qubix
-scope, grounding and answer-helpfulness evaluation set before production use.
+The default is `gpt-5-nano`, selected as the lowest-cost model for the learner
+pilot. Ask Qubix has two explicit jobs: help a learner reason with a short,
+useful analogy when appropriate, and point them to the matching Qubix reading.
+It can be changed without rebuilding by updating `OPENAI_TUTOR_MODEL` and
+redeploying. Any model change must pass the same Qubix scope, grounding and
+answer-helpfulness evaluation set before production use.

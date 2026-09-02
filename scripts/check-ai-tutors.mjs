@@ -38,6 +38,10 @@ check(buildTutorInput('builder', 'Audit probability', 'Master plan', sources).in
   'builder input carries the curriculum authority boundary');
 check(/only data-science questions/i.test(instructionsFor('learner')),
   'learner instructions state the subject boundary');
+check(/two purposes/i.test(instructionsFor('learner'))
+  && /Think of it like/i.test(instructionsFor('learner'))
+  && /Read next:/i.test(instructionsFor('learner')),
+  'learner instructions require reasoning, an analogy and the matching reading');
 check(/only person who may mark curriculum APPROVED or RELEASED/i.test(instructionsFor('builder')),
   'builder instructions preserve founder authority');
 check(extractOutputText({ output: [{ content: [{ type: 'output_text', text: 'Grounded answer' }] }] }) === 'Grounded answer',
@@ -69,6 +73,8 @@ const vercel = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.
 
 check(component.includes("fetch('/api/tutor'"), 'Ask Qubix sends open questions to the server tutor');
 check(component.includes('localResponse'), 'Ask Qubix retains its deterministic local fallback');
+check(component.includes('with a useful analogy') && component.includes('to the Qubix reading'),
+  'Ask Qubix states its two learner-facing purposes');
 check(builder.includes("'X-Qubix-Builder-Key'"), 'Builder sends its access proof only to the server');
 check(!component.includes('OPENAI_API_KEY') && !builder.includes('OPENAI_API_KEY'),
   'no OpenAI secret name appears in either browser component');
