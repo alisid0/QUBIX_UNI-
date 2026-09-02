@@ -1,4 +1,4 @@
-const CACHE = 'qubix-university-v2';
+const CACHE = 'qubix-university-v3';
 
 const CORE = [
   './',
@@ -95,4 +95,16 @@ self.addEventListener('fetch', (e) => {
   }
 
   e.respondWith(cacheFirst(req));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const destination = new URL(event.notification.data?.url || '/updates', self.location.origin).href;
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
+      const openWindow = windows.find(client => new URL(client.url).origin === self.location.origin);
+      if (openWindow) return openWindow.navigate(destination).then(client => client.focus());
+      return clients.openWindow(destination);
+    })
+  );
 });

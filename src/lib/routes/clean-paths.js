@@ -14,6 +14,7 @@ export function paramsForPath(pathname) {
 
   if (!parts.length) return params;
   if (parts[0] === 'builder') { params.set('mode', 'builder'); return params; }
+  if (parts[0] === 'updates') { params.set('mode', 'updates'); return params; }
   // The learning floor. One segment, no state in the path: where a learner is
   // comes from their own progress, not from the URL.
   if (parts[0] === 'start') { params.set('mode', 'start'); return params; }
@@ -94,6 +95,8 @@ export function cleanPathForParams(input) {
     params.delete('lab'); path = '/tools/data-console';
   } else if (mode === 'builder') {
     params.delete('mode'); path = '/builder';
+  } else if (mode === 'updates') {
+    params.delete('mode'); path = '/updates';
   } else if (mode === 'start') {
     const stage = params.get('stage');
     params.delete('mode');
