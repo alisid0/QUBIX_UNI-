@@ -134,6 +134,14 @@ check(/\{#if spec\.hints\?\.length\}/.test(assistantSource),
   'the component hides actions a spec cannot perform');
 check(!/lower\.includes\(/.test(assistantSource),
   'the component matches through assistant-match, not bare substring');
+check(/Qubix is preparing an answer/.test(assistantSource)
+  && /thinking-dots/.test(assistantSource)
+  && /thinking-track/.test(assistantSource),
+  'the live wait has a visible, accessible progress state');
+check(/@keyframes message-arrive/.test(assistantSource)
+  && /prefers-reduced-motion:reduce/.test(assistantSource)
+  && /\.message,.thinking-dots i,.thinking-track i\{animation:none\}/.test(assistantSource),
+  'new answers arrive gently and reduced-motion users receive a still state');
 const indexSource = `${fs.readFileSync(new URL('../src/lib/content/sql-knowledge-index.js', import.meta.url), 'utf8')}\n${fs.readFileSync(new URL('../src/lib/content/foundations-assistant.js', import.meta.url), 'utf8')}`;
 check(/fetch\('\/api\/tutor'/.test(assistantSource),
   'open learner questions use the same-origin tutor endpoint');
