@@ -598,7 +598,7 @@
   /* The header sits outside .pairs, so it needs that container's 10px of
      padding as well as the row's 8px, or every label is ten pixels left of the
      column it names. */
-  .cols { display: grid; grid-template-columns: 132px 1fr auto 1fr; gap: 12px;
+  .cols { display: grid; grid-template-columns: 210px 1fr auto 1fr; gap: 12px;
           margin: 16px 0 6px; padding: 0 18px; }
   .cols span { color: var(--muted); font: 800 11px var(--qx-font, system-ui);
                letter-spacing: .14em; text-transform: uppercase; }
@@ -608,23 +608,30 @@
            padding: 10px; }
   /* One continuous line behind the sequence circles, so the steps read as a
      route rather than as separate cards. */
-  /* Threaded through the circles, not past them.
-     The circle centre is 10px of .pairs padding, plus 8px of .pair-line
-     padding, plus half the 132px gutter: 84px. The rail sat at 77px and missed
-     every one of them by seven, which is the kind of gap that reads as wrong
-     before anyone works out why. */
-  .pairs::before { content: ''; position: absolute; top: 34px; bottom: 34px; left: 83px;
-                   width: 2px; background: var(--line); }
-  .pair-line { position: relative; display: grid; grid-template-columns: 132px 1fr; gap: 12px;
-               align-items: center; padding: 8px; border-radius: 14px; }
+  /* The rail is gone. It threaded loose circles into a route, which was the
+     right idea while the idea column was loose type on the page background.
+     Now that the idea is a card like the two beside it, a line entering one
+     edge and leaving the other cuts through an object instead of connecting
+     two, and the row already reads left to right without it. */
+  /* Stretch, not centre: all three cards in a row are one height, so the row
+     is one band rather than three things floating at their own sizes. */
+  .pair-line { position: relative; display: grid; grid-template-columns: 210px 1fr; gap: 12px;
+               align-items: stretch; padding: 8px; border-radius: 14px; }
   .pair-line.current { background: var(--clay-soft); }
-  .gutter { display: grid; justify-items: center; gap: 4px; text-align: center; }
-  .seq { position: relative; z-index: 1; display: grid; place-items: center;
-         width: 32px; height: 32px; border-radius: 50%;
-         border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  /* The idea is the third card in the row, built from the same parts as the
+     two beside it: a circular badge, then the words, at the same height, the
+     same radius and the same border. Three objects reading left to right, in
+     one shape, rather than two cards and some loose type. */
+  .gutter { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center;
+            min-height: 84px; padding: 11px 14px; border-radius: 13px;
+            border: 1px solid var(--line); background: var(--card);
+            box-shadow: 0 2px 0 rgba(36,31,22,.06); text-align: left; }
+  .seq { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+         border: 1px solid var(--line); background: var(--paper); color: var(--muted);
          font: 800 12px ui-monospace, Consolas, monospace; }
   .seq-done { border-color: var(--green); background: var(--green-soft); color: #2c6b1c; }
-  .idea { color: var(--ink); font: 700 12px/1.35 var(--qx-font, system-ui); }
+  .idea { color: var(--ink); font: 800 14px/1.25 var(--qx-font, system-ui);
+          overflow-wrap: anywhere; }
 
   .exit { display: grid; gap: 4px; margin: 15px 0 0; padding: 13px 15px; border-radius: 14px;
           background: var(--green-soft); font: 650 13.5px/1.55 var(--qx-font, system-ui); }
@@ -763,7 +770,7 @@
   .stage-no { border-radius: 0; }
   .pairs { border-radius: 0; background: var(--deep); }
   .pair-line { border-radius: 0; }
-  .asset, .asset.small { border: 2px solid var(--ink); border-radius: 0; box-shadow: 3px 3px 0 rgba(36,31,22,.09); }
+  .gutter, .asset, .asset.small { border: 2px solid var(--ink); border-radius: 0; box-shadow: 3px 3px 0 rgba(36,31,22,.09); }
   .asset.play { border-color: var(--clay); background: #fff8f2; }
   .asset.is-done { border-color: var(--green); background: var(--green-soft); }
   .badge, .asset.small .badge { border-radius: 0; }
@@ -813,11 +820,22 @@
   }
   .door-action { padding-inline: 8px; }
 
-  .asset, .asset.small {
+  /* The three cards in a step row are one shape.
+     They were not. This block's own rule is that a soft shape means current
+     state or an action, and it then made every step card a 999px pill, which
+     spends the distinction on everything and leaves it meaning nothing. On a
+     card tall enough for two lines a full pill also curves the ends away
+     under the text, which is what made the column look bent.
+     18px matches the .pairs container they sit in, reads as clearly curved,
+     and holds a wrapped title without the corner eating it. The idea card is
+     listed here so it cannot drift from the two beside it. */
+  .gutter, .asset, .asset.small {
     padding-inline: 18px;
-    border-radius: 999px;
+    border-radius: 18px;
   }
   .badge, .asset.small .badge { border-radius: 50%; }
+  /* Still round, because these two really are current state and an action. */
+  .resume-tag, .door-card.chosen .door-action { border-radius: 999px; }
 
   @media (max-width: 760px) {
     .resume-tag { justify-self: start; margin: 12px 14px 0; }
