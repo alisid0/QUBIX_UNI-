@@ -152,6 +152,38 @@ function withinRateLimit(req, mode) {
   return current.count <= LIMITS[mode];
 }
 
+// Founder decision, 2026-09-03: the tutor is for learners with an account.
+//
+// This is the one gate that has to be real. The registration wall in the
+// browser is a conversion device and everyone knows a determined visitor can
+// walk around it; an unauthenticated request here spends money, and before this
+// the endpoint took anonymous questions from anyone who found it.
+//
+// Verification asks Supabase rather than checking a signature locally, which
+// costs a round trip and needs no new secret: the anon key and project URL are
+// already configured, and a revoked or expired session is rejected by the
+// authority that issued it rather than by a copy of a rule.
+export async function verifyLearner(req) {
+  const header = String(req.headers?.authorization || '');
+  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
+  if (!token) return null;
+
+  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+
+  try {
+    const response = await fetch(`${url}/auth/v1/user`, {
+      headers: { apikey: key, Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) return null;
+    const user = await response.json();
+    return user?.id ? user : null;
+  } catch (_) {
+    return null;
+  }
+}
+
 function send(res, status, body) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -192,6 +224,16 @@ export default async function handler(req, res) {
   if (!withinRateLimit(req, mode)) return send(res, 429, { error: 'Please pause for a few minutes before asking again.' });
   if (!questionIsInScope(mode, question, context, sources)) {
     return send(res, 200, { answer: REFUSALS[mode], refused: true, model: 'Qubix scope gate' });
+  }
+  // After the scope gate, which is free, and before the model, which is not.
+  // An off-topic question from anybody is refused without a network call; an
+  // on-topic one from nobody is asked to sign in.
+  if (mode === 'learner' && !(await verifyLearner(req))) {
+    return send(res, 401, {
+      error: 'Sign in to ask Qubix a question. The hints, terminology and practice checks work without an account.',
+      requiresSignIn: true,
+      localFallback: true
+    });
   }
   if (!process.env.OPENAI_API_KEY) {
     return send(res, 503, { error: 'The live AI model has not been connected yet.', localFallback: mode === 'learner' });

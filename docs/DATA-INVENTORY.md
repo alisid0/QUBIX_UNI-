@@ -46,8 +46,24 @@ Collected when a learner presses Sign in. `AuthButton.svelte` calls
 | Avatar URL | Google | Shown in the interface |
 | Google account identifier | Google | Links the sign-in to the account |
 
-Signing in is **optional**. The course works fully signed out; only cross-device
-progress is lost.
+**Changed by founder decision, 2026-09-03.** Signing in was optional and is now
+required to continue. A visitor may open three items, and the AI tutor needs an
+account from the first question. Hubs, the floor map and the deterministic
+assistant stay open.
+
+That changes the data-protection posture rather than only the product. Every
+learner who continues past three items now has an account, so an email address
+is collected from every continuing learner, including those aged 13 to 17. Two
+consequences to hold:
+
+- the **lawful basis** for holding an address is now performance of the service
+  a learner asked for, not their choice to opt in to a convenience;
+- the **open EU age question** above stops being theoretical, because there is
+  no longer an anonymous path for a learner in a member state that sets the age
+  at 16.
+
+Account deletion remains the exit, and it is operational rather than queued.
+See `docs/AUTH.md` for what is gated and where each gate is enforced.
 
 ### 2. Learning progress
 

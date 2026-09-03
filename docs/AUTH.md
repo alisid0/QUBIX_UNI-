@@ -136,6 +136,50 @@ sign out, sign in again, reset the password from the link, and delete the
 account. Deletion should leave nothing behind in `learner_progress` and one
 `fulfilled` row in `account_deletion_requests`.
 
+## What requires an account
+
+Founder decision, 2026-09-03. A signed-out visitor may open **three items**,
+counted as distinct missions and distinct reading sessions. Returning to
+something already opened is free, so a reload or a visit tomorrow does not spend
+a second item.
+
+| Surface | Signed out | Where it is enforced |
+|---|---|---|
+| Landing, floor map, hubs, wiki | open | not gated |
+| Missions and workshops | 3 free, then a wall | `LearningGate` in `App.svelte` |
+| Reader sessions | 3 free, then a wall | same counter, per session |
+| Ask Qubix: hints, quizzes, terminology | open | not gated, costs nothing |
+| Ask Qubix: questions to the model | account required | `api/tutor.js`, server-side |
+
+### One of these gates is real and the other is not
+
+The wall in the browser is a **registration wall**, not a security boundary. The
+site is a static bundle, so every mission ships to the browser whether or not it
+is displayed. It will stop essentially everyone and it will not stop someone
+reading the bundle. That is true of every registration wall and is fine, as long
+as nobody plans around it as though it were encryption.
+
+The tutor gate is **real**, because there the cost of an unauthenticated request
+is money. `api/tutor.js` verifies the caller's Supabase session by asking
+Supabase, and refuses before reaching the model. The order is deliberate: the
+free scope gate runs first, so an off-topic question from nobody costs neither a
+model call nor a Supabase round trip. `check-ai-tutors.mjs` asserts that
+ordering, not only the outcome.
+
+Nothing was taken away to build this. The deterministic hints, quizzes,
+terminology and reasoning checks keep working signed out, and a 401 from the
+tutor falls back to them rather than reading as a fault.
+
+### If you loosen or tighten it
+
+`FREE_ITEMS` in `src/lib/access.js` is the number. `HUBS` in the same file is
+what stays open. Both are asserted by `npm run check:auth`, which tests the
+behaviour rather than matching the source, so changing the number means changing
+it in one place and updating one check.
+
+Two copy surfaces state the rule to learners and will contradict the code if the
+number moves: the aside on `/signin`, and the wall in `LearningGate.svelte`.
+
 ## Promotional email
 
 `PRODUCT-AND-LAUNCH-PLAN.md` sets the requirement: "Authentication is not

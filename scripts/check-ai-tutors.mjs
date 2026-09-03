@@ -72,6 +72,23 @@ const refused = await callTutor({ method: 'POST', body: { mode: 'learner', quest
 check(refused.status === 200 && refused.body.refused === true && refused.body.model === 'Qubix scope gate',
   'HTTP endpoint refuses an unrelated learner request before any model call');
 
+// Founder decision, 2026-09-03. The browser wall is a conversion device that
+// anyone may walk around; this is the gate that spends money, so it is the one
+// that has to hold. An in-scope question with no session must never reach the
+// model, and the refusal has to say why rather than reading as a fault.
+const anonymous = await callTutor({ method: 'POST', body: { mode: 'learner', question: 'How do I join two tables in SQL?' } });
+check(anonymous.status === 401 && anonymous.body.requiresSignIn === true,
+  'an in-scope learner question with no session is refused before any model call');
+check(/hints, terminology and practice checks work without an account/i.test(anonymous.body.error || ''),
+  'the sign-in refusal says what still works without an account');
+check(anonymous.body.localFallback === true,
+  'the browser is told it may fall back to the deterministic assistant');
+
+// Order matters for cost: the free scope gate first, the network round trip
+// second. An off-topic question from nobody must not cost a Supabase call.
+check(refused.status === 200 && refused.body.refused === true,
+  'an off-topic question is refused without reaching the session check');
+
 const component = fs.readFileSync(new URL('../src/lib/components/WorkshopAssistant.svelte', import.meta.url), 'utf8');
 const builder = fs.readFileSync(new URL('../src/views/QubixBuilder.svelte', import.meta.url), 'utf8');
 const app = fs.readFileSync(new URL('../src/App.svelte', import.meta.url), 'utf8');

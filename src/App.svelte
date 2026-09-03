@@ -3,7 +3,9 @@
   import ChangeLab from './views/ChangeLab.svelte';
   import Home from './views/Home.svelte';
   import WikiMode from './views/WikiMode.svelte';
+  import LearningGate from './lib/components/LearningGate.svelte';
   import { view } from './lib/stores/view.js';
+  import { itemIdFor } from './lib/access.js';
   import { cleanPathForParams, installCleanLinkRewriter, paramsForLocation } from './lib/routes/clean-paths.js';
 
   // The Factory is loaded on demand. Imported statically it dragged every board
@@ -279,7 +281,9 @@
   {:else if showSignIn}
     <svelte:component this={SignIn} />
   {:else if showGameMission}
-    <svelte:component this={GameMission} />
+    <LearningGate itemId={itemIdFor(params)}>
+      <svelte:component this={GameMission} />
+    </LearningGate>
   {:else if showReviewMode}
     <svelte:component this={ReviewMode} />
   {:else if showLearningFloor}

@@ -116,6 +116,70 @@ for (const column of ['granted_at', 'source', 'policy_version']) {
     `every consent records ${column}`);
 }
 
+// ---- The registration wall. Founder decision, 2026-09-03. ----------------
+
+const access = read('src/lib/access.js');
+const gate = read('src/lib/components/LearningGate.svelte');
+const assistant = read('src/lib/components/WorkshopAssistant.svelte');
+const tutorApi = read('api/tutor.js');
+
+// Behaviour rather than pattern matching. A regex over this file asserts how it
+// is written; these assert what it does, which is the thing that matters and
+// the thing a rewrite can quietly change.
+const store = new Map();
+globalThis.localStorage = {
+  getItem: key => (store.has(key) ? store.get(key) : null),
+  setItem: (key, value) => store.set(key, String(value)),
+  removeItem: key => store.delete(key)
+};
+const { FREE_ITEMS, canOpen, itemIdFor, openedItems, recordOpen } = await import('../src/lib/access.js');
+const ids = search => itemIdFor(new URLSearchParams(search));
+
+check(FREE_ITEMS === 3, 'a signed-out visitor may open three items');
+check(app.includes('<LearningGate') && app.includes('itemIdFor(params)'),
+  'missions and reader sessions are gated at the route, not per view');
+
+check(ids('mode=game&mission=shared-book&chapter=3&session=2') === 'read:3.2'
+  && ids('mode=game&mission=shared-book') === null,
+  'each reading session counts separately, so the book is not one free item');
+check(['foundations', 'store', 'role-game'].every(hub => ids(`mode=game&mission=${hub}`) === null)
+  && ids('mode=start') === null,
+  'hubs and maps stay open, so a visitor can still see where they would be going');
+check(ids('mode=game&mission=checkout') === 'mission:checkout',
+  'a mission is one item');
+
+for (const id of ['mission:a', 'mission:b', 'mission:c']) { recordOpen(id); }
+check(openedItems().length === 3, 'three opens are counted');
+check(canOpen('mission:a'), 'returning to something already opened does not spend another item');
+check(!canOpen('mission:d'), 'a fourth, unseen item meets the wall');
+recordOpen('mission:d');
+check(openedItems().length === 3, 'the wall cannot be walked past by recording another open');
+
+// A private window, or a browser set to block site data, must read a lesson
+// rather than meet a wall that signing in would not remove either.
+globalThis.localStorage = {
+  getItem() { throw new Error('blocked'); },
+  setItem() { throw new Error('blocked'); },
+  removeItem() { throw new Error('blocked'); }
+};
+check(openedItems().length === 0 && canOpen('mission:anything'),
+  'blocked storage fails open rather than walling a private window');
+check(gate.includes("state = 'checking'") || /let state = 'checking'/.test(gate),
+  'the wall waits for the session before deciding, so it cannot flash at a signed-in learner');
+check(gate.includes('clearAllowance'),
+  'signing in clears the allowance rather than leaving a spent counter behind');
+
+// The gate that actually enforces. The wall above is a conversion device.
+check(/export async function verifyLearner/.test(tutorApi)
+  && /mode === 'learner' && !\(await verifyLearner\(req\)\)/.test(tutorApi),
+  'the tutor refuses an unauthenticated learner question server-side');
+check(tutorApi.indexOf('questionIsInScope(mode, question, context, sources)') < tutorApi.indexOf('await verifyLearner(req)'),
+  'the free scope gate runs before the session check, so off-topic costs nothing');
+check(/Authorization: `Bearer \$\{token\}`/.test(assistant) && /auth\.getSession\(\)/.test(assistant),
+  'the assistant sends the session token and lets the server decide');
+check(assistant.includes('localResponse') && assistant.includes('requiresSignIn'),
+  'the deterministic assistant still answers when the model needs an account');
+
 // ---- Credentials. The browser may only ever hold the anon key. ------------
 
 check(client.includes('VITE_SUPABASE_ANON_KEY') && !/service_role|SERVICE_ROLE/.test(client),

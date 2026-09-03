@@ -4,6 +4,7 @@
   import SiteFooter from '../lib/components/SiteFooter.svelte';
   import { supabase, supabaseConfigured } from '../lib/supabase.js';
   import { grantConsent } from '../lib/marketing.js';
+  import { FREE_ITEMS } from '../lib/access.js';
   import {
     MARKETING_MINIMUM_AGE,
     MINIMUM_AGE,
@@ -289,15 +290,16 @@
 
       <aside class="why">
         <p class="label">What an account is for</p>
-        <h2>Nothing here is locked.</h2>
-        <p>Every chapter, every mission and every workshop works without signing in, and your
-           progress is saved on this device either way.</p>
-        <p>An account does one thing: it carries that progress to your other devices, so the
-           chapter you started on a laptop is waiting on your phone.</p>
+        <h2>Free to learn. Free to join.</h2>
+        <p>Anyone can open {FREE_ITEMS} lessons without an account, so you can see what Qubix is
+           before deciding anything. After that, learning needs an account.</p>
+        <p>It costs nothing. It exists because the tutor answers questions for a learner rather
+           than for a browser, and because progress is worth keeping.</p>
         <ul>
-          <li>Your progress follows you between devices</li>
-          <li>Nobody but you can read it</li>
-          <li>You can delete the account, and the progress with it, from the account menu</li>
+          <li>Every chapter, mission and workshop, with no further limit</li>
+          <li>Ask Qubix, the tutor that answers questions about the lesson</li>
+          <li>Progress that follows you between devices, readable by nobody but you</li>
+          <li>Delete the account, and everything in it, from the account menu</li>
         </ul>
         <p class="fine">Qubix is for learners aged {MINIMUM_AGE} and over.</p>
       </aside>

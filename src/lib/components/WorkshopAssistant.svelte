@@ -1,6 +1,7 @@
 <script>
   import { tick } from 'svelte';
   import { answersQuiz, explains, routeFor } from '../content/assistant-match.js';
+  import { supabase } from '../supabase.js';
 
   export let spec;
 
@@ -62,12 +63,34 @@
   async function askTutor(value, sources) {
     const context = [spec.title, spec.welcome, spec.explain, spec.terminology]
       .filter(Boolean).join('\n').slice(0, 2400);
+
+    // The server decides whether this learner may ask the model. Sending the
+    // session token is the whole of the client's part in that: there is no
+    // check here to bypass, because there is no check here.
+    const { data } = supabase ? await supabase.auth.getSession() : { data: null };
+    const token = data?.session?.access_token;
+
     const response = await fetch('/api/tutor', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      },
       body: JSON.stringify({ mode: 'learner', question: value, context, sources })
     });
     const payload = await response.json().catch(() => ({}));
+
+    // Not an error to report as one. The learner asked a fair question and the
+    // answer is that this part needs an account; the scripted hints, quizzes
+    // and terminology in this same panel keep working either way.
+    if (response.status === 401 && payload.requiresSignIn) {
+      aiState = 'signin';
+      return {
+        text: payload.error,
+        sources: sources.length ? sources : undefined,
+        signIn: true
+      };
+    }
     if (!response.ok) throw new Error(payload.error || 'Tutor unavailable');
     aiState = payload.model === 'Qubix scope gate' ? 'guard' : 'live';
     if (payload.model && payload.model !== 'Qubix scope gate') aiModel = payload.model;
@@ -134,6 +157,9 @@
           <div class:learner={message.from === 'user'} class="message">
             <small>{message.from === 'user' ? 'YOU' : 'QUBIX'}</small>
             <p>{message.text}</p>
+            {#if message.signIn}
+              <a class="signin-cta" href="/signin">Create a free account</a>
+            {/if}
             {#if message.sources}
               <div class="sources" aria-label="Retrieved Qubix material">
                 {#each message.sources as source}
@@ -203,6 +229,8 @@
   .message{max-width:88%;margin-bottom:12px;animation:message-arrive .24s cubic-bezier(.2,.75,.25,1) both}.message small{display:block;margin:0 0 4px;color:var(--qx-accent-text);font:900 11px/1 var(--qx-font);letter-spacing:.08em}.message small span{margin-left:5px;color:var(--qx-text-faint);font-size:11px}.message p{margin:0;padding:10px 12px;border:1px solid var(--qx-border-2);border-radius:2px 10px 10px;background:var(--qx-surface);color:var(--qx-text);font:650 13px/1.48 var(--qx-font)}
   .message.learner{margin-left:auto}.message.learner small{text-align:right;color:var(--qx-green-text)}.message.learner p{border-color:var(--qx-green);border-radius:10px 2px 10px;background:var(--qx-green-soft)}
   .thinking-card{position:relative;display:flex;align-items:center;gap:9px;min-height:43px;padding:10px 12px 13px;overflow:hidden;border:1px solid var(--qx-border-2);border-radius:2px 10px 10px;background:var(--qx-surface);color:var(--qx-text-dim)}.thinking-card b{font:700 12px/1.3 var(--qx-font)}.thinking-dots{display:flex;gap:3px}.thinking-dots i{width:4px;height:4px;border-radius:50%;background:var(--qx-accent);animation:thinking-dot 1s ease-in-out infinite}.thinking-dots i:nth-child(2){animation-delay:.14s}.thinking-dots i:nth-child(3){animation-delay:.28s}.thinking-track{position:absolute;left:12px;right:12px;bottom:7px;height:2px;overflow:hidden;background:var(--qx-border-2)}.thinking-track i{display:block;width:42%;height:100%;background:var(--qx-accent);animation:thinking-track 1.25s ease-in-out infinite}
+  .signin-cta{display:inline-flex;align-items:center;min-height:34px;margin-top:8px;padding:6px 14px;border:1px solid var(--qx-accent);border-radius:999px;background:var(--qx-accent-soft);color:var(--qx-accent-text);font:900 12px var(--qx-font);text-decoration:none}
+  .signin-cta:focus-visible{outline:2px solid var(--qx-accent);outline-offset:2px}
   .sources{display:grid;gap:7px;margin-top:8px}.sources article{padding:10px;border:1px solid var(--qx-border-2);border-left:4px solid var(--qx-accent);background:var(--qx-surface)}.sources span{display:block;color:var(--qx-accent-text);font:900 11px/1.25 var(--qx-font);letter-spacing:.05em}.sources p{padding:0;margin:6px 0;border:0;border-radius:0;background:transparent;color:var(--qx-text-2);font:650 12px/1.45 var(--qx-font)}.sources a{display:flex;align-items:flex-end;justify-content:space-between;gap:7px;color:var(--qx-text);font:850 11.5px/1.35 var(--qx-font);text-decoration-thickness:1px;text-underline-offset:3px}.sources i{flex:0 0 auto;font-style:normal}
   .actions{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;border-top:1px solid var(--qx-border-2);background:var(--qx-surface)}
   .actions button{flex:0 0 auto;min-height:34px;padding:7px 9px;border:1px solid var(--qx-border-2);border-radius:2px;background:var(--qx-surface-2);color:var(--qx-text);font:800 11px/1.2 var(--qx-font);cursor:pointer}.actions button:hover{border-color:var(--qx-accent);color:var(--qx-accent-text)}
