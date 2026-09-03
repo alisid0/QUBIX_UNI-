@@ -12,8 +12,12 @@
 
 import { SHARED_FOUNDATIONS } from './shared-foundations.js';
 import { ALL_STAGES, isAvailable } from './learning-flow.js';
+import { boards } from './course.js';
 
 const MISSION_KEY = 'qx.superstore.progress.v1';
+// The mathematics course's own key, owned by src/lib/stores/progress.js. Read
+// here and never written, like the other two.
+const MATHS_KEY = 'qubix-university-progress-v1';
 const bookKeyFor = chapter => {
   const book = SHARED_FOUNDATIONS.find(c => c.chapter === chapter)?.book;
   return book ? `qubix-shared-foundations-${book.id}-v1` : null;
@@ -45,6 +49,7 @@ const sessionIdFor = (chapter, session) =>
 export function completedAssetIds() {
   const done = [];
   const missions = read(MISSION_KEY)?.completed || [];
+  const maths = read(MATHS_KEY)?.completed || {};
 
   // One read per chapter rather than one per session.
   const study = new Map();
@@ -61,6 +66,15 @@ export function completedAssetIds() {
         if (asset.kind === 'read') {
           const id = sessionIdFor(asset.chapter, asset.session);
           if (id && study.get(asset.chapter)?.includes(id)) done.push(asset.id);
+        } else if (asset.kind === 'board') {
+          // A third store, because the mathematics course had one before the
+          // floor knew it existed. It records a floor at a time, so a board is
+          // finished only when every floor of it is, and a learner who worked
+          // through it last month sees that on the floor without doing anything.
+          const board = boards[asset.boardIndex];
+          if (board && board.floors.every((_, floor) => maths[`${asset.boardIndex}:${floor}`])) {
+            done.push(asset.id);
+          }
         } else if (missions.includes(asset.slug)) {
           done.push(asset.id);
         }

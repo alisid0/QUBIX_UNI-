@@ -28,6 +28,8 @@
 //   ("Numbers, Ratios and Change" and "Chance and Inference" are chapters).
 //   They resolve to the session that actually teaches the idea.
 
+import { boards } from './course.js';
+
 /** @typedef {'live'|'reference'|'roadmap'|'planned'} ContentStatus */
 
 export const CONTENT_STATUS = Object.freeze(['live', 'reference', 'roadmap', 'planned']);
@@ -67,6 +69,20 @@ const unbuilt = (id, label, note) => Object.freeze({
 const unpaired = id => Object.freeze({
   id, label: 'Practice', kind: 'play', status: 'planned',
   note: 'This reading has no paired mission. Nothing is missing; none was planned.'
+});
+
+/**
+ * A board of the mathematics course.
+ *
+ * A third kind, because it is a third kind of thing. A board is not a reading
+ * with a mission beside it; it is three to five floors of text and exercise in
+ * one place, and the practice runs inside it rather than alongside. Dressing
+ * that up as a Read/Play pair would put a permanent greyed "not built" next to
+ * ten boards whose exercises are built and working.
+ */
+const board = (id, label, index) => Object.freeze({
+  id, label, kind: 'board', status: 'live',
+  href: `/pilot/variables-and-rates?board=${index}`, boardIndex: index
 });
 
 const pair = (id, sequence, idea, readAsset, playAsset) =>
@@ -255,12 +271,40 @@ export const ANALYST_FLOOR = Object.freeze({
 
 /* ── helpers ─────────────────────────────────────────────────────────────── */
 
-export const ALL_STAGES = Object.freeze([SHARED_DATA_TRUTHS, ...DOORS, ANALYST_FLOOR]);
+/* ── Mathematics ─────────────────────────────────────────────────────────── */
+// Ten boards, thirty-nine sections, and until 2026-09-03 none of it appeared on
+// the floor. It was reachable only from a "Mathematics" link in the navigation,
+// pointing at a course that resumed wherever the learner last was, so the map
+// showed twenty-seven steps while the site held a second course this size.
+//
+// Generated from course.js rather than transcribed. A hand-written copy of ten
+// titles is a list that goes stale the first time a board is renamed, and the
+// floor would then promise a board by a name it no longer has.
+//
+// Single track: these pairs carry a board and no play. See `board` above.
+
+export const MATHEMATICS = Object.freeze({
+  id: 'mathematics',
+  title: 'Mathematics',
+  lede: 'Letters standing for numbers, and what happens to one when another moves. '
+    + 'Its own course, and the ground under the statistics.',
+  singleTrack: true,
+  pairs: Object.freeze(boards.map((entry, index) => pair(
+    `m-${index + 1}`, index + 1, entry.marker || entry.title,
+    board(`b-${index}`, entry.title, index),
+    null
+  )))
+});
+
+export const ALL_STAGES = Object.freeze([SHARED_DATA_TRUTHS, ...DOORS, ANALYST_FLOOR, MATHEMATICS]);
 export const allPairs = () => ALL_STAGES.flatMap(s => s.pairs);
-export const allAssets = () => allPairs().flatMap(p => [p.read, p.play]);
+// A single-track pair has no play half, so the list is compacted rather than
+// carrying holes every consumer would have to guard against.
+export const allAssets = () => allPairs().flatMap(p => [p.read, p.play]).filter(Boolean);
 
 /** Available means live and actually pointing somewhere. Nothing else. */
-export const isAvailable = asset => asset.status === 'live' && Boolean(asset.href);
+export const isAvailable = asset =>
+  Boolean(asset) && asset.status === 'live' && Boolean(asset.href);
 
 /**
  * How much of the live material a learner has finished.

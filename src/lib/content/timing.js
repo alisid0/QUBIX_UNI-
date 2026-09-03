@@ -18,6 +18,7 @@
 
 import { SHARED_FOUNDATIONS } from './shared-foundations.js';
 import { MISSIONS } from '../game/progress.js';
+import { boards } from './course.js';
 
 export const WPM = 220;
 export const STUDY = 2.4;
@@ -50,6 +51,13 @@ export const decisionsIn = root => {
 const missionMinutes = new Map(MISSIONS.map(entry =>
   [entry.slug, deep(entry.mission) / WPM + (decisionsIn(entry.mission) * THINK) / 60]));
 
+// A maths board declares nothing either, so it is measured the same way a
+// mission is: its own words, plus fifteen seconds a decision. A board is text
+// and exercise together across three to five floors, so both halves of the
+// model are doing work here rather than one.
+const boardMinutes = new Map(boards.map((entry, index) =>
+  [index, deep(entry.floors) / WPM + (decisionsIn(entry.floors) * THINK) / 60]));
+
 const sessionMinutes = new Map();
 for (const { chapter, book } of SHARED_FOUNDATIONS) {
   for (const session of book.sessions) {
@@ -69,6 +77,10 @@ export function assetMinutes(asset) {
   if (asset.kind === 'read') {
     const declared = sessionMinutes.get(`${asset.chapter}.${Number(asset.session)}`);
     return Number.isFinite(declared) ? Math.max(1, Math.round(declared)) : null;
+  }
+  if (asset.kind === 'board') {
+    const computed = boardMinutes.get(asset.boardIndex);
+    return Number.isFinite(computed) ? Math.max(1, Math.round(computed)) : null;
   }
   const computed = missionMinutes.get(asset.slug);
   return Number.isFinite(computed) ? Math.max(1, Math.round(computed)) : null;

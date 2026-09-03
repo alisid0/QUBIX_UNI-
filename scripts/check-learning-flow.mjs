@@ -14,6 +14,7 @@
 
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { MISSIONS } from '../src/lib/game/progress.js';
+import { boards } from '../src/lib/content/course.js';
 import { ALL_STAGES, allPairs, allAssets, isAvailable, liveCompletion, CONTENT_STATUS }
   from '../src/lib/content/learning-flow.js';
 
@@ -36,7 +37,17 @@ for (const { chapter, book } of SHARED_FOUNDATIONS) {
 /* ── shape ───────────────────────────────────────────────────────────────── */
 ok('every stage has pairs', ALL_STAGES.every(s => s.pairs.length > 0),
   ALL_STAGES.map(s => `${s.id}:${s.pairs.length}`).join(' '));
-ok('every pair has a read and a play', pairs.every(p => p.read && p.play));
+// A single-track stage carries one asset per step rather than two. Mathematics
+// is one: a board is three to five floors of text and exercise together, with
+// the practice inside it, so there is no second half to name and a permanent
+// greyed "not built" beside ten working boards would be a lie the guard forced.
+// Every other stage still owes both halves.
+const twoTrack = ALL_STAGES.filter(s => !s.singleTrack).flatMap(s => s.pairs);
+const oneTrack = ALL_STAGES.filter(s => s.singleTrack).flatMap(s => s.pairs);
+ok('every pair on a two-track stage has a read and a play', twoTrack.every(p => p.read && p.play));
+ok('every pair on a single-track stage has one asset and no play',
+  oneTrack.every(p => p.read && p.play === null),
+  `${oneTrack.length} single-track step(s)`);
 ok('no two assets share an id', new Set(assets.map(a => a.id)).size === assets.length,
   assets.map(a => a.id).filter((id, i, all) => all.indexOf(id) !== i).join(', '));
 ok('every asset declares a known status',
@@ -62,6 +73,20 @@ const livePlays = assets.filter(a => a.kind === 'play' && a.status === 'live');
 const ghostPlays = livePlays.filter(a => !slugs.has(a.slug));
 ok('every live mission points at a slug on the roster', ghostPlays.length === 0,
   ghostPlays.map(a => `${a.id} -> ${a.slug}`).join(', '));
+
+// The same resolution the readings and missions get. A board index is an array
+// position, which is the easiest kind of reference to get quietly wrong: an
+// off-by-one opens the wrong lesson rather than failing, and reordering
+// course.js would silently repoint every link on the stage.
+const ghostBoards = assets.filter(a => a.kind === 'board' && isAvailable(a))
+  .filter(a => !boards[a.boardIndex]);
+ok('every live board points at a board that exists', ghostBoards.length === 0,
+  ghostBoards.map(a => `${a.id} -> index ${a.boardIndex}`).join(', '));
+
+const misnamed = assets.filter(a => a.kind === 'board' && boards[a.boardIndex])
+  .filter(a => a.label !== boards[a.boardIndex].title);
+ok('every board label matches the board it opens', misnamed.length === 0,
+  misnamed.map(a => `${a.id}: "${a.label}" vs "${boards[a.boardIndex].title}"`).join(' | '));
 
 ok('every live asset has a destination', assets.filter(a => a.status === 'live').every(a => a.href));
 

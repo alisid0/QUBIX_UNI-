@@ -302,8 +302,8 @@
           {/if}
 
           {#if stage || openStages.has(st.id)}
-          <div class="cols" aria-hidden="true">
-            <span>Idea</span><span>Read</span><span>Play</span>
+          <div class="cols" class:single={st.singleTrack} aria-hidden="true">
+            <span>Idea</span><span>{st.singleTrack ? 'Board' : 'Read'}</span>{#if !st.singleTrack}<span>Play</span>{/if}
           </div>
           <ul class="pairs" id={`steps-${st.id}`}>
             {#each st.pairs as pair}
@@ -313,7 +313,7 @@
                   <span class="idea">{pair.idea}</span>
                 </span>
 
-                <div class="pair-row">
+                <div class="pair-row" class:single={!pair.play}>
                   {#if isAvailable(pair.read)}
                     <a class="asset read small" class:is-done={pair.readState === 'done'} href={pair.read.href}>
                       <span class="badge" aria-hidden="true">
@@ -321,7 +321,7 @@
                           d="M12 6.2C10.5 5 8.6 4.5 6 4.5c-.9 0-1.7.1-2.4.2A.8.8 0 0 0 3 5.5v11.7c0 .5.5.9 1 .8.6-.1 1.3-.2 2-.2 2.3 0 4 .5 5.3 1.5.4.3 1 .3 1.4 0 1.3-1 3-1.5 5.3-1.5.7 0 1.4.1 2 .2.5.1 1-.3 1-.8V5.5a.8.8 0 0 0-.6-.8c-.7-.1-1.5-.2-2.4-.2-2.6 0-4.5.5-6 1.7zm0 2v8.5c-1.4-.8-3.1-1.2-5-1.2-.6 0-1.2 0-1.8.1V6.3c.6 0 1.2-.1 1.8-.1 2.1 0 3.7.5 5 1.4z"/></svg>
                       </span>
                       <span class="asset-text">
-                        <span class="kind">Read {#if timeLabel(pair.read)}<em>{timeLabel(pair.read)}</em>{/if}</span><b>{pair.read.label}</b>
+                        <span class="kind">{pair.read.kind === 'board' ? 'Board' : 'Read'} {#if timeLabel(pair.read)}<em>{timeLabel(pair.read)}</em>{/if}</span><b>{pair.read.label}</b>
                         <span class="state">{stateWord[pair.readState]}</span>
                       </span>
                       <span class="chev" aria-hidden="true">›</span>
@@ -339,6 +339,7 @@
                     </span>
                   {/if}
 
+                  {#if pair.play}
                   {#if isAvailable(pair.play)}
                     <a class="asset play small" class:is-done={pair.playState === 'done'} href={pair.play.href}>
                       <span class="badge" aria-hidden="true">
@@ -361,6 +362,7 @@
                         <span class="state">Excluded from your progress</span>
                       </span>
                     </span>
+                  {/if}
                   {/if}
                 </div>
               </li>
@@ -434,6 +436,10 @@
      idea and play the consequence. Drawing it a fourth time added a glyph to
      every row and said nothing new. Same reason the rail went. */
   .pair-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+  /* A mathematics board is one object, so it takes the whole width rather than
+     sitting in the Read half with an empty Play half beside it. */
+  .pair-row.single { grid-template-columns: 1fr; }
+  .cols.single { grid-template-columns: 210px 1fr; }
 
   .asset { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center;
            padding: 16px 18px; border-radius: 16px; text-decoration: none;

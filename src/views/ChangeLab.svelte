@@ -120,6 +120,23 @@
       floorIndex = Math.min(saved.floorIndex || 0, boards[boardIndex].floors.length - 1);
       completed = saved.completed && typeof saved.completed === 'object' ? { ...saved.completed } : {};
     }
+
+    // An address beats a memory.
+    //
+    // Until the floor listed the ten boards there was nothing to link to, so
+    // the course only ever resumed where the learner left off. That is right
+    // for "carry on" and wrong for "open Area on the Grid": without this every
+    // one of the ten links on the floor lands on the same board, whichever was
+    // last open, and looks broken in exactly the way that is hard to describe.
+    //
+    // Completion is left alone. Arriving at a board by link says where to
+    // start, not that anything has been forgotten.
+    const asked = Number(new URLSearchParams(window.location.search).get('board'));
+    if (Number.isInteger(asked) && asked >= 0 && asked < boards.length) {
+      boardIndex = asked;
+      floorIndex = 0;
+    }
+
     hydrated = true;
   });
 
