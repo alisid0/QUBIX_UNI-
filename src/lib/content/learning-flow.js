@@ -55,6 +55,20 @@ const unbuilt = (id, label, note) => Object.freeze({
   id, label, kind: 'play', status: 'planned', note
 });
 
+/**
+ * A reading with no mission beside it.
+ *
+ * Distinct from `unbuilt`, which means a named mission that does not exist yet.
+ * These nine readings were written and simply never placed: nobody promised
+ * them a practice, so saying "not built" would invent a plan that was never
+ * made. They are on the floor because a reading that exists and cannot be
+ * reached from the map may as well not have been written.
+ */
+const unpaired = id => Object.freeze({
+  id, label: 'Practice', kind: 'play', status: 'planned',
+  note: 'This reading has no paired mission. Nothing is missing; none was planned.'
+});
+
 const pair = (id, sequence, idea, readAsset, playAsset) =>
   Object.freeze({ id, sequence, idea, read: readAsset, play: playAsset });
 
@@ -81,21 +95,27 @@ export const SHARED_DATA_TRUTHS = Object.freeze({
     pair('sdt-04', 4, 'Missingness',
       read('r-1-4', 'Zero, blank or missing?', 1, 4),
       play('p-missing-data', 'Missing Values Are Not Zero', 'missing-data')),
-    pair('sdt-05', 5, 'Units',
+    pair('sdt-05', 5, 'From request to analysis',
+      read('r-1-5', 'From a request to an analysis', 1, 5),
+      unpaired('p-1-5')),
+    pair('sdt-06', 6, 'Units',
       read('r-2-1', 'Four what? Every number needs a unit', 2, 1),
       play('p-units', 'Units and Measurement', 'units-measurement')),
     // The brief calls this reading "Ratios, rates and percentages". The session
     // that teaches it is titled for the trap it opens on.
-    pair('sdt-06', 6, 'Rates and denominators',
+    pair('sdt-07', 7, 'Rates and denominators',
       read('r-2-2', 'Two branches both report 12%, how are they still different?', 2, 2),
       play('p-rate-desk', 'The Rate Desk', 'rate-desk')),
-    pair('sdt-07', 7, 'Data types',
+    pair('sdt-08', 8, 'Blank is not zero',
+      read('r-3-1', 'A blank cell does not mean zero', 3, 1),
+      unpaired('p-3-1')),
+    pair('sdt-09', 9, 'Data types',
       read('r-3-2', 'A postcode and a price can both contain numbers', 3, 2),
       play('p-classify', 'Classify Store Data', 'classify-data')),
-    pair('sdt-08', 8, 'Keys and duplicates',
+    pair('sdt-10', 10, 'Keys and duplicates',
       read('r-3-3', 'Does one row mean one sale or one product?', 3, 3),
       play('p-duplicates', 'Keys and Duplicate Records', 'duplicate-records')),
-    pair('sdt-09', 9, 'Provenance',
+    pair('sdt-11', 11, 'Provenance',
       read('r-3-4', 'Where did this number come from?', 3, 4),
       play('p-lineage', 'Trace the Number', 'data-lineage'))
   ])
@@ -111,19 +131,44 @@ export const DOORS = Object.freeze([
     title: 'Concepts first',
     lede: 'Numbers, distributions and what a sample can be asked to stand for.',
     pairs: Object.freeze([
+      // Chapter order, which is also the order the ideas depend on each other:
+      // change, then shape, then centre, then spread, then samples, then
+      // chance. The seven readings added on 2026-09-03 were written and never
+      // placed, and slotting them by chapter is what made the run continuous.
       pair('c1', 1, 'Numbers and change',
         read('r-2-3', 'Absolute change, relative change and rate of change', 2, 3),
         play('p-uom', 'SUM(quantity)', 'uom')),
-      pair('c2', 2, 'Distributions',
+      pair('c2', 2, 'From table to graph',
+        read('r-2-4', 'From table to rule to graph', 2, 4),
+        unpaired('p-2-4')),
+      pair('c3', 3, 'Distributions',
         read('r-4-1', 'From raw values to a distribution', 4, 1),
         play('p-distribution', 'The Distribution Desk', 'distribution-desk')),
-      pair('c3', 3, 'Centre and cost',
+      pair('c4', 4, 'Shape before summary',
+        read('r-4-2', 'Look at the shape before the summary', 4, 2),
+        unpaired('p-4-2')),
+      pair('c5', 5, 'Centre and cost',
         read('r-4-3', 'Centre is a choice', 4, 3),
         play('p-zone-price', 'What Does It Cost?', 'zone-price')),
-      pair('c4', 4, 'Samples and boundaries',
+      pair('c6', 6, 'Spread',
+        read('r-4-4', 'Measuring spread', 4, 4),
+        unpaired('p-4-4')),
+      pair('c7', 7, 'Samples and boundaries',
         read('r-4-5', 'Who is in the data, and who is not', 4, 5),
         play('p-sampling', 'The Sampling Desk', 'sampling-desk')),
-      pair('c5', 5, 'Chance and inference',
+      pair('c8', 8, 'The language of chance',
+        read('r-4-6', 'The language of chance', 4, 6),
+        unpaired('p-4-6')),
+      pair('c9', 9, 'What a probability is of',
+        read('r-8-1', 'A probability is a proportion of something named', 8, 1),
+        unpaired('p-8-1')),
+      pair('c10', 10, 'Conditional probability',
+        read('r-8-2', 'What you already know changes the number', 8, 2),
+        unpaired('p-8-2')),
+      pair('c11', 11, 'What a sample can say',
+        read('r-8-3', 'What a sample can and cannot say', 8, 3),
+        unpaired('p-8-3')),
+      pair('c12', 12, 'Chance and inference',
         read('r-8-4', 'Different, or different this week?', 8, 4),
         unbuilt('p-inference', 'Inference Investigation',
           'Named in the flow brief. No such mission exists.'))
