@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/build-pilot.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/check-deployable.mjs && node scripts/check-ai-tutors.mjs && node scripts/check-auth.mjs && node scripts/check-contrast.mjs && node scripts/check-navigation.mjs && node scripts/check-learning-updates.mjs && node scripts/check-dsa-preview.mjs && node scripts/build-sample-db.mjs && node scripts/check-chapters.mjs && node scripts/check-beginner-path.mjs && node scripts/check-root-entry.mjs && node scripts/check-route-steps.mjs && node scripts/check-read-the-table.mjs && node scripts/check-data-visualization.mjs && node scripts/check-showcase-demo.mjs && node scripts/check-room-map.mjs && node scripts/check-phase-one.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-match.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-overlays.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-motion.mjs && node scripts/check-workshops.mjs && node scripts/check-assistant.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-region-grain.mjs && node scripts/check-zone-price.mjs && node scripts/check-uom.mjs && node scripts/check-chance-figures.mjs && node scripts/check-reachable.mjs && node scripts/check-routes.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs && node scripts/check-learning-flow.mjs",
+    "prebuild": "npm run lint && node scripts/check-deployable.mjs && node scripts/check-ai-tutors.mjs && node scripts/check-auth.mjs && node scripts/check-contrast.mjs && node scripts/check-navigation.mjs && node scripts/check-learning-updates.mjs && node scripts/check-dsa-preview.mjs && node scripts/build-sample-db.mjs && node scripts/check-chapters.mjs && node scripts/check-beginner-path.mjs && node scripts/check-root-entry.mjs && node scripts/check-route-steps.mjs && node scripts/check-read-the-table.mjs && node scripts/check-data-visualization.mjs && node scripts/check-showcase-demo.mjs && node scripts/check-room-map.mjs && node scripts/check-phase-one.mjs && node scripts/check-exercises.mjs && node scripts/check-missions.mjs && node scripts/check-match.mjs && node scripts/check-rehearsals.mjs && node scripts/check-rates.mjs && node scripts/check-palette.mjs && node scripts/check-overlays.mjs && node scripts/check-store-map.mjs && node scripts/check-figures.mjs && node scripts/check-motion.mjs && node scripts/check-workshops.mjs && node scripts/check-assistant.mjs && node scripts/check-scroll.mjs && node scripts/check-timing.mjs && node scripts/check-type.mjs && node scripts/check-region-grain.mjs && node scripts/check-zone-price.mjs && node scripts/check-uom.mjs && node scripts/check-chance-figures.mjs && node scripts/check-reachable.mjs && node scripts/check-routes.mjs && node scripts/check-world.mjs && node scripts/check-assets.mjs && node scripts/build-book.mjs && node scripts/build-spine.mjs && node scripts/publish-library.mjs && node scripts/build-seo.mjs && node scripts/build-pilot.mjs && node scripts/check-learning-flow.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "mobile:sync": "npm run build && cap sync",
@@ -81,7 +81,8 @@
     "audit:visuals": "node scripts/audit-visuals.mjs",
     "check:flow": "node scripts/check-learning-flow.mjs",
     "audit:pairs": "node scripts/audit-learning-pairs.mjs",
-    "audit:masterplan": "node scripts/audit-masterplan-coverage.mjs"
+    "audit:masterplan": "node scripts/audit-masterplan-coverage.mjs",
+    "lint": "eslint --config ./eslint.config.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
@@ -97,6 +98,9 @@
   "devDependencies": {
     "@capacitor/cli": "^8.5.0",
     "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-svelte": "^2.46.1",
+    "globals": "^17.12.0",
     "nodemailer": "^9.0.3",
     "playwright": "^1.61.1",
     "sharp": "^0.35.3",

@@ -7,7 +7,12 @@ const STOP_WORDS = new Set('a an and are as at be because by can course did do d
 
 const SPELLING = Object.freeze({
   boxes: 'box', containers: 'container', contaners: 'container', partitions: 'partition',
-  repetative: 'repetitive', repetative: 'repetitive', uniquie: 'unique', databse: 'database',
+  // `repetative` was written here twice, which JavaScript accepts silently and
+  // no review caught. The values were identical so nothing behaved wrongly, but
+  // the second slot was clearly meant for another misspelling: two of the same
+  // key is a correction that was intended and never made. `repetetive` is the
+  // other common one, so it takes the place its duplicate was occupying.
+  repetative: 'repetitive', repetetive: 'repetitive', uniquie: 'unique', databse: 'database',
   rows: 'row', columns: 'column', tables: 'table', transactions: 'transaction',
   joins: 'join', groups: 'group', grouped: 'group', grouping: 'group', filters: 'filter',
   duplicates: 'duplicate', repeated: 'repeat', repeating: 'repeat', verified: 'verify'
