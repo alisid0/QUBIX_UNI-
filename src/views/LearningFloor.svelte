@@ -148,8 +148,15 @@
     autoOpened = true;
   }
 
-  const isOpen = id => openStages.has(id);
-
+  // Deliberately no isOpen(id) helper, and the markup asks openStages directly.
+  //
+  // Svelte works out what to re-render from the names a template mentions. With
+  // a helper, the template mentioned isOpen and st, neither of which is ever
+  // reassigned, while openStages was reassigned and never named there. So every
+  // toggle updated the Set correctly and nothing on the page moved, including
+  // the stage that is supposed to open itself. Naming openStages in the markup
+  // is what makes the dependency visible, and it cannot be reintroduced by
+  // someone tidying the call sites behind a function again.
   function toggleStage(id) {
     const next = new Set(openStages);
     next.has(id) ? next.delete(id) : next.add(id);
@@ -285,16 +292,16 @@
                this page and start folded, with the stage you are actually in
                already open. -->
           {#if !stage}
-            <button class="stage-toggle" aria-expanded={isOpen(st.id)}
+            <button class="stage-toggle" aria-expanded={openStages.has(st.id)}
                     aria-controls={`steps-${st.id}`}
                     on:click={() => toggleStage(st.id)}>
-              <span>{isOpen(st.id) ? 'Hide' : 'Show'} the {st.pairs.length} steps</span>
+              <span>{openStages.has(st.id) ? 'Hide' : 'Show'} the {st.pairs.length} steps</span>
               <span class="stage-toggle-meta">{#if stageMinutes(st)}about {stageMinutes(st)} · {/if}{shape(st).live} built{#if shape(st).live < st.pairs.length * 2} · {st.pairs.length * 2 - shape(st).live} not written{/if}</span>
-              <span class="caret" class:up={isOpen(st.id)} aria-hidden="true">›</span>
+              <span class="caret" class:up={openStages.has(st.id)} aria-hidden="true">›</span>
             </button>
           {/if}
 
-          {#if stage || isOpen(st.id)}
+          {#if stage || openStages.has(st.id)}
           <div class="cols" aria-hidden="true">
             <span>Idea</span><span>Read</span><span>Play</span>
           </div>
