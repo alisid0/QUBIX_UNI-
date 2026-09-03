@@ -15,6 +15,8 @@
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { MISSIONS } from '../src/lib/game/progress.js';
 import { boards } from '../src/lib/content/course.js';
+import * as flow from '../src/lib/content/learning-flow.js';
+import { readFileSync as readSource } from 'node:fs';
 import { ALL_STAGES, allPairs, allAssets, isAvailable, liveCompletion, CONTENT_STATUS }
   from '../src/lib/content/learning-flow.js';
 
@@ -33,6 +35,33 @@ const sessions = new Set();
 for (const { chapter, book } of SHARED_FOUNDATIONS) {
   book.sessions.forEach((_, i) => sessions.add(`${chapter}/${i + 1}`));
 }
+
+/* ── reaching the page ───────────────────────────────────────────────────── */
+// Mathematics was added to this file, to ALL_STAGES, to the guards and to
+// progress, and did not appear on the floor. LearningFloor builds its own stage
+// list by hand, because the chosen door is lifted above the two a learner did
+// not pick, so a stage that is not named there is simply never rendered. Every
+// check in this file passed while the page showed five stages out of six.
+//
+// A stage nobody can see is the same defect as a reading nobody can reach.
+const floorSource = readSource(new URL('../src/views/LearningFloor.svelte', import.meta.url), 'utf8');
+const stageExports = Object.entries(flow)
+  .filter(([, value]) => value && (value.pairs || (Array.isArray(value) && value[0]?.pairs)))
+  .map(([name]) => name);
+// Looking for the name anywhere in the file is not enough: the first version of
+// this check passed while the import was missing, because the word still
+// appeared in a comment explaining the bug. It has to be the call that puts the
+// stage into the rendered list, and the import that makes it resolvable.
+const rendered = name => new RegExp(`stageState\\(\\s*${name}\\b`).test(floorSource)
+  || new RegExp(`\\.\\.\\.${name}\\b`).test(floorSource)
+  || new RegExp(`${name}\\.(find|filter|map)\\(`).test(floorSource);
+const imported = name => new RegExp(`import \\{[^}]*\\b${name}\\b[^}]*\\}`, 's').test(floorSource);
+
+const unrendered = stageExports.filter(name => name !== 'ALL_STAGES')
+  .filter(name => !(rendered(name) && imported(name)));
+ok('the floor renders and imports every stage this file exports', unrendered.length === 0,
+  unrendered.length ? `not on the floor: ${unrendered.join(', ')}`
+    : stageExports.filter(n => n !== 'ALL_STAGES').join(' '));
 
 /* ── shape ───────────────────────────────────────────────────────────────── */
 ok('every stage has pairs', ALL_STAGES.every(s => s.pairs.length > 0),

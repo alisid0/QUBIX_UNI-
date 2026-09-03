@@ -26,7 +26,7 @@
   // Nothing here writes progress and nothing migrates it.
 
   import { onMount } from 'svelte';
-  import { DOORS, SHARED_DATA_TRUTHS, ANALYST_FLOOR, liveCompletion, isAvailable }
+  import { DOORS, SHARED_DATA_TRUTHS, ANALYST_FLOOR, MATHEMATICS, liveCompletion, isAvailable }
     from '../lib/content/learning-flow.js';
   import { completedAssetIds, stageState, nextStep } from '../lib/content/learning-progress.js';
   import { assetMinutes, formatMinutes } from '../lib/content/timing.js';
@@ -66,11 +66,17 @@
 
   $: overall = liveCompletion(done);
   $: next = hydrated ? nextStep(done, selectedDoor) : null;
+  // Built by hand rather than from ALL_STAGES, because the order is not the
+  // declaration order: the chosen door is lifted above the two a learner did
+  // not pick. That is also how Mathematics was added to ALL_STAGES, to the
+  // guards and to progress, and still did not appear on the page. Anything new
+  // has to be named here too.
   $: stages = [
     stageState(SHARED_DATA_TRUTHS, done),
     stageState(DOORS.find(d => d.id === selectedDoor), done),
     ...DOORS.filter(d => d.id !== selectedDoor).map(d => stageState(d, done)),
-    stageState(ANALYST_FLOOR, done)
+    stageState(ANALYST_FLOOR, done),
+    stageState(MATHEMATICS, done)
   ];
 
   // One stage on its own page, or all five on the floor. The whole floor is
