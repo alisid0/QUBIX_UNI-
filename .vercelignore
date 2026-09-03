@@ -18,7 +18,15 @@ ios/
 
 # Authoring and governance material. The Factory is dev-only and the curriculum
 # records are not part of the site.
-supabase/
+#
+# Same shape as docs/ below: the schema is not served, but check-auth reads the
+# consent migration during prebuild and the deploy failed on ENOENT without it.
+# It asserts the properties that make a stored consent defensible, which is
+# exactly the kind of check that must not be skipped on the one build that
+# reaches learners. Contents excluded rather than the directory, because
+# gitignore semantics cannot re-include a file whose parent is already excluded.
+supabase/*
+!supabase/qubix
 
 # Same shape as docs/: the curriculum records are not served, but
 # release guards read the approval registers during prebuild.
