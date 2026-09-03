@@ -44,6 +44,24 @@ for (const file of readdirSync(VIEWS).filter(f => f.endsWith('.svelte'))) {
   checked += 1;
 
   // Every rule in this file that targets html or body and sets overflow.
+  // The gap that let the front door ship unscrollable on a phone.
+  //
+  // Everything below only ran for views that override html or body, so a view
+  // that overrode nothing and instead built its own scroll container was
+  // skipped entirely and passed. That is what LearningFloor did from 8e71e41,
+  // and what ChangeLab had done for longer: height:100% plus overflow-y:auto
+  // on the page root, inside a shell pinned to the viewport. The document never
+  // scrolls, and iOS Safari handles the nested container worst of all.
+  //
+  // A view that genuinely needs an inner pane still says `scroll: internal` in
+  // the file and is skipped above.
+  const innerScroller = [...style.matchAll(/\{([^}]*)\}/g)]
+    .map(m => m[1])
+    .some(body => /height\s*:\s*100%/.test(body) && /overflow(-y)?\s*:\s*auto/.test(body));
+  ok(`${name} does not scroll a box instead of the page`, !innerScroller,
+    innerScroller ? 'height: 100% with overflow-y: auto on a page root — let the document scroll'
+      : '');
+
   const rules = [...style.matchAll(/:global\((?:html|body)\)[^{]*\{([^}]*)\}/g)]
     .map(m => m[1])
     .filter(body => /overflow\s*:/.test(body));

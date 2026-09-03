@@ -329,9 +329,24 @@
 </div>
 
 <style>
-  /* The scroller. Without it the floor is clipped at viewport height by the
-     shell, which is fixed and hidden from the original full-screen build. */
-  .floor-page { height: 100%; overflow-y: auto; overscroll-behavior: contain;
+  /* The page scrolls, not a box inside it.
+
+     This was `height: 100%; overflow-y: auto` on .floor-page, which made the
+     floor an inner scroll container because the shell clips at viewport
+     height. It is the wrong one of the two available fixes, and
+     scripts/check-scroll.mjs documents exactly why: the document never
+     scrolls, so window.scrollY stays 0 and window.scrollTo does nothing. On a
+     phone it is worse than that. A box pinned to height:100% inside a body
+     pinned to the viewport, with overscroll-behavior:contain stopping the
+     scroll from chaining out, is the combination iOS Safari handles worst, and
+     the front door simply would not move.
+
+     The right fix is the one every mission already uses: undo the shell and
+     the global overflow:hidden, and let the document be the scroller. */
+  :global(.qubix-university){height:auto!important;overflow:visible!important}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%!important;overflow:visible!important}
+  :global(body){position:static!important;overscroll-behavior:auto!important}
+  .floor-page { min-height: 100vh;
                 background: radial-gradient(circle at 12% 0, #fffaf1 0, transparent 31%), #eee8dc; }
 
   /* Prototype shapes, Qubix colours. Rounded cards, circular badges, pills and

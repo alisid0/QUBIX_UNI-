@@ -211,7 +211,14 @@
 </div>
 
 <style>
-  .home-shell { height: 100%; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: var(--qx-bg); color: var(--qx-text); font-family: var(--qx-font); }
+  /* The page scrolls, not this box. The -webkit-overflow-scrolling line dates
+     from when an inner pane was the way to get momentum on iOS; it has been
+     unnecessary since iOS 13 and the pane it enabled is what stopped the
+     document scrolling. See check-scroll.mjs. */
+  :global(.qubix-university){height:auto!important;overflow:visible!important}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%!important;overflow:visible!important}
+  :global(body){position:static!important;overscroll-behavior:auto!important}
+  .home-shell { min-height: 100vh; background: var(--qx-bg); color: var(--qx-text); font-family: var(--qx-font); }
   .home-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px clamp(16px, 4vw, 40px); border-bottom: 1px solid var(--qx-border); }
   .identity { display: flex; align-items: center; gap: 11px; }
   .header-actions { display: flex; align-items: center; gap: 8px; }

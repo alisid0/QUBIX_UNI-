@@ -3820,6 +3820,9 @@
 </div>
 
 <style>
+  /* scroll: internal. A dev workbench, not a document: the panes are meant to
+     scroll independently inside a fixed frame, the way an editor does. No
+     learner reaches these. */
   .factory-shell { height: 100%; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: var(--qx-bg); color: var(--qx-text); font-family: var(--qx-font); }
   .factory-header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px clamp(16px, 4vw, 48px); border-bottom: 1px solid var(--qx-border); background: color-mix(in srgb, var(--qx-bg) 88%, transparent); backdrop-filter: blur(14px); }
   .identity { display: flex; align-items: center; gap: 11px; }

@@ -298,6 +298,9 @@
 </div>
 
 <style>
+  /* scroll: internal. A dev workbench, not a document: the panes are meant to
+     scroll independently inside a fixed frame, the way an editor does. No
+     learner reaches these. */
   .ex-shell { height: 100%; overflow-y: auto; background: var(--qx-bg); color: var(--qx-text); }
   .ex-header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; background: var(--qx-bg); border-bottom: 1px solid var(--qx-border-2); }
   .identity { display: flex; align-items: center; gap: 10px; }

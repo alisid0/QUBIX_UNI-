@@ -720,8 +720,11 @@
 </div>
 
 <style>
+  /* The page scrolls, not this box. Same defect the floor carried: height:100%
+     inside a shell pinned to the viewport, with overflow-y:auto making an inner
+     scroll container, which a phone handles worst. See check-scroll.mjs. */
   .lab-view {
-    height: 100%; width: 100%; overflow-y: auto; padding: max(14px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+    min-height: 100vh; width: 100%; padding: max(14px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
     display: flex; flex-direction: column; gap: 12px;
   }
   button, input { font: inherit; }
@@ -933,7 +936,9 @@
 
   /* Mathematics keeps its compact lesson controls, but now sits on the same
      paper and in the same framed work area as the Superstore missions. */
-  :global(html),:global(body),:global(#app){background:#e6e0d2}
+  :global(.qubix-university){height:auto!important;overflow:visible!important}
+  :global(html),:global(body),:global(#app){height:auto!important;min-height:100%!important;overflow:visible!important;background:#e6e0d2}
+  :global(body){position:static!important;overscroll-behavior:auto!important}
   .lab-view{--qx-bg:#e6e0d2;--qx-surface:#f7f3e9;--qx-surface-2:#efe9dd;--qx-surface-3:#d8d0be;
             /* dim was #62695f (4.31:1) and faint #817b70 (3.19:1) on this
                paper. Same convergence as the global scale: once 4.5:1 is the

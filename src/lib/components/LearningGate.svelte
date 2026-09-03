@@ -81,7 +81,9 @@
 {/if}
 
 <style>
+  :global(.qubix-university){height:auto!important;overflow:visible!important}
   :global(html),:global(body),:global(#app){height:auto!important;min-height:100%!important;overflow:visible!important}
+  :global(body){position:static!important;overscroll-behavior:auto!important}
   .gate-page{--ink:#241f16;--soft:#6d6558;--rule:#cfc5b0;--paper:#f6f1e8;--card:#fffdf8;--green:#315f48;--clay:#b65c32;min-height:100vh;display:grid;place-items:center;padding:40px 18px;background:var(--paper);color:var(--ink);font-family:var(--qx-font)}
   .panel{width:min(560px,100%);padding:38px;border:3px solid var(--ink);background:var(--card);box-shadow:8px 8px 0 rgba(36,31,22,.15)}
   .eyebrow{margin:0 0 10px;color:var(--clay);font-weight:900;font-size:11px;letter-spacing:.13em;text-transform:uppercase}

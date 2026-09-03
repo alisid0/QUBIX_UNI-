@@ -310,6 +310,7 @@
 </div>
 
 <style>
+  :global(.qubix-university){height:auto!important;overflow:visible!important}
   :global(html),:global(body),:global(#app){height:auto!important;min-height:100%!important;overflow:visible!important}
   :global(body){position:static!important;overscroll-behavior:auto!important}
 
