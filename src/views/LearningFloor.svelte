@@ -425,7 +425,13 @@
            padding: 16px 18px; border-radius: 16px; text-decoration: none;
            border: 1px solid var(--line); background: var(--card); color: var(--ink);
            box-shadow: 0 2px 0 rgba(36,31,22,.06); }
-  .asset.small { padding: 11px 14px; border-radius: 13px; gap: 10px; }
+  /* One height for every step, so the column reads as a column.
+     Titles are one line or two depending on how long they happen to be, and
+     letting the card size to its own text made the sequence circles drift and
+     the gaps between rows uneven: nine steps, nine different rhythms. Sized to
+     hold the tallest of them, so a wrapped title changes the words on a row and
+     nothing else about it. */
+  .asset.small { padding: 11px 14px; border-radius: 13px; gap: 10px; min-height: 84px; }
 
   /* The badge carries what the prototype used a second hue for. */
   .badge { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
@@ -589,8 +595,11 @@
 
   /* The column heads and the rail are what make this read as one structure
      rather than a stack of unrelated rows. Straight from the map. */
+  /* The header sits outside .pairs, so it needs that container's 10px of
+     padding as well as the row's 8px, or every label is ten pixels left of the
+     column it names. */
   .cols { display: grid; grid-template-columns: 132px 1fr auto 1fr; gap: 12px;
-          margin: 16px 0 6px; padding: 0 8px; }
+          margin: 16px 0 6px; padding: 0 18px; }
   .cols span { color: var(--muted); font: 800 11px var(--qx-font, system-ui);
                letter-spacing: .14em; text-transform: uppercase; }
 
@@ -599,7 +608,12 @@
            padding: 10px; }
   /* One continuous line behind the sequence circles, so the steps read as a
      route rather than as separate cards. */
-  .pairs::before { content: ''; position: absolute; top: 34px; bottom: 34px; left: 76px;
+  /* Threaded through the circles, not past them.
+     The circle centre is 10px of .pairs padding, plus 8px of .pair-line
+     padding, plus half the 132px gutter: 84px. The rail sat at 77px and missed
+     every one of them by seven, which is the kind of gap that reads as wrong
+     before anyone works out why. */
+  .pairs::before { content: ''; position: absolute; top: 34px; bottom: 34px; left: 83px;
                    width: 2px; background: var(--line); }
   .pair-line { position: relative; display: grid; grid-template-columns: 132px 1fr; gap: 12px;
                align-items: center; padding: 8px; border-radius: 14px; }
