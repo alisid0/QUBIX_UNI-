@@ -97,8 +97,34 @@ for (const [theme, tokens] of Object.entries(themes)) {
 }
 
 // The declaration, not the word: this file's own comment explains why it went.
+// The declaration, not the word: this file's own comment explains why it went.
 check(!/--qx-text-faintest\s*:/.test(css),
   'the removed --qx-text-faintest has not come back');
+
+// Component-scoped overrides.
+//
+// Reading only the token file was not enough, and the live site proved it the
+// same afternoon: ChangeLab redefines the whole text scale on its own paper,
+// where --qx-text-dim measured 4.31:1 and --qx-text-faint 3.19:1. A guard that
+// checks the palette and not the overrides checks the easy half.
+//
+// A component that redefines --qx-bg alongside its text tokens is declaring a
+// complete local ground, so it is measured against that rather than the global
+// one.
+const viewsDir = new URL('../src/views/', import.meta.url);
+for (const name of fs.readdirSync(viewsDir)) {
+  if (!name.endsWith('.svelte')) continue;
+  const src = fs.readFileSync(new URL(name, viewsDir), 'utf8');
+  const ground = src.match(/--qx-bg:\s*(#[0-9a-fA-F]{6})/);
+  if (!ground) continue;
+
+  for (const m of src.matchAll(/--(qx-text[a-z0-9-]*|qx-[a-z]+-text):\s*(#[0-9a-fA-F]{6})/g)) {
+    const r = ratio(m[2], ground[1]);
+    check(r >= AA_TEXT,
+      `${name.replace('.svelte', '').padEnd(22)} --${m[1].padEnd(16)} on its own --qx-bg`,
+      `${r.toFixed(2)}:1`);
+  }
+}
 
 console.log(failed
   ? '\nContrast checks failed. A colour a learner reads is below 4.5:1.\n'

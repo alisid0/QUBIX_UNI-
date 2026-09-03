@@ -935,7 +935,11 @@
      paper and in the same framed work area as the Superstore missions. */
   :global(html),:global(body),:global(#app){background:#e6e0d2}
   .lab-view{--qx-bg:#e6e0d2;--qx-surface:#f7f3e9;--qx-surface-2:#efe9dd;--qx-surface-3:#d8d0be;
-            --qx-text:#20241f;--qx-text-2:#4f574e;--qx-text-dim:#62695f;--qx-text-faint:#817b70;
+            /* dim was #62695f (4.31:1) and faint #817b70 (3.19:1) on this
+               paper. Same convergence as the global scale: once 4.5:1 is the
+               floor, this ground has no room for two greys below text-2, so
+               both are now the one value that clears it. */
+            --qx-text:#20241f;--qx-text-2:#4f574e;--qx-text-dim:#5b6158;--qx-text-faint:#5b6158;
             --qx-border:#c8c1b1;--qx-border-2:#9c998d;--qx-accent:#b85530;--qx-accent-text:#9d4426;
             --qx-accent-soft:#f0ddd2;--qx-green:#315f48;--qx-green-text:#284c3b;--qx-green-soft:#e0e8df;
             width:min(100%,760px);max-width:760px;margin-inline:auto;padding:18px clamp(16px,5vw,56px) 34px;background:#e6e0d2}
