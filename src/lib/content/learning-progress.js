@@ -95,12 +95,21 @@ export function completedAssetIds() {
 export function stageState(stage, done = []) {
   const pairs = stage.pairs.map(pair => {
     const state = asset => {
+      // 'none' is a single-track step: Mathematics boards carry their practice
+      // inside them, so there is no second half. Distinct from 'not-built',
+      // which means a half that should exist and does not, and it must never
+      // hold a pair open: a board with no play is finished when the board is.
+      //
+      // Without this the whole floor died. isAvailable(null) is false, so the
+      // next line read .status off null, stageState threw, and the reactive
+      // block that builds every stage went with it. Six stages became zero.
+      if (!asset) return 'none';
       if (!isAvailable(asset)) return asset.status === 'live' ? 'unavailable' : 'not-built';
       return done.includes(asset.id) ? 'done' : 'todo';
     };
     const read = state(pair.read);
     const play = state(pair.play);
-    const finished = [read, play].every(s => s === 'done' || s === 'not-built');
+    const finished = [read, play].every(s => s === 'done' || s === 'not-built' || s === 'none');
     return { ...pair, readState: read, playState: play, finished };
   });
 
@@ -114,6 +123,10 @@ export function stageState(stage, done = []) {
     lede: stage.lede,
     exitOutcome: stage.exitOutcome,
     standard: stage.standard,
+    // Carried through because the floor renders from this object, not from the
+    // stage. Without it the Mathematics column headers said Read and Play over
+    // a stage that has neither.
+    singleTrack: Boolean(stage.singleTrack),
     pairs: pairs.map((p, i) => ({ ...p, current: i === currentIndex })),
     current: currentIndex === -1 ? null : pairs[currentIndex],
     done: doneCount,

@@ -103,9 +103,13 @@
 
   /* What a stage contains, said the way the header says it. */
   const shape = st => {
+    // 'none' is a half that does not exist rather than one that is missing, so
+    // it is not counted as built. Otherwise ten Mathematics boards report
+    // twenty built halves.
+    const counts = s => s !== 'not-built' && s !== 'none';
     const halves = st.pairs.flatMap(p => [
-      { kind: 'read', ok: p.readState !== 'not-built' },
-      { kind: 'play', ok: p.playState !== 'not-built' }
+      { kind: 'read', ok: counts(p.readState) },
+      { kind: 'play', ok: counts(p.playState) }
     ]).filter(h => h.ok);
     return {
       live: halves.length,
@@ -115,6 +119,11 @@
   };
 
   const stateWord = { done: 'Done', todo: 'To do' };
+
+  /* How many halves a stage could have. Two per step, except on a single-track
+     stage where a step is one object: counting Mathematics out of twenty told a
+     learner that ten of its boards were unwritten when all ten are built. */
+  const halvesIn = st => st.pairs.length * (st.singleTrack ? 1 : 2);
 
   /* A reading session declares its own minutes and check-timing keeps that
      declaration honest against the words, so a Read time is a stated fact.
@@ -302,7 +311,7 @@
                     aria-controls={`steps-${st.id}`}
                     on:click={() => toggleStage(st.id)}>
               <span>{openStages.has(st.id) ? 'Hide' : 'Show'} the {st.pairs.length} steps</span>
-              <span class="stage-toggle-meta">{#if stageMinutes(st)}about {stageMinutes(st)} · {/if}{shape(st).live} built{#if shape(st).live < st.pairs.length * 2} · {st.pairs.length * 2 - shape(st).live} not written{/if}</span>
+              <span class="stage-toggle-meta">{#if stageMinutes(st)}about {stageMinutes(st)} · {/if}{shape(st).live} built{#if shape(st).live < halvesIn(st)} · {halvesIn(st) - shape(st).live} not written{/if}</span>
               <span class="caret" class:up={openStages.has(st.id)} aria-hidden="true">›</span>
             </button>
           {/if}

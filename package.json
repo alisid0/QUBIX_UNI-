@@ -39,6 +39,7 @@
     "check:auth": "node scripts/check-auth.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:navigation": "node scripts/check-navigation.mjs",
+    "check:rendered": "node scripts/check-rendered.mjs",
     "check:scroll": "node scripts/check-scroll.mjs",
     "check:timing": "node scripts/check-timing.mjs",
     "build:seo": "node scripts/build-seo.mjs",
