@@ -3,7 +3,7 @@
 // must not reach a learner. This refuses to run unless the working tree, linked
 // project and public bundle are all verified.
 
-import { execSync } from 'node:child_process';
+import { execSync, spawn } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -91,7 +91,40 @@ if (leaked.length) {
 }
 console.log(`  bundle clean, ${(js.length / 1024).toFixed(0)} kB of JavaScript checked`);
 
-// 6. Publish. Use the active package manager so the command works from npm and
+// 6. Open the thing in a browser before publishing it.
+//
+// Everything above reads files. Three defects in a row got past all of it and
+// were found by a person opening the page: the front door would not scroll on a
+// phone, a stage toggle updated its state and never re-rendered, and the whole
+// floor threw on load and drew nothing. The bundle was correct in every case,
+// which is why checking the bundle kept saying yes.
+//
+// So the last gate before a release is the page itself, served from the dist
+// that is about to ship. Vercel's build image has no browser, which is why this
+// lives here and not in prebuild.
+//
+// QUBIX_SKIP_RENDER_CHECK=1 exists for the day a browser will not start and a
+// release genuinely cannot wait. Using it is a decision to publish something
+// nobody has looked at.
+if (process.env.QUBIX_SKIP_RENDER_CHECK === '1') {
+  console.warn('\n  Skipping the rendered check. Nobody has opened this build.\n');
+} else {
+  console.log('  opening the build in a browser…');
+  const preview = spawn(process.execPath, [join('node_modules', 'vite', 'bin', 'vite.js'),
+    'preview', '--port', '4390', '--strictPort'], { stdio: 'ignore' });
+  try {
+    await new Promise(resolve => setTimeout(resolve, 6000));
+    sh('node scripts/check-rendered.mjs http://localhost:4390', { stdio: 'inherit' });
+  } catch (_) {
+    die('the built site did not render correctly.',
+      'Run "npx vite preview --port 4390" and "npm run check:rendered http://localhost:4390"\n'
+      + '  to see which check failed. Nothing has been published.');
+  } finally {
+    preview.kill();
+  }
+}
+
+// 7. Publish. Use the active package manager so the command works from npm and
 // pnpm without requiring a globally installed Vercel CLI.
 console.log('  publishing to Vercel…');
 const execPath = JSON.stringify(process.execPath);
