@@ -3,8 +3,13 @@
   //
   // Shape and flow come from the prototype: white cards with a circular icon
   // badge, a small-caps kind label above a bold title, a chevron on the right,
-  // pill buttons, numbered circles down the gutter, and the Read → Play row
-  // running left to right with an arrow between.
+  // pill buttons, numbered circles down the gutter, and the Read then Play row
+  // running left to right.
+  //
+  // Three of the prototype's connectors have since gone: the rail threading the
+  // circles, the arrow between Read and Play, and the pill on every card. Each
+  // drew a relationship the layout already stated, and the shapes that survive
+  // now mean something because they are not on everything.
   //
   // Colour does not. check-palette refuses new hue families and its own note
   // says why, so the prototype's navy, teal and lime become the Qubix ink,
@@ -291,7 +296,7 @@
 
           {#if stage || isOpen(st.id)}
           <div class="cols" aria-hidden="true">
-            <span>Idea</span><span>Read</span><span></span><span>Play</span>
+            <span>Idea</span><span>Read</span><span>Play</span>
           </div>
           <ul class="pairs" id={`steps-${st.id}`}>
             {#each st.pairs as pair}
@@ -326,8 +331,6 @@
                       </span>
                     </span>
                   {/if}
-
-                  <span class="arrow" aria-hidden="true">→</span>
 
                   {#if isAvailable(pair.play)}
                     <a class="asset play small" class:is-done={pair.playState === 'done'} href={pair.play.href}>
@@ -418,8 +421,12 @@
        letter-spacing: -.035em; text-wrap: balance; }
   .settling { color: var(--muted); font: 650 14.5px/1.55 var(--qx-font, system-ui); }
   /* ── the card, the one shape the whole floor is made of ────────── */
-  .pair-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
-  .arrow { align-self: center; color: var(--muted); font-size: 19px; font-weight: 700; }
+  /* Two equal columns, no connector between them.
+     The arrow drew a relationship the layout already states: two cards side by
+     side, in a row labelled Read then Play, under a heading that says read the
+     idea and play the consequence. Drawing it a fourth time added a glyph to
+     every row and said nothing new. Same reason the rail went. */
+  .pair-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
 
   .asset { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center;
            padding: 16px 18px; border-radius: 16px; text-decoration: none;
@@ -598,7 +605,7 @@
   /* The header sits outside .pairs, so it needs that container's 10px of
      padding as well as the row's 8px, or every label is ten pixels left of the
      column it names. */
-  .cols { display: grid; grid-template-columns: 210px 1fr auto 1fr; gap: 12px;
+  .cols { display: grid; grid-template-columns: 210px 1fr 1fr; gap: 12px;
           margin: 16px 0 6px; padding: 0 18px; }
   .cols span { color: var(--muted); font: 800 11px var(--qx-font, system-ui);
                letter-spacing: .14em; text-transform: uppercase; }
@@ -656,8 +663,6 @@
   @media (max-width: 800px) {
     /* Read stays above Play, so the order survives the stack. */
     .pair-row { grid-template-columns: 1fr; }
-    .arrow { transform: rotate(90deg); justify-self: center; }
-    .pairs::before { display: none; }
     .cols { display: none; }
     .pair-line { grid-template-columns: 1fr; }
     .gutter { grid-auto-flow: column; justify-items: start; justify-content: start;
