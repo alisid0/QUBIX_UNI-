@@ -158,7 +158,19 @@
     assetPreview.then(m => { AssetShowcase = m.default; });
   }
   if (showGameMission) {
-    const requestedMission = params.get('mission') || (productionFoundationLanding ? 'foundations' : null);
+    // No mission named means the academy hub, which is what /academy is for.
+    //
+    // This read `|| (productionFoundationLanding ? 'foundations' : null)` until
+    // b9de7dd removed the definition of that flag on 2026-09-01 and left the
+    // use behind, so every visit to /academy threw a ReferenceError before it
+    // rendered anything. The route answered 200, the shell painted, and the
+    // page was empty: no links, no buttons, no hub. It stayed that way for two
+    // days because a guard that asks for a status code cannot see it.
+    //
+    // The flag meant "production, and no mode in the URL", which was how the
+    // site used to land people on the foundations mission. The floor is the
+    // front door now, so there is nothing left to restore.
+    const requestedMission = params.get('mission');
 
     async function loadGamePreview() {
       let mission = requestedMission;

@@ -354,7 +354,8 @@
 
 <div class="qx-shell lab-view" on:pointerdown={handlePointerDown} on:pointerup={handlePointerUp}>
   <header class="lab-header">
-    <a class="topics-button" aria-label="Back to the Qubix academy" href="/"><span aria-hidden="true">←</span> Academy</a>
+    <!-- Said Academy and went to the floor. The label now names where it goes. -->
+    <a class="topics-button" aria-label="Back to the Qubix learning floor" href="/"><span aria-hidden="true">←</span> Qubix</a>
     <div class="brand-lockup">
       <span class="brand">QUBIX UNIVERSITY</span>
       <span class="lab-name">Mathematics and introductory physics</span>

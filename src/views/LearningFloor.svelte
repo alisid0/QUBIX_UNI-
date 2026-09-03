@@ -402,7 +402,13 @@
 </div>
 
 <WorkshopAssistant spec={HOME_ASSISTANT} />
-<SiteFooter />
+<!-- compact, because this page is the list. The footer's own note says
+     repeating every mission and every chapter here is "the same twenty-four
+     links a second time"; a crawl of the rendered page counted exactly that,
+     and all twenty-four of the home page's repeated destinations involved the
+     footer. GameHub, RoleFoundations and Showcase already pass this. The floor,
+     which lists more than any of them, did not. -->
+<SiteFooter compact />
 </div>
 
 <style>

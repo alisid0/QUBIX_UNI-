@@ -15,10 +15,13 @@
   // everything stays reachable from the same screen without being said twice.
   export let compact = false;
 
-  const CHAPTERS = [
-    'What data represents', 'Numbers, ratios and change', 'Quality and evidence',
-    'Statistics before models', 'SQL foundations', 'Python foundations', 'Explain what you found'
-  ];
+  // Taken from the chapters themselves, which is what the note above this file
+  // already claimed. It was a hand-written list of seven titles beside eight
+  // chapters, so the footer rendered "08undefined" where Chance and Inference
+  // should have been: the exact failure the missions list is derived to avoid,
+  // in the half of the same component that was not.
+  const chapterTitle = chapter =>
+    SHARED_FOUNDATIONS.find(c => c.chapter === chapter)?.book.title || '';
 
   // Only what nothing else on the page links to. Story mode, the wiki and the
   // library sat here as well as in the landing page's own row, which is the same
@@ -49,7 +52,7 @@
   <nav aria-label="All chapters">
     <h2>Read</h2>
     <ul>{#each SHARED_FOUNDATIONS as { chapter }}
-      <li><a href={`?mode=game&mission=shared-book&chapter=${chapter}&session=1`}><span>{String(chapter).padStart(2, '0')}</span>{CHAPTERS[chapter - 1]}</a></li>
+      <li><a href={`?mode=game&mission=shared-book&chapter=${chapter}&session=1`}><span>{String(chapter).padStart(2, '0')}</span>{chapterTitle(chapter)}</a></li>
     {/each}</ul>
   </nav>
 
