@@ -103,6 +103,29 @@
   };
 
   const stateWord = { done: 'Done', todo: 'To do' };
+
+  // Which stages are unfolded. Kept in memory rather than storage: the one a
+  // learner wants open is derivable from where they are, so persisting a choice
+  // would mostly preserve a stale one.
+  let openStages = new Set();
+  let autoOpened = false;
+
+  // The stage holding the next step opens itself. Collapsing everything by
+  // default is right for the four a learner is not in, and wrong for the one
+  // they are: that would put their own next step behind a click on the page
+  // whose job is to hand it to them.
+  $: if (hydrated && !autoOpened && here?.stage?.id) {
+    openStages = new Set([here.stage.id]);
+    autoOpened = true;
+  }
+
+  const isOpen = id => openStages.has(id);
+
+  function toggleStage(id) {
+    const next = new Set(openStages);
+    next.has(id) ? next.delete(id) : next.add(id);
+    openStages = next;
+  }
 </script>
 
 <svelte:head>
@@ -224,17 +247,29 @@
             </div>
           {/if}
 
-          <!-- The steps themselves belong to a stage page.
-               The floor is the map, and a map that draws every street name at
-               full size stops being a map: forty-nine identical chips on the
-               front door made the first question "which of these?" when it
-               should have been "shall I carry on?". Every one of them is still
-               one click away, on the page built for it in 5f63c7e. -->
-          {#if stage}
+          <!-- Collapsed, and expandable in place.
+               Forty-nine identical chips made the first question "which of
+               these?" when it should have been "shall I carry on?". Hiding
+               them behind navigation answered that and cost something else:
+               a front page that shows the whole course says the course is
+               real, and five bare cards say the opposite. So the steps stay on
+               this page and start folded, with the stage you are actually in
+               already open. -->
+          {#if !stage}
+            <button class="stage-toggle" aria-expanded={isOpen(st.id)}
+                    aria-controls={`steps-${st.id}`}
+                    on:click={() => toggleStage(st.id)}>
+              <span>{isOpen(st.id) ? 'Hide' : 'Show'} the {st.pairs.length} steps</span>
+              <span class="stage-toggle-meta">{shape(st).live} built{#if shape(st).live < st.pairs.length * 2} · {st.pairs.length * 2 - shape(st).live} not written{/if}</span>
+              <span class="caret" class:up={isOpen(st.id)} aria-hidden="true">›</span>
+            </button>
+          {/if}
+
+          {#if stage || isOpen(st.id)}
           <div class="cols" aria-hidden="true">
             <span>Idea</span><span>Read</span><span></span><span>Play</span>
           </div>
-          <ul class="pairs">
+          <ul class="pairs" id={`steps-${st.id}`}>
             {#each st.pairs as pair}
               <li class="pair-line" class:current={pair.current}>
                 <span class="gutter">
@@ -297,18 +332,9 @@
               </li>
             {/each}
           </ul>
-          {:else}
-            <a class="stage-open" href={`/floor/${st.id}`}>
-              <span class="stage-open-what">
-                <b>Open {st.title}</b>
-                <span>{st.pairs.length} steps · {shape(st).live} built · {st.done} done</span>
-              </span>
-              <span class="chev" aria-hidden="true">›</span>
-            </a>
-            {#if shape(st).live < st.pairs.length * 2}
-              <span class="stage-unbuilt">{st.pairs.length * 2 - shape(st).live} not written yet,
-                and never counted in your progress.</span>
-            {/if}
+          {#if !stage}
+            <a class="stage-page-link" href={`/floor/${st.id}`}>Open {st.title} on its own page ›</a>
+          {/if}
           {/if}
 
           {#if st.exitOutcome}
@@ -496,20 +522,28 @@
   .stage-head h3 { margin: 0; font: 800 17.5px var(--qx-font, system-ui); }
   .lede { color: var(--muted); font: 650 13.5px/1.45 var(--qx-font, system-ui); }
   .door-note { color: var(--clay); font: 700 12.5px var(--qx-font, system-ui); }
-  /* One control per stage on the floor, in place of the stage's own chips. It
-     reads as a destination rather than a step, so it is quieter than .resume:
-     the floor should have exactly one loudest thing on it. */
-  .stage-open { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px;
-                align-items: center; min-height: 58px; margin-top: 12px; padding: 13px 17px;
-                border: 1px solid var(--line); border-radius: 14px; background: var(--card);
-                color: var(--ink); text-decoration: none; }
-  .stage-open:hover { border-color: var(--ink); background: var(--deep); }
-  .stage-open:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
-  .stage-open-what { display: grid; gap: 2px; min-width: 0; }
-  .stage-open-what b { font: 800 15.5px/1.25 var(--qx-font, system-ui); }
-  .stage-open-what span { color: var(--muted); font: 650 12.5px var(--qx-font, system-ui); }
-  .stage-unbuilt { display: block; margin-top: 8px; color: var(--muted);
-                   font: 650 12px/1.5 var(--qx-font, system-ui); }
+  /* One control per stage, and it unfolds rather than navigates. Quieter than
+     .resume on purpose: the floor should have exactly one loudest thing on it,
+     and that is the next step, not the map. */
+  .stage-toggle { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px;
+                  align-items: center; width: 100%; min-height: 52px; margin-top: 12px;
+                  padding: 11px 16px; border: 1px solid var(--line); border-radius: 14px;
+                  background: var(--card); color: var(--ink); text-align: left;
+                  font: 800 14.5px var(--qx-font, system-ui); cursor: pointer; }
+  .stage-toggle:hover { border-color: var(--ink); background: var(--deep); }
+  .stage-toggle:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
+  .stage-toggle-meta { color: var(--muted); font: 650 12.5px var(--qx-font, system-ui);
+                       white-space: nowrap; }
+  .caret { display: inline-block; color: var(--muted); font-size: 19px; line-height: 1;
+           transform: rotate(90deg); transition: transform .16s ease; }
+  .caret.up { transform: rotate(-90deg); }
+
+  .stage-page-link { display: inline-block; margin-top: 10px; color: var(--green);
+                     font: 800 13px var(--qx-font, system-ui); text-decoration: underline;
+                     text-underline-offset: 3px; }
+  .stage-page-link:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) { .caret { transition: none; } }
 
   /* Asked once. After that it is a sentence, not three cards. */
   .door-settled { display: flex; flex-wrap: wrap; align-items: baseline; gap: 9px;
