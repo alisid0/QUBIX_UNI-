@@ -24,6 +24,7 @@
   import { DOORS, SHARED_DATA_TRUTHS, ANALYST_FLOOR, liveCompletion, isAvailable }
     from '../lib/content/learning-flow.js';
   import { completedAssetIds, stageState, nextStep } from '../lib/content/learning-progress.js';
+  import { assetMinutes, formatMinutes } from '../lib/content/timing.js';
   import SiteNav from '../lib/components/SiteNav.svelte';
   import SiteFooter from '../lib/components/SiteFooter.svelte';
   import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
@@ -103,6 +104,29 @@
   };
 
   const stateWord = { done: 'Done', todo: 'To do' };
+
+  /* A reading session declares its own minutes and check-timing keeps that
+     declaration honest against the words, so a Read time is a stated fact.
+     A mission declares nothing, so a Play time is computed from the same model
+     the guard uses: its words, plus fifteen seconds a decision. That model
+     reads a mission's prose and its option lists, and a mission that keeps its
+     work in code rather than copy comes out low, which is why a computed time
+     is marked with a tilde and a declared one is not. Guessing silently would
+     put a number a learner acts on next to no indication of where it came
+     from. */
+  const timeLabel = asset => {
+    const text = formatMinutes(assetMinutes(asset));
+    if (!text) return null;
+    return asset.kind === 'read' ? `(${text})` : `(~${text})`;
+  };
+
+  /* What the whole stage costs, which is the figure somebody deciding whether
+     to start a stage actually wants. Only what is built counts, for the same
+     reason unbuilt steps stay out of the progress bar: a learner cannot spend
+     time on something nobody has written. */
+  const stageMinutes = st => formatMinutes(
+    st.pairs.reduce((total, pair) =>
+      total + (assetMinutes(pair.read) || 0) + (assetMinutes(pair.play) || 0), 0));
 
   // Which stages are unfolded. Kept in memory rather than storage: the one a
   // learner wants open is derivable from where they are, so persisting a choice
@@ -260,7 +284,7 @@
                     aria-controls={`steps-${st.id}`}
                     on:click={() => toggleStage(st.id)}>
               <span>{isOpen(st.id) ? 'Hide' : 'Show'} the {st.pairs.length} steps</span>
-              <span class="stage-toggle-meta">{shape(st).live} built{#if shape(st).live < st.pairs.length * 2} · {st.pairs.length * 2 - shape(st).live} not written{/if}</span>
+              <span class="stage-toggle-meta">{#if stageMinutes(st)}about {stageMinutes(st)} · {/if}{shape(st).live} built{#if shape(st).live < st.pairs.length * 2} · {st.pairs.length * 2 - shape(st).live} not written{/if}</span>
               <span class="caret" class:up={isOpen(st.id)} aria-hidden="true">›</span>
             </button>
           {/if}
@@ -285,7 +309,7 @@
                           d="M12 6.2C10.5 5 8.6 4.5 6 4.5c-.9 0-1.7.1-2.4.2A.8.8 0 0 0 3 5.5v11.7c0 .5.5.9 1 .8.6-.1 1.3-.2 2-.2 2.3 0 4 .5 5.3 1.5.4.3 1 .3 1.4 0 1.3-1 3-1.5 5.3-1.5.7 0 1.4.1 2 .2.5.1 1-.3 1-.8V5.5a.8.8 0 0 0-.6-.8c-.7-.1-1.5-.2-2.4-.2-2.6 0-4.5.5-6 1.7zm0 2v8.5c-1.4-.8-3.1-1.2-5-1.2-.6 0-1.2 0-1.8.1V6.3c.6 0 1.2-.1 1.8-.1 2.1 0 3.7.5 5 1.4z"/></svg>
                       </span>
                       <span class="asset-text">
-                        <span class="kind">Read</span><b>{pair.read.label}</b>
+                        <span class="kind">Read {#if timeLabel(pair.read)}<em>{timeLabel(pair.read)}</em>{/if}</span><b>{pair.read.label}</b>
                         <span class="state">{stateWord[pair.readState]}</span>
                       </span>
                       <span class="chev" aria-hidden="true">›</span>
@@ -311,7 +335,7 @@
                         <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M7 8h10a5 5 0 0 1 4.9 4l1 5a2.2 2.2 0 0 1-4 1.6L16.6 16H7.4l-2.3 2.6a2.2 2.2 0 0 1-4-1.6l1-5A5 5 0 0 1 7 8zm-.6 3v1.4H5v1.2h1.4V15h1.2v-1.4H9v-1.2H7.6V11zm9 .4a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
                       </span>
                       <span class="asset-text">
-                        <span class="kind">Play</span><b>{pair.play.label}</b>
+                        <span class="kind">Play {#if timeLabel(pair.play)}<em>{timeLabel(pair.play)}</em>{/if}</span><b>{pair.play.label}</b>
                         <span class="state">{stateWord[pair.playState]}</span>
                       </span>
                       <span class="chev" aria-hidden="true">›</span>
@@ -412,6 +436,11 @@
   .asset-text { display: grid; gap: 1px; min-width: 0; }
   .kind { color: var(--muted); font: 800 11px var(--qx-font, system-ui);
           letter-spacing: .13em; text-transform: uppercase; }
+  /* Lowercase and unspaced, so "(14 min)" reads as a quantity beside the label
+     rather than as more of the same small-caps machinery. */
+  .kind em { margin-left: 5px; font-style: normal; font-weight: 700;
+             letter-spacing: 0; text-transform: none;
+             font-variant-numeric: tabular-nums; }
   .asset b { font: 800 17px/1.25 var(--qx-font, system-ui); overflow-wrap: anywhere; }
   .asset.small b { font-size: 14px; }
   .state { color: var(--muted); font: 650 12.5px var(--qx-font, system-ui); }

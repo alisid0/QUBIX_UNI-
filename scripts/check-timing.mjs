@@ -20,33 +20,18 @@
 
 import { SHARED_FOUNDATIONS } from '../src/lib/content/shared-foundations.js';
 import { MISSIONS } from '../src/lib/game/progress.js';
+// The model moved to src/lib/content/timing.js when the floor started showing
+// these minutes to learners. It is imported rather than restated here, because
+// a guard checking one arithmetic while the interface displays another is worse
+// than no guard at all.
+import { WPM, STUDY, THINK, deep, decisionsIn } from '../src/lib/content/timing.js';
 
-const WPM = 220, STUDY = 2.4, THINK = 15, TOLERANCE = 0.5;  // half a session either way
+const TOLERANCE = 0.5;  // half a session either way
 
 let bad = 0;
 const ok = (label, pass, detail = '') => {
   if (!pass) bad++;
   console.log(`   ${pass ? 'PASS' : '**FAIL**'}  ${label}${detail ? '  ' + detail : ''}`);
-};
-
-const deep = v => typeof v === 'string' ? v.trim().split(/\s+/).filter(Boolean).length
-  : Array.isArray(v) ? v.reduce((n, x) => n + deep(x), 0)
-  : v && typeof v === 'object' ? Object.values(v).reduce((n, x) => n + deep(x), 0) : 0;
-
-const decisionsIn = root => {
-  let n = 0;
-  const walk = x => {
-    if (Array.isArray(x)) return x.forEach(walk);
-    if (!x || typeof x !== 'object') return;
-    for (const [k, val] of Object.entries(x)) {
-      const list = Array.isArray(val) && val.length > 1
-        && val.every(o => Array.isArray(o) && o.length >= 2 && typeof o[0] === 'string');
-      if (list && (k.endsWith('Options') || k === 'options')) n += 1;
-      walk(val);
-    }
-  };
-  walk(root);
-  return n;
 };
 
 const missionMinutes = new Map(MISSIONS.map(m =>
