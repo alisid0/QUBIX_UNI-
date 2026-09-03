@@ -8,6 +8,7 @@
 
   import { REGION_GRAIN_MISSION as M, REGION_FIGURES, regionDeltas } from '../lib/game/region-grain-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import SiteNav from '../lib/components/SiteNav.svelte';
 
   let caseIndex = 0;
   let chosen = null;
@@ -42,6 +43,9 @@
 </script>
 
 <section class="mission">
+  <!-- Without this the only way out of the mission was the console link below,
+       which goes further in. -->
+  <SiteNav current="play" subjects={false} />
   <header>
     <div class="identity">
       <p class="eyebrow">{M.id} · {M.role} · {M.status}</p>

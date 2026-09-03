@@ -8,6 +8,7 @@
 
   import { UOM_MISSION as M, UOM_FIGURES as F, basketReadings } from '../lib/game/uom-mission.js';
   import { recordCompletion } from '../lib/game/progress.js';
+  import SiteNav from '../lib/components/SiteNav.svelte';
 
   let caseIndex = 0;
   let chosen = null;
@@ -40,6 +41,9 @@
 </script>
 
 <section class="mission">
+  <!-- Without this the only way out of the mission was the console link below,
+       which goes further in. -->
+  <SiteNav current="play" subjects={false} />
   <header>
     <div>
       <p class="eyebrow">{M.id} · {M.role} · {M.status}</p>

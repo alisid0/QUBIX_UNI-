@@ -146,7 +146,9 @@
   .account-menu { position: absolute; z-index: 61; top: calc(100% + 8px); right: 0; width: 224px; display: grid; gap: 4px; padding: 6px; border: 1px solid var(--qx-border); border-radius: 12px; background: var(--qx-surface); box-shadow: var(--qx-shadow-card); }
   .account-menu button { width: 100%; min-height: 38px; padding: 8px 10px; border: 0; border-radius: 8px; text-align: left; font-size: 13px; font-weight: 800; }
   .account-menu button:hover { background: var(--qx-surface-2); }
-  .account-menu button.confirming { color: var(--qx-danger, #a83232); }
+  /* -text, not the graphic hue. --qx-danger is 4.31:1 on paper, which is right
+     for a border at 3:1 and short of the 4.5:1 this word needs. */
+  .account-menu button.confirming { color: var(--qx-danger-text, #A02D1D); }
   .auth-message { position: absolute; z-index: 60; top: calc(100% + 8px); right: 0; width: min(280px, calc(100vw - 32px)); padding: 9px 11px; border: 1px solid var(--qx-border); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-2); box-shadow: var(--qx-shadow-card); font-size: 13px; line-height: 1.4; }
   @media (max-width: 420px) {
     .signin { padding: 0 11px; }

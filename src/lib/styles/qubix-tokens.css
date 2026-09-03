@@ -49,8 +49,17 @@
   --qx-text: #241F16;
   --qx-text-2: #57503F;
   --qx-text-dim: #726A58;
-  --qx-text-faint: #9E947E;
-  --qx-text-faintest: #B4AB97;
+  /* Was #9E947E, which is 2.57:1 on --qx-bg and failed WCAG 1.4.3 in 213
+     places, including the .hint a stuck learner is reading. It is now the same
+     value as --qx-text-dim, and that is the finding rather than a shortcut:
+     --qx-text-dim is already 4.59:1, so on paper this light there is no fifth
+     grey step that still clears 4.5:1. The scale has four steps, not five.
+     Kept as a name so 213 call sites did not have to change in one commit;
+     prefer --qx-text-dim in new work.
+
+     The dark theme keeps its own lighter value below, where it measures
+     5.06:1 against #141310 and was never the problem. */
+  --qx-text-faint: #726A58;
 
   /* Clay (accent + yellow) */
   --qx-accent: #A85A34;
@@ -98,7 +107,11 @@
 
   --qx-ink-text: #ece7dc;
   --qx-ink-text-2: #a89e8d;
-  --qx-ink-text-dim: #766d5b;
+  /* Was #766d5b: 3.20:1 on --qx-ink-rise, which check-contrast found on the
+     day it was written. Nothing had ever measured the ink palette, because
+     nothing knew it was a palette with its own ground. #918875 is 4.66:1
+     against the lightest ink surface and stays a step below --qx-ink-text-2. */
+  --qx-ink-text-dim: #918875;
 
   --qx-ink-accent: #c77e61;      /* terracotta, lifted to carry on near-black */
   --qx-ink-accent-2: #a85a34;    /* the same terracotta the light surfaces use */
@@ -132,7 +145,9 @@
   --qx-text-2: #CFC6B4;
   --qx-text-dim: #A79E8B;
   --qx-text-faint: #8C8573;
-  --qx-text-faintest: #6F6656;
+  /* --qx-text-faintest removed 2026-09-03. Defined in both themes, used in
+     none, and 1.95:1 on light paper: a trap sitting in the palette waiting for
+     somebody to reach for it. */
 
   /* Clay (accent + yellow) */
   --qx-accent: #D28A5E;

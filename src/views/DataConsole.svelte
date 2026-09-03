@@ -98,6 +98,10 @@
       <a href="?mode=game&amp;mission=sql-console">SQL console mission</a>
       <a href="?mode=game&amp;mission=shared-book&amp;chapter=5&amp;session=1">Chapter 5 reading</a>
       <a href="?mode=game">All missions</a>
+      <!-- The console is where three missions send a learner to check the
+           evidence. Every link here went further in, so leaving meant the back
+           button. -->
+      <a href="/">Qubix home</a>
     </nav>
   </header>
 

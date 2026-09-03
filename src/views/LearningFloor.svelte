@@ -34,11 +34,16 @@
   let done = [];
   let selectedDoor = 'concepts';
   let hydrated = false;
+  // Whether the learner has actually picked a door, as opposed to being shown
+  // the default. "Choose your first door" is the right question once and noise
+  // every time after, so a returning learner gets one line instead of three
+  // cards.
+  let doorChosen = false;
   onMount(() => {
     done = completedAssetIds();
     try {
       const saved = localStorage.getItem(DOOR_KEY);
-      if (DOORS.some(d => d.id === saved)) selectedDoor = saved;
+      if (DOORS.some(d => d.id === saved)) { selectedDoor = saved; doorChosen = true; }
     } catch (error) {
       console.warn('Could not restore the chosen door.', error);
     }
@@ -47,6 +52,7 @@
 
   function chooseDoor(id) {
     selectedDoor = id;
+    doorChosen = true;
     // The door reorders what is ahead. It never clears anything: shared work
     // belongs to the learner, not to the door they came through.
     try { localStorage.setItem(DOOR_KEY, id); } catch (error) { /* nothing to do */ }
@@ -161,10 +167,19 @@
   {/if}
   {/if}
 
-  {#if !stage}
+  {#if !stage && hydrated && doorChosen}
+    <p class="door-settled">
+      Your first door is <b>{stages[1]?.title || selectedDoor}</b>.
+      <button class="door-change" on:click={() => (doorChosen = false)}>Change it</button>
+    </p>
+  {/if}
+
+  {#if !stage && !(hydrated && doorChosen)}
 
   <!-- The door reorders the map, so it is chosen above the map rather than
-       five thousand pixels below it. -->
+       five thousand pixels below it. Asked once: after a learner has answered,
+       three cards restating the question are three controls in the way of the
+       one they came back for. -->
   <section class="door-pick" aria-labelledby="door-heading">
     <div class="door-intro">
       <span class="door-pick-label">Choose your first door</span>
@@ -193,7 +208,11 @@
             <div class="stage-head">
               <span class="stage-no">{i + 1}</span>
               <span class="stage-text">
-                <h3><a href={`/floor/${st.id}`}>{st.title}</a></h3>
+                <!-- Plain text, not a link. The stage card below is the one
+                     control for this stage; a heading pointing at the same
+                     page is a second thing to decide about and no new place
+                     to go. -->
+                <h3>{st.title}</h3>
                 <span class="lede">{st.lede}</span>
                 {#if ['concepts', 'python', 'sql'].includes(st.id)}
                   <span class="door-note">{st.id === selectedDoor
@@ -205,6 +224,13 @@
             </div>
           {/if}
 
+          <!-- The steps themselves belong to a stage page.
+               The floor is the map, and a map that draws every street name at
+               full size stops being a map: forty-nine identical chips on the
+               front door made the first question "which of these?" when it
+               should have been "shall I carry on?". Every one of them is still
+               one click away, on the page built for it in 5f63c7e. -->
+          {#if stage}
           <div class="cols" aria-hidden="true">
             <span>Idea</span><span>Read</span><span></span><span>Play</span>
           </div>
@@ -271,6 +297,19 @@
               </li>
             {/each}
           </ul>
+          {:else}
+            <a class="stage-open" href={`/floor/${st.id}`}>
+              <span class="stage-open-what">
+                <b>Open {st.title}</b>
+                <span>{st.pairs.length} steps · {shape(st).live} built · {st.done} done</span>
+              </span>
+              <span class="chev" aria-hidden="true">›</span>
+            </a>
+            {#if shape(st).live < st.pairs.length * 2}
+              <span class="stage-unbuilt">{st.pairs.length * 2 - shape(st).live} not written yet,
+                and never counted in your progress.</span>
+            {/if}
+          {/if}
 
           {#if st.exitOutcome}
             <p class="exit"><b>To leave this floor</b>{st.exitOutcome}</p>
@@ -442,6 +481,31 @@
   .stage-head h3 { margin: 0; font: 800 17.5px var(--qx-font, system-ui); }
   .lede { color: var(--muted); font: 650 13.5px/1.45 var(--qx-font, system-ui); }
   .door-note { color: var(--clay); font: 700 12.5px var(--qx-font, system-ui); }
+  /* One control per stage on the floor, in place of the stage's own chips. It
+     reads as a destination rather than a step, so it is quieter than .resume:
+     the floor should have exactly one loudest thing on it. */
+  .stage-open { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px;
+                align-items: center; min-height: 58px; margin-top: 12px; padding: 13px 17px;
+                border: 1px solid var(--line); border-radius: 14px; background: var(--card);
+                color: var(--ink); text-decoration: none; }
+  .stage-open:hover { border-color: var(--ink); background: var(--deep); }
+  .stage-open:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
+  .stage-open-what { display: grid; gap: 2px; min-width: 0; }
+  .stage-open-what b { font: 800 15.5px/1.25 var(--qx-font, system-ui); }
+  .stage-open-what span { color: var(--muted); font: 650 12.5px var(--qx-font, system-ui); }
+  .stage-unbuilt { display: block; margin-top: 8px; color: var(--muted);
+                   font: 650 12px/1.5 var(--qx-font, system-ui); }
+
+  /* Asked once. After that it is a sentence, not three cards. */
+  .door-settled { display: flex; flex-wrap: wrap; align-items: baseline; gap: 9px;
+                  margin: 22px 0 0; color: var(--muted);
+                  font: 650 13.5px var(--qx-font, system-ui); }
+  .door-settled b { color: var(--ink); font-weight: 800; }
+  .door-change { padding: 0; border: 0; background: none; color: var(--clay);
+                 font: 800 13.5px var(--qx-font, system-ui); text-decoration: underline;
+                 text-underline-offset: 3px; cursor: pointer; }
+  .door-change:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
+
   .stage-tally { font: 800 16px ui-monospace, Consolas, monospace; }
   .stage-tally i { color: var(--muted); font-style: normal; font-size: 13px; }
 
