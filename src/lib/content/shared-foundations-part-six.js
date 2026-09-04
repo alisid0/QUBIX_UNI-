@@ -11,29 +11,48 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'Python Foundations',
   subtitle: 'Part Six of Volume 0',
-  totalMinutes: 45,
+  totalMinutes: 47,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'values', number: '01', title: 'Values, names and types', studyMinutes: 5, playMinutes: 5,
+      id: 'values', number: '01', title: 'Values, names and types', studyMinutes: 7, playMinutes: 5,
       objective: 'Say what kind of thing a value is, and why a name is not the value.',
       opening: 'A program has no idea what a basket is. It has numbers, pieces of text and true-or-false answers, and everything else is built from those.',
       sections: Object.freeze([
         Object.freeze({ heading: 'A few kinds of value', paragraphs: Object.freeze([
-          'Whole numbers and decimals are separate kinds, because a count of items and a price behave differently. Text is a sequence of characters, and it is a different kind even when it looks like a number: the text "3" and the number 3 are not interchangeable, which is why a quantity read from a file has to be converted before it can be added.',
+          'One line of a Superstore receipt holds four different kinds of thing. A count of items, a price, an identifier and, sometimes, nothing at all.',
+          'Whole numbers and decimals are separate kinds, because a count of items and a price behave differently. Text is a sequence of characters, and it is a different kind even when it looks like a number: the text "2" and the number 2 are not interchangeable, which is why a quantity read from a file has to be converted before it can be added.',
           'There is also a true-or-false kind, and a special value meaning nothing is here, which is the same absence that chapter 03 was about. Python calls it None, a database calls it null, and both mean the value is not present rather than zero.'
+        ]), code: Object.freeze([
+          'quantity   = 2               # int, a whole number',
+          'unit_price = 2.85            # float, a decimal',
+          'sku        = "QX-CER-001"    # str, text',
+          'chilled    = False           # bool, true or false',
+          'promotion  = None            # nothing is here'
         ]) }),
         Object.freeze({ heading: 'A name points at a value', paragraphs: Object.freeze([
-          'Assigning gives a name to a value so it can be used again. The name is not the value; it refers to it, and pointing the same name at something else later does not change what the first value was. Names should say what the thing is: unit_price rather than p, because a program is read far more often than it is written.',
-          'This is the same idea as a column heading. A column called weight is ambiguous for the same reason a variable called w is, and the fix in both places is to say what it measures and in what unit.'
+          'Assigning gives a name to a value so it can be used again. The name is not the value; it refers to it, and pointing the same name at something else later does not change what the first value was.',
+          'Names should say what the thing is: unit_price rather than p, because a program is read far more often than it is written. This is the same idea as a column heading. A column called weight is ambiguous for the same reason a variable called w is, and the fix in both places is to say what it measures and in what unit.'
+        ]), code: Object.freeze([
+          'unit_price = 2.85',
+          'line_total = quantity * unit_price',
+          '',
+          'unit_price = 3.10            # the price changed',
+          'print(line_total)            # 5.7, worked out before the change'
         ]) }),
         Object.freeze({ heading: 'Types decide what operations mean', paragraphs: Object.freeze([
-          'The kind of a value decides what an operator does. Adding two numbers sums them; adding two pieces of text joins them end to end. Multiplying a price by a quantity is meaningful; multiplying two prices produces a number with no unit anybody wants.',
-          'Most early errors are type errors wearing a disguise: a quantity that arrived as text, a total that became text because it was joined to a label, a comparison against nothing. Reading the error message rather than guessing is the single fastest habit to acquire.'
+          'The kind of a value decides what an operator does. Adding two numbers sums them. Adding two pieces of text joins them end to end. Multiplying a price by a quantity is meaningful, and multiplying two prices produces a number with no unit anybody wants.',
+          'Most early errors are type errors wearing a disguise: a quantity that arrived as text, a total that became text because it was joined to a label, a comparison against nothing. Read the error message rather than guessing. It names the two kinds it refused to combine, which is usually the whole answer.'
+        ]), code: Object.freeze([
+          '2 + 3            # 5',
+          '"2" + "3"        # "23", joined end to end',
+          '"2" + 3          # TypeError: can only concatenate str (not "int") to str',
+          '',
+          'int("2") + 3     # 5, once the text is converted'
         ]) })
       ]),
       example: Object.freeze({ title: 'Four values from one basket line', headers: Object.freeze(['Value', 'Kind', 'Why it matters']), rows: Object.freeze([
         Object.freeze(['2', 'whole number', 'a count: adding it makes sense']),
-        Object.freeze(['3.40', 'decimal', 'a price: keep it separate from counts']),
+        Object.freeze(['2.85', 'decimal', 'a price: keep it separate from counts']),
         Object.freeze(['"QX-CER-001"', 'text', 'an identifier: never do arithmetic on it']),
         Object.freeze(['None', 'nothing', 'absent, not zero'])
       ]) }),

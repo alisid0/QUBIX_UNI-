@@ -68,6 +68,15 @@
     {#each section.paragraphs as paragraph}
       <p>{#each paragraph as piece}{#if piece.keyword}<a class="keyword" href={keywordPath(piece.keyword.slug, returnHref)} title={`${piece.keyword.term}: ${piece.keyword.short}`}>{piece.text}<span aria-hidden="true">↗</span></a>{:else}{piece.text}{/if}{/each}</p>
     {/each}
+    <!-- A section may carry a listing.
+         Chapter 06 teaches Python and could not show any, because a paragraph
+         is prose and the only <pre> in the reader belonged to the rehearsal.
+         So a Python session explained assignment in words and never once put
+         `unit_price = 2.85` in front of anybody. Optional, and every session
+         without it renders exactly as before. -->
+    {#if section.code?.length}
+      <pre class="listing"><code>{section.code.join('\n')}</code></pre>
+    {/if}
     {#if section.images?.length}
       <div class="section-art" class:pair={section.images.length > 1}>
         {#each section.images as art}
@@ -118,6 +127,13 @@
   .reading-section { margin-top: 30px; }
   .reading-section h3 { margin: 0 0 10px; color: #241f16; font: 700 22px/1.2 Georgia, serif; }
   .reading-section p { margin: 0 0 14px; color: #403a30; font: 400 16px/1.72 var(--qx-font); }
+  /* Same dark listing the rehearsal uses, so code looks like code wherever it
+     appears in the reader. Scrolls on its own so a long line cannot push the
+     page sideways on a phone. */
+  .listing { margin: 0 0 16px; padding: 14px 16px; background: #16120d; color: #eaddcf;
+             font: 600 13.5px/1.7 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+             overflow-x: auto; }
+  .listing code { font: inherit; background: none; padding: 0; }
   .keyword { display: inline; padding: 1px 3px 2px; color: #274f3c; font-weight: 800; text-decoration-line: underline; text-decoration-color: #7d9a76; text-decoration-thickness: 2px; text-underline-offset: 3px; background: #e7eee3; border-radius: 2px; }
   .keyword span { margin-left: 2px; font-size: .68em; vertical-align: top; }
   .keyword:hover, .keyword:focus-visible { color: #fff; background: #315f48; outline: 2px solid #315f48; outline-offset: 1px; }
