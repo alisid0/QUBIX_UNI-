@@ -88,7 +88,12 @@ export function validateDraft(value, target = 'pair') {
     { id: 'substance', label: 'Contains enough material for review', pass: text.length >= 300 },
     { id: 'status', label: 'Clearly labelled AI_DRAFT', pass: /\bstatus\s*:\s*AI_DRAFT\b/i.test(text) },
     { id: 'authority', label: 'Does not claim APPROVED or RELEASED status', pass: !/\bstatus\s*:\s*(APPROVED|RELEASED)\b/i.test(text) },
-    { id: 'decisions', label: 'Separates captured decisions from assumptions', pass: /conversation decisions captured/i.test(text) && /assumptions made/i.test(text) },
+    {
+      id: 'decisions',
+      label: 'Separates captured decisions from assumptions',
+      pass: /(^|\n)#{1,4}\s+(?:conversation\s+)?(?:decisions\s+captured|captured\s+decisions)\s*($|\n)/i.test(text)
+        && /(^|\n)#{1,4}\s+assumptions(?:\s+made)?\s*($|\n)/i.test(text)
+    },
     ...chosenTarget.sections.map((section, index) => ({
       id: `section-${index}`,
       label: `Includes ${section}`,

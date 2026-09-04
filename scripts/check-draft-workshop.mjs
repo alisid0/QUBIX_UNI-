@@ -26,6 +26,11 @@ check(prompt.includes('## Read') && prompt.includes('## Play') && prompt.include
 const goodDraft = `${prompt.slice(prompt.indexOf('# Events and outcomes'), prompt.indexOf('SOURCE CONVERSATION'))}\n${'Substantive learner material. '.repeat(20)}\n## Founder review checklist\n- Review scope`;
 const validation = validateDraft(goodDraft, 'pair');
 check(validation.ready, 'a complete AI_DRAFT becomes ready for founder review');
+const conversationalHeadings = goodDraft
+  .replace('## Conversation decisions captured', '## Captured decisions')
+  .replace('## Assumptions made', '## Assumptions');
+check(validateDraft(conversationalHeadings, 'pair').ready,
+  'clear equivalent decision and assumption headings are accepted');
 check(!validateDraft(goodDraft.replace('Status: AI_DRAFT', 'Status: APPROVED'), 'pair').ready,
   'a draft cannot claim founder approval');
 
