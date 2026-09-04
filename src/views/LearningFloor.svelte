@@ -383,16 +383,15 @@
               </li>
             {/each}
           </ul>
-          {#if !stage}
-            <a class="stage-page-link" href={`/floor/${st.id}`}>Open {st.title} on its own page ›</a>
-          {/if}
           {/if}
 
-          {#if st.exitOutcome}
-            <p class="exit"><b>To leave this floor</b>{st.exitOutcome}</p>
-          {/if}
-          {#if st.standard}
-            <ul class="standard">{#each st.standard as line}<li>{line}</li>{/each}</ul>
+          {#if stage}
+            {#if st.exitOutcome}
+              <p class="exit"><b>To leave this floor</b>{st.exitOutcome}</p>
+            {/if}
+            {#if st.standard}
+              <ul class="standard">{#each st.standard as line}<li>{line}</li>{/each}</ul>
+            {/if}
           {/if}
         </li>
       {/each}
@@ -613,11 +612,6 @@
   .caret { display: inline-block; color: var(--muted); font-size: 19px; line-height: 1;
            transform: rotate(90deg); transition: transform .16s ease; }
   .caret.up { transform: rotate(-90deg); }
-
-  .stage-page-link { display: inline-block; margin-top: 10px; color: var(--green);
-                     font: 800 13px var(--qx-font, system-ui); text-decoration: underline;
-                     text-underline-offset: 3px; }
-  .stage-page-link:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
 
   @media (prefers-reduced-motion: reduce) { .caret { transition: none; } }
 
