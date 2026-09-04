@@ -97,6 +97,29 @@
     return { text: payload.answer, sources: payload.refused ? undefined : sources };
   }
 
+  /**
+   * Open the panel with a question already written, from somewhere else on the
+   * page.
+   *
+   * The workbook needed this. It is the only part of a session that asks a
+   * learner to use their own data, and it was the only part with nobody to
+   * answer: they wrote eight values into a box and the site never said whether
+   * they were right. This hands that box to the tutor.
+   *
+   * Deliberately does not submit. The learner sees their own words in the field
+   * and presses send, because a panel that opens and fires a question at a
+   * model on their behalf is a surprise rather than a tool.
+   */
+  export async function ask(text) {
+    const question = String(text || '').trim();
+    if (!question) return;
+    open = true;
+    awaiting = '';
+    input = question;
+    await tick();
+    if (log) log.scrollTop = log.scrollHeight;
+  }
+
   async function submit() {
     const value = input.trim();
     if (!value || thinking) return;

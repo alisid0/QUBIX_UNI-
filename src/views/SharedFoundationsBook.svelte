@@ -10,6 +10,35 @@
   import WorkshopAssistant from '../lib/components/WorkshopAssistant.svelte';
   import KeywordReading from '../lib/components/KeywordReading.svelte';
   import { readingAssistantFor } from '../lib/content/foundations-assistant.js';
+
+  // The assistant instance, so the workbook can hand it a question.
+  let assistant;
+
+  /**
+   * The workbook, written out as something answerable.
+   *
+   * It carries the task and the learner's own notes, because the tutor cannot
+   * mark work it has not been shown. The wording asks for a check rather than
+   * an answer: the point of a workbook is that the learner did it, and a tutor
+   * that simply redoes it has taken the exercise away.
+   */
+  // Written as one flowing line on purpose. The assistant's field is an input,
+  // and HTML strips line breaks out of an input's value, so a version composed
+  // with newlines arrived at the model run together: "types".The task:" with no
+  // space where the break had been. Sentences and numbered steps carry the
+  // structure instead, and survive the trip.
+  const workbookQuestion = session => [
+    // "data-science workbook" is not padding. api/tutor.js refuses a learner
+    // question that names nothing in its subject list, cheaply and before any
+    // model call, and a workbook about receipts and delivery notes can easily
+    // contain no such word: this exact question was refused until the sentence
+    // said what it was about. It is also simply true of every session here.
+    `I am working through a Qubix data-science workbook for "${session.title}".`,
+    `The task was: ${session.workbook.prompt}`,
+    session.workbook.steps.map((step, index) => `(${index + 1}) ${step}`).join(' '),
+    `Here is what I wrote: ${(progress.notes[session.id] || '').trim()}`,
+    'Please check my reasoning rather than redoing it for me. Tell me what I have got right, and name anything I have mixed up.'
+  ].join(' ');
   import { paramsForLocation } from '../lib/routes/clean-paths.js';
   import { stepFor, nextStep, previousStep } from '../lib/content/beginner-path.js';
   import { routeForChapter, routeProgress } from '../lib/content/chapter-route.js';
@@ -256,13 +285,31 @@
           </section>
         {/if}
 
-        <section class="workbook">
-          <div class="section-label"><span>WORKBOOK</span><b>{session.workbook.title}</b></div>
+        <!-- Folded, and answerable.
+             The workbook is the one part of a session that uses the learner's
+             own data rather than the Superstore, which makes it the only place
+             the course tests transfer. It was also the only exercise with
+             nobody to mark it: eight values went into the box and nothing ever
+             said whether they were right. It now opens on request and can be
+             handed to Ask Qubix, which holds this session's context. -->
+        <details class="workbook">
+          <summary>
+            <span class="section-label"><span>WORKBOOK</span><b>{session.workbook.title}</b></span>
+            <small>Optional. Uses your own data rather than the Superstore.</small>
+          </summary>
           <p>{session.workbook.prompt}</p>
           <ol>{#each session.workbook.steps as step}<li>{step}</li>{/each}</ol>
           <label for={`notes-${session.id}`}>Your notes</label>
           <textarea id={`notes-${session.id}`} value={progress.notes[session.id] || ''} on:input={(event) => updateNotes(event.currentTarget.value)} placeholder="Write your observations here. They stay on this device."></textarea>
-        </section>
+          <button class="ask-qubix" type="button"
+                  disabled={!(progress.notes[session.id] || '').trim()}
+                  on:click={() => assistant?.ask(workbookQuestion(session))}>
+            Ask Qubix to look at this
+          </button>
+          <small class="ask-note">{(progress.notes[session.id] || '').trim()
+            ? 'Opens the assistant with your notes written out. You choose whether to send them.'
+            : 'Write your notes first, then Qubix can look at them.'}</small>
+        </details>
 
         {#if session.exercise}
           <ReaderExercise exercise={session.exercise} completed={progress.exercises.includes(session.id)} on:complete={completeExercise} />
@@ -333,7 +380,7 @@
   </div>
 </div>
 
-<WorkshopAssistant spec={readingAssistantFor(chapterNumber, session)} />
+<WorkshopAssistant bind:this={assistant} spec={readingAssistantFor(chapterNumber, session)} />
 
 <style>
   :global(.qubix-university) { height: auto !important; overflow: visible !important; }
@@ -432,6 +479,24 @@
   .workbook > p, .workbook li { color: #4f493e; font: 600 13.5px/1.55 var(--qx-font); }
   .workbook ol { padding-left: 20px; }
   .workbook label { display: block; margin: 16px 0 6px; font: 850 12px var(--qx-font); }
+  /* Folded by default. The marker is removed and the summary carries its own
+     row, so it reads as a heading somebody may open rather than a widget. */
+  .workbook summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
+                      cursor: pointer; list-style: none; }
+  .workbook summary::-webkit-details-marker { display: none; }
+  .workbook summary::after { content: 'Open'; margin-left: auto; color: #8a6a3a;
+                             font: 850 11.5px var(--qx-font); letter-spacing: .06em; }
+  .workbook[open] summary::after { content: 'Close'; }
+  .workbook summary:focus-visible { outline: 3px solid #8a6a3a; outline-offset: 3px; }
+  .workbook summary small { color: #6f6757; font: 650 12px var(--qx-font); }
+  .workbook > p:first-of-type { margin-top: 14px; }
+  .ask-qubix { min-height: 40px; margin-top: 12px; padding: 9px 15px; border: 1px solid #8a6a3a;
+               border-radius: 999px; background: #f3e7d4; color: #5d4520;
+               font: 850 13px var(--qx-font); cursor: pointer; }
+  .ask-qubix:hover:not(:disabled) { background: #ecdcc2; }
+  .ask-qubix:disabled { opacity: .5; cursor: default; }
+  .ask-qubix:focus-visible { outline: 3px solid #8a6a3a; outline-offset: 2px; }
+  .ask-note { display: block; margin-top: 7px; color: #6f6757; font: 650 12px/1.5 var(--qx-font); }
   textarea { width: 100%; min-height: 120px; resize: vertical; padding: 13px; border: 1px solid #cfc6b5; border-radius: 9px; background: #fff; color: #241f16; font: 600 13.5px/1.55 var(--qx-font); }
   textarea:focus { outline: 3px solid rgba(95, 115, 85, .2); border-color: #5f7355; }
   .check > h3 { margin: 0 0 15px; font: 700 20px/1.35 Georgia, serif; }
