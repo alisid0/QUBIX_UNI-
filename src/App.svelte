@@ -208,6 +208,8 @@
         return import('./views/SamplingDeskMission.svelte');
       } else if (mission === 'probability-counter') {
         return import('./views/ProbabilityCounterMission.svelte');
+      } else if (mission === 'employee-table') {
+        return import('./views/EmployeeTableMission.svelte');
       } else if (mission === 'sql-console') {
         return import('./views/SqlConsoleMission.svelte');
       } else if (mission === 'result-checkpoint') {

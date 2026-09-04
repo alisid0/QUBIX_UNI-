@@ -11,7 +11,10 @@ const ok = (label, pass, detail = '') => {
 };
 
 const sql = SHARED_FOUNDATIONS.find(item => item.chapter === 5)?.book;
-const expected = ['select', 'group', 'join', 'verify'];
+// One kind per session, named after the session it belongs to. 'first-table'
+// joined on 2026-09-04 with chapter 05.01, which teaches what a table, a row,
+// a column and a key are before any of the four clause sessions arrive.
+const expected = ['first-table', 'select', 'group', 'join', 'verify'];
 
 ok('SQL chapter exists', Boolean(sql), sql?.title || 'missing');
 ok('every SQL session has one workshop interaction',

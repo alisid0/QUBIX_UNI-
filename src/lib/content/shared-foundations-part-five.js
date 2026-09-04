@@ -11,10 +11,107 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
   status: 'AI_DRAFT · AUTHORING ONLY',
   title: 'SQL Foundations',
   subtitle: 'Part Five of Volume 0',
-  totalMinutes: 43,
+  totalMinutes: 60,
   sessions: Object.freeze([
     Object.freeze({
-      id: 'select', number: '01', title: 'Asking a table a question', studyMinutes: 8, playMinutes: 5,
+      id: 'first-table', number: '01', title: 'What a table is, and how to ask it for something', studyMinutes: 11, playMinutes: 6,
+      objective: 'Say what a row and a column of a table mean, name the column that identifies one row, and ask a table for the columns and rows you want.',
+      audioSummary: 'A database stores information in tables. A table has fixed columns and as many rows as there are things to record. One row is one of the thing the table is about, and one column is one fact about it. A column whose value never repeats can identify a row, and that column is the primary key. SELECT names the columns you want, FROM names the table, and WHERE names a condition that keeps some rows and discards the rest.',
+      opening: 'Excel holds rows and adds things up, and it is good enough that you would wonder whether we ever need SQL. The Superstore answers that on its own: seventeen branches and three days of trading come to 83,063 receipt lines, about 27,700 a day, and one Excel sheet stops at just over a million rows. Five weeks of trading fills it.',
+      sections: Object.freeze([
+        Object.freeze({
+          heading: 'What is a table?',
+          paragraphs: Object.freeze([
+            'A database stores information in tables. A table looks a little like a spreadsheet, with columns running down the page and rows running across it.',
+            'The employee table records the people who work for the Superstore. Each column stores one kind of information: employee_id holds the identification number, name holds the name, location_id holds the branch they work at, role holds the job, weekly_hours holds the contracted hours, and started holds the date they joined.',
+            'Each row describes one employee. The first row says that Priya Raman works at Northgate on checkout, for 37.5 hours a week, and joined in May 2019. The next row describes somebody else.',
+            'The columns decide what can be recorded. The rows hold the actual recordings. A table stores one kind of thing, a column describes one fact about that thing, and a row is one example of it. Here the kind of thing is an employee.'
+          ])
+        }),
+        Object.freeze({
+          heading: 'Identifying one row',
+          paragraphs: Object.freeze([
+            'Two employees can share a name. In the Superstore they often do: there are 772 employees and only 389 distinct names between them, so roughly half share a name with somebody else.',
+            'That is why the table carries an employee_id. E-204 belongs to one person and nobody else, and asking for E-204 can only ever return one row. A column that identifies each row on its own is called a primary key.',
+            'Think of the primary key as the row own name. Not a description of the row, and not a fact about it that happens to be unusual, but a value put there so that one row can always be pointed at.'
+          ])
+        }),
+        Object.freeze({
+          heading: 'Asking for columns',
+          paragraphs: Object.freeze([
+            'Once the information is in a table, SQL retrieves it. To get a list of names you write SELECT name FROM employee, which reads almost as an English sentence: select the name column from the employee table.',
+            'SELECT says which columns you want. FROM says which table they live in. The semicolon marks the end of the statement. Ask for several columns by separating them with commas, as in SELECT name, role, started FROM employee.',
+            'The table itself has not changed. It still holds all six columns and all six people. Only the result is narrower, and the result is a new table made for you.',
+            'An asterisk is shorthand for all of the columns, so SELECT * FROM employee returns the complete table. That is a good way to meet a table for the first time. In finished work, name the columns you want: a star pulls in more than you need, and if somebody adds a column next month your query picks it up without telling you.'
+          ])
+        }),
+        Object.freeze({
+          heading: 'Asking for rows',
+          paragraphs: Object.freeze([
+            'SELECT and FROM choose columns. Choosing rows is a separate job, and WHERE does it.',
+            'To see only the people who joined before 2020, write SELECT name, role, started FROM employee WHERE started < \'2020-01-01\'. WHERE gives the database a condition, and only the rows that meet it come back.',
+            'So a query has three decisions in it. FROM chooses the table, WHERE chooses the rows, and SELECT chooses the columns. Getting a query right is mostly getting those three separate in your head.'
+          ])
+        })
+      ]),
+      workshopLab: Object.freeze({
+        kind: 'first-table',
+        title: 'One cabinet, one drawer, one label',
+        mapping: Object.freeze([
+          Object.freeze(['Labelled cabinet', 'table']),
+          Object.freeze(['What the cabinet is for', 'the one kind of thing a table stores']),
+          Object.freeze(['Drawer', 'row']),
+          Object.freeze(['Labelled partition inside every drawer', 'column']),
+          Object.freeze(['Unique serial on the drawer', 'primary key']),
+          Object.freeze(['Reading some partitions of some drawers', 'SELECT with WHERE'])
+        ]),
+        paragraphs: Object.freeze([
+          'Picture one cabinet marked employee. Every drawer in it holds one person, and every drawer has the same labelled partitions inside: id, name, branch, role, hours, start date. The partitions are fixed when the cabinet is built. The drawers arrive as people are hired.',
+          'Asking for names is opening every drawer and reading one partition. Asking for the people who started before 2020 is checking one partition first and leaving the other drawers shut. SELECT chooses which partitions you read, WHERE chooses which drawers you open, and neither takes anything out of the cabinet.'
+        ]),
+        limit: 'The analogy stops at the walking. Nobody opens drawers one after another in a database: the engine works on sets and chooses its own route, so a query describes the result you want rather than the order in which to fetch it, and two queries that describe the same result can run at very different speeds.'
+      }),
+      example: Object.freeze({
+        title: 'One query, three decisions',
+        headers: Object.freeze(['Clause', 'What it chooses', 'Effect on the result']),
+        rows: Object.freeze([
+          Object.freeze(['FROM employee', 'the table', 'grain: one employee per row']),
+          Object.freeze(['WHERE started < \'2020-01-01\'', 'the rows', '2 of 6 rows, same columns']),
+          Object.freeze(['SELECT name, role, started', 'the columns', '3 of 6 columns, same rows'])
+        ])
+      }),
+      workbook: Object.freeze({
+        title: 'Read the table before you query it',
+        prompt: 'Open the employee table in the mission and answer these before writing anything.',
+        steps: Object.freeze([
+          'State in one sentence what a single row of the table represents.',
+          'Name every column and the one fact it records.',
+          'Find a column other than employee_id whose values repeat, and say why it could not identify a row.',
+          'Write the query that returns only the names, then the query that returns everybody who works more than 30 hours.'
+        ])
+      }),
+      check: Object.freeze({
+        prompt: 'A query returns 2 rows and 3 columns from a table holding 6 rows and 6 columns. What happened to the employee table?',
+        answer: 'nothing',
+        options: Object.freeze([
+          Object.freeze(['nothing', 'Nothing. It still holds 6 rows and 6 columns']),
+          Object.freeze(['trimmed', 'It was trimmed to 2 rows and 3 columns']),
+          Object.freeze(['copied', 'It was copied, and the copy was trimmed'])
+        ]),
+        explanation: 'A query reads. WHERE discarded four rows and SELECT left out three columns while building the result, and neither touched the stored table, which still holds every row and every column it had before.'
+      }),
+      practice: Object.freeze({
+        title: 'The Employee Table',
+        href: '?mode=game&mission=employee-table',
+        instruction: 'Read six real Northgate employees, name the column that identifies a row, then choose the query that returns what is asked for.'
+      }),
+      sources: Object.freeze([
+        Object.freeze({ label: 'PostgreSQL — SELECT', url: 'https://www.postgresql.org/docs/current/sql-select.html' }),
+        Object.freeze({ label: 'SQLite — SELECT', url: 'https://www.sqlite.org/lang_select.html' })
+      ])
+    }),
+    Object.freeze({
+      id: 'select', number: '02', title: 'Asking a table a question', studyMinutes: 8, playMinutes: 5,
       objective: 'Read a simple query as choosing rows first and columns second.',
       audioSummary: 'Picture a data workshop. The building infrastructure is the server host; a room can represent a database or schema; a labelled cabinet is a table; each drawer is a row; and the labelled partitions in every drawer are columns. A customer or bank-account cabinet keeps one master row per identifier, while a transaction cabinet legitimately repeats the account identifier because every payment is a separate event. In SQL, FROM names the cabinet, WHERE chooses drawers, SELECT chooses visible partitions, and ORDER BY arranges the result. The database still works with logical sets rather than walking physical drawers in this order.',
       opening: 'A query is not a program that walks through the table. It is a description of the result you want, and the database decides how to get it.',
@@ -103,7 +200,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'group', number: '02', title: 'Grouping changes the grain on purpose', studyMinutes: 5, playMinutes: 5,
+      id: 'group', number: '03', title: 'Grouping changes the grain on purpose', studyMinutes: 5, playMinutes: 5,
       objective: 'Say what one row of a grouped result represents, and why filtering happens twice.',
       audioSummary: 'Imagine sorting individual sale slips into work trays labelled by branch. Before sorting, each slip is one sale. After grouping, each tray produces one summary row, so the grain changes to one branch. WHERE decides which original slips enter the sorting process. An aggregate such as COUNT or SUM writes one measurement on each completed tray. HAVING then decides which completed trays remain. SQL does not physically move the stored records; the trays describe the logical grouped result.',
       opening: 'Grouping is the first thing in SQL that changes what a row means. Before it, one row was one sale. After it, one row is one branch, and everything you can ask has changed with it.',
@@ -226,7 +323,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'join', number: '03', title: 'Joining without changing what a row is', studyMinutes: 5, playMinutes: 5,
+      id: 'join', number: '04', title: 'Joining without changing what a row is', studyMinutes: 5, playMinutes: 5,
       objective: 'Predict a join’s effect on the row count before running it.',
       audioSummary: 'A join is like using a label on an event slip to look up a master record in another cabinet. A primary key is unique in the master cabinet. The same value may repeat as a foreign key in the event ledger because one branch or account can have many events. When each event finds exactly one master record, the join adds descriptive columns and preserves the event grain. If the supposed master key repeats, one event finds several matches and the result multiplies. That is join cardinality, and predicting it protects totals from inflation.',
       opening: 'Two tables, one key, and a query that succeeds. The row count went from four thousand to twelve thousand, nothing raised an error, and the revenue figure computed afterwards is now three times too large.',
@@ -311,7 +408,7 @@ export const SHARED_FOUNDATIONS_PART_FIVE = Object.freeze({
     }),
 
     Object.freeze({
-      id: 'verify', number: '04', title: 'Checking a result before believing it', studyMinutes: 5, playMinutes: 5,
+      id: 'verify', number: '05', title: 'Checking a result before believing it', studyMinutes: 5, playMinutes: 5,
       objective: 'Run a short set of checks on any query result before it leaves your screen.',
       audioSummary: 'A completed query is like a packed dispatch from the workshop. The fact that the machinery ran proves only that the instruction was valid. Before dispatch, write what one output row represents, compare the expected and actual row counts, inspect key uniqueness and unmatched records, and reconcile a known count or total. These checks are assertions about meaning, not formatting. A result should leave the workshop only when its grain, population and important totals agree with what the analytical question required.',
       opening: 'The query ran. That is evidence about the syntax and nothing else. Whether the answer is right is a separate question, and it has to be asked deliberately.',

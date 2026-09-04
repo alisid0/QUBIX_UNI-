@@ -58,11 +58,12 @@ export const BEGINNER_PATH = Object.freeze([
     title: 'SQL, and the shaping that belongs with it',
     promise: 'Ask a table a question and know what the answer counts.',
     sessions: Object.freeze([
-      Object.freeze({ chapter: 5, session: 1 }),   // asking a table a question
-      Object.freeze({ chapter: 5, session: 2 }),   // grouping changes the grain
-      Object.freeze({ chapter: 5, session: 3 }),   // joining without changing what a row is
+      Object.freeze({ chapter: 5, session: 1 }),   // what a table is, and a first query
+      Object.freeze({ chapter: 5, session: 2 }),   // asking a table a question
+      Object.freeze({ chapter: 5, session: 3 }),   // grouping changes the grain
+      Object.freeze({ chapter: 5, session: 4 }),   // joining without changing what a row is
       Object.freeze({ chapter: 3, session: 3 }),   // one sale or one product
-      Object.freeze({ chapter: 5, session: 4 })    // checking a result before believing it
+      Object.freeze({ chapter: 5, session: 5 })    // checking a result before believing it
     ])
   }),
   Object.freeze({

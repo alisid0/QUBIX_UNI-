@@ -19,6 +19,7 @@ import { JOIN_GRAIN_MISSION } from './join-grain-mission.js';
 import { UNITS_MEASUREMENT_MISSION } from './units-measurement-mission.js';
 import { DATA_LINEAGE_MISSION } from './data-lineage-mission.js';
 import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
+import { EMPLOYEE_TABLE_MISSION } from './employee-table-mission.js';
 import { SQL_CONSOLE_MISSION } from './sql-console-mission.js';
 import { DISTRIBUTION_DESK_MISSION } from './distribution-desk-mission.js';
 import { PYTHON_TRACE_MISSION } from './python-trace-mission.js';
@@ -78,18 +79,21 @@ export const MISSIONS = Object.freeze([
   { slug: 'sampling-desk', mission: SAMPLING_DESK_MISSION, xp: 170,
     teaches: 'Setting the population boundary from the sample frame before making a claim.',
     reading: { chapter: 4, session: 3, label: 'Who is in the data, and who is not' } },
+  { slug: 'employee-table', mission: EMPLOYEE_TABLE_MISSION, xp: 120,
+    teaches: 'Reading one table, naming the column that identifies a row, and asking for the columns and rows you want.',
+    reading: { chapter: 5, session: 1, label: 'What a table is, and how to ask it for something' } },
   { slug: 'sql-console', mission: SQL_CONSOLE_MISSION, xp: 160,
     teaches: 'Building a query clause by clause, and reading what it did to the grain.',
-    reading: { chapter: 5, session: 1, label: 'Asking a table a question' } },
+    reading: { chapter: 5, session: 2, label: 'Asking a table a question' } },
   { slug: 'region-grain', mission: REGION_GRAIN_MISSION, xp: 120,
     teaches: 'Establishing which hierarchy a grouping column belongs to before reporting by it.',
-    reading: { chapter: 5, session: 2, label: 'Grouping changes the grain on purpose' } },
+    reading: { chapter: 5, session: 3, label: 'Grouping changes the grain on purpose' } },
   { slug: 'join-grain', mission: JOIN_GRAIN_MISSION, xp: 90,
     teaches: 'What a join does to the row before you run it.',
-    reading: { chapter: 5, session: 3, label: 'Joining without changing what a row is' } },
+    reading: { chapter: 5, session: 4, label: 'Joining without changing what a row is' } },
   { slug: 'result-checkpoint', mission: RESULT_CHECKPOINT_MISSION, xp: 180,
     teaches: 'Testing grain, boundaries, NULL behaviour and control totals before releasing a query result.',
-    reading: { chapter: 5, session: 4, label: 'Checking a result before believing it' } },
+    reading: { chapter: 5, session: 5, label: 'Checking a result before believing it' } },
   { slug: 'python-trace', mission: PYTHON_TRACE_MISSION, xp: 170,
     teaches: 'Predicting what a program leaves in each name, then stepping through to see it happen.',
     reading: { chapter: 6, session: 1, label: 'Telling a machine what to do' } },

@@ -217,17 +217,23 @@ export const DOORS = Object.freeze([
     title: 'SQL first',
     lede: 'Ask a table a question, and know what the answer is a row of.',
     pairs: Object.freeze([
-      pair('s1', 1, 'Select and filter',
-        read('r-5-1', 'Asking a table a question', 5, 1),
+      // A first table and a first query, added 2026-09-04. Chapter 5 used to
+      // open on reading a query backwards, which assumes a learner already
+      // knows what a row, a column and a key are.
+      pair('s0', 1, 'A table and a first query',
+        read('r-5-1', 'What a table is, and how to ask it for something', 5, 1),
+        play('p-employee-table', 'The Employee Table', 'employee-table')),
+      pair('s1', 2, 'Select and filter',
+        read('r-5-2', 'Asking a table a question', 5, 2),
         play('p-sql-console', 'The SQL Console', 'sql-console')),
-      pair('s2', 2, 'Group and count',
-        read('r-5-2', 'Grouping changes the grain on purpose', 5, 2),
+      pair('s2', 3, 'Group and count',
+        read('r-5-3', 'Grouping changes the grain on purpose', 5, 3),
         play('p-region-grain', 'The Region That Wasn’t', 'region-grain')),
-      pair('s3', 3, 'Join safely',
-        read('r-5-3', 'Joining without changing what a row is', 5, 3),
+      pair('s3', 4, 'Join safely',
+        read('r-5-4', 'Joining without changing what a row is', 5, 4),
         play('p-join-grain', 'Join Without Changing the Grain', 'join-grain')),
-      pair('s4', 4, 'Verify and release',
-        read('r-5-4', 'Checking a result before believing it', 5, 4),
+      pair('s4', 5, 'Verify and release',
+        read('r-5-5', 'Checking a result before believing it', 5, 5),
         play('p-checkpoint', 'The Result Checkpoint', 'result-checkpoint'))
     ])
   })
