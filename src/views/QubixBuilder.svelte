@@ -1,176 +1,168 @@
 <script>
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
+  import { buildHandoffPrompt, draftDocument, safeDraftFilename, selectRecentMessages, targetOptions, validateDraft } from '../lib/draft-workshop.js';
 
-  const STORAGE_KEY = 'qx.builder.access.v1';
-  const STARTERS = [
-    ['Audit a topic', 'Audit the next topic against MASTERPLAN-01092026. Identify prerequisites, the learner outcome, and what still needs a founder decision.'],
-    ['Frame a Read/Play pair', 'Draft the framing questions for one Read/Play pair. Do not write the final lesson and do not mark anything approved.'],
-    ['Challenge the plan', 'Act as a critical curriculum reviewer. Find the biggest learner-risk or sequencing assumption in the current Qubix plan.'],
-    ['Prepare an approval', 'Turn my idea into a narrow founder approval checklist with explicit scope and exclusions.']
-  ];
-
-  let accessKey = '';
-  let unlocked = false;
-  let input = '';
-  let busy = false;
-  let model = 'GPT-5.6 Terra';
-  let log;
-  let messages = [{
-    from: 'builder',
-    text: 'I help construct Qubix one controlled decision at a time. I can audit coverage, frame Read/Play pairs, challenge prerequisites, and prepare drafts. I cannot approve or release curriculum.'
-  }];
+  const STORAGE_KEY = 'qx.draft-workshop.v1';
+  const targets = targetOptions();
+  let transcript = '';
+  let title = '';
+  let target = 'pair';
+  let limit = 20;
+  let selectedMessages = [];
+  let prompt = '';
+  let draft = '';
+  let includeTranscript = false;
+  let copied = '';
+  let restored = false;
 
   onMount(() => {
     try {
-      accessKey = sessionStorage.getItem(STORAGE_KEY) || '';
-      unlocked = Boolean(accessKey);
-    } catch (_) {}
+      const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+      if (saved && typeof saved === 'object') {
+        transcript = saved.transcript || '';
+        title = saved.title || '';
+        target = targets.some(option => option.value === saved.target) ? saved.target : 'pair';
+        limit = Number(saved.limit) || 20;
+        prompt = saved.prompt || '';
+        draft = saved.draft || '';
+        includeTranscript = Boolean(saved.includeTranscript);
+        selectedMessages = selectRecentMessages(transcript, limit);
+      }
+    } catch (_) { /* A blocked session store simply starts a clean workshop. */ }
+    restored = true;
   });
 
-  function enter() {
-    if (!accessKey.trim()) return;
-    try { sessionStorage.setItem(STORAGE_KEY, accessKey.trim()); } catch (_) {}
-    unlocked = true;
+  function save() {
+    if (!restored) return;
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ transcript, title, target, limit, prompt, draft, includeTranscript })); }
+    catch (_) { /* The workshop still works without persistence. */ }
   }
 
-  function lock() {
-    accessKey = '';
-    unlocked = false;
+  function prepare() {
+    selectedMessages = selectRecentMessages(transcript, limit);
+    prompt = buildHandoffPrompt({ transcript, target, title, limit });
+    save();
+    document.getElementById('handoff-prompt')?.focus();
+  }
+
+  async function copy(value, name) {
+    try {
+      await navigator.clipboard.writeText(value);
+      copied = name;
+      setTimeout(() => { if (copied === name) copied = ''; }, 1600);
+    } catch (_) { copied = 'blocked'; }
+  }
+
+  function download() {
+    const source = selectedMessages.map(message => `${message.speaker.toUpperCase()}:\n${message.text}`).join('\n\n');
+    const body = draftDocument({ draft, title, target, sourceCount: selectedMessages.length, includeTranscript, transcript: source });
+    const url = URL.createObjectURL(new Blob([body], { type: 'text/markdown;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = safeDraftFilename(title);
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function clearWorkshop() {
+    transcript = ''; title = ''; target = 'pair'; limit = 20; selectedMessages = [];
+    prompt = ''; draft = ''; includeTranscript = false; copied = '';
     try { sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
   }
 
-  function choose(text) {
-    input = text;
-    document.getElementById('builder-question')?.focus();
-  }
-
-  async function submit() {
-    const question = input.trim();
-    if (!question || busy) return;
-    messages = [...messages, { from: 'founder', text: question }];
-    input = '';
-    busy = true;
-    await tick();
-    if (log) log.scrollTop = log.scrollHeight;
-
-    try {
-      const response = await fetch('/api/tutor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Qubix-Builder-Key': accessKey.trim()
-        },
-        body: JSON.stringify({
-          mode: 'builder',
-          question,
-          context: 'MASTERPLAN-01092026 is the current clean-slate curriculum plan. It is AI_DRAFT. Qubix teaches through paired Read and Play material in a fictional Superstore data world. The founder alone controls APPROVED and RELEASED status.',
-          sources: []
-        })
-      });
-      const payload = await response.json().catch(() => ({}));
-      if (response.status === 401) {
-        lock();
-        throw new Error('The access key was not accepted. Enter the current Builder key and try again.');
-      }
-      if (!response.ok) throw new Error(payload.error || 'Qubix Builder is unavailable just now.');
-      if (payload.model && payload.model !== 'Qubix scope gate') model = payload.model;
-      messages = [...messages, { from: 'builder', text: payload.answer }];
-    } catch (error) {
-      messages = [...messages, { from: 'system', text: error.message }];
-    } finally {
-      busy = false;
-      await tick();
-      if (log) log.scrollTop = log.scrollHeight;
-    }
-  }
+  $: detectedCount = selectRecentMessages(transcript, limit).length;
+  $: validation = validateDraft(draft, target);
 </script>
 
 <svelte:head>
-  <title>Qubix Builder · Private founder workspace</title>
+  <title>Qubix Draft Workshop · Founder workspace</title>
   <meta name="robots" content="noindex,nofollow" />
 </svelte:head>
 
-<main class="builder-page">
+<main class="workshop-page">
   <header class="masthead">
     <a class="identity" href="/"><span>QX</span><b>QUBIX UNIVERSITY</b></a>
-    <div class="private"><i></i> PRIVATE FOUNDER WORKSPACE</div>
-    {#if unlocked}<button class="lock" on:click={lock}>Lock workspace</button>{/if}
+    <div class="local"><i></i> ZERO API CREDITS · LOCAL PREPARATION</div>
+    <button class="clear" type="button" on:click={clearWorkshop}>Clear this session</button>
   </header>
 
-  {#if !unlocked}
-    <section class="gate">
-      <p class="eyebrow">CONTROLLED AI · CONSTRUCTION SIDE</p>
-      <h1>Build Qubix with a copilot that knows its boundaries.</h1>
-      <p class="lede">This workspace helps you shape curriculum and product decisions. It never changes an approval status, publishes a lesson, or releases curriculum.</p>
-      <form on:submit|preventDefault={enter}>
-        <label for="builder-key">Founder access key</label>
-        <div><input id="builder-key" type="password" bind:value={accessKey} autocomplete="current-password" placeholder="Enter the Builder key" /><button disabled={!accessKey.trim()}>Enter Builder <span>→</span></button></div>
-      </form>
-      <aside><b>Why the gate?</b> The website may be quiet today, but a private construction tool should be safe before it becomes valuable.</aside>
+  <section class="intro">
+    <p class="eyebrow">FOUNDER WORKSPACE · AI_DRAFT ONLY</p>
+    <h1>Qubix Draft Workshop</h1>
+    <p>Turn the useful part of a ChatGPT, Codex or Claude conversation into one controlled content draft. Qubix prepares the handoff and checks the returned work; your existing chat does the writing.</p>
+    <div class="flow" aria-label="Draft workflow">
+      <span>Conversation</span><b>→</b><span>Prepared prompt</span><b>→</b><span>AI response</span><b>→</b><span>Qubix checks</span><b>→</b><span>Founder review</span>
+    </div>
+  </section>
+
+  <div class="workspace">
+    <section class="panel source" aria-labelledby="source-heading">
+      <header><span>01</span><div><small>SOURCE</small><h2 id="source-heading">Bring the conversation</h2></div></header>
+      <p>Paste the relevant chat. Speaker labels such as <code>User:</code>, <code>Assistant:</code> or <code>Claude:</code> give the cleanest message count. Unlabelled text is split at blank lines.</p>
+      <label for="transcript">Conversation transcript</label>
+      <textarea id="transcript" rows="14" bind:value={transcript} on:input={save} placeholder="User: We should teach probability before inference…&#10;&#10;Assistant: Then the first pair should…"></textarea>
+      <div class="source-controls">
+        <label for="message-limit">Messages to use
+          <select id="message-limit" bind:value={limit} on:change={save}>
+            <option value={10}>Last 10</option><option value={20}>Last 20</option><option value={30}>Last 30</option><option value={50}>Last 50</option>
+          </select>
+        </label>
+        <output>{detectedCount} messages detected</output>
+      </div>
+      <p class="privacy"><b>Private by design:</b> this transcript stays in this browser tab and is never sent by Qubix.</p>
     </section>
-  {:else}
-    <section class="workspace">
-      <aside class="rail">
-        <p class="eyebrow">FOUNDER COPILOT</p>
-        <h1>Qubix Builder</h1>
-        <p>Construct the university without confusing a generated draft with a founder decision.</p>
 
-        <div class="starters">
-          <b>Start a controlled task</b>
-          {#each STARTERS as starter}
-            <button on:click={() => choose(starter[1])}><span>{starter[0]}</span><i>→</i></button>
-          {/each}
-        </div>
-
-        <div class="boundary">
-          <b>Authority boundary</b>
-          <span>AI may draft and challenge</span>
-          <span>Founder alone approves</span>
-          <span>Deployment remains separate</span>
-        </div>
-      </aside>
-
-      <section class="conversation">
-        <header>
-          <div><small>LIVE MODEL</small><strong>{model}</strong></div>
-          <div><small>SOURCE PLAN</small><strong>MASTERPLAN-01092026</strong></div>
-          <div><small>STATUS</small><strong class="draft">AI_DRAFT</strong></div>
-        </header>
-
-        <div class="messages" bind:this={log} role="log" aria-live="polite" aria-busy={busy}>
-          {#each messages as message}
-            <article class:founder={message.from === 'founder'} class:system={message.from === 'system'}>
-              <small>{message.from === 'founder' ? 'YOU' : message.from === 'system' ? 'SYSTEM' : 'QUBIX BUILDER'}</small>
-              <p>{message.text}</p>
-            </article>
-          {/each}
-          {#if busy}<article><small>QUBIX BUILDER</small><p class="thinking">Checking the scope, prerequisites and approval boundary…</p></article>{/if}
-        </div>
-
-        <form class="composer" on:submit|preventDefault={submit}>
-          <label for="builder-question">What are we constructing or deciding?</label>
-          <textarea id="builder-question" bind:value={input} rows="3" placeholder="For example: frame the first probability Read/Play pair…" disabled={busy}></textarea>
-          <div><span>The key stays in this tab. Prompts are processed by the Qubix AI service; do not include secrets.</span><button disabled={!input.trim() || busy}>{busy ? 'Thinking…' : 'Ask Builder'} <b>↑</b></button></div>
-        </form>
-      </section>
+    <section class="panel brief" aria-labelledby="brief-heading">
+      <header><span>02</span><div><small>PREPARE</small><h2 id="brief-heading">Frame one draft</h2></div></header>
+      <div class="fields">
+        <label for="draft-title">Working title<input id="draft-title" bind:value={title} on:input={save} placeholder="Probability: events and outcomes" /></label>
+        <label for="draft-target">Draft type<select id="draft-target" bind:value={target} on:change={save}>{#each targets as option}<option value={option.value}>{option.label}</option>{/each}</select></label>
+      </div>
+      <button class="primary" type="button" disabled={!transcript.trim()} on:click={prepare}>Prepare handoff from the last {limit} messages</button>
+      {#if prompt}
+        <label for="handoff-prompt">Handoff prompt</label>
+        <textarea id="handoff-prompt" class="prompt" rows="18" readonly value={prompt}></textarea>
+        <div class="actions"><button type="button" on:click={() => copy(prompt, 'prompt')}>{copied === 'prompt' ? 'Copied' : 'Copy for ChatGPT, Codex or Claude'}</button></div>
+        <p class="instruction">Paste this prompt into the AI chat you already use. When it replies, bring the complete response back below.</p>
+      {/if}
     </section>
-  {/if}
+
+    <section class="panel returned" aria-labelledby="returned-heading">
+      <header><span>03</span><div><small>RETURN</small><h2 id="returned-heading">Bring back the draft</h2></div></header>
+      <label for="returned-draft">AI response</label>
+      <textarea id="returned-draft" rows="20" bind:value={draft} on:input={save} placeholder="# Your title&#10;Status: AI_DRAFT&#10;&#10;## Conversation decisions captured…"></textarea>
+      <div class="actions">
+        <button type="button" disabled={!draft.trim()} on:click={() => copy(draft, 'draft')}>{copied === 'draft' ? 'Copied' : 'Copy draft'}</button>
+        <button type="button" disabled={!draft.trim()} on:click={download}>Download AI_DRAFT.md</button>
+      </div>
+      <label class="include"><input type="checkbox" bind:checked={includeTranscript} on:change={save} /> Include the selected conversation as an appendix in the download</label>
+      {#if copied === 'blocked'}<p class="error" role="status">Clipboard access was blocked. Select the text manually.</p>{/if}
+    </section>
+
+    <aside class="panel checks" aria-labelledby="checks-heading">
+      <header><span>04</span><div><small>CHECK</small><h2 id="checks-heading">Review readiness</h2></div></header>
+      <div class:ready={validation.ready} class="score"><strong>{validation.passed}/{validation.total}</strong><span>{validation.ready ? 'Ready for founder review' : 'Checks passed'}</span></div>
+      <ul>{#each validation.checks as check}<li class:pass={check.pass}><b>{check.pass ? '✓' : '○'}</b><span>{check.label}</span></li>{/each}</ul>
+      <div class="boundary"><b>This workshop cannot approve or publish.</b><span>A complete result remains <code>AI_DRAFT</code> until you conduct a separate founder review.</span></div>
+    </aside>
+  </div>
 </main>
 
 <style>
-  :global(body){margin:0;background:#eee7d8;color:#25231f}
-  .builder-page{min-height:100%;padding:18px clamp(14px,3vw,42px) 42px;font-family:var(--qx-font,Arial,sans-serif);box-sizing:border-box}
-  .masthead{display:flex;align-items:center;gap:18px;max-width:1320px;margin:0 auto 24px;padding-bottom:14px;border-bottom:2px solid #25231f}
-  .identity{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.identity span{display:grid;place-items:center;width:38px;height:38px;background:#a64e29;color:#fff;font:900 12px ui-monospace,monospace}.identity b{font:900 13px/1 var(--qx-font,Arial);letter-spacing:.12em}
-  .private{display:flex;align-items:center;gap:7px;color:#4f493e;font:850 11px/1 var(--qx-font,Arial);letter-spacing:.1em}.private i{width:8px;height:8px;border-radius:50%;background:#38682c}.lock{margin-left:auto;padding:9px 13px;border:1px solid #25231f;border-radius:999px;background:#f8f4eb;font-weight:800;cursor:pointer}
-  .gate{max-width:880px;margin:8vh auto 0;padding:clamp(28px,6vw,72px);border:3px solid #25231f;border-radius:28px 5px 28px 5px;background:#f8f4eb;box-shadow:12px 12px 0 #cabda6}
-  .eyebrow{margin:0 0 12px;color:#a64e29;font-size:11px;font-weight:900;letter-spacing:.13em}.gate h1,.rail h1{margin:0;font:500 clamp(38px,6vw,68px)/.98 Georgia,serif;letter-spacing:-.035em}.gate .lede{max-width:720px;margin:22px 0 32px;color:#585044;font:500 18px/1.55 Georgia,serif}
-  .gate form label{display:block;margin-bottom:8px;font-size:12px;font-weight:900;letter-spacing:.07em}.gate form>div{display:grid;grid-template-columns:1fr auto;gap:9px}.gate input{min-width:0;height:50px;padding:0 14px;border:2px solid #25231f;background:#fff;font:700 15px var(--qx-font,Arial)}.gate button,.composer button{padding:0 20px;border:2px solid #25231f;border-radius:999px;background:#a64e29;color:#fff;font-weight:900;cursor:pointer}.gate button:disabled,.composer button:disabled{opacity:.45;cursor:default}.gate button span{margin-left:18px}.gate aside{margin-top:25px;padding:14px 16px;border-left:4px solid #38682c;background:#e1eadb;color:#4f493e;font-size:13px;line-height:1.45}.gate aside b{color:#25231f}
-  .workspace{display:grid;grid-template-columns:minmax(240px,330px) minmax(0,1fr);gap:18px;max-width:1320px;height:calc(100vh - 112px);min-height:620px;margin:auto}.rail,.conversation{min-height:0;border:2px solid #25231f;background:#f8f4eb}.rail{padding:25px;overflow-y:auto}.rail h1{font-size:43px}.rail>p:not(.eyebrow){color:#625a4e;font-size:14px;line-height:1.55}
-  .starters{display:grid;gap:8px;margin-top:28px}.starters>b,.boundary>b{margin-bottom:3px;font-size:11px;letter-spacing:.09em;text-transform:uppercase}.starters button{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid #c9bfad;border-radius:16px 3px 16px 3px;background:#fff;color:#25231f;text-align:left;font-weight:800;cursor:pointer}.starters button:hover{border-color:#a64e29;color:#8c3f20}.starters i{font-style:normal}.boundary{display:grid;gap:8px;margin-top:28px;padding:15px;border-left:4px solid #38682c;background:#e1eadb}.boundary span{font-size:12px;color:#4f493e}
-  .conversation{display:grid;grid-template-rows:auto minmax(0,1fr) auto}.conversation>header{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border-bottom:2px solid #25231f;background:#25231f}.conversation>header div{padding:13px 15px;background:#ede5d5}.conversation>header small,.conversation>header strong{display:block}.conversation>header small{margin-bottom:4px;color:#746b5e;font-size:11px;font-weight:900;letter-spacing:.09em}.conversation>header strong{font:700 14px Georgia,serif}.conversation>header .draft{color:#a64e29}
-  .messages{min-height:0;padding:20px;overflow-y:auto;background:#f2ecdf}.messages article{max-width:78%;margin-bottom:16px}.messages article.founder{margin-left:auto}.messages small{display:block;margin-bottom:5px;color:#8c3f20;font-size:11px;font-weight:900;letter-spacing:.09em}.messages p{margin:0;padding:13px 15px;border:1px solid #cabfae;border-radius:3px 18px 18px;background:#fff;white-space:pre-wrap;font-size:14px;line-height:1.55}.messages .founder small{text-align:right;color:#35622a}.messages .founder p{border-color:#91a986;border-radius:18px 3px 18px;background:#e1eadb}.messages .system p{border-color:#b3442f;background:#fae7df;color:#7a281b}.thinking{color:#6b6256;font-style:italic}
-  .composer{padding:14px 16px 16px;border-top:2px solid #25231f;background:#fff}.composer label{display:block;margin-bottom:7px;font-size:11px;font-weight:900;letter-spacing:.07em}.composer textarea{box-sizing:border-box;width:100%;resize:none;padding:11px 13px;border:2px solid #25231f;background:#fbf8f2;font:650 14px/1.45 var(--qx-font,Arial)}.composer>div{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}.composer span{color:#71685b;font-size:11px}.composer button{min-height:42px}.composer button b{margin-left:12px;font-size:17px}
-  button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #a64e29;outline-offset:3px}
-  @media(max-width:780px){.builder-page{padding:12px}.private{display:none}.workspace{grid-template-columns:1fr;height:auto}.rail{overflow:visible}.conversation{min-height:72vh}.conversation>header{grid-template-columns:1fr}.messages article{max-width:92%}.gate form>div{grid-template-columns:1fr}.gate button{min-height:48px}.composer>div{align-items:flex-end}.composer span{max-width:150px}}
+  :global(html),:global(body),:global(#app),:global(.qubix-university){height:auto!important;min-height:100%!important;overflow:visible!important}
+  :global(body){position:static!important;overscroll-behavior:auto!important;background:#eee7d8;color:#25231f}
+  .workshop-page{--ink:#25231f;--paper:#f8f4eb;--cream:#eee7d8;--clay:#a64e29;--green:#38682c;min-height:100vh;padding:18px clamp(14px,3vw,42px) 60px;background:var(--cream);color:var(--ink);font-family:var(--qx-font,Arial,sans-serif);box-sizing:border-box}
+  .masthead{display:flex;align-items:center;gap:18px;max-width:1320px;margin:0 auto 24px;padding-bottom:14px;border-bottom:2px solid var(--ink)}
+  .identity{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.identity span{display:grid;place-items:center;width:38px;height:38px;background:var(--clay);color:#fff;font:900 12px ui-monospace,monospace}.identity b{font-size:13px;letter-spacing:.12em}.local{display:flex;align-items:center;gap:7px;color:#4f493e;font-size:11px;font-weight:850;letter-spacing:.1em}.local i{width:8px;height:8px;border-radius:50%;background:var(--green)}
+  button{font-family:inherit}.clear{margin-left:auto;padding:9px 13px;border:1px solid var(--ink);border-radius:999px;background:var(--paper);font-weight:800;cursor:pointer}
+  .intro{max-width:1320px;margin:0 auto 22px;padding:32px clamp(24px,5vw,58px);border:3px solid var(--ink);border-radius:28px 5px 28px 5px;background:var(--paper);box-shadow:9px 9px 0 #cabda6}.eyebrow{margin:0 0 10px;color:var(--clay);font-size:11px;font-weight:900;letter-spacing:.13em}.intro h1{margin:0;font:500 clamp(42px,6vw,72px)/.98 Georgia,serif;letter-spacing:-.04em}.intro>p:not(.eyebrow){max-width:860px;margin:18px 0 0;color:#5f574a;font:17px/1.55 Georgia,serif}
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:24px}.flow span{padding:8px 13px;border:1px solid #b9ae9b;border-radius:999px;background:#fff;font-size:12px;font-weight:800}.flow b{color:var(--clay)}
+  .workspace{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1320px;margin:auto}.panel{padding:24px;border:2px solid var(--ink);background:var(--paper);box-shadow:5px 5px 0 rgba(37,35,31,.12)}.panel>header{display:flex;gap:13px;align-items:flex-start;margin-bottom:18px}.panel>header>span{display:grid;place-items:center;flex:0 0 42px;height:34px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;font-weight:900}.panel header small{display:block;margin-bottom:3px;color:var(--clay);font-size:11px;font-weight:900;letter-spacing:.1em}.panel h2{margin:0;font:700 29px/1.08 Georgia,serif}.panel>p{color:#655d50;font-size:13px;line-height:1.5}
+  label{display:grid;gap:7px;margin-top:14px;color:#514b41;font-size:11px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}textarea,input,select{box-sizing:border-box;width:100%;padding:11px 12px;border:2px solid var(--ink);border-radius:4px;background:#fffdf8;color:var(--ink);font:650 14px/1.5 var(--qx-font,Arial,sans-serif)}textarea{resize:vertical}.prompt{background:#f1eadc;font:600 12.5px/1.55 ui-monospace,monospace}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.source-controls{display:flex;align-items:end;justify-content:space-between;gap:12px}.source-controls label{width:160px}.source-controls output{padding-bottom:11px;color:#655d50;font-size:12px;font-weight:800}.privacy{padding:12px 14px;border-left:4px solid var(--green);background:#e1eadb}.privacy b{color:var(--ink)}
+  .primary,.actions button{min-height:44px;padding:9px 16px;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);font-size:12px;font-weight:900;cursor:pointer}.primary{width:100%;margin-top:18px;background:var(--clay);border-color:var(--clay);color:#fff}.primary:disabled,.actions button:disabled{opacity:.45;cursor:default}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}.instruction{padding:12px 14px;background:#e1eadb;border-left:4px solid var(--green)}
+  .include{display:flex;align-items:center;gap:9px;text-transform:none;letter-spacing:0}.include input{width:18px;height:18px;margin:0}.error{color:#8c2e20!important;font-weight:800}
+  .score{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;padding:15px;border-left:4px solid var(--clay);background:#f1eadc}.score.ready{border-color:var(--green);background:#e1eadb}.score strong{font:700 34px Georgia,serif}.score span{font-size:12px;font-weight:850}.checks ul{display:grid;gap:7px;margin:0;padding:0;list-style:none}.checks li{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;background:#eee7d8;color:#6a6255;font-size:12px}.checks li.pass{background:#e1eadb;color:#294d21}.checks li b{font-size:15px}.boundary{display:grid;gap:7px;margin-top:18px;padding:14px;border:2px solid var(--ink);background:#fff}.boundary span{color:#655d50;font-size:12px;line-height:1.45}code{font-family:ui-monospace,monospace}
+  button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--clay);outline-offset:3px}
+  @media(max-width:860px){.workspace{grid-template-columns:1fr}.intro{padding:27px 22px}.local{display:none}}
+  @media(max-width:540px){.workshop-page{padding:12px 10px 42px}.masthead{gap:10px}.identity b{display:none}.clear{margin-left:auto;font-size:11px}.intro h1{font-size:43px}.flow b{display:none}.flow span{width:100%;box-sizing:border-box}.panel{padding:19px 15px}.fields{grid-template-columns:1fr}.source-controls{align-items:flex-start;flex-direction:column}.source-controls output{padding:0}.actions{display:grid}.actions button{width:100%}}
 </style>

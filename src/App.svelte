@@ -42,9 +42,9 @@
   let Showcase = null;
   let ShowcaseDemo = null;
   let LearningUpdates = null;
-  // The founder's AI construction copilot is a production route because the
-  // founder explicitly asked to use it on Qubix. Its content stays behind a
-  // server-verified access key; merely knowing the URL grants no authority.
+  // The founder's Draft Workshop is a production route because it performs no
+  // model call: conversation text stays in this tab, the founder carries the
+  // prepared prompt to an existing AI chat, and every return remains AI_DRAFT.
   let QubixBuilder = null;
   let SignIn = null;
 

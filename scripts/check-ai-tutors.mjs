@@ -99,7 +99,8 @@ check(component.includes("fetch('/api/tutor'"), 'Ask Qubix sends open questions 
 check(component.includes('localResponse'), 'Ask Qubix retains its deterministic local fallback');
 check(component.includes('with a useful analogy') && component.includes('to the Qubix reading'),
   'Ask Qubix states its two learner-facing purposes');
-check(builder.includes("'X-Qubix-Builder-Key'"), 'Builder sends its access proof only to the server');
+check(!builder.includes("fetch('/api/tutor'") && builder.includes('ZERO API CREDITS'),
+  'Draft Workshop prepares founder material without spending API credits');
 check(!component.includes('OPENAI_API_KEY') && !builder.includes('OPENAI_API_KEY'),
   'no OpenAI secret name appears in either browser component');
 check(app.includes("params.get('mode') === 'builder'") && app.includes("import('./views/QubixBuilder.svelte')"),
@@ -112,5 +113,5 @@ check(env.includes('OPENAI_API_KEY=') && env.includes('QUBIX_BUILDER_KEY=')
 
 console.log(failed
   ? '\nAI tutor checks failed\n'
-  : '\nboth Qubix assistants remain scoped, grounded and server-keyed\n');
+  : '\nAsk Qubix remains server-keyed and Draft Workshop remains local\n');
 process.exit(failed ? 1 : 0);

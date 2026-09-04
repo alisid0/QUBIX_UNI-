@@ -66,7 +66,7 @@ export function buildSiteRoutes(libraryPages = []) {
     route('/?mode=showcase', 'Core', 'Qubix University Showcase'),
     route('/?mode=showcase-demo', 'Core', '30-Minute Qubix Demo'),
     route('/?mode=updates', 'Core', 'Learning updates'),
-    route('/?mode=builder', 'Founder tools', 'Qubix Builder', 'preview', false),
+    route('/?mode=builder', 'Founder tools', 'Qubix Draft Workshop', 'preview', false),
     // Reachable and linked from every page, but kept out of the sitemap: an
     // account form is not curriculum and has nothing to offer a search result.
     route('/?mode=signin', 'Core', 'Sign in', 'preview', false),

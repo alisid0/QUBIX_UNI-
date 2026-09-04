@@ -90,6 +90,63 @@ try {
   }
 
   check(failedRequests.length === 0, 'nothing 404s', failedRequests.slice(0, 3).join(' | '));
+
+  // The founder's no-credit authoring route. Its value is the handoff, so test
+  // the whole handoff rather than merely checking that the four panels exist.
+  const workshop = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+  await workshop.goto(BASE + '/builder', { waitUntil: 'networkidle' });
+  const workshopHeading = await workshop.$eval('h1', element => element.textContent.trim());
+  check(workshopHeading === 'Qubix Draft Workshop', 'the Draft Workshop renders');
+
+  const conversation = Array.from({ length: 24 }, (_, index) =>
+    `${index % 2 ? 'Assistant' : 'User'}: Message ${index + 1} about probability.`).join('\n');
+  await workshop.fill('#transcript', conversation);
+  await workshop.fill('#draft-title', 'Events and outcomes');
+  await workshop.click('.primary');
+  const handoff = await workshop.inputValue('#handoff-prompt');
+  check(handoff.includes('Message 5') && handoff.includes('Message 24') && !handoff.includes('Message 4\n'),
+    'the rendered workshop hands off only the latest twenty messages');
+
+  const returnedDraft = `# Events and outcomes
+Status: AI_DRAFT
+## Conversation decisions captured
+Teach probability with an everyday event. ${'Evidence. '.repeat(30)}
+## Assumptions made
+Learners know fractions.
+## Learning objective
+Describe events and outcomes.
+## Prerequisites
+Fractions and ratios.
+## Read
+Explain the standard terms.
+## Play
+Compare expected and observed results.
+## Assessment
+Explain a small sample.
+## Open founder decisions
+Choose the dataset.
+## Evidence or source material still needed
+Confirm provenance.
+## Founder review checklist
+- Review scope.`;
+  await workshop.fill('#returned-draft', returnedDraft);
+  const readiness = await workshop.$eval('.score', element => element.textContent.replace(/\s+/g, ' ').trim());
+  check(/11\/11.*Ready for founder review/.test(readiness),
+    'the rendered workshop validates a complete returned draft');
+  const desktopOverflow = await workshop.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  check(!desktopOverflow, 'the Draft Workshop has no desktop horizontal overflow');
+
+  const mobileWorkshop = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await mobileWorkshop.goto(BASE + '/builder', { waitUntil: 'networkidle' });
+  const mobileLayout = await mobileWorkshop.evaluate(() => ({
+    horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    scrollable: document.documentElement.scrollHeight > document.documentElement.clientHeight,
+    bodyPosition: getComputedStyle(document.body).position
+  }));
+  check(!mobileLayout.horizontalOverflow && mobileLayout.scrollable && mobileLayout.bodyPosition === 'static',
+    'the Draft Workshop scrolls the document on a phone without horizontal overflow');
+  await mobileWorkshop.close();
+  await workshop.close();
 } catch (error) {
   check(false, 'the page could be loaded at all', `${error.message} — is a preview running on ${BASE}?`);
 } finally {
