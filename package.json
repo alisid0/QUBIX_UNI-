@@ -61,6 +61,7 @@
     "check:zone": "node scripts/check-zone-price.mjs",
     "check:uom": "node scripts/check-uom.mjs",
     "check:chance": "node scripts/check-chance-figures.mjs",
+    "check:probability": "node scripts/check-probability-counter.mjs",
     "map": "node scripts/build-site-map.mjs",
     "check:overlays": "node scripts/check-overlays.mjs",
     "check:motion": "node scripts/check-motion.mjs",

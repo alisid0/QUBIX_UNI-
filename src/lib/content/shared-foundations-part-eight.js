@@ -29,60 +29,61 @@ export const SHARED_FOUNDATIONS_PART_EIGHT = Object.freeze({
     /* ── 01 ────────────────────────────────────────────────────────────── */
     Object.freeze({
       id: 'probability-as-proportion', number: '01',
-      title: 'A probability is a proportion of something named',
-      studyMinutes: 7, playMinutes: 6,
-      objective: 'State a probability as a count over a named denominator, and say what changes when the denominator changes.',
-      audioSummary: 'A probability is a share of a set. Before quoting one, say which set. The chance that a sale was paid in cash is the number of cash sales divided by the number of sales you counted, and that denominator is a decision rather than a fact: all sales, one branch, one week, one kind of till. Two people quoting different probabilities for the same event are usually dividing by different things. Independence means knowing one outcome tells you nothing about the other, and it is rarer than it looks: knowing a sale went through self-service tells you it was not paid in cash, because those machines take no notes.',
-      opening: 'The chance a sale is paid in cash sounds like a property of shoppers. It is a property of the set of sales you chose to count.',
+      title: 'A probability belongs to a question',
+      studyMinutes: 7, playMinutes: 7,
+      objective: 'Define an event and its relevant set, then calculate an observed probability with the correct numerator and denominator.',
+      audioSummary: 'Probability begins with a precise question. Suppose we ask whether a shop visit included coffee. Coffee only and coffee with food both count; food only and neither do not. The event is the outcome we are looking for. The sample space is the complete set of visits we are looking across. If 9 of 20 recorded visits included coffee, the observed probability is 9 divided by 20: 45 per cent, or 0.45. That describes these recorded visits. It does not decide what the next visitor will do.',
+      opening: 'A shop has twenty recorded visits. Before calculating anything, decide exactly what would count as “included coffee”.',
       sections: Object.freeze([
-        Object.freeze({ heading: 'Count over a denominator you can name', paragraphs: Object.freeze([
-          'A probability is the size of the group you care about divided by the size of the group you drew from. Of 15,315 sales in the window, 2,968 were paid in cash, and 2,968 divided by 15,315 is 0.19: the probability that a sale picked at random from this window was a cash sale.',
-          'The denominator is a choice and it belongs in the sentence. "About a fifth of sales are cash" is not a fact until it says a fifth of which sales: every branch or one, every till or the staffed ones, this quarter or last. Chapter 2 asked for the denominator under a rate. A probability is a rate whose denominator is easier to leave out, because the word "probability" sounds like it belongs to the event rather than to the counting.'
+        Object.freeze({ heading: 'Start with the outcome, not the arithmetic', paragraphs: Object.freeze([
+          'The visit outcomes are coffee only, food only, both, or neither. The question is: “Did this visit include coffee?” That means coffee only counts, both counts, and the other two outcomes do not. The event is the outcome or group of outcomes named by the question.',
+          'This definition must come first. If one analyst includes “both” and another silently excludes it, their calculations answer different questions even if both divide correctly.'
         ]) }),
-        Object.freeze({ heading: 'The same event, several honest probabilities', paragraphs: Object.freeze([
-          'Restricting the set changes the number, and none of the resulting numbers is wrong. Among sales put through a staffed till the figure is 0.25. Among sales put through self-service it is zero, because those machines do not take notes. Both are true, and neither is the chain figure of 0.19.',
-          'This is why a probability quoted without its population is close to useless in an argument. Two colleagues can both be right and still disagree, exactly as they did over sales by region, and for the same reason: the number was computed over a set nobody named out loud.'
+        Object.freeze({ heading: 'Name the complete set you are looking across', paragraphs: Object.freeze([
+          'Here, the relevant set is all twenty recorded visits. In probability, that complete set of possible observed outcomes is called the sample space. The name comes after the idea: first say which records belong, then use the term.',
+          'The numerator counts visits where the event happened. The denominator counts every visit in the relevant set. For “included coffee”, nine visits belong in the numerator and all twenty belong in the denominator.'
         ]) }),
-        Object.freeze({ heading: 'Independence is rarer than it looks', paragraphs: Object.freeze([
-          'Two events are independent when knowing one happened tells you nothing about the other. Multiplying probabilities together is only allowed under that assumption, and in a shop it often fails. Paying in cash and using self-service are not independent at all: knowing a sale went through self-service tells you with certainty that it was not cash, because those machines take no notes.',
-          'Assuming independence when it does not hold produces numbers that are too confident rather than obviously wrong, which is what makes it dangerous. If you multiply two probabilities, say why the two things do not inform each other, and be suspicious when the reason is that it was convenient. The strongest dependence is often structural, built into how the shop works rather than into how people behave.'
+        Object.freeze({ heading: 'Turn the count into a percentage and a decimal', paragraphs: Object.freeze([
+          'Nine divided by twenty is 0.45. The same value written as a percentage is 45%. Percent means “out of one hundred”, so moving from 0.45 to 45% changes the notation, not the evidence.',
+          'This is an observed probability: a proportion calculated from the twenty visits in front of us. It summarises those visits. Five coffee visits in a row would not guarantee another one, and this first calculation does not try to explain why a pattern occurred.'
         ]) })
       ]),
       example: Object.freeze({
-        title: 'One event, four denominators',
-        headers: Object.freeze(['Set counted', 'Cash sales', 'Sales counted', 'Probability']),
+        title: 'Twenty visits, one probability question',
+        headers: Object.freeze(['Outcome', 'Visits', 'Counts as “included coffee”?']),
         rows: Object.freeze([
-          Object.freeze(['Every sale in the window', '2,968', '15,315', '0.19']),
-          Object.freeze(['Staffed tills only', '2,599', '10,462', '0.25']),
-          Object.freeze(['Kiosk tills only', '369', '1,577', '0.23']),
-          Object.freeze(['Self-service tills only', '0', '3,276', '0.00'])
+          Object.freeze(['Coffee only', '6', 'Yes']),
+          Object.freeze(['Food only', '7', 'No']),
+          Object.freeze(['Both', '3', 'Yes']),
+          Object.freeze(['Neither', '4', 'No']),
+          Object.freeze(['Total', '20', '9 ÷ 20 = 45% = 0.45'])
         ])
       }),
       workbook: Object.freeze({
-        title: 'Ten-minute denominator audit',
-        prompt: 'Take any probability or percentage you have written down recently, at work or from a news story.',
+        title: 'Build one probability question',
+        prompt: 'Use a small set of events you can observe, such as journeys, orders, messages or visits.',
         steps: Object.freeze([
-          'Write the numerator: what was counted.',
-          'Write the denominator: what it was counted out of.',
-          'Name one narrower set the same event could have been counted over.',
-          'Estimate whether the probability would rise or fall over that narrower set, and say why.',
-          'Rewrite the original sentence so the denominator is impossible to miss.'
+          'Write the question as a yes-or-no event.',
+          'List which outcomes count as yes, including any mixed outcome such as “both”.',
+          'Name the full relevant set: the sample space for this question.',
+          'Count the event for the numerator and all relevant records for the denominator.',
+          'Write the result as a fraction, percentage and decimal, then say what it describes.'
         ])
       }),
       check: Object.freeze({
-        prompt: 'A colleague reports "the probability a sale is paid in cash is 0.25". What is missing before that can be compared with anything?',
-        answer: 'population',
+        prompt: 'Of 20 visits, 6 bought coffee only and 3 bought both coffee and food. What is the observed probability that a visit included coffee?',
+        answer: 'nine-of-twenty',
         options: Object.freeze([
-          Object.freeze(['precision', 'More decimal places, so small differences are visible']),
-          Object.freeze(['population', 'The set it was counted over, since 0.25 is the staffed-till figure and the chain is 0.19']),
-          Object.freeze(['method', 'Whether it was calculated in SQL or in a spreadsheet'])
+          Object.freeze(['six-of-twenty', '6 ÷ 20 = 30%, because only coffee-only visits count']),
+          Object.freeze(['nine-of-twenty', '9 ÷ 20 = 45%, because both outcomes also included coffee']),
+          Object.freeze(['nine-of-nine', '9 ÷ 9 = 100%, because every selected visit included coffee'])
         ]),
-        explanation: 'A probability is a share of a named set, and without the set two honest figures can disagree while both remain correct.'
+        explanation: 'The event contains coffee-only and both: 6 + 3 = 9. The sample space contains all 20 visits, so 9 ÷ 20 = 45% = 0.45.'
       }),
       practice: Object.freeze({
-        title: 'The Rate Desk',
-        href: '?mode=game&mission=rate-desk',
-        instruction: 'Name the denominator under each figure before you compare any two of them.'
+        title: 'The Probability Counter',
+        href: '?mode=game&mission=probability-counter',
+        instruction: 'Classify twenty shop visits, build the event count and turn it into a percentage and decimal.'
       }),
       sources: Object.freeze([
         Object.freeze({ label: 'OpenStax — Introduction to Probability', url: 'https://openstax.org/books/introductory-statistics-2e/pages/3-introduction', licence: 'CC BY 4.0' }),

@@ -112,7 +112,8 @@ export const ROOMS = Object.freeze([
       Object.freeze({ slug: 'rate-desk', x: 20, y: 44, at: 'the monitor desk' }),
       Object.freeze({ slug: 'distribution-desk', x: 54, y: 63, at: 'the collation table' }),
       Object.freeze({ slug: 'data-lineage', x: 77, y: 42, at: 'the standing desk' }),
-      Object.freeze({ slug: 'sampling-desk', x: 78, y: 76, at: 'the sampling desk' })
+      Object.freeze({ slug: 'sampling-desk', x: 78, y: 76, at: 'the sampling desk' }),
+      Object.freeze({ slug: 'probability-counter', x: 28, y: 72, at: 'the probability counter' })
     ])
   }),
   Object.freeze({

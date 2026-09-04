@@ -26,6 +26,7 @@ import { FUNCTION_WORKSHOP_MISSION } from './function-workshop-mission.js';
 import { DATA_VISUALIZATION_MISSION } from './data-visualization-mission.js';
 import { RATE_DESK_MISSION } from './rate-desk-mission.js';
 import { SAMPLING_DESK_MISSION } from './sampling-desk-mission.js';
+import { PROBABILITY_COUNTER_MISSION } from './probability-counter-mission.js';
 import { RESULT_CHECKPOINT_MISSION } from './result-checkpoint-mission.js';
 import { HANDOVER_PACK_MISSION } from './handover-pack-mission.js';
 import { REGION_GRAIN_MISSION } from './region-grain-mission.js';
@@ -103,7 +104,10 @@ export const MISSIONS = Object.freeze([
     reading: { chapter: 7, session: 3, label: 'Separating what you found from what you think' } },
   { slug: 'handover-pack', mission: HANDOVER_PACK_MISSION, xp: 190,
     teaches: 'Packaging inputs, versions, commands and checks so somebody else can run the work.',
-    reading: { chapter: 7, session: 4, label: 'Work somebody else can run' } }
+    reading: { chapter: 7, session: 4, label: 'Work somebody else can run' } },
+  { slug: 'probability-counter', mission: PROBABILITY_COUNTER_MISSION, xp: 120,
+    teaches: 'Defining an event and its sample space before calculating an observed probability.',
+    reading: { chapter: 8, session: 1, label: 'A probability belongs to a question' } }
 ].map(Object.freeze));
 
 export const TOTAL_XP = MISSIONS.reduce((n, m) => n + m.xp, 0);
