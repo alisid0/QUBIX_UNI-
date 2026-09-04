@@ -1,4 +1,35 @@
-# Generated data is reproduced byte for byte by a seeded generator, so git
-# must not rewrite its line endings on checkout. A CSV that differs between
-# Windows and Linux is not the same dataset.
-data-sample/*.csv -text
+# Line endings are LF everywhere, in the repository and in the working tree.
+#
+# This checkout had core.autocrlf=true, so Git stored LF and handed out CRLF.
+# Two things followed, both of which cost real time:
+#
+#   Every build rewrote public/sitemap.xml and docs/ROUTE-INVENTORY.md with LF,
+#   Git saw a change against the CRLF copy, and `npm run deploy` refused to
+#   publish because the tree was dirty. Nothing had actually changed.
+#
+#   check-root-entry asserts a pattern that spans a newline. It passed on the
+#   machine whose checkout had LF and failed on the one that had CRLF, from the
+#   same commit. A build whose result depends on which operating system cloned
+#   the repository is not telling you about the code.
+#
+# `text=auto eol=lf` normalises on the way in and checks out LF regardless of
+# core.autocrlf, so both stop happening for everyone.
+* text=auto eol=lf
+
+# Binary, and must never be touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp4 binary
+*.webm binary
+*.db binary
+*.sqlite binary
+*.zip binary

@@ -1,8 +1,17 @@
 import { readFileSync } from 'node:fs';
 import { DOORS } from '../src/lib/content/learning-flow.js';
 
-const page = readFileSync(new URL('../src/views/LearningFloor.svelte', import.meta.url), 'utf8');
-const app = readFileSync(new URL('../src/App.svelte', import.meta.url), 'utf8');
+// Line endings normalised before anything is matched against them.
+//
+// Without this the build was machine-dependent: this file asserts a pattern
+// that spans a newline, and a Windows checkout has CRLF where the author's had
+// LF, so the same commit passed on one machine and failed on the other. A guard
+// that depends on which operating system checked the repository out is telling
+// you about the checkout, not the code.
+const source = path => readFileSync(new URL(path, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+
+const page = source('../src/views/LearningFloor.svelte');
+const app = source('../src/App.svelte');
 let failed = false;
 const check = (condition, label, detail = '') => {
   console.log(`   ${condition ? 'PASS' : '**FAIL**'}  ${label}${detail ? `  ${detail}` : ''}`);
