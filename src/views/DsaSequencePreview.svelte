@@ -1,5 +1,6 @@
 <script>
   import SequenceAccessLab from '../lib/components/SequenceAccessLab.svelte';
+  import SequenceAccessContrastFigure from '../lib/components/SequenceAccessContrastFigure.svelte';
   import { DSA_SEQUENCE_PREVIEW as lesson } from '../lib/content/dsa-sequence-preview.js';
 </script>
 
@@ -41,6 +42,8 @@
         <section><span class="stamp">ADDRESS QUESTION</span><h3>“What is at position 2?”</h3><p>The position tells us where to go. We can jump straight to that slot.</p><code>items[2] → "PAD"</code></section>
         <section><span class="stamp">IDENTITY QUESTION</span><h3>“Where is PAD?”</h3><p>The value does not tell us its position. With no index of our own, we compare labels until one matches.</p><code>TIN? LAMP? PAD? → position 2</code></section>
       </div>
+
+      <SequenceAccessContrastFigure />
 
       <section class="real-world" aria-labelledby="world-heading">
         <p class="section-label">THE REAL-WORLD PAYOFF</p>
