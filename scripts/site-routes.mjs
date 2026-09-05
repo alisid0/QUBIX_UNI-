@@ -32,6 +32,10 @@ const EXTRA_MISSIONS = Object.freeze([
 ]);
 
 const DSA_PREVIEWS = Object.freeze([
+  // The opening edition: four modules on a separate review surface, drafted
+  // 2026-09-05. It leaves the four approved samples and their digests alone,
+  // and like them it is reachable, unrostered and not offered to search.
+  ['dsa-course-preview', 'DSA opening edition'],
   ['dsa-introduction-preview', 'DSA introduction'],
   ['dsa-sequence-preview', 'Sequences and indexed access'],
   ['dsa-array-insertion-preview', 'Making room in an array'],
@@ -184,7 +188,7 @@ export const ROUTED_MISSION_SLUGS = Object.freeze([
 
 export const ROUTED_MODES = Object.freeze([
   'assets', 'builder', 'dsa-array-growth-preview', 'dsa-array-insertion-preview',
-  'dsa-introduction-preview', 'dsa-sequence-preview', 'exercises', 'factory',
+  'dsa-course-preview', 'dsa-introduction-preview', 'dsa-sequence-preview', 'exercises', 'factory',
   'game', 'learner', 'parts', 'privacy', 'review', 'showcase', 'showcase-demo', 'signin',
   'start', 'strata-factory', 'updates', 'wiki'
 ]);

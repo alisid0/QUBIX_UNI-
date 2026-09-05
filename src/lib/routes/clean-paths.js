@@ -65,6 +65,7 @@ export function paramsForPath(pathname) {
   }
   if (parts[0] === 'dsa') {
     const mode = {
+      'course-preview': 'dsa-course-preview',
       introduction: 'dsa-introduction-preview',
       sequences: 'dsa-sequence-preview',
       'arrays/insertion': 'dsa-array-insertion-preview',
@@ -128,6 +129,7 @@ export function cleanPathForParams(input) {
   } else if (mode?.startsWith('dsa-')) {
     params.delete('mode');
     path = {
+      'dsa-course-preview': '/dsa/course-preview',
       'dsa-introduction-preview': '/dsa/introduction',
       'dsa-sequence-preview': '/dsa/sequences',
       'dsa-array-insertion-preview': '/dsa/arrays/insertion',

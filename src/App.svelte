@@ -35,6 +35,7 @@
   let DataConsole = null;
   // One DSA read + do BB for founder review. It is deliberately isolated from
   // the learner mission roster until its teaching pattern and placement pass review.
+  let DsaCoursePreview = null;
   let DsaSequencePreview = null;
   let DsaArrayInsertionPreview = null;
   let DsaIntroductionPreview = null;
@@ -80,6 +81,13 @@
   const showAssetShowcase = params.get('mode') === 'assets' && workshop;
   // Founder-approved DSA samples are reachable by URL on the live site. They
   // stay off the learner roster and are not marked RELEASED.
+  // Reachable in production, like the four approved DSA samples beside it.
+  // Codex gated this behind `workshop`, which is right for the Factory and
+  // wrong here: the founder asked for it live in order to read it and raise
+  // questions, and the precedent for an unreleased DSA surface is already set.
+  // It stays unrostered, earns no XP and is kept out of the sitemap, so being
+  // reachable is not the same as being released.
+  const showDsaCoursePreview = params.get('mode') === 'dsa-course-preview';
   const showDsaSequencePreview = params.get('mode') === 'dsa-sequence-preview';
   const showDsaArrayInsertionPreview = params.get('mode') === 'dsa-array-insertion-preview';
   const showDsaIntroductionPreview = params.get('mode') === 'dsa-introduction-preview';
@@ -108,6 +116,9 @@
   }
   if (showDataConsole) {
     import('./views/DataConsole.svelte').then(m => { DataConsole = m.default; });
+  }
+  if (showDsaCoursePreview) {
+    import('./views/DsaCoursePreview.svelte').then(m => { DsaCoursePreview = m.default; });
   }
   if (showDsaSequencePreview) {
     import('./views/DsaSequencePreview.svelte').then(m => { DsaSequencePreview = m.default; });
@@ -285,6 +296,8 @@
     <svelte:component this={AssetShowcase} />
   {:else if showDataConsole}
     <svelte:component this={DataConsole} />
+  {:else if showDsaCoursePreview}
+    <svelte:component this={DsaCoursePreview} />
   {:else if showDsaSequencePreview}
     <svelte:component this={DsaSequencePreview} />
   {:else if showDsaArrayInsertionPreview}
