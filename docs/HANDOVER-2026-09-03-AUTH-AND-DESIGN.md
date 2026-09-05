@@ -1,5 +1,10 @@
 # Handover · 3 September 2026 · sign-in, access gates, design fixes
 
+> **Open items superseded by `HANDOVER-2026-09-05-CONTENT-AND-GUARDS.md`.**
+> Google sign-in now works, `QUBIX_BUILDER_KEY` is no longer needed because the
+> Builder makes no API call, and the line-ending churn is fixed. The
+> architecture described below is still current; the list at the end is not.
+
 Everything below is committed, pushed and deployed. `main` is `fcd5833` and
 production was built from it.
 
