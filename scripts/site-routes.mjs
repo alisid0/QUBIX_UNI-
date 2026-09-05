@@ -70,6 +70,8 @@ export function buildSiteRoutes(libraryPages = []) {
     // Reachable and linked from every page, but kept out of the sitemap: an
     // account form is not curriculum and has nothing to offer a search result.
     route('/?mode=signin', 'Core', 'Sign in', 'preview', false),
+    // Indexable on purpose: a privacy policy people cannot find is not one.
+    route('/?mode=privacy', 'Core', 'Privacy'),
     route('/?mode=game', 'Core', 'Academy mission hub'),
     route('/?mode=wiki', 'Wiki', 'Data Science Wiki'),
     route('/?mode=wiki&section=books', 'Wiki', 'Reference books'),
@@ -183,6 +185,6 @@ export const ROUTED_MISSION_SLUGS = Object.freeze([
 export const ROUTED_MODES = Object.freeze([
   'assets', 'builder', 'dsa-array-growth-preview', 'dsa-array-insertion-preview',
   'dsa-introduction-preview', 'dsa-sequence-preview', 'exercises', 'factory',
-  'game', 'learner', 'parts', 'review', 'showcase', 'showcase-demo', 'signin',
+  'game', 'learner', 'parts', 'privacy', 'review', 'showcase', 'showcase-demo', 'signin',
   'start', 'strata-factory', 'updates', 'wiki'
 ]);

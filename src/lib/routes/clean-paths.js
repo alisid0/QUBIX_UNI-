@@ -17,6 +17,7 @@ export function paramsForPath(pathname) {
   // Sign-in is one page with four states. The state is interface, not an
   // address, so /signin/create is not a URL: the page decides what to show.
   if (parts[0] === 'signin') { params.set('mode', 'signin'); return params; }
+  if (parts[0] === 'privacy') { params.set('mode', 'privacy'); return params; }
   if (parts[0] === 'updates') { params.set('mode', 'updates'); return params; }
   // The learning floor. One segment, no state in the path: where a learner is
   // comes from their own progress, not from the URL.
@@ -100,6 +101,8 @@ export function cleanPathForParams(input) {
     params.delete('mode'); path = '/builder';
   } else if (mode === 'signin') {
     params.delete('mode'); path = '/signin';
+  } else if (mode === 'privacy') {
+    params.delete('mode'); path = '/privacy';
   } else if (mode === 'updates') {
     params.delete('mode'); path = '/updates';
   } else if (mode === 'start') {

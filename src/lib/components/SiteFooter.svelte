@@ -28,7 +28,10 @@
   // destination offered twice on one screen.
   const ELSEWHERE = [
     ['/library/big-sheet-of-graphs.html', 'The Big Sheet of Graphs'],
-    ['/library/functions.html', 'Calculus From The Ground Up']
+    ['/library/functions.html', 'Calculus From The Ground Up'],
+    // In both footers, including the compact one, because a privacy policy
+    // reachable only from the pages that carry the long footer is not reachable.
+    ['/privacy', 'Privacy']
   ];
 </script>
 
@@ -67,6 +70,7 @@
       <li><a href="/library/big-sheet-of-graphs.html">The Big Sheet of Graphs</a></li>
       <li><a href="/library/functions.html">Calculus From The Ground Up</a></li>
       <li><a href="/?prototype=variables-and-rates">Mathematics pilot</a></li>
+      <li><a href="/privacy">Privacy</a></li>
     </ul>
   </nav>
 

@@ -27,17 +27,19 @@ What that settles and what it does not:
   age band below 18 brings parts of the Families policy into scope even at 13+,
   including restrictions on ads and on data collection. Qubix carries no ads,
   which removes most of that surface.
-- The age is currently **not enforced anywhere in the software.** There is no
-  date-of-birth field and no age gate. If the policy is to mean anything, it
-  must at minimum be stated at sign-up.
+- The age is **stated but not verified.** Since 2026-09-03 `/signin` refuses to
+  create an account without a 13+ declaration, which is what both stores expect
+  and is the point at which a learner is actually told. It is a statement, not a
+  check, and no date of birth is collected.
 
 ## What is collected
 
-### 1. Account identity, via Google
+### 1. Account identity
 
-Collected when a learner presses Sign in. `AuthButton.svelte` calls
-`signInWithOAuth({ provider: 'google' })`; Supabase stores the result in
-`auth.users`.
+Collected when a learner signs in, by either route. `SignIn.svelte` offers email
+with a password and `signInWithOAuth({ provider: 'google' })`; Supabase stores
+the result in `auth.users`. Email and password yields only an address and a
+hashed password. The four fields below are what the Google route adds.
 
 | Field | Source | Why |
 |---|---|---|
@@ -99,6 +101,7 @@ in. Clearing site data removes it.
 | **Supabase** | Everything in sections 1 to 3 | Database and authentication |
 | **Google** | The sign-in exchange | Only when the learner chooses to sign in |
 | **Vercel** | Requests to the site: IP, user agent, page | Hosting, and **Vercel Analytics is enabled** in `src/main.js` |
+| **OpenAI** | The learner's question, the lesson they are on, and up to four Qubix passages | Ask Qubix. Added 2026-09-02 and missing from this table until 2026-09-05. `store: false` on every call, and a signed-out learner never reaches it at all, because the tutor requires a session. |
 
 **Vercel Analytics must be declared.** It is enabled on every page load and was
 inherited from Strata rather than chosen. Whether it is wanted at all is a
@@ -132,23 +135,25 @@ starting point for review:
 
 | Right | Status |
 |---|---|
-| Erasure | `account_deletion_requests` exists. **The queue is not processed by anything.** A request would be recorded and never actioned. |
+| Erasure | **Works.** `fulfil_my_account_deletion()` erases the learner's progress and auth user and marks the request fulfilled. Migration 0003, 2026-09-02. This row previously said the queue was never drained, which stopped being true and stayed written down. |
 | Access / portability | No export exists. Progress is a small JSON object and could be offered as a download cheaply. |
 | Rectification | Name and avatar come from Google and change when the Google account changes. |
 | Withdrawing consent | Sign out is immediate; local progress remains on the device. |
 
-**The deletion gap is the most serious item here.** Both stores require a working
-deletion route, and a queue nothing drains is worse than no queue, because it
-implies a promise that is not kept.
+**The deletion gap is closed.** It was the most serious item in this document
+from 2026-08-12 until migration 0003 on 2026-09-02. The remaining right without
+a route is portability: there is still no export.
 
 ## Open items before any store submission
 
 - [ ] Decide EU treatment at 13 versus 16.
 - [ ] Decide whether Vercel Analytics stays.
-- [ ] Build or document the process that fulfils deletion requests.
+- [x] Build or document the process that fulfils deletion requests. *(0003, 2026-09-02.)*
 - [ ] Set retention periods.
 - [ ] Supply legal operator, registered address and contact for Arcave Technologies.
-- [ ] Add an age statement at sign-up.
+- [x] Add an age statement at sign-up. *(The 13+ declaration on `/signin`, 2026-09-03.)*
 - [ ] Legal review of this inventory, the Privacy Policy and the Terms.
+- [ ] Terms of Use. The Privacy Policy went live at `/privacy` on 2026-09-05;
+      the Terms are still unwritten and the launch plan asks for both.
 
 Nothing in this document is legal advice.

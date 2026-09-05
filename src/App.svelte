@@ -47,6 +47,7 @@
   // prepared prompt to an existing AI chat, and every return remains AI_DRAFT.
   let QubixBuilder = null;
   let SignIn = null;
+  let Privacy = null;
 
   const params = paramsForLocation(window.location);
   const cleanLocation = cleanPathForParams(params);
@@ -88,6 +89,7 @@
   const showLearningUpdates = params.get('mode') === 'updates';
   const showQubixBuilder = params.get('mode') === 'builder';
   const showSignIn = params.get('mode') === 'signin';
+  const showPrivacy = params.get('mode') === 'privacy';
   // The academy ships. Factory tools above do not: they are internal
   // workbenches. Approved DSA samples are URL-only and stay unrostered.
   const showGameMission = params.get('mode') === 'game';
@@ -133,6 +135,9 @@
   }
   if (showSignIn) {
     import('./views/SignIn.svelte').then(m => { SignIn = m.default; });
+  }
+  if (showPrivacy) {
+    import('./views/Privacy.svelte').then(m => { Privacy = m.default; });
   }
   if (showStrataMigrationFactory) {
     import('./views/StrataMigrationFactory.svelte').then(m => { StrataMigrationFactory = m.default; });
@@ -296,6 +301,8 @@
     <svelte:component this={QubixBuilder} />
   {:else if showSignIn}
     <svelte:component this={SignIn} />
+  {:else if showPrivacy}
+    <svelte:component this={Privacy} />
   {:else if showGameMission}
     <LearningGate itemId={itemIdFor(params)}>
       <svelte:component this={GameMission} />
