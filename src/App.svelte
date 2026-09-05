@@ -201,6 +201,8 @@
         return import('./views/StoreMap.svelte');
       } else if (mission === 'rate-desk') {
         return import('./views/RateDeskMission.svelte');
+      } else if (mission === 'type-desk') {
+        return import('./views/TypeDeskMission.svelte');
       } else if (mission === 'python-trace') {
         return import('./views/PythonTraceMission.svelte');
       } else if (mission === 'function-workshop') {

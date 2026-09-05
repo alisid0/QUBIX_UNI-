@@ -195,9 +195,11 @@ export const DOORS = Object.freeze([
     title: 'Python first',
     lede: 'A careful machine that does exactly what the table tells it to.',
     pairs: Object.freeze([
+      // Was classify-data, chapter 03's mission borrowed. A Python chapter's
+      // first Play is now Python.
       pair('p1', 1, 'Values and types',
         read('r-6-1', 'Values, names and types', 6, 1),
-        play('p-classify-py', 'Classify Store Data', 'classify-data')),
+        play('p-type-desk', 'The Type Desk', 'type-desk')),
       pair('p2', 2, 'Decisions and loops',
         read('r-6-2', 'Decisions and repetition', 6, 2),
         play('p-python-trace', 'Read the Program', 'python-trace')),

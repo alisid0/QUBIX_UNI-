@@ -72,7 +72,7 @@ export const SHARED_FOUNDATIONS_PART_SIX = Object.freeze({
         ]),
         explanation: 'Python refuses to guess what you meant between joining and summing, so it raises an error. The quantity has to be converted to a number first, which is also where an unexpected value gets caught.'
       }),
-      practice: Object.freeze({ title: 'Classify Store Data', href: '?mode=game&mission=classify-data', instruction: 'The same question in a different language: what kind of thing is this value, and what does that permit?' }),
+      practice: Object.freeze({ title: 'The Type Desk', href: '?mode=game&mission=type-desk', instruction: 'Read a real receipt in as text, choose the conversion, and watch a wrong choice return a number rather than an error.' }),
       sources: Object.freeze([
         Object.freeze({ label: 'Python — the tutorial', url: 'https://docs.python.org/3/tutorial/index.html' }),
         Object.freeze({ label: 'Python — built-in types', url: 'https://docs.python.org/3/library/stdtypes.html' })

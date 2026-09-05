@@ -22,6 +22,7 @@ import { ANALYST_DESK_MISSION } from './analyst-desk-mission.js';
 import { EMPLOYEE_TABLE_MISSION } from './employee-table-mission.js';
 import { SQL_CONSOLE_MISSION } from './sql-console-mission.js';
 import { DISTRIBUTION_DESK_MISSION } from './distribution-desk-mission.js';
+import { TYPE_DESK_MISSION } from './type-desk-mission.js';
 import { PYTHON_TRACE_MISSION } from './python-trace-mission.js';
 import { FUNCTION_WORKSHOP_MISSION } from './function-workshop-mission.js';
 import { DATA_VISUALIZATION_MISSION } from './data-visualization-mission.js';
@@ -94,6 +95,9 @@ export const MISSIONS = Object.freeze([
   { slug: 'result-checkpoint', mission: RESULT_CHECKPOINT_MISSION, xp: 180,
     teaches: 'Testing grain, boundaries, NULL behaviour and control totals before releasing a query result.',
     reading: { chapter: 5, session: 5, label: 'Checking a result before believing it' } },
+  { slug: 'type-desk', mission: TYPE_DESK_MISSION, xp: 130,
+    teaches: 'What a value is once it has been read from a file, and the conversion that keeps a basket total right.',
+    reading: { chapter: 6, session: 1, label: 'Values, names and types' } },
   { slug: 'python-trace', mission: PYTHON_TRACE_MISSION, xp: 170,
     teaches: 'Predicting what a program leaves in each name, then stepping through to see it happen.',
     reading: { chapter: 6, session: 1, label: 'Telling a machine what to do' } },

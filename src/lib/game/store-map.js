@@ -102,6 +102,7 @@ export const ROOMS = Object.freeze([
       // Next to python-trace: one reads a program, the other packages a rule as
       // a function somebody else will call.
       Object.freeze({ slug: 'employee-table', x: 22, y: 20, at: 'the first desk' }),
+      Object.freeze({ slug: 'type-desk', x: 40, y: 34, at: 'the intake bench' }),
       Object.freeze({ slug: 'function-workshop', x: 66, y: 26, at: 'the utilities bench' }),
       Object.freeze({ slug: 'result-checkpoint', x: 50, y: 76, at: 'the release terminal' })
     ])
